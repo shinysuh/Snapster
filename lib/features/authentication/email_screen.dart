@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/password_screen.dart';
+import 'package:tiktok_clone/features/authentication/password_screen.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
@@ -72,14 +72,6 @@ class _EmailScreenState extends State<EmailScreen> {
                 style: TextStyle(
                   fontSize: Sizes.size20 + Sizes.size2,
                   fontWeight: FontWeight.w700,
-                ),
-              ),
-              Gaps.v6,
-              const Text(
-                'You can always change this later.',
-                style: TextStyle(
-                  color: Colors.black54,
-                  fontSize: Sizes.size16,
                 ),
               ),
               Gaps.v36,
