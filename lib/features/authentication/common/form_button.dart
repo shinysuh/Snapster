@@ -5,22 +5,20 @@ class FormButton extends StatelessWidget {
   const FormButton({
     super.key,
     required this.isDisabled,
-    required this.onTapNext,
-    required this.textActivated,
-    this.textDisabled,
+    required this.onTapButton,
+    required this.buttonText,
   });
 
   final bool isDisabled;
-  final Function onTapNext;
-  final String textActivated;
-  final String? textDisabled;
+  final Function onTapButton;
+  final String buttonText;
 
   @override
   Widget build(BuildContext context) {
     return FractionallySizedBox(
       widthFactor: 1,
       child: GestureDetector(
-        onTap: isDisabled ? () {} : () => onTapNext(),
+        onTap: isDisabled ? () {} : () => onTapButton(),
         child: AnimatedContainer(
             duration: const Duration(microseconds: 800),
             padding: const EdgeInsets.symmetric(
@@ -40,7 +38,7 @@ class FormButton extends StatelessWidget {
                 fontWeight: FontWeight.w600,
               ),
               child: Text(
-                isDisabled ? textDisabled ?? textActivated : textActivated,
+                buttonText,
                 textAlign: TextAlign.center,
               ),
             )),
