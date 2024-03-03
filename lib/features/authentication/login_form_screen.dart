@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
-import 'package:tiktok_clone/features/authentication/login_screen.dart';
+import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
@@ -48,7 +48,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save(); // invoke onSaved
-      redirectToScreen(context, const LoginScreen());
+      redirectToScreen(context, const InterestScreen());
     }
   }
 
