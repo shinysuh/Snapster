@@ -20,7 +20,7 @@ class FormButton extends StatelessWidget {
       child: GestureDetector(
         onTap: isDisabled ? () {} : () => onTapButton(),
         child: AnimatedContainer(
-            duration: const Duration(microseconds: 800),
+            duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.symmetric(
               vertical: Sizes.size16,
             ),
@@ -31,7 +31,7 @@ class FormButton extends StatelessWidget {
               borderRadius: BorderRadius.circular(Sizes.size5),
             ),
             child: AnimatedDefaultTextStyle(
-              duration: const Duration(microseconds: 800),
+              duration: const Duration(milliseconds: 300),
               style: TextStyle(
                 color: isDisabled ? Colors.grey.shade400 : Colors.white,
                 fontSize: Sizes.size16,
