@@ -3,16 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
+import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class BirthdayScreen extends StatefulWidget {
   const BirthdayScreen({super.key});
+
   @override
   State<BirthdayScreen> createState() => _BirthdayScreenState();
 }
 
 class _BirthdayScreenState extends State<BirthdayScreen> {
-  String _birthday = '';
   late DateTime initDate;
   final TextEditingController _birthdayController = TextEditingController();
 
@@ -21,7 +23,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
     super.initState();
     setState(() {
       var now = DateTime.now();
-      initDate = DateTime(now.year - 12); // 12세 제한
+      initDate = DateTime(now.year - 12, now.month, now.day); // 12세 제한
       _setTextFieldDate(initDate);
     });
   }
@@ -37,7 +39,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
     _birthdayController.value = TextEditingValue(text: textDate);
   }
 
-  void _onSubmit() {}
+  void _onSubmit() {
+    redirectToScreen(context, const InterestScreen());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,9 +102,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: _birthday.isEmpty,
-                onTapNext: _onSubmit,
-                textActivated: 'Next',
+                isDisabled: false,
+                onTapButton: _onSubmit,
+                buttonText: 'Sign Up',
               ),
             ],
           ),
