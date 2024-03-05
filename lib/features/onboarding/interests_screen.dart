@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/interests.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/onboarding/tutorial_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/interest_button.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class InterestScreen extends StatefulWidget {
   const InterestScreen({super.key});
@@ -40,6 +42,10 @@ class _InterestScreenState extends State<InterestScreen> {
         _isTitleShown = false;
       });
     }
+  }
+
+  void _onTapNext() {
+    redirectToScreen(context, const TutorialScreen());
   }
 
   @override
@@ -106,18 +112,25 @@ class _InterestScreenState extends State<InterestScreen> {
             left: Sizes.size24,
             right: Sizes.size24,
           ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(vertical: Sizes.size20),
-            decoration: BoxDecoration(
-              color: Theme.of(context).primaryColor,
-            ),
-            child: const Text(
-              'Next',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: Sizes.size16,
-              ),
+          child: FractionallySizedBox(
+            widthFactor: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                BottomButton(
+                  buttonColor: Colors.white,
+                  textColor: Colors.black,
+                  text: 'Skip',
+                  onTap: _onTapNext,
+                ),
+                Gaps.h20,
+                BottomButton(
+                  buttonColor: Theme.of(context).primaryColor,
+                  textColor: Colors.white,
+                  text: 'Next',
+                  onTap: _onTapNext,
+                ),
+              ],
             ),
           ),
           // 편한 기능의 버튼 CupertinoButton(custom) / TextButton(google like)
@@ -126,6 +139,47 @@ class _InterestScreenState extends State<InterestScreen> {
           //   color: Theme.of(context).primaryColor,
           //   child: const Text('Next'),
           // ),
+        ),
+      ),
+    );
+  }
+}
+
+class BottomButton extends StatelessWidget {
+  const BottomButton({
+    super.key,
+    required this.buttonColor,
+    required this.textColor,
+    required this.text,
+    required this.onTap,
+  });
+
+  final Color buttonColor, textColor;
+  final String text;
+  final Function onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () => onTap(),
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: Sizes.size16,
+          horizontal: Sizes.size64 + Sizes.size4,
+        ),
+        decoration: BoxDecoration(
+            color: buttonColor,
+            border: Border.all(
+              color: Colors.black12,
+            )),
+        child: Text(
+          text,
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            color: textColor,
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.bold,
+          ),
         ),
       ),
     );

@@ -40,7 +40,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   }
 
   void _onSubmit() {
-    redirectToScreen(context, const InterestScreen());
+    redirectToScreenAndRemovePreviousRoutes(context, const InterestScreen());
   }
 
   @override
