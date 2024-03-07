@@ -15,6 +15,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
+  bool _isPostVideoClicked = false;
   int _selectedIndex = 0;
 
   void _onTapNavigationItem(int index) {
@@ -24,6 +25,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   }
 
   void _onTapPostVideoButton() {
+    _onReleasePostVideoButton();
     redirectToScreen(
       context: context,
       targetScreen: Scaffold(
@@ -33,6 +35,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
       ),
       isFullScreen: true,
     );
+  }
+
+  void _onTapDownPostVideoButton() {
+    setState(() {
+      _isPostVideoClicked = true;
+    });
+  }
+
+  void _onReleasePostVideoButton() {
+    setState(() {
+      _isPostVideoClicked = false;
+    });
   }
 
   bool _isPageHidden(int index) {
@@ -99,8 +113,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
               ),
               Gaps.h24,
               GestureDetector(
+                onTapDown: (details) => _onTapDownPostVideoButton(),
+                onTapCancel: _onReleasePostVideoButton,
                 onTap: _onTapPostVideoButton,
-                child: const PostVideoButton(),
+                child: PostVideoButton(
+                  isClicked: _isPostVideoClicked,
+                ),
               ),
               Gaps.h24,
               NavTab(
