@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
 
 // push
-void redirectToScreen(BuildContext context, Widget targetScreen) {
+void redirectToScreen(
+    {required BuildContext context,
+    required Widget targetScreen,
+    bool? isFullScreen}) {
   Navigator.of(context).push(
-    MaterialPageRoute(builder: (context) => targetScreen),
+    MaterialPageRoute(
+        builder: (context) => targetScreen,
+        fullscreenDialog: isFullScreen ?? false),
   );
 }
 

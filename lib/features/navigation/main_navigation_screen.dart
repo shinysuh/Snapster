@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/navigation/stf_screen.dart';
 import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -17,6 +21,22 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  void _onTapPostVideoButton() {
+    redirectToScreen(
+      context: context,
+      targetScreen: Scaffold(
+        appBar: AppBar(
+          title: const Text('record video'),
+        ),
+      ),
+      isFullScreen: true,
+    );
+  }
+
+  bool _isPageHidden(int index) {
+    return _selectedIndex != index;
   }
 
   @override

@@ -41,7 +41,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onSubmit() {
     if (_username.isEmpty) return;
-    redirectToScreen(context, const EmailScreen());
+    redirectToScreen(context: context, targetScreen: const EmailScreen());
   }
 
   @override

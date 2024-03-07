@@ -83,7 +83,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   void _onSubmit() {
     if (!_isPasswordValid) return;
-    redirectToScreen(context, const BirthdayScreen());
+    redirectToScreen(context: context, targetScreen: const BirthdayScreen());
   }
 
   @override

@@ -11,15 +11,15 @@ class SignUpScreen extends StatelessWidget {
   const SignUpScreen({super.key});
 
   void _onTapLogin(BuildContext context) {
-    redirectToScreen(context, const LoginScreen());
+    redirectToScreen(context: context, targetScreen: const LoginScreen());
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    redirectToScreen(context, const UsernameScreen());
+    redirectToScreen(context: context, targetScreen: const UsernameScreen());
   }
 
   void _onTapAppleLogin(BuildContext context) {
-    // redirectToScreen(context, const EmailScreen());
+    // redirectToScreen(context: context, targetScreen: const EmailScreen());
   }
 
   @override
