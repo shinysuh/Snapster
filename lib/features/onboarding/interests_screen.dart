@@ -45,7 +45,7 @@ class _InterestScreenState extends State<InterestScreen> {
   }
 
   void _onTapNext() {
-    redirectToScreen(context, const TutorialScreen());
+    redirectToScreen(context: context, targetScreen: const TutorialScreen());
   }
 
   @override

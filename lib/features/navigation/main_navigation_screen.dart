@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
+import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -11,24 +15,7 @@ class MainNavigationScreen extends StatefulWidget {
 }
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
-  final screens = [
-    const Center(
-      child: Text('home'),
-    ),
-    const Center(
-      child: Text('search'),
-    ),
-    const Center(
-      child: Text('video'),
-    ),
-    const Center(
-      child: Text('inbox'),
-    ),
-    const Center(
-      child: Text('profile'),
-    ),
-  ];
-
+  bool _isPostVideoClicked = false;
   int _selectedIndex = 0;
 
   void _onTapNavigationItem(int index) {
@@ -37,9 +24,60 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     });
   }
 
+  void _onTapPostVideoButton() {
+    _onReleasePostVideoButton();
+    redirectToScreen(
+      context: context,
+      targetScreen: Scaffold(
+        appBar: AppBar(
+          title: const Text('record video'),
+        ),
+      ),
+      isFullScreen: true,
+    );
+  }
+
+  void _onTapDownPostVideoButton() {
+    setState(() {
+      _isPostVideoClicked = true;
+    });
+  }
+
+  void _onReleasePostVideoButton() {
+    setState(() {
+      _isPostVideoClicked = false;
+    });
+  }
+
+  bool _isPageHidden(int index) {
+    return _selectedIndex != index;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: Stack(
+        children: [
+          // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
+          // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
+          Offstage(
+            offstage: _isPageHidden(0),
+            child: VideoTimelineScreen(),
+          ),
+          Offstage(
+            offstage: _isPageHidden(1),
+            child: Container(),
+          ),
+          Offstage(
+            offstage: _isPageHidden(3),
+            child: Container(),
+          ),
+          Offstage(
+            offstage: _isPageHidden(4),
+            child: Container(),
+          ),
+        ],
+      ),
       bottomNavigationBar: BottomAppBar(
         color: Colors.black,
         child: Padding(
@@ -49,35 +87,44 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavTab(
                 isSelected: _selectedIndex == 0,
                 label: 'Home',
                 icon: FontAwesomeIcons.house,
+                selectedIcon: FontAwesomeIcons.house,
                 onTap: () => _onTapNavigationItem(0),
               ),
               NavTab(
                 isSelected: _selectedIndex == 1,
                 label: 'Discover',
-                icon: FontAwesomeIcons.magnifyingGlass,
+                icon: FontAwesomeIcons.compass,
+                selectedIcon: FontAwesomeIcons.solidCompass,
                 onTap: () => _onTapNavigationItem(1),
               ),
-              NavTab(
-                isSelected: _selectedIndex == 2,
-                label: 'Upload',
-                icon: FontAwesomeIcons.squarePlus,
-                onTap: () => _onTapNavigationItem(2),
+              Gaps.h24,
+              GestureDetector(
+                onTapDown: (details) => _onTapDownPostVideoButton(),
+                onTapCancel: _onReleasePostVideoButton,
+                onTap: _onTapPostVideoButton,
+                child: PostVideoButton(
+                  isClicked: _isPostVideoClicked,
+                ),
               ),
+              Gaps.h24,
               NavTab(
                 isSelected: _selectedIndex == 3,
                 label: 'Inbox',
                 icon: FontAwesomeIcons.message,
+                selectedIcon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTapNavigationItem(3),
               ),
               NavTab(
                 isSelected: _selectedIndex == 4,
                 label: 'Profile',
                 icon: FontAwesomeIcons.user,
+                selectedIcon: FontAwesomeIcons.solidUser,
                 onTap: () => _onTapNavigationItem(4),
               ),
             ],

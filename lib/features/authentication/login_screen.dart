@@ -14,11 +14,11 @@ class LoginScreen extends StatelessWidget {
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    redirectToScreen(context, const LoginFormScreen());
+    redirectToScreen(context: context, targetScreen: const LoginFormScreen());
   }
 
   void _onTapAppleLogin(BuildContext context) {
-    // redirectToScreen(context, const LoginFormScreen());
+    // redirectToScreen(context: context, targetScreen: const LoginFormScreen());
   }
 
   @override
