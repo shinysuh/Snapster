@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/navigation/stf_screen.dart';
 import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
+import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -60,29 +60,21 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         children: [
           // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
           // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
-          // Offstage(
-          //   offstage: _isPageHidden(0),
-          //   child: Container(),
-          // ),
-          StfScreen(
-            selectedIndex: _selectedIndex,
-            pageIndex: 0,
-            pageName: 'Home',
+          Offstage(
+            offstage: _isPageHidden(0),
+            child: VideoTimelineScreen(),
           ),
-          StfScreen(
-            selectedIndex: _selectedIndex,
-            pageIndex: 1,
-            pageName: 'Discover',
+          Offstage(
+            offstage: _isPageHidden(1),
+            child: Container(),
           ),
-          StfScreen(
-            selectedIndex: _selectedIndex,
-            pageIndex: 3,
-            pageName: 'Inbox',
+          Offstage(
+            offstage: _isPageHidden(3),
+            child: Container(),
           ),
-          StfScreen(
-            selectedIndex: _selectedIndex,
-            pageIndex: 4,
-            pageName: 'Profile',
+          Offstage(
+            offstage: _isPageHidden(4),
+            child: Container(),
           ),
         ],
       ),
