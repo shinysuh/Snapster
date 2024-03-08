@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:video_player/video_player.dart';
+import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPost extends StatefulWidget {
   final Function onVideoFinished;
@@ -26,12 +27,23 @@ class _VideoPostState extends State<VideoPost> {
 
   late final VideoPlayerController _videoPlayerController;
 
+  @override
+  void initState() {
+    super.initState();
+    _initVideoPlayer();
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
   void _initVideoPlayer() async {
     _videoPlayerController =
         VideoPlayerController.asset(videoUrls[widget.pageIndex % 4]);
 
     await _videoPlayerController.initialize();
-    _videoPlayerController.play();
     setState(() {});
 
     _videoPlayerController.addListener(_onVideoChange);
@@ -45,41 +57,52 @@ class _VideoPostState extends State<VideoPost> {
     }
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _initVideoPlayer();
+  void _onVisibilityChanged(VisibilityInfo info) {
+    if (info.visibleFraction == 1 && !_videoPlayerController.value.isPlaying) {
+      _videoPlayerController.play();
+    }
   }
 
-  @override
-  void dispose() {
-    _videoPlayerController.dispose();
-    super.dispose();
+  void _togglePause() {
+    if (_videoPlayerController.value.isPlaying) {
+      _videoPlayerController.pause();
+    } else {
+      _videoPlayerController.play();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Positioned.fill(
-          child: _videoPlayerController.value.isInitialized
-              ? VideoPlayer(_videoPlayerController)
-              : Container(
-                  color: Colors.black,
-                  child: const Center(
-                    child: Text(
-                      "No more videos to display. \nYou've seen all of 'em.",
-                      style: TextStyle(
-                        fontSize: Sizes.size20,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
+    return VisibilityDetector(
+      key: Key('${widget.pageIndex}'),
+      onVisibilityChanged: _onVisibilityChanged,
+      child: Stack(
+        children: [
+          Positioned.fill(
+            child: _videoPlayerController.value.isInitialized
+                ? VideoPlayer(_videoPlayerController)
+                : Container(
+                    color: Colors.black,
+                    child: const Center(
+                      child: Text(
+                        "No more videos to display. \nYou've seen all of 'em.",
+                        style: TextStyle(
+                          fontSize: Sizes.size20,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                        textAlign: TextAlign.center,
                       ),
-                      textAlign: TextAlign.center,
                     ),
                   ),
-                ),
-        ),
-      ],
+          ),
+          Positioned.fill(
+            child: GestureDetector(
+              onTap: _togglePause,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
