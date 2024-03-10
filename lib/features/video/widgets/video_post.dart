@@ -103,10 +103,14 @@ class _VideoPostState extends State<VideoPost> {
             ),
           ),
           const Positioned.fill(
-            child: Center(
-              child: FaIcon(
-                FontAwesomeIcons.play,
-                color: Colors.white,
+            // IgnorePointer 클릭 이벤트가 해당 위젯을 무시하고 진행됨
+            child: IgnorePointer(
+              child: Center(
+                child: FaIcon(
+                  FontAwesomeIcons.play,
+                  color: Colors.white,
+                  size: Sizes.size64,
+                ),
               ),
             ),
           ),
