@@ -62,8 +62,13 @@ class _VideoPostState extends State<VideoPost>
   void _initVideoPlayer() async {
     _videoPlayerController =
         VideoPlayerController.asset(videoUrls[widget.pageIndex % 4]);
+    // initialize
     await _videoPlayerController.initialize();
-    _videoPlayerController.addListener(_onVideoChange);
+
+    // 영상 반복 재생
+    await _videoPlayerController.setLooping(true);
+    // 영상 자동 넘김 시 필요
+    // _videoPlayerController.addListener(_onVideoChange);
 
     setState(() {});
   }

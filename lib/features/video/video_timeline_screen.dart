@@ -12,7 +12,6 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
   static const basicItemCount = 4;
   int _itemCount = basicItemCount;
 
-
   final PageController _pageController = PageController();
   final Duration _scrollDuration = const Duration(milliseconds: 200);
   final Curve _scrollCurve = Curves.linear;
@@ -31,6 +30,7 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
   }
 
   void _onVideoFinished() {
+    // ** 동영상 완료 후 다음 영상으로 자동 넘김
     _pageController.nextPage(
       duration: _scrollDuration,
       curve: _scrollCurve,
@@ -56,7 +56,7 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
       itemCount: _itemCount,
       onPageChanged: _onPageChanged,
       itemBuilder: (context, index) =>
-          VideoPost(onVideoFinished: _onVideoFinished, pageIndex:index),
+          VideoPost(onVideoFinished: _onVideoFinished, pageIndex: index),
     );
   }
 }
