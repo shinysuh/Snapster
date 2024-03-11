@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
@@ -26,12 +27,15 @@ class _VideoPostState extends State<VideoPost>
     'assets/videos/smiling_after_mom.mp4',
     'assets/videos/what_are_you_looking_at_mom.mp4',
   ];
-  final _animationDuration = const Duration(milliseconds: 200);
-
   late final VideoPlayerController _videoPlayerController;
   late final AnimationController _animationController;
 
+  final _animationDuration = const Duration(milliseconds: 200);
+  final _caption =
+      'This is my baby nephew! He was born in Feb 2024 and just turn to 3 weeks old:) So happy to finally have a little nephew whom I can give my love and passion. Soooo adorable!! Let\'s make these sentences longer and longer until they become seven lines.';
+
   bool _isPaused = false;
+  bool _isCaptionOpened = false;
 
   @override
   void initState() {
@@ -101,6 +105,21 @@ class _VideoPostState extends State<VideoPost>
     });
   }
 
+  void _toggleCaption() {
+    setState(() {
+      _isCaptionOpened = !_isCaptionOpened;
+    });
+  }
+
+  String _getCaption() {
+    String displayCaption = _caption;
+    int length = 25;
+    if (!_isCaptionOpened && displayCaption.length > length) {
+      displayCaption = '${displayCaption.substring(0, length)} ... ';
+    }
+    return displayCaption;
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -158,6 +177,73 @@ class _VideoPostState extends State<VideoPost>
                   // ),
                 ),
               ),
+            ),
+          ),
+          Positioned(
+            bottom: 25,
+            left: 15,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  '@jen',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: Sizes.size20,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Gaps.v18,
+                GestureDetector(
+                  onTap: _toggleCaption,
+                  child: IgnoreBaseline(
+                    child: SingleChildScrollView(
+                      child: AnimatedContainer(
+                        duration: _animationDuration,
+                        height: _isCaptionOpened ? 100 : 30,
+                        width: 300,
+                        child: _isCaptionOpened
+                            ? Flexible(
+                                child: RichText(
+                                  overflow: TextOverflow.fade,
+                                  maxLines: 5,
+                                  strutStyle: const StrutStyle(
+                                    fontSize: Sizes.size16,
+                                  ),
+                                  text: TextSpan(
+                                    text: _getCaption(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: Sizes.size16,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Row(
+                                children: [
+                                  Text(
+                                    _getCaption(),
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: Sizes.size16,
+                                    ),
+                                  ),
+                                  const Text(
+                                    'See More',
+                                    softWrap: true,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: Sizes.size16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
