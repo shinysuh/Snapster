@@ -18,20 +18,39 @@ class VideoPost extends StatefulWidget {
   State<VideoPost> createState() => _VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost> {
+class _VideoPostState extends State<VideoPost>
+    with SingleTickerProviderStateMixin {
   static const List<String> videoUrls = [
     'assets/videos/dreaming.mp4',
     'assets/videos/no_barf_but_yarn.mp4',
     'assets/videos/smiling_after_mom.mp4',
     'assets/videos/what_are_you_looking_at_mom.mp4',
   ];
+  final _animationDuration = const Duration(milliseconds: 200);
 
   late final VideoPlayerController _videoPlayerController;
+  late final AnimationController _animationController;
+
+  bool _isPaused = false;
 
   @override
   void initState() {
     super.initState();
     _initVideoPlayer();
+    _animationController = AnimationController(
+      vsync: this,
+      // vsync: offscreen 애니메이션의 불필요한 리소스 사용 방지
+      lowerBound: 1.0,
+      upperBound: 2.0,
+      value: 2.0,
+      // default (설정하지 않으면 lowerBound 로 설정됨)
+      duration: _animationDuration,
+    );
+
+    // ** AnimatedBuilder 를 사용하지 않을 때의 방법
+    // _animationController.addListener(() {
+    //   setState(() {});
+    // });
   }
 
   @override
@@ -43,11 +62,10 @@ class _VideoPostState extends State<VideoPost> {
   void _initVideoPlayer() async {
     _videoPlayerController =
         VideoPlayerController.asset(videoUrls[widget.pageIndex % 4]);
-
     await _videoPlayerController.initialize();
-    setState(() {});
-
     _videoPlayerController.addListener(_onVideoChange);
+
+    setState(() {});
   }
 
   void _onVideoChange() {
@@ -67,9 +85,15 @@ class _VideoPostState extends State<VideoPost> {
   void _togglePause() {
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
+      _animationController.reverse();
     } else {
       _videoPlayerController.play();
+      _animationController.forward();
     }
+
+    setState(() {
+      _isPaused = !_isPaused;
+    });
   }
 
   @override
@@ -102,14 +126,31 @@ class _VideoPostState extends State<VideoPost> {
               onTap: _togglePause,
             ),
           ),
-          const Positioned.fill(
+          Positioned.fill(
             // IgnorePointer 클릭 이벤트가 해당 위젯을 무시하고 진행됨
             child: IgnorePointer(
               child: Center(
-                child: FaIcon(
-                  FontAwesomeIcons.play,
-                  color: Colors.white,
-                  size: Sizes.size64,
+                child: AnimatedBuilder(
+                  animation: _animationController,
+                  builder: (context, child) {
+                    // _animationController 의 값이 변경될 때마다 실행됨
+                    return Transform.scale(
+                      scale: _animationController.value,
+                      child: child,
+                    );
+                  },
+                  // child: Transform.scale(
+                  // scale: _animationController.value,
+                  child: AnimatedOpacity(
+                    duration: _animationDuration,
+                    opacity: _isPaused ? 1 : 0,
+                    child: const FaIcon(
+                      FontAwesomeIcons.play,
+                      color: Colors.white,
+                      size: Sizes.size72,
+                    ),
+                  ),
+                  // ),
                 ),
               ),
             ),
