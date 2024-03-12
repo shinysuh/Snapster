@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/video/widgets/video_caption.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -24,6 +25,7 @@ class _VideoPostState extends State<VideoPost>
   static const List<String> videoUrls = [
     'assets/videos/dreaming.mp4',
     'assets/videos/no_barf_but_yarn.mp4',
+    'assets/videos/face_changer.mp4',
     'assets/videos/smiling_after_mom.mp4',
     'assets/videos/what_are_you_looking_at_mom.mp4',
   ];
@@ -31,16 +33,14 @@ class _VideoPostState extends State<VideoPost>
   late final AnimationController _animationController;
 
   final _animationDuration = const Duration(milliseconds: 200);
-  final _caption =
-      'This is my baby nephew! He was born in Feb 2024 and just turn to 3 weeks old:) So happy to finally have a little nephew whom I can give my love and passion. Soooo adorable!! Let\'s make these sentences longer and longer until they become seven lines.';
 
   bool _isPaused = false;
-  bool _isCaptionOpened = false;
 
   @override
   void initState() {
     super.initState();
     _initVideoPlayer();
+
     _animationController = AnimationController(
       vsync: this,
       // vsync: offscreen 애니메이션의 불필요한 리소스 사용 방지
@@ -105,21 +105,6 @@ class _VideoPostState extends State<VideoPost>
     });
   }
 
-  void _toggleCaption() {
-    setState(() {
-      _isCaptionOpened = !_isCaptionOpened;
-    });
-  }
-
-  String _getCaption() {
-    String displayCaption = _caption;
-    int length = 25;
-    if (!_isCaptionOpened && displayCaption.length > length) {
-      displayCaption = '${displayCaption.substring(0, length)} ... ';
-    }
-    return displayCaption;
-  }
-
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -179,13 +164,13 @@ class _VideoPostState extends State<VideoPost>
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             bottom: 25,
             left: 15,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
+                Text(
                   '@jen',
                   style: TextStyle(
                     color: Colors.white,
@@ -194,55 +179,7 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v18,
-                GestureDetector(
-                  onTap: _toggleCaption,
-                  child: IgnoreBaseline(
-                    child: SingleChildScrollView(
-                      child: AnimatedContainer(
-                        duration: _animationDuration,
-                        height: _isCaptionOpened ? 100 : 30,
-                        width: 300,
-                        child: _isCaptionOpened
-                            ? Flexible(
-                                child: RichText(
-                                  overflow: TextOverflow.fade,
-                                  maxLines: 5,
-                                  strutStyle: const StrutStyle(
-                                    fontSize: Sizes.size16,
-                                  ),
-                                  text: TextSpan(
-                                    text: _getCaption(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: Sizes.size16,
-                                    ),
-                                  ),
-                                ),
-                              )
-                            : Row(
-                                children: [
-                                  Text(
-                                    _getCaption(),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: Sizes.size16,
-                                    ),
-                                  ),
-                                  const Text(
-                                    'See More',
-                                    softWrap: true,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: Sizes.size16,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                      ),
-                    ),
-                  ),
-                ),
+                VideoCaption(),
               ],
             ),
           ),
