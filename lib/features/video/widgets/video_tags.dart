@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 
-class VideoTags extends StatefulWidget {
+class VideoTags extends StatelessWidget {
   const VideoTags({
     super.key,
     required this.tag,
@@ -10,14 +10,9 @@ class VideoTags extends StatefulWidget {
   final String tag;
 
   @override
-  State<VideoTags> createState() => _VideoTagsState();
-}
-
-class _VideoTagsState extends State<VideoTags> {
-  @override
   Widget build(BuildContext context) {
     return Text(
-      '#${widget.tag}',
+      '#$tag',
       style: const TextStyle(
         color: Colors.white,
         fontSize: Sizes.size16,
