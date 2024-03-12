@@ -43,20 +43,32 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
     super.dispose();
   }
 
+  /* RefreshIndicator 의 onRefresh 는 반드시 Future 리턴 */
+  // TODO - 추후 적절한 기능 적용 필요
+  Future<void> _onRefresh() {
+    return Future.delayed(const Duration(seconds: 3));
+  }
+
   @override
   Widget build(BuildContext context) {
     /* PageView.builder() => ListView.builder() 와 마찬가지로
     *  일괄적으로 모든 아이템을 생성하는 것이 아니라
     *  스크롤에 따라 아이템을 render
     *  */
-    return PageView.builder(
-      controller: _pageController,
-      // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
-      scrollDirection: Axis.vertical,
-      itemCount: _itemCount,
-      onPageChanged: _onPageChanged,
-      itemBuilder: (context, index) =>
-          VideoPost(onVideoFinished: _onVideoFinished, pageIndex: index),
+    return RefreshIndicator(
+      onRefresh: _onRefresh,
+      displacement: 50,
+      edgeOffset: 20,
+      color: Theme.of(context).primaryColor,
+      child: PageView.builder(
+        controller: _pageController,
+        // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
+        scrollDirection: Axis.vertical,
+        itemCount: _itemCount,
+        onPageChanged: _onPageChanged,
+        itemBuilder: (context, index) =>
+            VideoPost(onVideoFinished: _onVideoFinished, pageIndex: index),
+      ),
     );
   }
 }

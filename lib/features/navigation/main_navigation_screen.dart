@@ -56,6 +56,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: _selectedIndex == 0 ? Colors.black : Colors.white,
       body: Stack(
         children: [
           // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
