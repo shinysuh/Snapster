@@ -4,6 +4,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/widgets/video_caption.dart';
+import 'package:tiktok_clone/features/video/widgets/video_comments.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -105,6 +106,26 @@ class _VideoPostState extends State<VideoPost>
     setState(() {
       _isPaused = !_isPaused;
     });
+  }
+
+  void _onTapLike() {
+    setState(() {
+      _isLiked = !_isLiked;
+    });
+  }
+
+  void _onTapComments(BuildContext context) async {
+    if (_videoPlayerController.value.isPlaying) _togglePause();
+
+    await showModalBottomSheet(
+      context: context,
+      // backgroundColor: transparent 설정으로 Scaffold의 설정이 보일 수 있게 됨 (borderRadius 도 마찬가지)
+      backgroundColor: Colors.transparent,
+      isScrollControlled: true,
+      builder: (context) => VideoComments(),
+    );
+
+    _togglePause();
   }
 
   @override
@@ -210,16 +231,21 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v24,
-                VideoButton(
-                  icon: FontAwesomeIcons.solidCommentDots,
-                  text: '33K',
+                GestureDetector(
+                  onTap: () => _onTapComments(context),
+                  child: const VideoButton(
+                    icon: FontAwesomeIcons.solidCommentDots,
+                    iconColor: Colors.white,
+                    text: '33K',
+                  ),
                 ),
                 Gaps.v24,
                 VideoButton(
                   icon: FontAwesomeIcons.share,
+                  iconColor: Colors.white,
                   text: 'share',
                 ),
-                Gaps.v28,
+                Gaps.v20,
               ],
             ),
           ),
