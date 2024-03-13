@@ -8,9 +8,11 @@ class VideoButton extends StatelessWidget {
     super.key,
     required this.icon,
     required this.text,
+    required this.iconColor,
   });
 
   final IconData icon;
+  final Color iconColor;
   final String text;
 
   @override
@@ -19,7 +21,7 @@ class VideoButton extends StatelessWidget {
       children: [
         FaIcon(
           icon,
-          color: Colors.white,
+          color: iconColor,
           size: Sizes.size40,
         ),
         Gaps.v5,

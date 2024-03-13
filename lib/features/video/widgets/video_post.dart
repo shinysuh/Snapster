@@ -36,6 +36,7 @@ class _VideoPostState extends State<VideoPost>
   final _animationDuration = const Duration(milliseconds: 200);
 
   bool _isPaused = false;
+  bool _isLiked = false;
 
   @override
   void initState() {
@@ -184,12 +185,12 @@ class _VideoPostState extends State<VideoPost>
               ],
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 25,
             right: 15,
             child: Column(
               children: [
-                CircleAvatar(
+                const CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
@@ -200,9 +201,13 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v24,
-                VideoButton(
-                  icon: FontAwesomeIcons.solidHeart,
-                  text: '2.9M',
+                GestureDetector(
+                  onTap: _onTapLike,
+                  child: VideoButton(
+                    icon: FontAwesomeIcons.solidHeart,
+                    iconColor: _isLiked ? Colors.red : Colors.white,
+                    text: '2.9M',
+                  ),
                 ),
                 Gaps.v24,
                 VideoButton(
