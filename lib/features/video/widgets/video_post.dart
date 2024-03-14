@@ -62,6 +62,7 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   void dispose() {
+    _animationController.dispose();
     _videoPlayerController.dispose();
     super.dispose();
   }
@@ -77,7 +78,9 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
-    setState(() {});
+    setState(() {
+      _isPaused = false;
+    });
   }
 
   void _onVideoChange() {
@@ -89,12 +92,20 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction == 1 && !_videoPlayerController.value.isPlaying) {
+    if (info.visibleFraction == 1 &&
+        !_isPaused &&
+        !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
+    }
+
+    if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {
+      _togglePause();
     }
   }
 
   void _togglePause() {
+    if (!mounted) return;
+
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
       _animationController.reverse();
