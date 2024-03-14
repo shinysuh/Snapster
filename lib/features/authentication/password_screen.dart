@@ -89,7 +89,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTapScaffold(context),
+      onTap: () => onTapOutsideAndHideKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(

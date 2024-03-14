@@ -47,7 +47,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTapScaffold(context),
+      onTap: () => onTapOutsideAndHideKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
