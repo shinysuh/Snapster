@@ -53,12 +53,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return _selectedIndex != index;
   }
 
+  bool _isHome() {
+    return _selectedIndex == 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
       resizeToAvoidBottomInset: false,
-      backgroundColor: _selectedIndex == 0 ? Colors.black : Colors.white,
+      backgroundColor: _isHome() ? Colors.black : Colors.white,
       body: Stack(
         children: [
           // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
@@ -82,7 +86,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        color: _isHome() ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: Sizes.size16,
@@ -93,6 +97,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 0,
                 label: 'Home',
                 icon: FontAwesomeIcons.house,
@@ -100,6 +105,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(0),
               ),
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 1,
                 label: 'Discover',
                 icon: FontAwesomeIcons.compass,
@@ -113,10 +119,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: _onTapPostVideoButton,
                 child: PostVideoButton(
                   isClicked: _isPostVideoClicked,
+                  inverted: !_isHome(),
                 ),
               ),
               Gaps.h24,
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 3,
                 label: 'Inbox',
                 icon: FontAwesomeIcons.message,
@@ -124,6 +132,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(3),
               ),
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 4,
                 label: 'Profile',
                 icon: FontAwesomeIcons.user,
