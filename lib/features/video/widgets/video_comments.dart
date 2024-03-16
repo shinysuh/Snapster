@@ -25,7 +25,7 @@ class _VideoCommentsState extends State<VideoComments> {
   }
 
   void _dismissKeyboard() {
-    onTapOutsideAndHideKeyboard(context);
+    onTapOutsideAndDismissKeyboard(context);
     setState(() {
       _isWriting = false;
     });

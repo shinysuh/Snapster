@@ -55,7 +55,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTapOutsideAndHideKeyboard(context),
+      onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Log in'),

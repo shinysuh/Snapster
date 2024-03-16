@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-void onTapOutsideAndHideKeyboard(BuildContext context) {
+void onTapOutsideAndDismissKeyboard(BuildContext context) {
   FocusScope.of(context).unfocus();
 }

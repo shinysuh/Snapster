@@ -54,7 +54,7 @@ class _EmailScreenState extends State<EmailScreen> {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onTapOutsideAndHideKeyboard(context),
+      onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
           title: const Text(
