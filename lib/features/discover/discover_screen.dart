@@ -33,7 +33,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
   ];
 
   final TextEditingController _textEditingController =
-      TextEditingController(text: 'initial text');
+      TextEditingController(text: '');
 
   @override
   void dispose() {
@@ -66,6 +66,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               onSubmitted: _onSubmitSearchKeyword,
             ),
             bottom: TabBar(
+              onTap: (value) => onTapOutsideAndDismissKeyboard(context),
               isScrollable: true,
               splashFactory: NoSplash.splashFactory,
               padding: const EdgeInsets.symmetric(
