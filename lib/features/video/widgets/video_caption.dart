@@ -116,6 +116,8 @@ class _VideoCaptionState extends State<VideoCaption> {
                       children: [
                         Text(
                           _getCaption(),
+                          // maxLines: 5,
+                          // overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: Sizes.size16,

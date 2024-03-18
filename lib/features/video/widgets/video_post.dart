@@ -25,10 +25,10 @@ class VideoPost extends StatefulWidget {
 class _VideoPostState extends State<VideoPost>
     with SingleTickerProviderStateMixin {
   static const List<String> videoUrls = [
-    'assets/videos/dreaming.mp4',
     'assets/videos/no_barf_but_yarn.mp4',
     'assets/videos/face_changer.mp4',
     'assets/videos/smiling_after_mom.mp4',
+    'assets/videos/dreaming.mp4',
     'assets/videos/what_are_you_looking_at_mom.mp4',
   ];
   late final VideoPlayerController _videoPlayerController;
@@ -62,13 +62,14 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   void dispose() {
+    _animationController.dispose();
     _videoPlayerController.dispose();
     super.dispose();
   }
 
   void _initVideoPlayer() async {
-    _videoPlayerController =
-        VideoPlayerController.asset(videoUrls[widget.pageIndex % 4]);
+    _videoPlayerController = VideoPlayerController.asset(
+        videoUrls[widget.pageIndex % videoUrls.length]);
     // initialize
     await _videoPlayerController.initialize();
 
@@ -77,7 +78,9 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
-    setState(() {});
+    setState(() {
+      _isPaused = false;
+    });
   }
 
   void _onVideoChange() {
@@ -89,12 +92,20 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction == 1 && !_videoPlayerController.value.isPlaying) {
+    if (info.visibleFraction == 1 &&
+        !_isPaused &&
+        !_videoPlayerController.value.isPlaying) {
       _videoPlayerController.play();
+    }
+
+    if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {
+      _togglePause();
     }
   }
 
   void _togglePause() {
+    if (!mounted) return;
+
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
       _animationController.reverse();

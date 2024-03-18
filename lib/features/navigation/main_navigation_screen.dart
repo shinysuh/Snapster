@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/discover/discover_screen.dart';
+import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
 import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
@@ -16,7 +18,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isPostVideoClicked = false;
-  int _selectedIndex = 0;
+  int _selectedIndex = 3;
 
   void _onTapNavigationItem(int index) {
     setState(() {
@@ -53,12 +55,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return _selectedIndex != index;
   }
 
+  bool _isHome() {
+    return _selectedIndex == 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
       resizeToAvoidBottomInset: false,
-      backgroundColor: _selectedIndex == 0 ? Colors.black : Colors.white,
+      backgroundColor: _isHome() ? Colors.black : Colors.white,
       body: Stack(
         children: [
           // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
@@ -67,13 +73,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             offstage: _isPageHidden(0),
             child: VideoTimelineScreen(),
           ),
-          Offstage(
-            offstage: _isPageHidden(1),
-            child: Container(),
-          ),
+          // Offstage(
+          //   offstage: _isPageHidden(1),
+          //   child: DiscoverScreen(),
+          // ),
           Offstage(
             offstage: _isPageHidden(3),
-            child: Container(),
+            child: InboxScreen(),
           ),
           Offstage(
             offstage: _isPageHidden(4),
@@ -82,7 +88,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: Colors.black,
+        color: _isHome() ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: Sizes.size16,
@@ -93,6 +99,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 0,
                 label: 'Home',
                 icon: FontAwesomeIcons.house,
@@ -100,11 +107,18 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(0),
               ),
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 1,
                 label: 'Discover',
                 icon: FontAwesomeIcons.compass,
                 selectedIcon: FontAwesomeIcons.solidCompass,
-                onTap: () => _onTapNavigationItem(1),
+                onTap: () {
+                  // _onTapNavigationItem(1);
+                  redirectToScreen(
+                    context: context,
+                    targetScreen: const DiscoverScreen(),
+                  );
+                },
               ),
               Gaps.h24,
               GestureDetector(
@@ -113,10 +127,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: _onTapPostVideoButton,
                 child: PostVideoButton(
                   isClicked: _isPostVideoClicked,
+                  inverted: !_isHome(),
                 ),
               ),
               Gaps.h24,
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 3,
                 label: 'Inbox',
                 icon: FontAwesomeIcons.message,
@@ -124,6 +140,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(3),
               ),
               NavTab(
+                isHome: _isHome(),
                 isSelected: _selectedIndex == 4,
                 label: 'Profile',
                 icon: FontAwesomeIcons.user,

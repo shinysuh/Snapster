@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 class NavTab extends StatelessWidget {
   const NavTab({
     super.key,
+    required this.isHome,
     required this.isSelected,
     required this.label,
     required this.icon,
@@ -12,6 +13,7 @@ class NavTab extends StatelessWidget {
     required this.onTap,
   });
 
+  final bool isHome;
   final bool isSelected;
   final String label;
   final IconData icon, selectedIcon;
@@ -23,7 +25,7 @@ class NavTab extends StatelessWidget {
       child: GestureDetector(
         onTap: () => onTap(),
         child: Container(
-          color: Colors.black,
+          color: isHome ? Colors.black : Colors.white,
           child: AnimatedOpacity(
             duration: const Duration(milliseconds: 100),
             opacity: isSelected ? 1 : 0.65,
@@ -32,12 +34,14 @@ class NavTab extends StatelessWidget {
               children: [
                 FaIcon(
                   isSelected ? selectedIcon : icon,
-                  color: Colors.white,
+                  color: isHome ? Colors.white : Colors.black,
                 ),
                 Gaps.v5,
                 Text(
                   label,
-                  style: const TextStyle(color: Colors.white),
+                  style: TextStyle(
+                    color: isHome ? Colors.white : Colors.black,
+                  ),
                 )
               ],
             ),
