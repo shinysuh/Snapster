@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -49,6 +48,85 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     print('Submitted keyword: $searchKeyword');
   }
 
+  void _onClearSearchKeyword() {
+    _textEditingController.clear();
+  }
+
+  Widget _getSearchPanel() {
+    // return CupertinoSearchTextField(
+    //   controller: _textEditingController,
+    //   itemColor: Colors.black,
+    //   onChanged: _onChangeSearchKeyword,
+    //   onSubmitted: _onSubmitSearchKeyword,
+    // );
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: Sizes.size44,
+            child: TextField(
+              controller: _textEditingController,
+              maxLines: 1,
+              cursorColor: Theme.of(context).primaryColor,
+              textInputAction: TextInputAction.send,
+              onChanged: _onChangeSearchKeyword,
+              onSubmitted: _onSubmitSearchKeyword,
+              clipBehavior: Clip.hardEdge,
+              style: const TextStyle(
+                color: Colors.black,
+                fontSize: Sizes.size18,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Search',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(Sizes.size8),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: Colors.grey.shade200,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: Sizes.size10,
+                ),
+                prefixIcon: const Padding(
+                  padding: EdgeInsets.only(
+                    top: Sizes.size12,
+                    left: Sizes.size8,
+                  ),
+                  child: FaIcon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    size: Sizes.size20,
+                    color: Colors.black,
+                  ),
+                ),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    top: Sizes.size11,
+                    left: Sizes.size20,
+                  ),
+                  child: GestureDetector(
+                    onTap: _onClearSearchKeyword,
+                    child: FaIcon(
+                      FontAwesomeIcons.solidCircleXmark,
+                      size: Sizes.size20,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Gaps.h22,
+        const FaIcon(
+          FontAwesomeIcons.sliders,
+          size: Sizes.size28,
+        ),
+        Gaps.h8,
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -59,12 +137,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             elevation: 1,
-            title: CupertinoSearchTextField(
-              controller: _textEditingController,
-              itemColor: Colors.black,
-              onChanged: _onChangeSearchKeyword,
-              onSubmitted: _onSubmitSearchKeyword,
-            ),
+            title: _getSearchPanel(),
             bottom: TabBar(
               onTap: (value) => onTapOutsideAndDismissKeyboard(context),
               isScrollable: true,

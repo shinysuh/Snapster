@@ -17,7 +17,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isPostVideoClicked = false;
-  int _selectedIndex = 1;
+  int _selectedIndex = 3;
 
   void _onTapNavigationItem(int index) {
     setState(() {
@@ -72,10 +72,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             offstage: _isPageHidden(0),
             child: VideoTimelineScreen(),
           ),
-          Offstage(
-            offstage: _isPageHidden(1),
-            child: DiscoverScreen(),
-          ),
+          // Offstage(
+          //   offstage: _isPageHidden(1),
+          //   child: DiscoverScreen(),
+          // ),
           Offstage(
             offstage: _isPageHidden(3),
             child: Container(),
@@ -111,7 +111,13 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 label: 'Discover',
                 icon: FontAwesomeIcons.compass,
                 selectedIcon: FontAwesomeIcons.solidCompass,
-                onTap: () => _onTapNavigationItem(1),
+                onTap: () {
+                  // _onTapNavigationItem(1);
+                  redirectToScreen(
+                    context: context,
+                    targetScreen: const DiscoverScreen(),
+                  );
+                },
               ),
               Gaps.h24,
               GestureDetector(
