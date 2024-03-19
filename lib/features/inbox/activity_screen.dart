@@ -51,8 +51,10 @@ class _ActivityScreenState extends State<ActivityScreen>
 
   void _toggleAnimation() async {
     if (_arrowAnimation.isCompleted) {
+      // animation 이 완전히 끝나고 barrier 해제 (await)
       await _animationController.reverse();
     } else {
+      // animation 이 시작되는 동시에 barrier 생성
       _animationController.forward();
     }
 
@@ -75,6 +77,7 @@ class _ActivityScreenState extends State<ActivityScreen>
           onTap: _toggleAnimation,
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
+            mainAxisSize: MainAxisSize.min,
             children: [
               const Text('All activity'),
               Gaps.h2,

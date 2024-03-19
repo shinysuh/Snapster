@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
+import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/widgets/video_caption.dart';
@@ -222,13 +223,12 @@ class _VideoPostState extends State<VideoPost>
             right: 15,
             child: Column(
               children: [
-                const CircleAvatar(
+                CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  foregroundImage: NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIAr03vzZt9XBfML_UrBmXt80NW0YTgnKV1CJo3mm8gw&s'),
-                  child: Text(
+                  foregroundImage: profileImage,
+                  child: const Text(
                     'Jenna',
                   ),
                 ),
