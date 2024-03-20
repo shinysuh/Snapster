@@ -53,7 +53,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
       onTap: _onTapChat,
       leading: CircleAvatar(
         radius: Sizes.size28,
-        foregroundImage: profileImage,
+        foregroundImage: junheeImage,
         child: const Text('Jenna'),
       ),
       title: Row(
@@ -61,7 +61,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            'Lynn ($index)',
+            '쭌희 ($index)',
             style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),
