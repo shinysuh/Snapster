@@ -61,7 +61,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '쭌희 ($index)',
+            '쭌희 (${index + 1})',
             style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),

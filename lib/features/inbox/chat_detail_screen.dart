@@ -203,15 +203,29 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                           ),
                         ),
                       ),
-                      Gaps.h20,
+                      Gaps.h12,
                       GestureDetector(
                         onTap: _onSendMessage,
-                        child: FaIcon(
-                          _isWriting
-                              ? FontAwesomeIcons.solidPaperPlane
-                              : FontAwesomeIcons.paperPlane,
-                          color:
-                              _isWriting ? Colors.blue : Colors.grey.shade500,
+                        child: Container(
+                          width: Sizes.size40,
+                          height: Sizes.size40,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: _isWriting
+                                ? Colors.grey.shade200
+                                : Colors.grey.shade300,
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                              vertical: Sizes.size8,
+                              horizontal: Sizes.size8,
+                            ),
+                            child: FaIcon(
+                              FontAwesomeIcons.solidPaperPlane,
+                              size: Sizes.size22,
+                              color: _isWriting ? Colors.blue : Colors.white,
+                            ),
+                          ),
                         ),
                       ),
                     ],
