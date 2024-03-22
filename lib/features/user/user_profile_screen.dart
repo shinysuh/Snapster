@@ -107,6 +107,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Container(
+                        // Expanded => flex 보다 고정 값이 더 보기 좋을 듯 (화면 회전 시 등등)
                         width: Sizes.size96 + Sizes.size80,
                         height: Sizes.size44 + Sizes.size2,
                         padding: const EdgeInsets.symmetric(
@@ -219,21 +220,94 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 // Image.asset(url) 로 asset 폴더 내 이미지 fetch
                 // Image.network(url) 로 네트워크 상 이미지 fetch
                 // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                itemBuilder: (context, index) => Column(
+                itemBuilder: (context, index) => Stack(
                   children: [
-                    AspectRatio(
-                      aspectRatio: _videoRatio,
-                      child: FadeInImage.assetNetwork(
-                          fit: BoxFit.cover,
-                          placeholder: 'assets/images/1.jpeg',
-                          image:
-                              "https://media.istockphoto.com/id/477057828/photo/blue-sky-white-cloud.jpg?s=612x612&w=0&k=20&c=GEjySNaROrUD7TJUqoXEiBDI9yMmr2hUviSOox4SDlU="),
+                    Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _videoRatio,
+                          child: FadeInImage.assetNetwork(
+                            fit: BoxFit.cover,
+                            placeholder: 'assets/images/1.jpeg',
+                            image:
+                                "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.play_arrow_outlined,
+                            color: Colors.white,
+                            size: Sizes.size26,
+                          ),
+                          Text(
+                            '2.6K',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: Sizes.size14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ],
                 ),
               ),
-              Center(
-                child: Text('page 2'),
+              GridView.builder(
+                // 드래그 시에 keyboard dismiss
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                itemCount: 20,
+                padding: const EdgeInsets.only(top: Sizes.size5),
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  // crossAxisCount => grid 의 컬럼 개수
+                  crossAxisCount: 3,
+                  crossAxisSpacing: Sizes.size2,
+                  mainAxisSpacing: Sizes.size2,
+                  childAspectRatio: _videoRatio,
+                ),
+                itemBuilder: (context, index) => Stack(
+                  children: [
+                    Column(
+                      children: [
+                        AspectRatio(
+                          aspectRatio: _videoRatio,
+                          child: const Image(
+                            fit: BoxFit.cover,
+                            image: AssetImage('assets/images/2.jpeg'),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const Positioned(
+                      bottom: 0,
+                      left: 0,
+                      child: Row(
+                        children: [
+                          Icon(
+                            Icons.play_arrow_outlined,
+                            color: Colors.white,
+                            size: Sizes.size26,
+                          ),
+                          Text(
+                            '36.1K',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: Sizes.size14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
