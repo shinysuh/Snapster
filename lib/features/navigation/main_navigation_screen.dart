@@ -6,6 +6,7 @@ import 'package:tiktok_clone/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
 import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
 import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
+import 'package:tiktok_clone/features/user/user_profile_screen.dart';
 import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
@@ -18,7 +19,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isPostVideoClicked = false;
-  int _selectedIndex = 3;
+  int _selectedIndex = 4;
 
   void _onTapNavigationItem(int index) {
     setState(() {
@@ -83,7 +84,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           ),
           Offstage(
             offstage: _isPageHidden(4),
-            child: Container(),
+            child: UserProfileScreen(),
           ),
         ],
       ),

@@ -3,8 +3,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
 import 'package:tiktok_clone/features/user/widgets/user_profile_tab_bar.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -16,8 +18,15 @@ class UserProfileScreen extends StatefulWidget {
 class _UserProfileScreenState extends State<UserProfileScreen> {
   final _username = '쭌희';
   final _userAccount = 'Jason_2426';
-
   final _videoRatio = 4 / 5;
+
+  void _onTapGear() {
+    redirectToScreen(
+      context: context,
+      targetScreen: const SettingsScreen(),
+      // isFullScreen: true,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,9 +41,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
               actions: [
                 IconButton(
                   onPressed: () {},
-                  icon: const FaIcon(
-                    FontAwesomeIcons.gear,
-                    size: Sizes.size20,
+                  icon: GestureDetector(
+                    onTap: _onTapGear,
+                    child: const FaIcon(
+                      FontAwesomeIcons.gear,
+                      size: Sizes.size20,
+                    ),
                   ),
                 ),
               ],
