@@ -40,7 +40,10 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   }
 
   void _onSubmit() {
-    redirectToScreenAndRemovePreviousRoutes(context, const InterestScreen());
+    redirectToScreenAndRemovePreviousRoutes(
+      context: context,
+      targetScreen: const InterestScreen(),
+    );
   }
 
   @override

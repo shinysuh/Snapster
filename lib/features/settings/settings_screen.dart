@@ -1,5 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
@@ -18,6 +21,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
     });
   }
 
+  void _cancelLogOut() {
+    Navigator.of(context).pop();
+  }
+
+  void _logOut() {
+    // TODO - 로그아웃 기능 여기 구현
+
+    redirectToScreenAndRemovePreviousRoutes(
+      context: context,
+      targetScreen: const SignUpScreen(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,56 +42,56 @@ class _SettingsScreenState extends State<SettingsScreen> {
       ),
       body: ListView(
         children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              CupertinoSwitch(
-                value: _notifications,
-                onChanged: _onChangeNotifications,
-                activeColor: const Color(0xff75B1DF),
-              ),
-              Switch(
-                value: _notifications,
-                onChanged: _onChangeNotifications,
-                activeColor: Colors.deepPurple,
-                activeThumbImage: const AssetImage('assets/images/1.jpeg'),
-              ),
-              // Switch.adaptive 형태 => iOS (CupertinoSwitch) / 다른 플랫폼 (기본 switch)
-              Switch.adaptive(
-                value: _notifications,
-                onChanged: _onChangeNotifications,
-                activeColor: Colors.red,
-                activeThumbImage: const AssetImage('assets/images/1.jpeg'),
-              ),
-              Checkbox(
-                value: _notifications,
-                onChanged: _onChangeNotifications,
-                checkColor: Colors.white,
-                activeColor: const Color(0xffE694B0),
-              ),
-            ],
-          ),
-          SwitchListTile(
-            value: _notifications,
-            onChanged: _onChangeNotifications,
-            title: const Text('Enable Notifications'),
-            activeColor: const Color(0xff267428),
-            activeThumbImage: const AssetImage('assets/images/1.jpeg'),
-          ),
-          // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.center,
+          //   children: [
+          //     CupertinoSwitch(
+          //       value: _notifications,
+          //       onChanged: _onChangeNotifications,
+          //       activeColor: const Color(0xff75B1DF),
+          //     ),
+          //     Switch(
+          //       value: _notifications,
+          //       onChanged: _onChangeNotifications,
+          //       activeColor: Colors.deepPurple,
+          //       activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+          //     ),
+          //     // Switch.adaptive 형태 => iOS (CupertinoSwitch) / 다른 플랫폼 (기본 switch)
+          //     Switch.adaptive(
+          //       value: _notifications,
+          //       onChanged: _onChangeNotifications,
+          //       activeColor: Colors.red,
+          //       activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+          //     ),
+          //     Checkbox(
+          //       value: _notifications,
+          //       onChanged: _onChangeNotifications,
+          //       checkColor: Colors.white,
+          //       activeColor: const Color(0xffE694B0),
+          //     ),
+          //   ],
+          // ),
+          // CheckboxListTile(
+          //   value: _notifications,
+          //   onChanged: _onChangeNotifications,
+          //   title: const Text('Enable Notifications'),
+          //   checkColor: Colors.white,
+          //   activeColor: const Color(0xffFA8857),
+          // ),
+          // SwitchListTile(
+          //   value: _notifications,
+          //   onChanged: _onChangeNotifications,
+          //   title: const Text('Enable Notifications'),
+          //   activeColor: const Color(0xff267428),
+          //   activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+          // ),
+          // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
           SwitchListTile.adaptive(
             value: _notifications,
             onChanged: _onChangeNotifications,
             title: const Text('Enable Notifications'),
-            activeColor: const Color(0xffFA8857),
-            activeThumbImage: const AssetImage('assets/images/1.jpeg'),
-          ),
-          CheckboxListTile(
-            value: _notifications,
-            onChanged: _onChangeNotifications,
-            title: const Text('Enable Notifications'),
-            checkColor: Colors.white,
             activeColor: Theme.of(context).primaryColor,
+            // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
           ),
           ListTile(
             onTap: () async {
@@ -110,6 +126,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
               print(booking);
             },
             title: const Text('When is your birthday?'),
+          ),
+          ListTile(
+            title: const Text(
+              'Log Out (iOS)',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onTap: () => showCupertinoDialog(
+              context: context,
+              builder: (context) => CupertinoAlertDialog(
+                title: const Text('Are you sure?'),
+                content: const Text('Please confirm'),
+                actions: [
+                  CupertinoDialogAction(
+                    onPressed: _cancelLogOut,
+                    child: const Text("No"),
+                  ),
+                  CupertinoDialogAction(
+                    onPressed: _logOut,
+                    isDestructiveAction: true,
+                    child: const Text("Yes"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text(
+              'Log Out (Android)',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onTap: () => showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                icon: const FaIcon(FontAwesomeIcons.faceSadTear),
+                title: const Text(
+                  'Are you sure?',
+                  textAlign: TextAlign.left,
+                ),
+                content: const Text('Please confirm'),
+                actions: [
+                  TextButton(
+                    onPressed: _cancelLogOut,
+                    child: const Text('No'),
+                  ),
+                  TextButton(
+                    onPressed: _logOut,
+                    child: const Text(
+                      'Yes',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
           const AboutListTile(
             // AboutListTile : ListTile -> onTap -> showAboutDialog() 자동 적용된 것

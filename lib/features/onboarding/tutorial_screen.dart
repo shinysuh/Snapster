@@ -56,7 +56,10 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onTapEnterTheApp() {
-    redirectToScreenAndRemovePreviousRoutes(context, const MainNavigationScreen());
+    redirectToScreenAndRemovePreviousRoutes(
+      context: context,
+      targetScreen: const MainNavigationScreen(),
+    );
   }
 
   @override
