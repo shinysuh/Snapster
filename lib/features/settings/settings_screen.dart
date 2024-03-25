@@ -1,7 +1,22 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class SettingsScreen extends StatelessWidget {
+class SettingsScreen extends StatefulWidget {
   const SettingsScreen({super.key});
+
+  @override
+  State<SettingsScreen> createState() => _SettingsScreenState();
+}
+
+class _SettingsScreenState extends State<SettingsScreen> {
+  bool _notifications = false;
+
+  void _onChangeNotifications(bool? newValue) {
+    if (newValue == null) return;
+    setState(() {
+      _notifications = newValue;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +26,57 @@ class SettingsScreen extends StatelessWidget {
       ),
       body: ListView(
         children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CupertinoSwitch(
+                value: _notifications,
+                onChanged: _onChangeNotifications,
+                activeColor: const Color(0xff75B1DF),
+              ),
+              Switch(
+                value: _notifications,
+                onChanged: _onChangeNotifications,
+                activeColor: Colors.deepPurple,
+                activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+              ),
+              // Switch.adaptive 형태 => iOS (CupertinoSwitch) / 다른 플랫폼 (기본 switch)
+              Switch.adaptive(
+                value: _notifications,
+                onChanged: _onChangeNotifications,
+                activeColor: Colors.red,
+                activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+              ),
+              Checkbox(
+                value: _notifications,
+                onChanged: _onChangeNotifications,
+                checkColor: Colors.white,
+                activeColor: const Color(0xffE694B0),
+              ),
+            ],
+          ),
+          SwitchListTile(
+            value: _notifications,
+            onChanged: _onChangeNotifications,
+            title: const Text('Enable Notifications'),
+            activeColor: const Color(0xff267428),
+            activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+          ),
+          // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
+          SwitchListTile.adaptive(
+            value: _notifications,
+            onChanged: _onChangeNotifications,
+            title: const Text('Enable Notifications'),
+            activeColor: const Color(0xffFA8857),
+            activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+          ),
+          CheckboxListTile(
+            value: _notifications,
+            onChanged: _onChangeNotifications,
+            title: const Text('Enable Notifications'),
+            checkColor: Colors.white,
+            activeColor: Theme.of(context).primaryColor,
+          ),
           ListTile(
             onTap: () async {
               final date = await showDatePicker(
