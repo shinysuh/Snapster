@@ -187,6 +187,61 @@ class _SettingsScreenState extends State<SettingsScreen> {
               ),
             ),
           ),
+          ListTile(
+            title: const Text(
+              'Log Out (iOS / Bottom Dialog)',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onTap: () => showCupertinoModalPopup(
+              context: context,
+              builder: (context) => CupertinoAlertDialog(
+                title: const Text('Are you sure?'),
+                content: const Text('Please confirm'),
+                actions: [
+                  CupertinoDialogAction(
+                    onPressed: _cancelLogOut,
+                    child: const Text("No"),
+                  ),
+                  CupertinoDialogAction(
+                    onPressed: _logOut,
+                    isDestructiveAction: true,
+                    child: const Text("Yes"),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          ListTile(
+            title: const Text(
+              'Log Out (iOS / Bottom Action Sheet)',
+              style: TextStyle(
+                color: Colors.red,
+              ),
+            ),
+            onTap: () => showCupertinoModalPopup(
+              context: context,
+              builder: (context) => CupertinoActionSheet(
+                title: const Text(
+                  'Are you sure?',
+                ),
+                message: const Text('Please confirm'),
+                actions: [
+                  CupertinoActionSheetAction(
+                    onPressed: _cancelLogOut,
+                    isDefaultAction: true,
+                    child: const Text('No'),
+                  ),
+                  CupertinoActionSheetAction(
+                    onPressed: _logOut,
+                    isDestructiveAction: true,
+                    child: const Text('Yes'),
+                  ),
+                ],
+              ),
+            ),
+          ),
           const AboutListTile(
             // AboutListTile : ListTile -> onTap -> showAboutDialog() 자동 적용된 것
             applicationVersion: 'version 2.0',
