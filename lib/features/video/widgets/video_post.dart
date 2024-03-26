@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -39,6 +40,7 @@ class _VideoPostState extends State<VideoPost>
 
   bool _isPaused = false;
   bool _isLiked = false;
+  bool _isMuted = false;
 
   @override
   void initState() {
@@ -79,6 +81,14 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
+    // web 일 경우
+    if (kIsWeb) {
+      // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
+      // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
+      _videoPlayerController.setVolume(0);
+      _isMuted = true;
+    }
+
     setState(() {
       _isPaused = false;
     });
@@ -117,6 +127,13 @@ class _VideoPostState extends State<VideoPost>
 
     setState(() {
       _isPaused = !_isPaused;
+    });
+  }
+
+  void _onTapVolume() {
+    setState(() {
+      _isMuted = !_isMuted;
+      _videoPlayerController.setVolume(_isMuted ? 0 : 1);
     });
   }
 
@@ -223,6 +240,17 @@ class _VideoPostState extends State<VideoPost>
             right: 15,
             child: Column(
               children: [
+                GestureDetector(
+                  onTap: _onTapVolume,
+                  child: FaIcon(
+                    _isMuted
+                        ? FontAwesomeIcons.volumeXmark
+                        : FontAwesomeIcons.volumeHigh,
+                    color: Colors.white,
+                    size: Sizes.size24,
+                  ),
+                ),
+                Gaps.v24,
                 CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
@@ -251,7 +279,7 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v24,
-                VideoButton(
+                const VideoButton(
                   icon: FontAwesomeIcons.share,
                   iconColor: Colors.white,
                   text: 'share',
