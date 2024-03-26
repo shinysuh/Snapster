@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
@@ -11,13 +10,16 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPost extends StatefulWidget {
-  final Function onVideoFinished;
+  final Function onVideoFinished, onTapVolume;
   final int pageIndex;
+  final bool isMuted;
 
   const VideoPost({
     super.key,
     required this.onVideoFinished,
     required this.pageIndex,
+    required this.onTapVolume,
+    required this.isMuted,
   });
 
   @override
@@ -40,7 +42,6 @@ class _VideoPostState extends State<VideoPost>
 
   bool _isPaused = false;
   bool _isLiked = false;
-  bool _isMuted = false;
 
   @override
   void initState() {
@@ -81,13 +82,7 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
-    // web 일 경우
-    if (kIsWeb) {
-      // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
-      // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-      _videoPlayerController.setVolume(0);
-      _isMuted = true;
-    }
+    _videoPlayerController.setVolume(widget.isMuted ? 0 : 1);
 
     setState(() {
       _isPaused = false;
@@ -132,8 +127,9 @@ class _VideoPostState extends State<VideoPost>
 
   void _onTapVolume() {
     setState(() {
-      _isMuted = !_isMuted;
-      _videoPlayerController.setVolume(_isMuted ? 0 : 1);
+      var muted = !widget.isMuted;
+      widget.onTapVolume(muted);
+      _videoPlayerController.setVolume(muted ? 0 : 1);
     });
   }
 
@@ -243,7 +239,7 @@ class _VideoPostState extends State<VideoPost>
                 GestureDetector(
                   onTap: _onTapVolume,
                   child: FaIcon(
-                    _isMuted
+                    widget.isMuted
                         ? FontAwesomeIcons.volumeXmark
                         : FontAwesomeIcons.volumeHigh,
                     color: Colors.white,
