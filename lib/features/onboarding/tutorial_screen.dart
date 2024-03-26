@@ -35,7 +35,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
   bool _isFirstPage = true;
 
   void _onPanUpdate(DragUpdateDetails details) {
-    print(details);
+    // print(details);
     // dx => direction to x-axis (x축 방향 - 플러스면 오른쪽으로 드래그(왼쪽으로 swipe))
     setState(() {
       if (details.delta.dx > 0) {

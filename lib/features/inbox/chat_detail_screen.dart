@@ -33,8 +33,6 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   void _onSendMessage() {
-    print(_textEditingController.value.text);
-
     _textEditingController.clear();
     setState(() {
       _isWriting = false;
