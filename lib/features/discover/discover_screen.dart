@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -130,6 +131,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final width = MediaQuery.of(context).size.width;
+
     return DefaultTabController(
       length: tabs.length,
       child: GestureDetector(
@@ -166,9 +169,15 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     ScrollViewKeyboardDismissBehavior.onDrag,
                 itemCount: 20,
                 padding: const EdgeInsets.all(Sizes.size6),
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: 2,
+                  crossAxisCount: width > Breakpoints.md
+                      ? width > Breakpoints.lg
+                          ? width > Breakpoints.xl
+                              ? 5
+                              : 4
+                          : 3
+                      : 2,
                   crossAxisSpacing: Sizes.size8,
                   mainAxisSpacing: Sizes.size20,
                   childAspectRatio: 9 / 20,
