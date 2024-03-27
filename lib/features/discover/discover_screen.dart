@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
@@ -92,7 +93,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 ),
                 prefixIcon: const Padding(
                   padding: EdgeInsets.only(
-                    top: Sizes.size12,
+                    top: kIsWeb ? Sizes.size8 : Sizes.size12,
                     left: Sizes.size8,
                   ),
                   child: FaIcon(
@@ -103,8 +104,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 ),
                 suffixIcon: Padding(
                   padding: const EdgeInsets.only(
-                    top: Sizes.size11,
-                    left: Sizes.size20,
+                    top: kIsWeb ? Sizes.size9 : Sizes.size11,
+                    left: kIsWeb ? Sizes.size10 : Sizes.size20,
                   ),
                   child: GestureDetector(
                     onTap: _onClearSearchKeyword,
@@ -141,7 +142,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             elevation: 1,
-            title: _getSearchPanel(),
+            // ConstrainedBox -> Container 의 경우 그냥 내부에서 constraints 사용 가능
+            title: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxWidth: Breakpoints.sm,
+              ),
+              child: _getSearchPanel(),
+            ),
             bottom: TabBar(
               onTap: (value) => onTapOutsideAndDismissKeyboard(context),
               isScrollable: true,
@@ -185,67 +192,71 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                 // Image.asset(url) 로 asset 폴더 내 이미지 fetch
                 // Image.network(url) 로 네트워크 상 이미지 fetch
                 // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                itemBuilder: (context, index) => Column(
-                  children: [
-                    Container(
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(Sizes.size4),
+                itemBuilder: (context, index) => LayoutBuilder(
+                  builder: (context, constraints) => Column(
+                    children: [
+                      Container(
+                        clipBehavior: Clip.hardEdge,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(Sizes.size4),
+                        ),
+                        child: AspectRatio(
+                          aspectRatio: 9 / 16,
+                          child: FadeInImage.assetNetwork(
+                              fit: BoxFit.cover,
+                              placeholder: imageUrls[0],
+                              image:
+                                  "https://media.istockphoto.com/id/477057828/photo/blue-sky-white-cloud.jpg?s=612x612&w=0&k=20&c=GEjySNaROrUD7TJUqoXEiBDI9yMmr2hUviSOox4SDlU="),
+                        ),
                       ),
-                      child: AspectRatio(
-                        aspectRatio: 9 / 16,
-                        child: FadeInImage.assetNetwork(
-                            fit: BoxFit.cover,
-                            placeholder: imageUrls[0],
-                            image:
-                                "https://media.istockphoto.com/id/477057828/photo/blue-sky-white-cloud.jpg?s=612x612&w=0&k=20&c=GEjySNaROrUD7TJUqoXEiBDI9yMmr2hUviSOox4SDlU="),
+                      Gaps.v10,
+                      Text(
+                        "${constraints.maxWidth} This is a very long caption for my tiktok that I'm uploading just for now",
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          fontSize: Sizes.size18,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
-                    ),
-                    Gaps.v10,
-                    const Text(
-                      "This is a very long caption for my tiktok that I'm uploading just for now",
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: TextStyle(
-                        fontSize: Sizes.size18,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Gaps.v8,
-                    DefaultTextStyle(
-                      style: TextStyle(
-                        color: Colors.grey.shade600,
-                        fontSize: Sizes.size14,
-                        fontWeight: FontWeight.w500,
-                      ),
-                      child: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: Sizes.size12,
-                            backgroundImage: profileImage,
-                          ),
-                          Gaps.h4,
-                          const Expanded(
-                            child: Text(
-                              'My Avatar is going to be very long',
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                          Gaps.h4,
-                          FaIcon(
-                            FontAwesomeIcons.heart,
-                            size: Sizes.size14,
+                      Gaps.v8,
+                      if (constraints.maxWidth < 200 ||
+                          constraints.maxWidth > 260)
+                        DefaultTextStyle(
+                          style: TextStyle(
                             color: Colors.grey.shade600,
+                            fontSize: Sizes.size14,
+                            fontWeight: FontWeight.w500,
                           ),
-                          Gaps.h2,
-                          const Text(
-                            '5.2K',
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: Sizes.size12,
+                                backgroundImage: profileImage,
+                              ),
+                              Gaps.h4,
+                              const Expanded(
+                                child: Text(
+                                  'My Avatar is going to be very long',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
+                              Gaps.h4,
+                              FaIcon(
+                                FontAwesomeIcons.heart,
+                                size: Sizes.size14,
+                                color: Colors.grey.shade600,
+                              ),
+                              Gaps.h2,
+                              const Text(
+                                '5.2K',
+                              )
+                            ],
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
               for (var tab in tabs.skip(1))
