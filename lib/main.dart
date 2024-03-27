@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -12,9 +10,7 @@ void main() async {
     DeviceOrientation.portraitUp,
   ]);
 
-  SystemChrome.setSystemUIOverlayStyle(
-    SystemUiOverlayStyle.light
-  );
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
   runApp(const TikTokApp());
 }
@@ -53,8 +49,39 @@ class TikTokApp extends StatelessWidget {
         //   surfaceTintColor: Colors.grey.shade50,
         // ),
       ),
-      home: const MainNavigationScreen(),
+      home: const LayoutBuilderCodeLab(),
+      // home: const MainNavigationScreen(),
       // home: const SignUpScreen(),
+    );
+  }
+}
+
+class LayoutBuilderCodeLab extends StatelessWidget {
+  const LayoutBuilderCodeLab({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: SizedBox(
+        width: size.width / 2,
+        child: LayoutBuilder(
+          builder: (context, constraints) => Container(
+            width: constraints.maxWidth,
+            height: constraints.maxHeight,
+            color: Colors.teal,
+            child: Center(
+              child: Text(
+                '${size.width} / ${constraints.maxWidth}',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 98,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
     );
   }
 }
