@@ -212,11 +212,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
     var isVertical = width < Breakpoints.md;
-    // var colCount = isVertical
-    //     ? 3
-    //     : width < Breakpoints.lg
-    //         ? 4
-    //         : 5;
+    var colCount = isVertical
+        ? 3
+        : width < Breakpoints.lg
+            ? 4
+            : 5;
 
     return SafeArea(
       child: DefaultTabController(
@@ -284,7 +284,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: const EdgeInsets.only(top: Sizes.size5),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: 3,
+                  crossAxisCount: colCount,
                   crossAxisSpacing: Sizes.size2,
                   mainAxisSpacing: Sizes.size2,
                   childAspectRatio: _videoRatio,
@@ -339,7 +339,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 padding: const EdgeInsets.only(top: Sizes.size5),
                 gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                   // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: 3,
+                  crossAxisCount: colCount,
                   crossAxisSpacing: Sizes.size2,
                   mainAxisSpacing: Sizes.size2,
                   childAspectRatio: _videoRatio,
