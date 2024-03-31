@@ -132,8 +132,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final width = MediaQuery.of(context).size.width;
-
     return DefaultTabController(
       length: tabs.length,
       child: GestureDetector(
@@ -168,107 +166,112 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               ],
             ),
           ),
-          body: TabBarView(
-            children: [
-              GridView.builder(
-                // 드래그 시에 keyboard dismiss
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                itemCount: 20,
-                padding: const EdgeInsets.all(Sizes.size6),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: width > Breakpoints.md
-                      ? width > Breakpoints.lg
-                          ? width > Breakpoints.xl
-                              ? 5
-                              : 4
-                          : 3
-                      : 2,
-                  crossAxisSpacing: Sizes.size8,
-                  mainAxisSpacing: Sizes.size20,
-                  childAspectRatio: 9 / 20,
-                ),
-                // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                // Image.network(url) 로 네트워크 상 이미지 fetch
-                // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                itemBuilder: (context, index) => LayoutBuilder(
-                  builder: (context, constraints) => Column(
-                    children: [
-                      Container(
-                        clipBehavior: Clip.hardEdge,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(Sizes.size4),
-                        ),
-                        child: AspectRatio(
-                          aspectRatio: 9 / 16,
-                          child: FadeInImage.assetNetwork(
-                              fit: BoxFit.cover,
-                              placeholder: imageUrls[0],
-                              image:
-                                  "https://media.istockphoto.com/id/477057828/photo/blue-sky-white-cloud.jpg?s=612x612&w=0&k=20&c=GEjySNaROrUD7TJUqoXEiBDI9yMmr2hUviSOox4SDlU="),
-                        ),
-                      ),
-                      Gaps.v10,
-                      const Text(
-                        "This is a very long caption for my tiktok that I'm uploading just for now",
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          fontSize: Sizes.size18,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      Gaps.v8,
-                      if (constraints.maxWidth < 200 ||
-                          constraints.maxWidth > 260)
-                        DefaultTextStyle(
-                          style: TextStyle(
-                            color: Colors.grey.shade600,
-                            fontSize: Sizes.size14,
-                            fontWeight: FontWeight.w500,
+          body: LayoutBuilder(
+            builder: (context, constraints) {
+              // var width = MediaQuery.of(context).size.width;
+              var width = constraints.maxWidth;
+              var colCount = width < Breakpoints.sm
+                  ? 2
+                  : width < Breakpoints.md
+                      ? 3
+                      : 4;
+              return TabBarView(
+                children: [
+                  GridView.builder(
+                    // 드래그 시에 keyboard dismiss
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    itemCount: 20,
+                    padding: const EdgeInsets.all(Sizes.size6),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      // crossAxisCount => grid 의 컬럼 개수
+                      crossAxisCount: colCount,
+                      crossAxisSpacing: Sizes.size8,
+                      mainAxisSpacing: Sizes.size20,
+                      childAspectRatio: 9 / 22,
+                    ),
+                    // Image.asset(url) 로 asset 폴더 내 이미지 fetch
+                    // Image.network(url) 로 네트워크 상 이미지 fetch
+                    // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
+                    itemBuilder: (context, index) => LayoutBuilder(
+                      builder: (context, constraints) => Column(
+                        children: [
+                          Container(
+                            clipBehavior: Clip.hardEdge,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(Sizes.size4),
+                            ),
+                            child: AspectRatio(
+                              aspectRatio: 9 / 16,
+                              child: FadeInImage.assetNetwork(
+                                  fit: BoxFit.cover,
+                                  placeholder: imageUrls[0],
+                                  image:
+                                      "https://media.istockphoto.com/id/477057828/photo/blue-sky-white-cloud.jpg?s=612x612&w=0&k=20&c=GEjySNaROrUD7TJUqoXEiBDI9yMmr2hUviSOox4SDlU="),
+                            ),
                           ),
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: Sizes.size12,
-                                backgroundImage: profileImage,
-                              ),
-                              Gaps.h4,
-                              const Expanded(
-                                child: Text(
-                                  'My Avatar is going to be very long',
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              Gaps.h4,
-                              FaIcon(
-                                FontAwesomeIcons.heart,
-                                size: Sizes.size14,
+                          Gaps.v10,
+                          const Text(
+                            "This is a very long caption for my tiktok that I'm uploading just for now",
+                            maxLines: 2,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontSize: Sizes.size18,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          Gaps.v8,
+                          if (constraints.maxWidth < 200 ||
+                              constraints.maxWidth > 230)
+                            DefaultTextStyle(
+                              style: TextStyle(
                                 color: Colors.grey.shade600,
+                                fontSize: Sizes.size14,
+                                fontWeight: FontWeight.w500,
                               ),
-                              Gaps.h2,
-                              const Text(
-                                '5.2K',
-                              )
-                            ],
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
-              ),
-              for (var tab in tabs.skip(1))
-                Center(
-                  child: Text(
-                    tab,
-                    style: const TextStyle(
-                      fontSize: Sizes.size28,
+                              child: Row(
+                                children: [
+                                  CircleAvatar(
+                                    radius: Sizes.size12,
+                                    backgroundImage: profileImage,
+                                  ),
+                                  Gaps.h4,
+                                  const Expanded(
+                                    child: Text(
+                                      'My Avatar is going to be very long',
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Gaps.h4,
+                                  FaIcon(
+                                    FontAwesomeIcons.heart,
+                                    size: Sizes.size14,
+                                    color: Colors.grey.shade600,
+                                  ),
+                                  Gaps.h2,
+                                  const Text(
+                                    '5.2K',
+                                  )
+                                ],
+                              ),
+                            ),
+                        ],
+                      ),
                     ),
                   ),
-                ),
-            ],
+                  for (var tab in tabs.skip(1))
+                    Center(
+                      child: Text(
+                        tab,
+                        style: const TextStyle(
+                          fontSize: Sizes.size28,
+                        ),
+                      ),
+                    ),
+                ],
+              );
+            },
           ),
         ),
       ),

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatsScreen extends StatefulWidget {
   const ChatsScreen({super.key});
@@ -83,34 +85,37 @@ class _ChatsScreenState extends State<ChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 1,
-        title: const Text('Direct messages'),
-        actions: [
-          IconButton(
-            onPressed: _addItem,
-            icon: const FaIcon(
-              FontAwesomeIcons.plus,
+    return RegulatedMaxWidth(
+      maxWidth: Breakpoints.sm,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 1,
+          title: const Text('Direct messages'),
+          actions: [
+            IconButton(
+              onPressed: _addItem,
+              icon: const FaIcon(
+                FontAwesomeIcons.plus,
+              ),
             ),
-          ),
-        ],
-      ),
-      body: AnimatedList(
-        key: _key,
-        padding: const EdgeInsets.symmetric(
-          vertical: Sizes.size10,
+          ],
         ),
-        itemBuilder: (context, index, animation) {
-          return FadeTransition(
-            key: UniqueKey(),
-            opacity: animation,
-            child: SizeTransition(
-              sizeFactor: animation,
-              child: _getListTile(index),
-            ),
-          );
-        },
+        body: AnimatedList(
+          key: _key,
+          padding: const EdgeInsets.symmetric(
+            vertical: Sizes.size10,
+          ),
+          itemBuilder: (context, index, animation) {
+            return FadeTransition(
+              key: UniqueKey(),
+              opacity: animation,
+              child: SizeTransition(
+                sizeFactor: animation,
+                child: _getListTile(index),
+              ),
+            );
+          },
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/discover/discover_screen.dart';
@@ -9,6 +10,7 @@ import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart'
 import 'package:tiktok_clone/features/user/user_profile_screen.dart';
 import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   const MainNavigationScreen({super.key});
@@ -19,7 +21,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isPostVideoClicked = false;
-  int _selectedIndex = 1;
+  int _selectedIndex = 4;
 
   void _onTapNavigationItem(int index) {
     setState(() {
@@ -72,19 +74,29 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
           Offstage(
             offstage: _isPageHidden(0),
-            child: VideoTimelineScreen(),
+            child: RegulatedMaxWidth(
+              maxWidth: Breakpoints.sm,
+              child: VideoTimelineScreen(),
+            ),
           ),
           Offstage(
             offstage: _isPageHidden(1),
-            child: DiscoverScreen(),
+            child: RegulatedMaxWidth(
+              child: DiscoverScreen(),
+            ),
           ),
           Offstage(
             offstage: _isPageHidden(3),
-            child: InboxScreen(),
+            child: RegulatedMaxWidth(
+              maxWidth: Breakpoints.sm,
+              child: InboxScreen(),
+            ),
           ),
           Offstage(
             offstage: _isPageHidden(4),
-            child: UserProfileScreen(),
+            child: RegulatedMaxWidth(
+              child: UserProfileScreen(),
+            ),
           ),
         ],
       ),

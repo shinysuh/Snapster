@@ -29,7 +29,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _getUserPic(bool isHorizontal) {
+
+  Widget _getUserPic(bool isVertical) {
     return Column(
       children: [
         CircleAvatar(
@@ -210,180 +211,184 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    var isVertical = width < Breakpoints.md;
-    var colCount = isVertical
-        ? 3
-        : width < Breakpoints.lg
-            ? 4
-            : 5;
-
     return SafeArea(
-      child: DefaultTabController(
-        length: 2,
-        /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-        child: NestedScrollView(
-          headerSliverBuilder: (context, innerBoxIsScrolled) => [
-            SliverAppBar(
-              centerTitle: true,
-              title: Text(_username),
-              actions: [
-                IconButton(
-                  onPressed: () {},
-                  icon: const FaIcon(
-                    FontAwesomeIcons.bell,
-                    size: Sizes.size20,
-                  ),
+      child: LayoutBuilder(
+        builder: (context, constraints) {
+          // var width = MediaQuery.of(context).size.width;
+          var width = constraints.maxWidth;
+          var isVertical = width < Breakpoints.md;
+          var colCount = isVertical
+              ? 3
+              : width < Breakpoints.lg
+                  ? 4
+                  : 5;
+          return DefaultTabController(
+            length: 2,
+            /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+            child: NestedScrollView(
+              headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                SliverAppBar(
+                  centerTitle: true,
+                  title: Text(_username),
+                  actions: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const FaIcon(
+                        FontAwesomeIcons.bell,
+                        size: Sizes.size20,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: _onTapGear,
+                      icon: const FaIcon(
+                        FontAwesomeIcons.gear,
+                        size: Sizes.size20,
+                      ),
+                    ),
+                  ],
                 ),
-                IconButton(
-                  onPressed: _onTapGear,
-                  icon: const FaIcon(
-                    FontAwesomeIcons.gear,
-                    size: Sizes.size20,
-                  ),
-                ),
-              ],
-            ),
-            SliverToBoxAdapter(
-              child: isVertical
-                  ? Column(
-                      children: [
-                        _getUserPic(isVertical),
-                        Gaps.v24,
-                        ..._getUserInfo(),
-                        Gaps.v20,
-                      ],
-                    )
-                  : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _getUserPic(isVertical),
-                        Column(
+                SliverToBoxAdapter(
+                  child: isVertical
+                      ? Column(
                           children: [
+                            _getUserPic(isVertical),
+                            Gaps.v24,
                             ..._getUserInfo(),
                             Gaps.v20,
                           ],
-                        ),
-                      ],
-                    ),
-            ),
-            SliverPersistentHeader(
-              pinned: true,
-              floating: true,
-              delegate: UserProfileTabBar(),
-            ),
-          ],
-          body: TabBarView(
-            children: [
-              GridView.builder(
-                // 드래그 시에 keyboard dismiss
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                itemCount: 20,
-                padding: const EdgeInsets.only(top: Sizes.size5),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: colCount,
-                  crossAxisSpacing: Sizes.size2,
-                  mainAxisSpacing: Sizes.size2,
-                  childAspectRatio: _videoRatio,
-                ),
-                // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                // Image.network(url) 로 네트워크 상 이미지 fetch
-                // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                itemBuilder: (context, index) => Stack(
-                  children: [
-                    Column(
-                      children: [
-                        AspectRatio(
-                          aspectRatio: _videoRatio,
-                          child: FadeInImage.assetNetwork(
-                            fit: BoxFit.cover,
-                            placeholder: 'assets/images/1.jpeg',
-                            image:
-                                "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
-                          ),
-                        ),
-                      ],
-                    ),
-                    const Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.play_arrow_outlined,
-                            color: Colors.white,
-                            size: Sizes.size26,
-                          ),
-                          Text(
-                            '2.6K',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Sizes.size14,
-                              fontWeight: FontWeight.w600,
+                        )
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            _getUserPic(isVertical),
+                            Column(
+                              children: [
+                                ..._getUserInfo(),
+                                Gaps.v20,
+                              ],
                             ),
-                          ),
-                        ],
-                      ),
+                          ],
+                        ),
+                ),
+                SliverPersistentHeader(
+                  pinned: true,
+                  floating: true,
+                  delegate: UserProfileTabBar(),
+                ),
+              ],
+              body: TabBarView(
+                children: [
+                  GridView.builder(
+                    // 드래그 시에 keyboard dismiss
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    itemCount: 20,
+                    padding: const EdgeInsets.only(top: Sizes.size5),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      // crossAxisCount => grid 의 컬럼 개수
+                      crossAxisCount: colCount,
+                      crossAxisSpacing: Sizes.size2,
+                      mainAxisSpacing: Sizes.size2,
+                      childAspectRatio: _videoRatio,
                     ),
-                  ],
-                ),
-              ),
-              GridView.builder(
-                // 드래그 시에 keyboard dismiss
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                itemCount: 20,
-                padding: const EdgeInsets.only(top: Sizes.size5),
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  // crossAxisCount => grid 의 컬럼 개수
-                  crossAxisCount: colCount,
-                  crossAxisSpacing: Sizes.size2,
-                  mainAxisSpacing: Sizes.size2,
-                  childAspectRatio: _videoRatio,
-                ),
-                itemBuilder: (context, index) => Stack(
-                  children: [
-                    Column(
+                    // Image.asset(url) 로 asset 폴더 내 이미지 fetch
+                    // Image.network(url) 로 네트워크 상 이미지 fetch
+                    // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
+                    itemBuilder: (context, index) => Stack(
                       children: [
-                        AspectRatio(
-                          aspectRatio: _videoRatio,
-                          child: const Image(
-                            fit: BoxFit.cover,
-                            image: AssetImage('assets/images/2.jpeg'),
+                        Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: _videoRatio,
+                              child: FadeInImage.assetNetwork(
+                                fit: BoxFit.cover,
+                                placeholder: 'assets/images/1.jpeg',
+                                image:
+                                    "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.play_arrow_outlined,
+                                color: Colors.white,
+                                size: Sizes.size26,
+                              ),
+                              Text(
+                                '2.6K',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: Sizes.size14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
                     ),
-                    const Positioned(
-                      bottom: 0,
-                      left: 0,
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.play_arrow_outlined,
-                            color: Colors.white,
-                            size: Sizes.size26,
-                          ),
-                          Text(
-                            '36.1K',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: Sizes.size14,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                  ),
+                  GridView.builder(
+                    // 드래그 시에 keyboard dismiss
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
+                    itemCount: 20,
+                    padding: const EdgeInsets.only(top: Sizes.size5),
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      // crossAxisCount => grid 의 컬럼 개수
+                      crossAxisCount: colCount,
+                      crossAxisSpacing: Sizes.size2,
+                      mainAxisSpacing: Sizes.size2,
+                      childAspectRatio: _videoRatio,
                     ),
-                  ],
-                ),
+                    itemBuilder: (context, index) => Stack(
+                      children: [
+                        Column(
+                          children: [
+                            AspectRatio(
+                              aspectRatio: _videoRatio,
+                              child: const Image(
+                                fit: BoxFit.cover,
+                                image: AssetImage('assets/images/2.jpeg'),
+                              ),
+                            ),
+                          ],
+                        ),
+                        const Positioned(
+                          bottom: 0,
+                          left: 0,
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.play_arrow_outlined,
+                                color: Colors.white,
+                                size: Sizes.size26,
+                              ),
+                              Text(
+                                '36.1K',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: Sizes.size14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
