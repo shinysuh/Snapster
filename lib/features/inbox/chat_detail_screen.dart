@@ -41,6 +41,43 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     });
   }
 
+  Widget _getMessageField() {
+    return TextField(
+      controller: _textEditingController,
+      onChanged: (message) => _onChangeMessage(message),
+      onSubmitted: (message) => _onSendMessage(),
+      expands: true,
+      minLines: null,
+      maxLines: null,
+      textInputAction: TextInputAction.newline,
+      cursorColor: Theme.of(context).primaryColor,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: Colors.white,
+        hintText: 'Send a message...',
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(Sizes.size20),
+            topRight: Radius.circular(Sizes.size20),
+            bottomLeft: Radius.circular(Sizes.size20),
+          ),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: Sizes.size10,
+        ),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.all(Sizes.size12),
+          child: FaIcon(
+            FontAwesomeIcons.faceLaugh,
+            color: Colors.grey.shade900,
+            size: Sizes.size22,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return RegulatedMaxWidth(
@@ -164,74 +201,56 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       vertical: Sizes.size4,
                       horizontal: Sizes.size20,
                     ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: SizedBox(
-                            height: Sizes.size48,
-                            child: TextField(
-                              controller: _textEditingController,
-                              onChanged: (message) => _onChangeMessage(message),
-                              onSubmitted: (message) => _onSendMessage(),
-                              expands: true,
-                              minLines: null,
-                              maxLines: null,
-                              textInputAction: TextInputAction.newline,
-                              cursorColor: Theme.of(context).primaryColor,
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.white,
-                                hintText: 'Send a message...',
-                                border: const OutlineInputBorder(
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(Sizes.size20),
-                                    topRight: Radius.circular(Sizes.size20),
-                                    bottomLeft: Radius.circular(Sizes.size20),
+                    child: LayoutBuilder(
+                      builder: (context, constraints) {
+                        var isWiderThanSm = constraints.maxWidth >
+                            Breakpoints.sm - Sizes.size28;
+                        return Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            if (isWiderThanSm)
+                              Container(
+                                height: Sizes.size48,
+                                constraints: const BoxConstraints(
+                                  maxWidth: Breakpoints.sm - Sizes.size80,
+                                ),
+                                child: _getMessageField(),
+                              ),
+                            if (!isWiderThanSm)
+                              Expanded(
+                                child: SizedBox(
+                                    height: Sizes.size48,
+                                    child: _getMessageField()),
+                              ),
+                            Gaps.h12,
+                            GestureDetector(
+                              onTap: _onSendMessage,
+                              child: Container(
+                                width: Sizes.size40,
+                                height: Sizes.size40,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: _isWriting
+                                      ? Colors.grey.shade200
+                                      : Colors.grey.shade300,
+                                ),
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: Sizes.size8,
+                                    horizontal: Sizes.size8,
                                   ),
-                                  borderSide: BorderSide.none,
-                                ),
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: Sizes.size10,
-                                ),
-                                suffixIcon: Padding(
-                                  padding: const EdgeInsets.all(Sizes.size12),
                                   child: FaIcon(
-                                    FontAwesomeIcons.faceLaugh,
-                                    color: Colors.grey.shade900,
+                                    FontAwesomeIcons.solidPaperPlane,
                                     size: Sizes.size22,
+                                    color:
+                                        _isWriting ? Colors.blue : Colors.white,
                                   ),
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                        Gaps.h12,
-                        GestureDetector(
-                          onTap: _onSendMessage,
-                          child: Container(
-                            width: Sizes.size40,
-                            height: Sizes.size40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: _isWriting
-                                  ? Colors.grey.shade200
-                                  : Colors.grey.shade300,
-                            ),
-                            child: Padding(
-                              padding: const EdgeInsets.symmetric(
-                                vertical: Sizes.size8,
-                                horizontal: Sizes.size8,
-                              ),
-                              child: FaIcon(
-                                FontAwesomeIcons.solidPaperPlane,
-                                size: Sizes.size22,
-                                color: _isWriting ? Colors.blue : Colors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
+                          ],
+                        );
+                      },
                     ),
                   ),
                 ),
