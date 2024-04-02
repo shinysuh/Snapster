@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
+import 'package:tiktok_clone/features/user/widgets/profile_button.dart';
 import 'package:tiktok_clone/features/user/widgets/user_profile_tab_bar.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
@@ -129,41 +130,18 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           ),
         ),
         Gaps.h6,
-        Container(
-          width: Sizes.size44,
-          height: Sizes.size44 + Sizes.size2,
+        ProfileButton(
+          icon: FontAwesomeIcons.youtube,
+          iconSize: Sizes.size20 + Sizes.size1,
           padding: const EdgeInsets.all(Sizes.size10),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(Sizes.size2),
-            border: Border.all(
-              color: Colors.grey.shade300,
-            ),
-          ),
-          child: const Center(
-            child: FaIcon(
-              FontAwesomeIcons.youtube,
-              size: Sizes.size20 + Sizes.size1,
-            ),
-          ),
+          onTap: () {},
         ),
         Gaps.h6,
-        Container(
-          width: Sizes.size44,
-          height: Sizes.size44 + Sizes.size2,
+        ProfileButton(
+          icon: FontAwesomeIcons.sortDown,
+          iconSize: Sizes.size14,
           padding: const EdgeInsets.only(bottom: Sizes.size8),
-          decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(Sizes.size2),
-              border: Border.all(
-                color: Colors.grey.shade300,
-              )),
-          child: const Center(
-            child: FaIcon(
-              FontAwesomeIcons.sortDown,
-              size: Sizes.size14,
-            ),
-          ),
+          onTap: () {},
         ),
       ],
     );

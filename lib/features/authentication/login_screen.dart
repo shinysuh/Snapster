@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -41,15 +42,26 @@ class LoginScreen extends StatelessWidget {
                       fontSize: Sizes.size26,
                       fontWeight: FontWeight.w700,
                     ),
+                    // style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+                    //   fontWeight: FontWeight.w700,
+                    // ),
+                    // style: GoogleFonts.abrilFatface(
+                    //   textStyle: const TextStyle(
+                    //     fontSize: Sizes.size26,
+                    //     fontWeight: FontWeight.w700,
+                    //   ),
+                    // ),
                   ),
                   Gaps.v20,
-                  const Text(
-                    'Manage your account, check notifications, comment on videos, and more.',
-                    style: TextStyle(
-                      fontSize: Sizes.size16,
-                      color: Colors.black45,
+                  const Opacity(
+                    opacity: 0.7,
+                    child: Text(
+                      'Manage your account, check notifications, comment on videos, and more.',
+                      style: TextStyle(
+                        fontSize: Sizes.size16,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   Gaps.v40,
                   // 세로 방향 (COLUMN)
@@ -93,6 +105,7 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: isDarkMode(context) ? null : Colors.grey.shade50,
           height: 130,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: Sizes.size32),

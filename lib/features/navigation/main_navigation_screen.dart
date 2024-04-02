@@ -10,6 +10,7 @@ import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart'
 import 'package:tiktok_clone/features/user/user_profile_screen.dart';
 import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class MainNavigationScreen extends StatefulWidget {
@@ -58,8 +59,8 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return _selectedIndex != index;
   }
 
-  bool _isHome() {
-    return _selectedIndex == 0;
+  bool _isScreenDark() {
+    return _selectedIndex == 0 || isDarkMode(context);
   }
 
   @override
@@ -67,7 +68,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return Scaffold(
       // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
       resizeToAvoidBottomInset: false,
-      backgroundColor: _isHome() ? Colors.black : Colors.white,
+      backgroundColor: _isScreenDark() ? Colors.black : Colors.white,
       body: Stack(
         children: [
           // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
@@ -101,7 +102,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ],
       ),
       bottomNavigationBar: BottomAppBar(
-        color: _isHome() ? Colors.black : Colors.white,
+        color: _isScreenDark() ? Colors.black : Colors.white,
         child: Padding(
           padding: const EdgeInsets.symmetric(
             vertical: Sizes.size16,
@@ -112,7 +113,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               NavTab(
-                isHome: _isHome(),
+                isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 0,
                 label: 'Home',
                 icon: FontAwesomeIcons.house,
@@ -120,7 +121,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(0),
               ),
               NavTab(
-                isHome: _isHome(),
+                isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 1,
                 label: 'Discover',
                 icon: FontAwesomeIcons.compass,
@@ -140,12 +141,12 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: _onTapPostVideoButton,
                 child: PostVideoButton(
                   isClicked: _isPostVideoClicked,
-                  inverted: !_isHome(),
+                  inverted: !_isScreenDark(),
                 ),
               ),
               Gaps.h24,
               NavTab(
-                isHome: _isHome(),
+                isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 3,
                 label: 'Inbox',
                 icon: FontAwesomeIcons.message,
@@ -153,7 +154,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 onTap: () => _onTapNavigationItem(3),
               ),
               NavTab(
-                isHome: _isHome(),
+                isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 4,
                 label: 'Profile',
                 icon: FontAwesomeIcons.user,

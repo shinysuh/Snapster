@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -16,8 +18,25 @@ void main() async {
   runApp(const TikTokApp());
 }
 
-class TikTokApp extends StatelessWidget {
+class TikTokApp extends StatefulWidget {
   const TikTokApp({super.key});
+
+  @override
+  State<TikTokApp> createState() => _TikTokAppState();
+}
+
+class _TikTokAppState extends State<TikTokApp> {
+  var lightTextTheme = GoogleFonts.itimTextTheme(
+    const TextTheme(
+      headlineLarge: TextStyle(
+        fontWeight: FontWeight.bold,
+        fontSize: 40,
+      ),
+    ),
+  );
+  var darkTextTheme = GoogleFonts.itimTextTheme(
+    ThemeData(brightness: Brightness.dark).textTheme,
+  );
 
   // This widget is the root of your application.
   @override
@@ -31,6 +50,37 @@ class TikTokApp extends StatelessWidget {
         useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.light,
+        // textTheme: lightTextTheme,
+        textTheme: Typography.blackMountainView,
+        /* material design 2 -> the type system 에서 원하는 폰트 코드 사용 가능 */
+        // textTheme: TextTheme(
+        //   displayLarge: GoogleFonts.openSans(
+        //       fontSize: 96, fontWeight: FontWeight.w300, letterSpacing: -1.5),
+        //   displayMedium: GoogleFonts.openSans(
+        //       fontSize: 60, fontWeight: FontWeight.w300, letterSpacing: -0.5),
+        //   displaySmall:
+        //       GoogleFonts.openSans(fontSize: 48, fontWeight: FontWeight.w400),
+        //   headlineMedium: GoogleFonts.openSans(
+        //       fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+        //   headlineSmall:
+        //       GoogleFonts.openSans(fontSize: 24, fontWeight: FontWeight.w400),
+        //   titleLarge: GoogleFonts.openSans(
+        //       fontSize: 20, fontWeight: FontWeight.w500, letterSpacing: 0.15),
+        //   titleMedium: GoogleFonts.openSans(
+        //       fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
+        //   titleSmall: GoogleFonts.openSans(
+        //       fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
+        //   bodyLarge: GoogleFonts.roboto(
+        //       fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
+        //   bodyMedium: GoogleFonts.roboto(
+        //       fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
+        //   labelLarge: GoogleFonts.roboto(
+        //       fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
+        //   bodySmall: GoogleFonts.roboto(
+        //       fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
+        //   labelSmall: GoogleFonts.roboto(
+        //       fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
+        // ),
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFFE9435A),
           selectionColor: Color(0xFFFAA9B3),
@@ -57,6 +107,8 @@ class TikTokApp extends StatelessWidget {
           useMaterial3: false,
           primaryColor: const Color(0xFFE9435A),
           brightness: Brightness.dark,
+          // textTheme: darkTextTheme,
+          textTheme: Typography.whiteMountainView,
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color(0xFFE9435A),
             selectionColor: Color(0xFFFAA9B3),
@@ -64,11 +116,11 @@ class TikTokApp extends StatelessWidget {
           scaffoldBackgroundColor: Colors.black,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          appBarTheme: const AppBarTheme(
+          appBarTheme: AppBarTheme(
             foregroundColor: Colors.white,
-            backgroundColor: Colors.black,
+            backgroundColor: Colors.grey.shade900,
             elevation: 0,
-            titleTextStyle: TextStyle(
+            titleTextStyle: const TextStyle(
               color: Colors.white,
               fontSize: Sizes.size18,
               fontWeight: FontWeight.w700,
@@ -77,8 +129,8 @@ class TikTokApp extends StatelessWidget {
           bottomAppBarTheme: BottomAppBarTheme(
             color: Colors.grey.shade900,
           )),
-      home: const SignUpScreen(),
-      // home: const MainNavigationScreen(),
+      // home: const SignUpScreen(),
+      home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );
   }

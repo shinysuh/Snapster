@@ -4,6 +4,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/tutorial_page.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 
 enum Direction { right, left }
 
@@ -89,6 +90,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: isDarkMode(context) ? Colors.black : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(Sizes.size24),
             child: AnimatedOpacity(

@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class DiscoverScreen extends StatefulWidget {
   const DiscoverScreen({super.key});
@@ -154,8 +155,8 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.size16,
               ),
-              indicatorColor: Colors.black,
-              labelColor: Colors.black,
+              indicatorColor: isDarkMode(context) ? Colors.white : Colors.black,
+              labelColor: isDarkMode(context) ? Colors.white : Colors.black,
               unselectedLabelColor: Colors.grey.shade500,
               labelStyle: const TextStyle(
                 fontSize: Sizes.size16,
