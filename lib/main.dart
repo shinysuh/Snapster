@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -24,9 +25,12 @@ class TikTokApp extends StatelessWidget {
     return MaterialApp(
       title: 'TikTok Clone',
       debugShowCheckedModeBanner: false,
+      // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
+      themeMode: ThemeMode.system,
       theme: ThemeData(
         useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
+        brightness: Brightness.light,
         textSelectionTheme: const TextSelectionThemeData(
           cursorColor: Color(0xFFE9435A),
           selectionColor: Color(0xFFFAA9B3),
@@ -49,39 +53,63 @@ class TikTokApp extends StatelessWidget {
         //   surfaceTintColor: Colors.grey.shade50,
         // ),
       ),
-      home: const LayoutBuilderCodeLab(),
-      // home: const MainNavigationScreen(),
-      // home: const SignUpScreen(),
-    );
-  }
-}
-
-class LayoutBuilderCodeLab extends StatelessWidget {
-  const LayoutBuilderCodeLab({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    return Scaffold(
-      body: SizedBox(
-        width: size.width / 2,
-        child: LayoutBuilder(
-          builder: (context, constraints) => Container(
-            width: constraints.maxWidth,
-            height: constraints.maxHeight,
-            color: Colors.teal,
-            child: Center(
-              child: Text(
-                '${size.width} / ${constraints.maxWidth}',
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 98,
-                ),
-              ),
+      darkTheme: ThemeData(
+          useMaterial3: false,
+          primaryColor: const Color(0xFFE9435A),
+          brightness: Brightness.dark,
+          textSelectionTheme: const TextSelectionThemeData(
+            cursorColor: Color(0xFFE9435A),
+            selectionColor: Color(0xFFFAA9B3),
+          ),
+          scaffoldBackgroundColor: Colors.black,
+          splashColor: Colors.transparent,
+          highlightColor: Colors.transparent,
+          appBarTheme: const AppBarTheme(
+            foregroundColor: Colors.white,
+            backgroundColor: Colors.black,
+            elevation: 0,
+            titleTextStyle: TextStyle(
+              color: Colors.white,
+              fontSize: Sizes.size18,
+              fontWeight: FontWeight.w700,
             ),
           ),
-        ),
-      ),
+          bottomAppBarTheme: BottomAppBarTheme(
+            color: Colors.grey.shade900,
+          )),
+      home: const SignUpScreen(),
+      // home: const MainNavigationScreen(),
+      // home: const LayoutBuilderCodeLab(),
     );
   }
 }
+
+// class LayoutBuilderCodeLab extends StatelessWidget {
+//   const LayoutBuilderCodeLab({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final size = MediaQuery.of(context).size;
+//     return Scaffold(
+//       body: SizedBox(
+//         width: size.width / 2,
+//         child: LayoutBuilder(
+//           builder: (context, constraints) => Container(
+//             width: constraints.maxWidth,
+//             height: constraints.maxHeight,
+//             color: Colors.teal,
+//             child: Center(
+//               child: Text(
+//                 '${size.width} / ${constraints.maxWidth}',
+//                 style: const TextStyle(
+//                   color: Colors.white,
+//                   fontSize: 98,
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+// }

@@ -29,7 +29,6 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-
   Widget _getUserPic(bool isVertical) {
     return Column(
       children: [

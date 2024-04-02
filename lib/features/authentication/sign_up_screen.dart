@@ -7,6 +7,7 @@ import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class SignUpScreen extends StatelessWidget {
@@ -44,13 +45,18 @@ class SignUpScreen extends StatelessWidget {
                     ),
                   ),
                   Gaps.v20,
-                  const Text(
-                    'Create a profile, follow other accounts, make your own videos, and more.',
-                    style: TextStyle(
-                      fontSize: Sizes.size16,
-                      color: Colors.black45,
+                  const Opacity(
+                    opacity: 0.7,
+                    child: Text(
+                      'Create a profile, follow other accounts, make your own videos, and more.',
+                      style: TextStyle(
+                        fontSize: Sizes.size16,
+                        // color: isDarkMode(context)
+                        //     ? Colors.grey.shade400
+                        //     : Colors.black45,
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    textAlign: TextAlign.center,
                   ),
                   Gaps.v40,
                   // 세로 방향 (COLUMN)
@@ -94,6 +100,7 @@ class SignUpScreen extends StatelessWidget {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: isDarkMode(context) ? null : Colors.grey.shade50,
           height: 130,
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: Sizes.size10),
