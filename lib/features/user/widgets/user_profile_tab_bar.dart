@@ -10,7 +10,7 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
     final isDark = isDarkMode(context);
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? Colors.black : Colors.white,
+        color: Theme.of(context).appBarTheme.backgroundColor,
         border: Border.symmetric(
           horizontal: BorderSide(
             color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
@@ -19,11 +19,10 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
         ),
       ),
       child: TabBar(
-        labelColor: Colors.black,
         labelPadding: const EdgeInsets.symmetric(
           vertical: Sizes.size10,
         ),
-        indicatorColor: isDark ? Colors.white : Colors.black,
+        indicatorColor: Theme.of(context).tabBarTheme.indicatorColor,
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
           Padding(
