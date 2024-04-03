@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatDetailScreen extends StatefulWidget {
@@ -53,8 +54,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       cursorColor: Theme.of(context).primaryColor,
       decoration: InputDecoration(
         filled: true,
-        fillColor: Colors.white,
+        fillColor: isDarkMode(context) ? Colors.grey.shade700 : Colors.white,
         hintText: 'Send a message...',
+        hintStyle: TextStyle(
+          color: isDarkMode(context) ? Colors.grey.shade300 : null,
+        ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.only(
             topLeft: Radius.circular(Sizes.size20),
@@ -70,7 +74,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           padding: const EdgeInsets.all(Sizes.size12),
           child: FaIcon(
             FontAwesomeIcons.faceLaugh,
-            color: Colors.grey.shade900,
+            color: isDarkMode(context)
+                ? Colors.grey.shade300
+                : Colors.grey.shade900,
             size: Sizes.size22,
           ),
         ),
@@ -85,9 +91,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       child: GestureDetector(
         onTap: () => onTapOutsideAndDismissKeyboard(context),
         child: Scaffold(
-          backgroundColor: Colors.grey.shade50,
+          backgroundColor: isDarkMode(context) ? null : Colors.grey.shade50,
           appBar: AppBar(
-            backgroundColor: Colors.grey.shade50,
+            backgroundColor: isDarkMode(context) ? null : Colors.grey.shade50,
             title: ListTile(
               contentPadding: EdgeInsets.zero,
               horizontalTitleGap: Sizes.size8,
@@ -129,19 +135,23 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 ),
               ),
               subtitle: const Text('Active now'),
-              trailing: const Row(
+              trailing: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   FaIcon(
                     FontAwesomeIcons.flag,
                     size: Sizes.size22,
-                    color: Colors.black,
+                    color: isDarkMode(context)
+                        ? Colors.grey.shade400
+                        : Colors.black,
                   ),
                   Gaps.h32,
                   FaIcon(
                     FontAwesomeIcons.ellipsis,
                     size: Sizes.size20,
-                    color: Colors.black,
+                    color: isDarkMode(context)
+                        ? Colors.grey.shade400
+                        : Colors.black,
                   ),
                 ],
               ),
