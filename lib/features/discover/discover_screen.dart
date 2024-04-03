@@ -78,7 +78,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               onSubmitted: _onSubmitSearchKeyword,
               clipBehavior: Clip.hardEdge,
               style: const TextStyle(
-                color: Colors.black,
                 fontSize: Sizes.size18,
               ),
               decoration: InputDecoration(
@@ -88,19 +87,23 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                   borderSide: BorderSide.none,
                 ),
                 filled: true,
-                fillColor: Colors.grey.shade200,
+                fillColor: isDarkMode(context)
+                    ? Colors.grey.shade700
+                    : Colors.grey.shade200,
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: Sizes.size10,
                 ),
-                prefixIcon: const Padding(
-                  padding: EdgeInsets.only(
-                    top: kIsWeb ? Sizes.size8 : Sizes.size12,
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    top: kIsWeb ? Sizes.size8 : Sizes.size11,
                     left: Sizes.size8,
                   ),
                   child: FaIcon(
                     FontAwesomeIcons.magnifyingGlass,
                     size: Sizes.size20,
-                    color: Colors.black,
+                    color: isDarkMode(context)
+                        ? Colors.grey.shade300
+                        : Colors.black,
                   ),
                 ),
                 suffixIcon: Padding(
@@ -113,7 +116,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                     child: FaIcon(
                       FontAwesomeIcons.solidCircleXmark,
                       size: Sizes.size20,
-                      color: Colors.grey.shade600,
+                      color: isDarkMode(context)
+                          ? Colors.grey.shade400
+                          : Colors.grey.shade600,
                     ),
                   ),
                 ),
