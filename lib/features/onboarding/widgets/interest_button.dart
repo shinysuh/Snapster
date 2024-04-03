@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class InterestButton extends StatefulWidget {
   const InterestButton({
@@ -24,6 +25,7 @@ class _InterestButtonState extends State<InterestButton> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return GestureDetector(
       onTap: _onTapButton,
       child: AnimatedContainer(
@@ -33,7 +35,11 @@ class _InterestButtonState extends State<InterestButton> {
           horizontal: Sizes.size20,
         ),
         decoration: BoxDecoration(
-          color: _isSelected ? Theme.of(context).primaryColor : Colors.white,
+          color: _isSelected
+              ? Theme.of(context).primaryColor
+              : isDark
+                  ? Colors.grey.shade700
+                  : Colors.white,
           border: Border.all(
             color: Colors.black.withOpacity(0.07),
           ),
@@ -54,7 +60,11 @@ class _InterestButtonState extends State<InterestButton> {
           style: TextStyle(
             fontSize: Sizes.size16,
             fontWeight: FontWeight.w600,
-            color: _isSelected ? Colors.white : Colors.black87,
+            color: _isSelected
+                ? Colors.white
+                : isDark
+                    ? Colors.white.withOpacity(0.8)
+                    : Colors.black87,
           ),
         ),
       ),

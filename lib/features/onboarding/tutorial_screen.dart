@@ -4,6 +4,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/tutorial_page.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 
 enum Direction { right, left }
 
@@ -35,7 +36,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
   bool _isFirstPage = true;
 
   void _onPanUpdate(DragUpdateDetails details) {
-    print(details);
+    // print(details);
     // dx => direction to x-axis (x축 방향 - 플러스면 오른쪽으로 드래그(왼쪽으로 swipe))
     setState(() {
       if (details.delta.dx > 0) {
@@ -56,7 +57,10 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onTapEnterTheApp() {
-    redirectToScreenAndRemovePreviousRoutes(context, const MainNavigationScreen());
+    redirectToScreenAndRemovePreviousRoutes(
+      context: context,
+      targetScreen: const MainNavigationScreen(),
+    );
   }
 
   @override
@@ -86,6 +90,7 @@ class _TutorialScreenState extends State<TutorialScreen> {
           ),
         ),
         bottomNavigationBar: BottomAppBar(
+          color: isDarkMode(context) ? Colors.black : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(Sizes.size24),
             child: AnimatedOpacity(

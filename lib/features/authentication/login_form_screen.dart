@@ -48,7 +48,10 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save(); // invoke onSaved
-      redirectToScreenAndRemovePreviousRoutes(context, const InterestScreen());
+      redirectToScreenAndRemovePreviousRoutes(
+        context: context,
+        targetScreen: const InterestScreen(),
+      );
     }
   }
 

@@ -35,7 +35,7 @@ class _VideoCaptionState extends State<VideoCaption> {
   }
 
   void _onScrollCaption() {
-    print(_scrollController.offset);
+    // print(_scrollController.offset);
     if (_scrollController.offset > 100) {}
   }
 

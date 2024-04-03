@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/onboarding/tutorial_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/interest_button.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class InterestScreen extends StatefulWidget {
   const InterestScreen({super.key});
@@ -118,8 +119,6 @@ class _InterestScreenState extends State<InterestScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 BottomButton(
-                  buttonColor: Colors.white,
-                  textColor: Colors.black,
                   text: 'Skip',
                   onTap: _onTapNext,
                 ),
@@ -148,13 +147,13 @@ class _InterestScreenState extends State<InterestScreen> {
 class BottomButton extends StatelessWidget {
   const BottomButton({
     super.key,
-    required this.buttonColor,
-    required this.textColor,
+    this.buttonColor,
+    this.textColor,
     required this.text,
     required this.onTap,
   });
 
-  final Color buttonColor, textColor;
+  final Color? buttonColor, textColor;
   final String text;
   final Function onTap;
 
@@ -168,7 +167,8 @@ class BottomButton extends StatelessWidget {
           horizontal: Sizes.size64 + Sizes.size4,
         ),
         decoration: BoxDecoration(
-            color: buttonColor,
+            color: buttonColor ??
+                (isDarkMode(context) ? Colors.grey.shade700 : Colors.white),
             border: Border.all(
               color: Colors.black12,
             )),

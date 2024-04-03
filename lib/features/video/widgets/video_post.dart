@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
+import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/widgets/video_caption.dart';
@@ -9,13 +10,16 @@ import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPost extends StatefulWidget {
-  final Function onVideoFinished;
+  final Function onVideoFinished, onTapVolume;
   final int pageIndex;
+  final bool isMuted;
 
   const VideoPost({
     super.key,
     required this.onVideoFinished,
     required this.pageIndex,
+    required this.onTapVolume,
+    required this.isMuted,
   });
 
   @override
@@ -78,6 +82,8 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
+    _videoPlayerController.setVolume(widget.isMuted ? 0 : 1);
+
     setState(() {
       _isPaused = false;
     });
@@ -92,6 +98,8 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
+    if (!mounted) return;
+
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
@@ -104,8 +112,6 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _togglePause() {
-    if (!mounted) return;
-
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
       _animationController.reverse();
@@ -116,6 +122,14 @@ class _VideoPostState extends State<VideoPost>
 
     setState(() {
       _isPaused = !_isPaused;
+    });
+  }
+
+  void _onTapVolume() {
+    setState(() {
+      var muted = !widget.isMuted;
+      widget.onTapVolume(muted);
+      _videoPlayerController.setVolume(muted ? 0 : 1);
     });
   }
 
@@ -222,13 +236,23 @@ class _VideoPostState extends State<VideoPost>
             right: 15,
             child: Column(
               children: [
-                const CircleAvatar(
+                GestureDetector(
+                  onTap: _onTapVolume,
+                  child: FaIcon(
+                    widget.isMuted
+                        ? FontAwesomeIcons.volumeXmark
+                        : FontAwesomeIcons.volumeHigh,
+                    color: Colors.white,
+                    size: Sizes.size24,
+                  ),
+                ),
+                Gaps.v24,
+                CircleAvatar(
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  foregroundImage: NetworkImage(
-                      'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQIAr03vzZt9XBfML_UrBmXt80NW0YTgnKV1CJo3mm8gw&s'),
-                  child: Text(
+                  foregroundImage: profileImage,
+                  child: const Text(
                     'Jenna',
                   ),
                 ),
@@ -251,7 +275,7 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v24,
-                VideoButton(
+                const VideoButton(
                   icon: FontAwesomeIcons.share,
                   iconColor: Colors.white,
                   text: 'share',

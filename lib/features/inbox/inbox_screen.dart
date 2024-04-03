@@ -3,13 +3,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/activity_screen.dart';
+import 'package:tiktok_clone/features/inbox/chats_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key});
 
-  void _onTapDM() {
-    // redirectToScreen(context: context, targetScreen: targetScreen);
+  void _onTapDM(BuildContext context) {
+    redirectToScreen(context: context, targetScreen: const ChatsScreen());
   }
 
   void _onTapActivity(BuildContext context) {
@@ -20,10 +21,10 @@ class InboxScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Inbox'),
+        title: const Text('Inbox'),
         actions: [
           IconButton(
-              onPressed: _onTapDM,
+              onPressed: () => _onTapDM(context),
               icon: const FaIcon(FontAwesomeIcons.paperPlane))
         ],
       ),
