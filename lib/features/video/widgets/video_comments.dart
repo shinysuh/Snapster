@@ -98,18 +98,20 @@ class _VideoCommentsState extends State<VideoComments> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
 
-    return RegulatedMaxWidth(
-      maxWidth: Breakpoints.sm,
-      child: Container(
-        height: size.height * 0.8,
+    return SizedBox(
+      height: size.height * 0.7,
+      child: RegulatedMaxWidth(
+        maxWidth: Breakpoints.sm,
         clipBehavior: Clip.hardEdge,
         decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(Sizes.size14),
+          borderRadius: BorderRadius.circular(
+            Sizes.size14,
+          ),
         ),
         child: Scaffold(
-          backgroundColor: Colors.grey.shade50,
+          // backgroundColor: Colors.grey.shade50,
           appBar: AppBar(
-            backgroundColor: Colors.grey.shade50,
+            // backgroundColor: Colors.grey.shade50,
             title: const Text(
               '22796 comments',
               style: TextStyle(
