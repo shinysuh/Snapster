@@ -85,7 +85,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(context);
-    var commonBcgColor = isDark ? Colors.black : Colors.grey.shade50;
+    var commonBcgColor = isDark
+        ? Theme.of(context).appBarTheme.backgroundColor
+        : Colors.grey.shade50;
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
 
     return RegulatedMaxWidth(
