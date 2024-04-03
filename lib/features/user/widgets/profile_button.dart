@@ -19,16 +19,16 @@ class ProfileButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return Container(
       width: Sizes.size44,
       height: Sizes.size44 + Sizes.size2,
       padding: padding,
       decoration: BoxDecoration(
-        color: isDarkMode(context) ? Colors.grey.shade700 : Colors.white,
+        color: isDark ? Colors.grey.shade700 : Colors.white,
         borderRadius: BorderRadius.circular(Sizes.size2),
         border: Border.all(
-          color:
-              isDarkMode(context) ? Colors.grey.shade700 : Colors.grey.shade300,
+          color: isDark ? Colors.grey.shade700 : Colors.grey.shade300,
         ),
       ),
       child: Center(

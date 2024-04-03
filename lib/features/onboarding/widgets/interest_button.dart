@@ -25,6 +25,7 @@ class _InterestButtonState extends State<InterestButton> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return GestureDetector(
       onTap: _onTapButton,
       child: AnimatedContainer(
@@ -36,7 +37,7 @@ class _InterestButtonState extends State<InterestButton> {
         decoration: BoxDecoration(
           color: _isSelected
               ? Theme.of(context).primaryColor
-              : isDarkMode(context)
+              : isDark
                   ? Colors.grey.shade700
                   : Colors.white,
           border: Border.all(
@@ -61,7 +62,7 @@ class _InterestButtonState extends State<InterestButton> {
             fontWeight: FontWeight.w600,
             color: _isSelected
                 ? Colors.white
-                : isDarkMode(context)
+                : isDark
                     ? Colors.white.withOpacity(0.8)
                     : Colors.black87,
           ),

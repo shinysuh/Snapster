@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
+import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class VideoComments extends StatefulWidget {
@@ -40,7 +41,8 @@ class _VideoCommentsState extends State<VideoComments> {
     });
   }
 
-  Widget _getCommentField() {
+  Widget _getCommentField(bool isDark) {
+    var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
     return TextField(
       onTap: _onStartWriting,
       expands: true,
@@ -55,7 +57,7 @@ class _VideoCommentsState extends State<VideoComments> {
           borderSide: BorderSide.none,
         ),
         filled: true,
-        fillColor: Colors.grey.shade200,
+        fillColor: isDark ? Colors.grey.shade800 : Colors.grey.shade200,
         contentPadding: const EdgeInsets.symmetric(
           horizontal: Sizes.size10,
         ),
@@ -66,17 +68,17 @@ class _VideoCommentsState extends State<VideoComments> {
             children: [
               FaIcon(
                 FontAwesomeIcons.at,
-                color: Colors.grey.shade900,
+                color: iconColor,
               ),
               Gaps.h14,
               FaIcon(
                 FontAwesomeIcons.gift,
-                color: Colors.grey.shade900,
+                color: iconColor,
               ),
               Gaps.h14,
               FaIcon(
                 FontAwesomeIcons.faceSmile,
-                color: Colors.grey.shade900,
+                color: iconColor,
               ),
               if (_isWriting) Gaps.h14,
               if (_isWriting)
@@ -97,6 +99,7 @@ class _VideoCommentsState extends State<VideoComments> {
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
+    final isDark = isDarkMode(context);
 
     return SizedBox(
       height: size.height * 0.7,
@@ -109,9 +112,9 @@ class _VideoCommentsState extends State<VideoComments> {
           ),
         ),
         child: Scaffold(
-          // backgroundColor: Colors.grey.shade50,
+          backgroundColor: isDark ? null : Colors.grey.shade50,
           appBar: AppBar(
-            // backgroundColor: Colors.grey.shade50,
+            backgroundColor: isDark ? Colors.black : Colors.grey.shade50,
             title: const Text(
               '22796 comments',
               style: TextStyle(
@@ -150,9 +153,10 @@ class _VideoCommentsState extends State<VideoComments> {
                     itemBuilder: (context, index) => Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const CircleAvatar(
+                        CircleAvatar(
                           radius: Sizes.size18,
-                          child: Text('commenter_id'),
+                          backgroundColor: isDark ? Colors.grey.shade500 : null,
+                          child: const Text('쩨나'),
                         ),
                         Gaps.h10,
                         Expanded(
@@ -198,7 +202,6 @@ class _VideoCommentsState extends State<VideoComments> {
                   bottom: 0,
                   width: size.width,
                   child: BottomAppBar(
-                    color: Colors.white,
                     child: Padding(
                       padding: const EdgeInsets.symmetric(
                         horizontal: Sizes.size16,
@@ -216,7 +219,7 @@ class _VideoCommentsState extends State<VideoComments> {
                                 backgroundColor: Colors.grey.shade500,
                                 foregroundColor: Colors.white,
                                 foregroundImage: profileImage,
-                                child: const Text('jenna_suh'),
+                                child: const Text('쩨나'),
                               ),
                               Gaps.h10,
                               if (isWiderThanSm)
@@ -225,13 +228,14 @@ class _VideoCommentsState extends State<VideoComments> {
                                   constraints: const BoxConstraints(
                                     maxWidth: Breakpoints.sm - Sizes.size80,
                                   ),
-                                  child: _getCommentField(),
+                                  child: _getCommentField(isDark),
                                 ),
                               if (!isWiderThanSm)
                                 Expanded(
                                   child: SizedBox(
-                                      height: Sizes.size44,
-                                      child: _getCommentField()),
+                                    height: Sizes.size44,
+                                    child: _getCommentField(isDark),
+                                  ),
                                 ),
                             ],
                           );

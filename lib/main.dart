@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 
 void main() async {
@@ -50,6 +49,9 @@ class _TikTokAppState extends State<TikTokApp> {
         useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.light,
+        scaffoldBackgroundColor: Colors.white,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
         // textTheme: lightTextTheme,
         textTheme: Typography.blackMountainView,
         /* material design 2 -> the type system 에서 원하는 폰트 코드 사용 가능 */
@@ -85,9 +87,9 @@ class _TikTokAppState extends State<TikTokApp> {
           cursorColor: Color(0xFFE9435A),
           selectionColor: Color(0xFFFAA9B3),
         ),
-        scaffoldBackgroundColor: Colors.white,
-        splashColor: Colors.transparent,
-        highlightColor: Colors.transparent,
+        // iconTheme: IconThemeData(
+        //   color: Colors.grey.shade900,
+        // ),
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
@@ -98,37 +100,54 @@ class _TikTokAppState extends State<TikTokApp> {
             fontWeight: FontWeight.w700,
           ),
         ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.black,
+          unselectedLabelColor: Colors.grey.shade500,
+          indicatorColor: Colors.black,
+        ),
+        listTileTheme: const ListTileThemeData(
+          iconColor: Colors.black,
+        ),
         // bottomAppBarTheme: BottomAppBarTheme(
         //   shadowColor: Colors.black,
         //   surfaceTintColor: Colors.grey.shade50,
         // ),
       ),
       darkTheme: ThemeData(
-          useMaterial3: false,
-          primaryColor: const Color(0xFFE9435A),
-          brightness: Brightness.dark,
-          // textTheme: darkTextTheme,
-          textTheme: Typography.whiteMountainView,
-          textSelectionTheme: const TextSelectionThemeData(
-            cursorColor: Color(0xFFE9435A),
-            selectionColor: Color(0xFFFAA9B3),
+        useMaterial3: false,
+        primaryColor: const Color(0xFFE9435A),
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: Colors.black,
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        // textTheme: darkTextTheme,
+        textTheme: Typography.whiteMountainView,
+        textSelectionTheme: const TextSelectionThemeData(
+          cursorColor: Color(0xFFE9435A),
+          selectionColor: Color(0xFFFAA9B3),
+        ),
+        // iconTheme: IconThemeData(
+        //   color: Colors.grey.shade400,
+        // ),
+        appBarTheme: AppBarTheme(
+          foregroundColor: Colors.white,
+          backgroundColor: Colors.grey.shade900,
+          elevation: 0,
+          titleTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: Sizes.size18,
+            fontWeight: FontWeight.w700,
           ),
-          scaffoldBackgroundColor: Colors.black,
-          splashColor: Colors.transparent,
-          highlightColor: Colors.transparent,
-          appBarTheme: AppBarTheme(
-            foregroundColor: Colors.white,
-            backgroundColor: Colors.grey.shade900,
-            elevation: 0,
-            titleTextStyle: const TextStyle(
-              color: Colors.white,
-              fontSize: Sizes.size18,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          bottomAppBarTheme: BottomAppBarTheme(
-            color: Colors.grey.shade900,
-          )),
+        ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          color: Colors.grey.shade900,
+        ),
+        tabBarTheme: TabBarTheme(
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.grey.shade500,
+          indicatorColor: Colors.white,
+        ),
+      ),
       // home: const SignUpScreen(),
       home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),

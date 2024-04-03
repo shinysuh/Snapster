@@ -7,14 +7,13 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
   @override
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
+    final isDark = isDarkMode(context);
     return Container(
       decoration: BoxDecoration(
-        color: isDarkMode(context) ? Colors.black : Colors.white,
+        color: isDark ? Colors.black : Colors.white,
         border: Border.symmetric(
           horizontal: BorderSide(
-            color: isDarkMode(context)
-                ? Colors.grey.shade700
-                : Colors.grey.shade200,
+            color: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
             width: 0.5,
           ),
         ),
@@ -24,7 +23,7 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
         labelPadding: const EdgeInsets.symmetric(
           vertical: Sizes.size10,
         ),
-        indicatorColor: isDarkMode(context) ? Colors.white : Colors.black,
+        indicatorColor: isDark ? Colors.white : Colors.black,
         indicatorSize: TabBarIndicatorSize.label,
         tabs: [
           Padding(
@@ -34,7 +33,7 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
             child: Icon(
               Icons.grid_view_rounded,
               size: Sizes.size24,
-              color: isDarkMode(context) ? Colors.white : Colors.black,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
           Padding(
@@ -44,7 +43,7 @@ class UserProfileTabBar extends SliverPersistentHeaderDelegate {
             child: FaIcon(
               FontAwesomeIcons.heart,
               size: Sizes.size22,
-              color: isDarkMode(context) ? Colors.white : Colors.black,
+              color: isDark ? Colors.white : Colors.black,
             ),
           ),
         ],

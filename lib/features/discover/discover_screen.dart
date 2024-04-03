@@ -1,4 +1,4 @@
-import 'package:flutter/foundation.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
@@ -56,88 +56,92 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
     _textEditingController.clear();
   }
 
-  Widget _getSearchPanel() {
-    // return CupertinoSearchTextField(
-    //   controller: _textEditingController,
-    //   itemColor: Colors.black,
-    //   onChanged: _onChangeSearchKeyword,
-    //   onSubmitted: _onSubmitSearchKeyword,
-    // );
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: Sizes.size44,
-            child: TextField(
-              controller: _textEditingController,
-              maxLines: 1,
-              cursorColor: Theme.of(context).primaryColor,
-              textInputAction: TextInputAction.send,
-              onChanged: _onChangeSearchKeyword,
-              onSubmitted: _onSubmitSearchKeyword,
-              clipBehavior: Clip.hardEdge,
-              style: const TextStyle(
-                fontSize: Sizes.size18,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Search',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Sizes.size8),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: isDarkMode(context)
-                    ? Colors.grey.shade700
-                    : Colors.grey.shade200,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size10,
-                ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(
-                    top: kIsWeb ? Sizes.size8 : Sizes.size11,
-                    left: Sizes.size8,
-                  ),
-                  child: FaIcon(
-                    FontAwesomeIcons.magnifyingGlass,
-                    size: Sizes.size20,
-                    color: isDarkMode(context)
-                        ? Colors.grey.shade300
-                        : Colors.black,
-                  ),
-                ),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.only(
-                    top: kIsWeb ? Sizes.size9 : Sizes.size11,
-                    left: kIsWeb ? Sizes.size10 : Sizes.size20,
-                  ),
-                  child: GestureDetector(
-                    onTap: _onClearSearchKeyword,
-                    child: FaIcon(
-                      FontAwesomeIcons.solidCircleXmark,
-                      size: Sizes.size20,
-                      color: isDarkMode(context)
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Gaps.h22,
-        const FaIcon(
-          FontAwesomeIcons.sliders,
-          size: Sizes.size28,
-        ),
-        Gaps.h8,
-      ],
+  Widget _getSearchPanel(bool isDark) {
+    return CupertinoSearchTextField(
+      controller: _textEditingController,
+      // itemColor: Colors.black,
+      onChanged: _onChangeSearchKeyword,
+      onSubmitted: _onSubmitSearchKeyword,
+      style: TextStyle(
+        color: isDark ? Colors.white : Colors.black,
+      ),
     );
+    // return Row(
+    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    //   children: [
+    //     Expanded(
+    //       child: SizedBox(
+    //         height: Sizes.size44,
+    //         child: TextField(
+    //           controller: _textEditingController,
+    //           maxLines: 1,
+    //           cursorColor: Theme.of(context).primaryColor,
+    //           textInputAction: TextInputAction.send,
+    //           onChanged: _onChangeSearchKeyword,
+    //           onSubmitted: _onSubmitSearchKeyword,
+    //           clipBehavior: Clip.hardEdge,
+    //           style: const TextStyle(
+    //             fontSize: Sizes.size18,
+    //           ),
+    //           decoration: InputDecoration(
+    //             hintText: 'Search',
+    //             border: OutlineInputBorder(
+    //               borderRadius: BorderRadius.circular(Sizes.size8),
+    //               borderSide: BorderSide.none,
+    //             ),
+    //             filled: true,
+    //             fillColor: isDark
+    //                 ? Colors.grey.shade700
+    //                 : Colors.grey.shade200,
+    //             contentPadding: const EdgeInsets.symmetric(
+    //               horizontal: Sizes.size10,
+    //             ),
+    //             prefixIcon: Padding(
+    //               padding: const EdgeInsets.only(
+    //                 top: kIsWeb ? Sizes.size8 : Sizes.size11,
+    //                 left: Sizes.size8,
+    //               ),
+    //               child: FaIcon(
+    //                 FontAwesomeIcons.magnifyingGlass,
+    //                 size: Sizes.size20,
+    //                 color: isDark
+    //                     ? Colors.grey.shade300
+    //                     : Colors.black,
+    //               ),
+    //             ),
+    //             suffixIcon: Padding(
+    //               padding: const EdgeInsets.only(
+    //                 top: kIsWeb ? Sizes.size9 : Sizes.size11,
+    //                 left: kIsWeb ? Sizes.size10 : Sizes.size20,
+    //               ),
+    //               child: GestureDetector(
+    //                 onTap: _onClearSearchKeyword,
+    //                 child: FaIcon(
+    //                   FontAwesomeIcons.solidCircleXmark,
+    //                   size: Sizes.size20,
+    //                   color: isDark
+    //                       ? Colors.grey.shade400
+    //                       : Colors.grey.shade600,
+    //                 ),
+    //               ),
+    //             ),
+    //           ),
+    //         ),
+    //       ),
+    //     ),
+    //     Gaps.h22,
+    //     const FaIcon(
+    //       FontAwesomeIcons.sliders,
+    //       size: Sizes.size28,
+    //     ),
+    //     Gaps.h8,
+    //   ],
+    // );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
     return DefaultTabController(
       length: tabs.length,
       child: GestureDetector(
@@ -151,7 +155,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               constraints: const BoxConstraints(
                 maxWidth: Breakpoints.sm,
               ),
-              child: _getSearchPanel(),
+              child: _getSearchPanel(isDark),
             ),
             bottom: TabBar(
               onTap: (value) => onTapOutsideAndDismissKeyboard(context),
@@ -160,9 +164,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.size16,
               ),
-              indicatorColor: isDarkMode(context) ? Colors.white : Colors.black,
-              labelColor: isDarkMode(context) ? Colors.white : Colors.black,
-              unselectedLabelColor: Colors.grey.shade500,
+              // indicatorColor: isDark ? Colors.white : Colors.black,
+              // labelColor: isDark ? Colors.white : Colors.black,
+              // unselectedLabelColor: Colors.grey.shade500,
               labelStyle: const TextStyle(
                 fontSize: Sizes.size16,
                 fontWeight: FontWeight.w600,
@@ -227,11 +231,13 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             ),
                           ),
                           Gaps.v8,
-                          if (constraints.maxWidth < 200 ||
+                          if (constraints.maxWidth < 210 ||
                               constraints.maxWidth > 230)
                             DefaultTextStyle(
                               style: TextStyle(
-                                color: Colors.grey.shade600,
+                                color: isDark
+                                    ? Colors.grey.shade300
+                                    : Colors.grey.shade600,
                                 fontSize: Sizes.size14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -253,7 +259,9 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                                   FaIcon(
                                     FontAwesomeIcons.heart,
                                     size: Sizes.size14,
-                                    color: Colors.grey.shade600,
+                                    color: isDark
+                                        ? Colors.grey.shade300
+                                        : Colors.grey.shade600,
                                   ),
                                   Gaps.h2,
                                   const Text(

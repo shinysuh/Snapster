@@ -42,7 +42,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
     });
   }
 
-  Widget _getMessageField() {
+  Widget _getMessageField(bool isDark, Color iconColor) {
     return TextField(
       controller: _textEditingController,
       onChanged: (message) => _onChangeMessage(message),
@@ -54,10 +54,10 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
       cursorColor: Theme.of(context).primaryColor,
       decoration: InputDecoration(
         filled: true,
-        fillColor: isDarkMode(context) ? Colors.grey.shade700 : Colors.white,
+        fillColor: isDark ? Colors.grey.shade800 : Colors.white,
         hintText: 'Send a message...',
         hintStyle: TextStyle(
-          color: isDarkMode(context) ? Colors.grey.shade300 : null,
+          color: isDark ? Colors.grey.shade300 : null,
         ),
         border: const OutlineInputBorder(
           borderRadius: BorderRadius.only(
@@ -74,9 +74,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           padding: const EdgeInsets.all(Sizes.size12),
           child: FaIcon(
             FontAwesomeIcons.faceLaugh,
-            color: isDarkMode(context)
-                ? Colors.grey.shade300
-                : Colors.grey.shade900,
+            color: iconColor,
             size: Sizes.size22,
           ),
         ),
@@ -86,14 +84,18 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = isDarkMode(context);
+    var commonBcgColor = isDark ? Colors.black : Colors.grey.shade50;
+    var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
+
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
       child: GestureDetector(
         onTap: () => onTapOutsideAndDismissKeyboard(context),
         child: Scaffold(
-          backgroundColor: isDarkMode(context) ? null : Colors.grey.shade50,
+          backgroundColor: commonBcgColor,
           appBar: AppBar(
-            backgroundColor: isDarkMode(context) ? null : Colors.grey.shade50,
+            backgroundColor: commonBcgColor,
             title: ListTile(
               contentPadding: EdgeInsets.zero,
               horizontalTitleGap: Sizes.size8,
@@ -141,17 +143,13 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   FaIcon(
                     FontAwesomeIcons.flag,
                     size: Sizes.size22,
-                    color: isDarkMode(context)
-                        ? Colors.grey.shade400
-                        : Colors.black,
+                    color: iconColor,
                   ),
                   Gaps.h32,
                   FaIcon(
                     FontAwesomeIcons.ellipsis,
                     size: Sizes.size20,
-                    color: isDarkMode(context)
-                        ? Colors.grey.shade400
-                        : Colors.black,
+                    color: iconColor,
                   ),
                 ],
               ),
@@ -205,7 +203,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                 bottom: 0,
                 width: MediaQuery.of(context).size.width,
                 child: BottomAppBar(
-                  color: Colors.grey.shade50,
+                  color: commonBcgColor,
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: Sizes.size4,
@@ -215,8 +213,16 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                       builder: (context, constraints) {
                         var isWiderThanSm = constraints.maxWidth >
                             Breakpoints.sm - Sizes.size28;
+                        var circleColor = isDark
+                            ? Colors.grey.shade400
+                            : _isWriting
+                                ? Colors.grey.shade200
+                                : Colors.grey.shade300;
+                        var planeColor =
+                            _isWriting ? Colors.blue : Colors.white;
                         return Row(
                           mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
                             if (isWiderThanSm)
                               Container(
@@ -224,13 +230,14 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 constraints: const BoxConstraints(
                                   maxWidth: Breakpoints.sm - Sizes.size80,
                                 ),
-                                child: _getMessageField(),
+                                child: _getMessageField(isDark, iconColor),
                               ),
                             if (!isWiderThanSm)
                               Expanded(
                                 child: SizedBox(
-                                    height: Sizes.size48,
-                                    child: _getMessageField()),
+                                  height: Sizes.size48,
+                                  child: _getMessageField(isDark, iconColor),
+                                ),
                               ),
                             Gaps.h12,
                             GestureDetector(
@@ -240,9 +247,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 height: Sizes.size40,
                                 decoration: BoxDecoration(
                                   shape: BoxShape.circle,
-                                  color: _isWriting
-                                      ? Colors.grey.shade200
-                                      : Colors.grey.shade300,
+                                  color: circleColor,
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.symmetric(
@@ -252,8 +257,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                   child: FaIcon(
                                     FontAwesomeIcons.solidPaperPlane,
                                     size: Sizes.size22,
-                                    color:
-                                        _isWriting ? Colors.blue : Colors.white,
+                                    color: planeColor,
                                   ),
                                 ),
                               ),
