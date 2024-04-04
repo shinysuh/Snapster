@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/features/settings/settings_screen.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -42,6 +45,16 @@ class _TikTokAppState extends State<TikTokApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TikTok Clone',
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        // supportedLocales => 지원 언어 목록 (IANA Language Registry 참고)
+        Locale('en'),
+        Locale('ko'),
+      ],
       debugShowCheckedModeBanner: false,
       // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
       themeMode: ThemeMode.system,
@@ -161,8 +174,9 @@ class _TikTokAppState extends State<TikTokApp> {
           indicatorColor: Colors.white,
         ),
       ),
+      home: const SettingsScreen(),
       // home: const SignUpScreen(),
-      home: const MainNavigationScreen(),
+      // home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );
   }
