@@ -45,6 +45,9 @@ class _TikTokAppState extends State<TikTokApp> {
       debugShowCheckedModeBanner: false,
       // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
       themeMode: ThemeMode.system,
+      /* FlexThemeData (flex-color-scheme) : 전반적 색상 테마 적용 패키지 */
+      // theme: FlexThemeData.light(scheme: FlexScheme.mandyRed),
+      // darkTheme: FlexThemeData.dart(scheme: FlexScheme.mandyRed),
       theme: ThemeData(
         // useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
