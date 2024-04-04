@@ -158,6 +158,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               child: _getSearchPanel(isDark),
             ),
             bottom: TabBar(
+              tabAlignment: TabAlignment.start,
               onTap: (value) => onTapOutsideAndDismissKeyboard(context),
               isScrollable: true,
               splashFactory: NoSplash.splashFactory,
