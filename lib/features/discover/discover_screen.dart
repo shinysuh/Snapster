@@ -198,7 +198,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       crossAxisCount: colCount,
                       crossAxisSpacing: Sizes.size8,
                       mainAxisSpacing: Sizes.size20,
-                      childAspectRatio: 9 / 22,
+                      childAspectRatio: 9 / 20,
                     ),
                     // Image.asset(url) 로 asset 폴더 내 이미지 fetch
                     // Image.network(url) 로 네트워크 상 이미지 fetch
@@ -228,6 +228,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                             style: TextStyle(
                               fontSize: Sizes.size18,
                               fontWeight: FontWeight.w500,
+                              height: 1.2,
                             ),
                           ),
                           Gaps.v8,

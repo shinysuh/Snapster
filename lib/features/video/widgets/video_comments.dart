@@ -114,7 +114,9 @@ class _VideoCommentsState extends State<VideoComments> {
         child: Scaffold(
           backgroundColor: isDark ? null : Colors.grey.shade50,
           appBar: AppBar(
-            backgroundColor: isDark ? Colors.black : Colors.grey.shade50,
+            backgroundColor: isDark
+                ? Theme.of(context).appBarTheme.surfaceTintColor
+                : Colors.grey.shade50,
             title: const Text(
               '22796 comments',
               style: TextStyle(
@@ -201,11 +203,14 @@ class _VideoCommentsState extends State<VideoComments> {
                 Positioned(
                   bottom: 0,
                   width: size.width,
-                  child: BottomAppBar(
+                  child: Container(
+                    color: Theme.of(context).bottomAppBarTheme.surfaceTintColor,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: Sizes.size16,
-                        vertical: Sizes.size10,
+                      padding: const EdgeInsets.only(
+                        left: Sizes.size16,
+                        right: Sizes.size16,
+                        top: Sizes.size10,
+                        bottom: Sizes.size32,
                       ),
                       child: LayoutBuilder(
                         builder: (context, constraints) {

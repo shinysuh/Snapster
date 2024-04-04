@@ -46,7 +46,7 @@ class _TikTokAppState extends State<TikTokApp> {
       // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
       themeMode: ThemeMode.system,
       theme: ThemeData(
-        useMaterial3: false,
+        // useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
@@ -93,6 +93,7 @@ class _TikTokAppState extends State<TikTokApp> {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           elevation: 0,
           titleTextStyle: TextStyle(
             color: Colors.black,
@@ -108,13 +109,13 @@ class _TikTokAppState extends State<TikTokApp> {
         listTileTheme: const ListTileThemeData(
           iconColor: Colors.black,
         ),
-        // bottomAppBarTheme: BottomAppBarTheme(
-        //   shadowColor: Colors.black,
-        //   surfaceTintColor: Colors.grey.shade50,
-        // ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.grey.shade50,
+        ),
       ),
       darkTheme: ThemeData(
-        useMaterial3: false,
+        // useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
@@ -132,19 +133,28 @@ class _TikTokAppState extends State<TikTokApp> {
         appBarTheme: AppBarTheme(
           foregroundColor: Colors.white,
           backgroundColor: Colors.grey.shade900,
+          surfaceTintColor: Colors.grey.shade900,
           elevation: 0,
           titleTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: Sizes.size18,
             fontWeight: FontWeight.w700,
           ),
+          actionsIconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
         ),
         bottomAppBarTheme: BottomAppBarTheme(
           color: Colors.grey.shade900,
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.grey.shade900,
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.grey.shade500,
+          unselectedLabelColor: Colors.grey.shade600,
           indicatorColor: Colors.white,
         ),
       ),

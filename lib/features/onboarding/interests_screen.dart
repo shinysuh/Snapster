@@ -104,41 +104,38 @@ class _InterestScreenState extends State<InterestScreen> {
           ),
         ),
       ),
-      bottomNavigationBar: BottomAppBar(
-        elevation: 1,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            bottom: Sizes.size40,
-            top: Sizes.size16,
-            left: Sizes.size24,
-            right: Sizes.size24,
-          ),
-          child: FractionallySizedBox(
-            widthFactor: 1,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                BottomButton(
-                  text: 'Skip',
-                  onTap: _onTapNext,
-                ),
-                Gaps.h20,
-                BottomButton(
-                  buttonColor: Theme.of(context).primaryColor,
-                  textColor: Colors.white,
-                  text: 'Next',
-                  onTap: _onTapNext,
-                ),
-              ],
-            ),
-          ),
-          // 편한 기능의 버튼 CupertinoButton(custom) / TextButton(google like)
-          // CupertinoButton(
-          //   onPressed: () {},
-          //   color: Theme.of(context).primaryColor,
-          //   child: const Text('Next'),
-          // ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.only(
+          bottom: Sizes.size40,
+          top: Sizes.size16,
+          left: Sizes.size24,
+          right: Sizes.size24,
         ),
+        child: FractionallySizedBox(
+          widthFactor: 1,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              BottomButton(
+                text: 'Skip',
+                onTap: _onTapNext,
+              ),
+              Gaps.h20,
+              BottomButton(
+                buttonColor: Theme.of(context).primaryColor,
+                textColor: Colors.white,
+                text: 'Next',
+                onTap: _onTapNext,
+              ),
+            ],
+          ),
+        ),
+        // 편한 기능의 버튼 CupertinoButton(custom) / TextButton(google like)
+        // CupertinoButton(
+        //   onPressed: () {},
+        //   color: Theme.of(context).primaryColor,
+        //   child: const Text('Next'),
+        // ),
       ),
     );
   }

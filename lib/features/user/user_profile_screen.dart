@@ -70,7 +70,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Widget _getFollowInfo() {
     return SizedBox(
-      height: Sizes.size48,
+      height: Sizes.size52,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
