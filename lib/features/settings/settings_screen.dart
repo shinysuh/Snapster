@@ -39,10 +39,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
   @override
   Widget build(BuildContext context) {
     return RegulatedMaxWidth(
+      // Localizations.override - locale => 언어 설정 강제 기능
       child: Localizations.override(
         context: context,
-        // Localizations.override - locale => 언어 설정 강제 기능
-        locale: const Locale('fr'),
+        // locale: const Locale('fr'),
         child: Scaffold(
           appBar: AppBar(
             title: const Text('settings'),
