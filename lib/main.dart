@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_gen/gen_l10n/intl_generated.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/settings/settings_screen.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -44,23 +44,19 @@ class _TikTokAppState extends State<TikTokApp> {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'TikTok Clone',
-      // .arb 파일 수정 후 flutter gen-l10n(yaml 파일명) 커맨드 실행
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      // localizationsDelegates: const [
-      //   // customized 번역
-      //   AppLocalizations.delegate,
-      //   // flutter 위젯 기본 번역 (AppLocalizations 에 포함됨)
-      //   GlobalMaterialLocalizations.delegate,
-      //   GlobalCupertinoLocalizations.delegate,
-      //   GlobalWidgetsLocalizations.delegate,
-      // ],
-      supportedLocales: AppLocalizations.supportedLocales,
-      // supportedLocales: const [
-      //   // supportedLocales => 지원 언어 목록 (IANA Language Registry 참고)
-      //   // GlobalLocalizations 사용 시 필요 (AppLocalizations.supportedLocales 에 포함됨)
-      //   Locale('en'),
-      //   Locale('ko'),
-      // ],
+      localizationsDelegates: const [
+        // flutter intl -> l10n
+        S.delegate,
+        // flutter 위젯 기본 번역 (AppLocalizations 에 포함됨)
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        // supportedLocales => 지원 언어 목록 (IANA Language Registry 참고)
+        Locale('en'),
+        Locale('ko'),
+      ],
       debugShowCheckedModeBanner: false,
       // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
       themeMode: ThemeMode.system,

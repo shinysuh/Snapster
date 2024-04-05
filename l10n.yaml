@@ -1,9 +1,0 @@
-# i10n - localization
-
-# directory location
-arb-dir: lib/intl
-# master file
-template-arb-file: intl_en.arb
-# where the translations to be generated into
-# where all the generated code goes
-output-localization-file: intl_generated.dart

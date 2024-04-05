@@ -1,0 +1,12 @@
+{
+  "signUpTitle": "{nameOfTheApp}에 가입하세요",
+  "signUpSubtitle": "Create a profile, follow other accounts, make your own videos, and more.",
+  "useEmailPassword": "이메일 로그인",
+  "continueWithApple": "애플 아이디 로그인",
+  "alreadyHaveAnAccount": "이미 계정이 있으신가요?",
+  "logIn": "로그인",
+  "logInToTiktok": "{nameOfTheApp}에 로그인하세요",
+  "dontHaveAnAccount": "아직 계정이 없으신가요?",
+  "signUp": "회원가입",
+  "loginSubTitle": "Manage your account, check notifications, comment on videos, and more."
+}

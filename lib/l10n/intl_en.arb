@@ -1,0 +1,21 @@
+{
+  "signUpTitle": "Sign Up for {nameOfTheApp}",
+  "@signUpTitle": {
+    "description": "The title people see when they open the app for the first time.",
+    "placeholders": {
+      "nameOfTheApp": {
+        "type": "String",
+        "example": "TikTok"
+      }
+    }
+  },
+  "signUpSubtitle": "Create a profile, follow other accounts, make your own videos, and more.",
+  "useEmailPassword": "Use email & password",
+  "continueWithApple": "Continue with apple",
+  "alreadyHaveAnAccount": "Already have an account?",
+  "logIn": "Log in",
+  "logInToTiktok": "Log in to {nameOfTheApp}",
+  "dontHaveAnAccount": "Don't have an account?",
+  "signUp": "Sign up",
+  "loginSubTitle": "Manage your account, check notifications, comment on videos, and more."
+}
