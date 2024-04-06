@@ -42,6 +42,8 @@ class _TikTokAppState extends State<TikTokApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    // locale 강제 지정
+    S.load(const Locale('en'));
     return MaterialApp(
       title: 'TikTok Clone',
       localizationsDelegates: const [
