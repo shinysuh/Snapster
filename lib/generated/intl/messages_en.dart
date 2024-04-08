@@ -20,31 +20,45 @@ typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 class MessageLookup extends MessageLookupByLibrary {
   String get localeName => 'en';
 
-  static String m0(gender) =>
+  static String m0(value) => "${value}";
+
+  static String m1(value) => "${value}";
+
+  static String m2(value, value2) =>
+      "${value} ${Intl.plural(value2, one: 'comment', other: 'comments')}";
+
+  static String m3(value) => "${value}";
+
+  static String m4(gender) =>
       "Log in ${Intl.gender(gender, female: 'Madam', male: 'Sir', other: 'Human')}";
 
-  static String m1(nameOfTheApp) => "Log in to ${nameOfTheApp}";
+  static String m5(nameOfTheApp) => "Log in to ${nameOfTheApp}";
 
-  static String m2(videoCount) =>
+  static String m6(videoCount) =>
       "Create a profile, follow other accounts, make your own ${Intl.plural(videoCount, zero: 'no videos', one: 'video', other: 'videos')}, and more.";
 
-  static String m3(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
+  static String m7(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Already have an account?"),
+        "commentCount": m0,
+        "commentLikeCount": m1,
+        "commentTitle": m2,
         "continueWithApple":
             MessageLookupByLibrary.simpleMessage("Continue with apple"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
-        "logIn": m0,
-        "logInToTiktok": m1,
+        "likeCount": m3,
+        "logIn": m4,
+        "logInToTiktok": m5,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
+        "share": MessageLookupByLibrary.simpleMessage("share"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
-        "signUpSubtitle": m2,
-        "signUpTitle": m3,
+        "signUpSubtitle": m6,
+        "signUpTitle": m7,
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password")
       };

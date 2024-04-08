@@ -17,5 +17,46 @@
   "logInToTiktok": "Log in to {nameOfTheApp}",
   "dontHaveAnAccount": "Don't have an account?",
   "signUp": "Sign up",
-  "loginSubTitle": "Manage your account, check notifications, comment on videos, and more."
+  "loginSubTitle": "Manage your account, check notifications, comment on videos, and more.",
+  "likeCount": "{value}",
+  "@likeCount": {
+    "description": "like count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "commentCount": "{value}",
+  "@commentCount": {
+    "description": "comment count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "share": "share",
+  "commentTitle": "{value} {value2, plural, =1{comment} other{comments}}",
+  "@commentTitle": {
+    "description": "comment counts on comment dialog",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "commentLikeCount": "{value}",
+  "@commentLikeCount": {
+    "description": "comment like count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  }
 }

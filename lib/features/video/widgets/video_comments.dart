@@ -4,6 +4,7 @@ import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
@@ -117,9 +118,9 @@ class _VideoCommentsState extends State<VideoComments> {
             backgroundColor: isDark
                 ? Theme.of(context).appBarTheme.surfaceTintColor
                 : Colors.grey.shade50,
-            title: const Text(
-              '22796 comments',
-              style: TextStyle(
+            title: Text(
+              S.of(context).commentTitle(22796, 22796),
+              style: const TextStyle(
                 fontSize: Sizes.size16,
                 fontWeight: FontWeight.w600,
               ),
@@ -189,7 +190,7 @@ class _VideoCommentsState extends State<VideoComments> {
                             ),
                             Gaps.v2,
                             Text(
-                              '52.2K',
+                              S.of(context).commentLikeCount(52200),
                               style: TextStyle(
                                 color: Colors.grey.shade500,
                               ),

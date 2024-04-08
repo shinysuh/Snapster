@@ -4,6 +4,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 
 void main() async {
@@ -43,7 +44,7 @@ class _TikTokAppState extends State<TikTokApp> {
   @override
   Widget build(BuildContext context) {
     // locale 강제 지정
-    S.load(const Locale('en'));
+    // S.load(const Locale('en'));
     return MaterialApp(
       title: 'TikTok Clone',
       localizationsDelegates: const [
@@ -179,8 +180,8 @@ class _TikTokAppState extends State<TikTokApp> {
         ),
       ),
       // home: const SettingsScreen(),
-      home: const SignUpScreen(),
-      // home: const MainNavigationScreen(),
+      // home: const SignUpScreen(),
+      home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );
   }

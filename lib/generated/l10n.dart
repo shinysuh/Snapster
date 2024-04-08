@@ -149,6 +149,76 @@ class S {
       args: [],
     );
   }
+
+  /// `{value}`
+  String likeCount(int value) {
+    final NumberFormat valueNumberFormat = NumberFormat.compact(
+      locale: Intl.getCurrentLocale(),
+    );
+    final String valueString = valueNumberFormat.format(value);
+
+    return Intl.message(
+      '$valueString',
+      name: 'likeCount',
+      desc: 'like count',
+      args: [valueString],
+    );
+  }
+
+  /// `{value}`
+  String commentCount(int value) {
+    final NumberFormat valueNumberFormat = NumberFormat.compact(
+      locale: Intl.getCurrentLocale(),
+    );
+    final String valueString = valueNumberFormat.format(value);
+
+    return Intl.message(
+      '$valueString',
+      name: 'commentCount',
+      desc: 'comment count',
+      args: [valueString],
+    );
+  }
+
+  /// `share`
+  String get share {
+    return Intl.message(
+      'share',
+      name: 'share',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{value} {value2, plural, =1{comment} other{comments}}`
+  String commentTitle(int value, num value2) {
+    final NumberFormat valueNumberFormat = NumberFormat.compact(
+      locale: Intl.getCurrentLocale(),
+    );
+    final String valueString = valueNumberFormat.format(value);
+
+    return Intl.message(
+      '$valueString ${Intl.plural(value2, one: 'comment', other: 'comments')}',
+      name: 'commentTitle',
+      desc: 'comment counts on comment dialog',
+      args: [valueString, value2],
+    );
+  }
+
+  /// `{value}`
+  String commentLikeCount(int value) {
+    final NumberFormat valueNumberFormat = NumberFormat.compact(
+      locale: Intl.getCurrentLocale(),
+    );
+    final String valueString = valueNumberFormat.format(value);
+
+    return Intl.message(
+      '$valueString',
+      name: 'commentLikeCount',
+      desc: 'comment like count',
+      args: [valueString],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {
