@@ -27,3 +27,28 @@ void redirectToScreenAndRemovePreviousRoutes({
 void goBackToPreviousPage(BuildContext context) {
   Navigator.pop(context);
 }
+
+void routeWithFadeSlideAnimation({
+  required BuildContext context,
+  required Widget targetScreen,
+  Duration? duration,
+}) {
+  Navigator.of(context).push(PageRouteBuilder(
+    pageBuilder: (context, animation, secondaryAnimation) => targetScreen,
+    transitionDuration: duration ?? const Duration(milliseconds: 500),
+    reverseTransitionDuration: duration ?? const Duration(milliseconds: 500),
+    transitionsBuilder: (context, animation, secondaryAnimation, child) {
+      final offsetAnimation = Tween(
+        begin: const Offset(0, -1),
+        end: Offset.zero,
+      ).animate(animation);
+      return SlideTransition(
+        position: offsetAnimation,
+        child: FadeTransition(
+          opacity: animation,
+          child: child,
+        ),
+      );
+    },
+  ));
+}

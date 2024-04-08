@@ -19,7 +19,10 @@ class SignUpScreen extends StatelessWidget {
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    redirectToScreen(context: context, targetScreen: const UsernameScreen());
+    routeWithFadeSlideAnimation(
+      context: context,
+      targetScreen: const UsernameScreen(),
+    );
   }
 
   void _onTapAppleLogin(BuildContext context) {
