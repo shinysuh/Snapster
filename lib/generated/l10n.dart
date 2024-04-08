@@ -60,6 +60,20 @@ class S {
     );
   }
 
+  /// `Sign Up for {nameOfTheApp} {when}`
+  String signUpTitleWithDateTime(String nameOfTheApp, DateTime when) {
+    final DateFormat whenDateFormat =
+        DateFormat('y / QQQ / LLLL 😆', Intl.getCurrentLocale());
+    final String whenString = whenDateFormat.format(when);
+
+    return Intl.message(
+      'Sign Up for $nameOfTheApp $whenString',
+      name: 'signUpTitleWithDateTime',
+      desc: 'The title people see when they open the app for the first time.',
+      args: [nameOfTheApp, whenString],
+    );
+  }
+
   /// `Create a profile, follow other accounts, make your own {videoCount, plural, =0{no videos} =1{video} other{videos}}, and more.`
   String signUpSubtitle(num videoCount) {
     return Intl.message(

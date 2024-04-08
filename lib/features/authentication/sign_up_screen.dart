@@ -40,6 +40,7 @@ class SignUpScreen extends StatelessWidget {
                   Gaps.v80,
                   Text(
                     S.of(context).signUpTitle('TikTok'),
+                    // S.of(context).signUpTitleWithDateTime('TikTok', DateTime.now()),
                     style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                           fontWeight: FontWeight.w700,
                         ),

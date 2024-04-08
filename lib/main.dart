@@ -180,8 +180,8 @@ class _TikTokAppState extends State<TikTokApp> {
         ),
       ),
       // home: const SettingsScreen(),
-      // home: const SignUpScreen(),
-      home: const MainNavigationScreen(),
+      home: const SignUpScreen(),
+      // home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );
   }

@@ -36,6 +36,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m7(nameOfTheApp) => "${nameOfTheApp}에 가입하세요";
 
+  static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
@@ -55,6 +57,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
         "signUpSubtitle": m6,
         "signUpTitle": m7,
+        "signUpTitleWithDateTime": m8,
         "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일 로그인")
       };
 }

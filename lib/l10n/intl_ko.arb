@@ -1,5 +1,6 @@
 {
   "signUpTitle": "{nameOfTheApp}에 가입하세요",
+  "signUpTitleWithDateTime": "Sign Up for {nameOfTheApp} {when}",
   "signUpSubtitle": "프로필 생성, 다른 계정 팔로우, 나만의 비디오 만들기 등.",
   "useEmailPassword": "이메일 로그인",
   "continueWithApple": "애플 아이디 로그인",
