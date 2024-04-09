@@ -3,8 +3,9 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 
 void main() async {
@@ -179,8 +180,14 @@ class _TikTokAppState extends State<TikTokApp> {
           indicatorColor: Colors.white,
         ),
       ),
+      initialRoute: '/',
+      routes: {
+        SignUpScreen.routeName: (context) => const SignUpScreen(),
+        LoginScreen.routeName: (context) => const LoginScreen(),
+        UsernameScreen.routeName: (context) => const UsernameScreen(),
+      },
       // home: const SettingsScreen(),
-      home: const SignUpScreen(),
+      // home: const SignUpScreen(),
       // home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );

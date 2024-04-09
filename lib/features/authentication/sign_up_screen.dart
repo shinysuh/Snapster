@@ -12,17 +12,28 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class SignUpScreen extends StatelessWidget {
+  static String routeName = '/';
+
   const SignUpScreen({super.key});
 
-  void _onTapLogin(BuildContext context) {
-    redirectToScreen(context: context, targetScreen: const LoginScreen());
+  void _onTapLogin(BuildContext context) async {
+    redirectToRoute(context: context, route: LoginScreen.routeName);
+    // redirectToScreen(context: context, targetScreen: const LoginScreen());
+    // final result = await Navigator.of(context).push(
+    //   MaterialPageRoute(
+    //     builder: (context) => const LoginScreen(),
+    //   ),
+    // );
+    //
+    // print('User Came Back From Login Page');
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    routeWithFadeSlideAnimation(
-      context: context,
-      targetScreen: const UsernameScreen(),
-    );
+    redirectToRoute(context: context, route: UsernameScreen.routeName);
+    // routeWithFadeSlideAnimation(
+    //   context: context,
+    //   targetScreen: const UsernameScreen(),
+    // );
   }
 
   void _onTapAppleLogin(BuildContext context) {

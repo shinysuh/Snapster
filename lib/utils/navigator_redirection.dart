@@ -1,5 +1,13 @@
 import 'package:flutter/material.dart';
 
+// pushNamed
+void redirectToRoute({
+  required BuildContext context,
+  required String route,
+}) {
+  Navigator.of(context).pushNamed(route);
+}
+
 // push
 void redirectToScreen(
     {required BuildContext context,

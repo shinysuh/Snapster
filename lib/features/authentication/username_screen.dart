@@ -7,6 +7,8 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class UsernameScreen extends StatefulWidget {
+  static String routeName = '/username';
+
   const UsernameScreen({super.key});
 
   @override
