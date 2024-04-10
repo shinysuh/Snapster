@@ -5,7 +5,7 @@ void redirectToRoute({
   required BuildContext context,
   required String route,
 }) {
-  Navigator.of(context).pushNamed(route);
+  Navigator.pushNamed(context, route);
 }
 
 // push
@@ -13,7 +13,8 @@ void redirectToScreen(
     {required BuildContext context,
     required Widget targetScreen,
     bool? isFullScreen}) {
-  Navigator.of(context).push(
+  Navigator.push(
+    context,
     MaterialPageRoute(
         builder: (context) => targetScreen,
         fullscreenDialog: isFullScreen ?? false),
@@ -25,7 +26,8 @@ void redirectToScreenAndRemovePreviousRoutes({
   required BuildContext context,
   required Widget targetScreen,
 }) {
-  Navigator.of(context).pushAndRemoveUntil(
+  Navigator.pushAndRemoveUntil(
+    context,
     MaterialPageRoute(builder: (context) => targetScreen),
     (route) => false // false => 이전 routes 모두 삭제
     ,
@@ -41,22 +43,25 @@ void routeWithFadeSlideAnimation({
   required Widget targetScreen,
   Duration? duration,
 }) {
-  Navigator.of(context).push(PageRouteBuilder(
-    pageBuilder: (context, animation, secondaryAnimation) => targetScreen,
-    transitionDuration: duration ?? const Duration(milliseconds: 500),
-    reverseTransitionDuration: duration ?? const Duration(milliseconds: 500),
-    transitionsBuilder: (context, animation, secondaryAnimation, child) {
-      final offsetAnimation = Tween(
-        begin: const Offset(0, -1),
-        end: Offset.zero,
-      ).animate(animation);
-      return SlideTransition(
-        position: offsetAnimation,
-        child: FadeTransition(
-          opacity: animation,
-          child: child,
-        ),
-      );
-    },
-  ));
+  Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => targetScreen,
+        transitionDuration: duration ?? const Duration(milliseconds: 500),
+        reverseTransitionDuration:
+            duration ?? const Duration(milliseconds: 500),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          final offsetAnimation = Tween(
+            begin: const Offset(0, -1),
+            end: Offset.zero,
+          ).animate(animation);
+          return SlideTransition(
+            position: offsetAnimation,
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+      ));
 }
