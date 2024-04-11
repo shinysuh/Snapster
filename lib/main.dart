@@ -3,11 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/authentication/email_screen.dart';
-import 'package:tiktok_clone/features/authentication/login_screen.dart';
-import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/router.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -47,7 +44,8 @@ class _TikTokAppState extends State<TikTokApp> {
   Widget build(BuildContext context) {
     // locale 강제 지정
     // S.load(const Locale('en'));
-    return MaterialApp(
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'TikTok Clone',
       localizationsDelegates: const [
         // flutter intl -> l10n
@@ -181,13 +179,6 @@ class _TikTokAppState extends State<TikTokApp> {
           indicatorColor: Colors.white,
         ),
       ),
-      initialRoute: '/',
-      routes: {
-        SignUpScreen.routeName: (context) => const SignUpScreen(),
-        LoginScreen.routeName: (context) => const LoginScreen(),
-        UsernameScreen.routeName: (context) => const UsernameScreen(),
-        EmailScreen.routeName: (context) => const EmailScreen(),
-      },
       // home: const SettingsScreen(),
       // home: const SignUpScreen(),
       // home: const MainNavigationScreen(),

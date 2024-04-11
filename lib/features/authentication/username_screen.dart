@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
@@ -43,10 +44,11 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onSubmit() {
     if (_username.isEmpty) return;
-    redirectToRoute(
-        context: context,
-        route: EmailScreen.routeName,
-        args: EmailScreenArgs(username: _username));
+    context.push(EmailScreen.routeName, extra: EmailScreenArgs(username: _username));
+    // redirectToRoute(
+    //     context: context,
+    //     route: EmailScreen.routeName,
+    //     args: EmailScreenArgs(username: _username));
   }
 
   @override

@@ -16,7 +16,7 @@ class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
   void _onTapSignUp(BuildContext context) {
-    goBackToPreviousPage(context);
+    goBackToPreviousRoute(context);
   }
 
   void _onTapEmailAndPassword(BuildContext context) {

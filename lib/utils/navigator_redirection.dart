@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 // pushNamed
+/* ** 주의 : Web 에서는 사용 지양(뒤로가기 지원이 되지 않음) */
 void redirectToRoute({
   required BuildContext context,
   required String route,
@@ -10,6 +12,7 @@ void redirectToRoute({
 }
 
 // push
+/* ** 주의 : Web 에서는 사용 지양(url이 변하지 않아 Web에 사용하기 적절하지 않음) */
 void redirectToScreen(
     {required BuildContext context,
     required Widget targetScreen,
@@ -65,4 +68,9 @@ void routeWithFadeSlideAnimation({
           );
         },
       ));
+}
+
+/* Go Router */
+void goBackToPreviousRoute(BuildContext context) {
+  context.pop();
 }

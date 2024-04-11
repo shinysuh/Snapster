@@ -96,7 +96,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           Offstage(
             offstage: _isPageHidden(4),
             child: RegulatedMaxWidth(
-              child: UserProfileScreen(),
+              child: UserProfileScreen(username: 'jen123', show: 'posts'),
             ),
           ),
         ],
