@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 void redirectToRoute({
   required BuildContext context,
   required String route,
+  Object? args,
 }) {
-  Navigator.pushNamed(context, route);
+  Navigator.pushNamed(context, route, arguments: args);
 }
 
 // push

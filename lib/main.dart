@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/email_screen.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
@@ -185,6 +186,7 @@ class _TikTokAppState extends State<TikTokApp> {
         SignUpScreen.routeName: (context) => const SignUpScreen(),
         LoginScreen.routeName: (context) => const LoginScreen(),
         UsernameScreen.routeName: (context) => const UsernameScreen(),
+        EmailScreen.routeName: (context) => const EmailScreen(),
       },
       // home: const SettingsScreen(),
       // home: const SignUpScreen(),
