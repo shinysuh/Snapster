@@ -16,8 +16,18 @@ final router = GoRouter(
       builder: (context, state) => const LoginScreen(),
     ),
     GoRoute(
-      path: UsernameScreen.routeName,
-      builder: (context, state) => const UsernameScreen(),
+      name: UsernameScreen.routeName,
+      path: UsernameScreen.routeURL,
+      pageBuilder: (context, state) => CustomTransitionPage(
+          transitionsBuilder: (context, animation, secondaryAnimation, child) =>
+              FadeTransition(
+                opacity: animation,
+                child: ScaleTransition(
+                  scale: animation,
+                  child: child,
+                ),
+              ),
+          child: const UsernameScreen()),
     ),
     GoRoute(
       path: EmailScreen.routeName,
