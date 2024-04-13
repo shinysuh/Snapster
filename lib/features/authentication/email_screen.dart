@@ -15,7 +15,8 @@ class EmailScreenArgs {
 }
 
 class EmailScreen extends StatefulWidget {
-  static String routeName = '/email';
+  static String routeURL = 'email';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static String routeName = 'email';
   final String username;
 
   const EmailScreen({

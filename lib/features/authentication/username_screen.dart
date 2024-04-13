@@ -8,7 +8,8 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class UsernameScreen extends StatefulWidget {
-  static String routeName = '/username';
+  static String routeURL = 'username';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static String routeName = 'username';
 
   const UsernameScreen({super.key});
 
@@ -44,7 +45,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onSubmit() {
     if (_username.isEmpty) return;
-    context.push(EmailScreen.routeName, extra: EmailScreenArgs(username: _username));
+    context.pushNamed(EmailScreen.routeName, extra: EmailScreenArgs(username: _username));
     // redirectToRoute(
     //     context: context,
     //     route: EmailScreen.routeName,

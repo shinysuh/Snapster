@@ -74,3 +74,8 @@ void routeWithFadeSlideAnimation({
 void goBackToPreviousRoute(BuildContext context) {
   context.pop();
 }
+
+void goToNewPageWithoutStack(BuildContext context, String location) {
+  context.go(location);
+  // context.goNamed(location);
+}
