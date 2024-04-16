@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
@@ -7,6 +8,9 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class UsernameScreen extends StatefulWidget {
+  static String routeURL = 'username';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static String routeName = 'username';
+
   const UsernameScreen({super.key});
 
   @override
@@ -41,7 +45,11 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onSubmit() {
     if (_username.isEmpty) return;
-    redirectToScreen(context: context, targetScreen: const EmailScreen());
+    context.pushNamed(EmailScreen.routeName, extra: EmailScreenArgs(username: _username));
+    // redirectToRoute(
+    //     context: context,
+    //     route: EmailScreen.routeName,
+    //     args: EmailScreenArgs(username: _username));
   }
 
   @override

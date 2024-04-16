@@ -6,8 +6,23 @@ import 'package:tiktok_clone/features/authentication/password_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
+class EmailScreenArgs {
+  final String username;
+
+  EmailScreenArgs({
+    required this.username,
+  });
+}
+
 class EmailScreen extends StatefulWidget {
-  const EmailScreen({super.key});
+  static String routeURL = 'email';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static String routeName = 'email';
+  final String username;
+
+  const EmailScreen({
+    super.key,
+    required this.username,
+  });
 
   @override
   State<EmailScreen> createState() => _EmailScreenState();
@@ -53,6 +68,8 @@ class _EmailScreenState extends State<EmailScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // ModalRoute.of(context) => Navigator 1(pushNamed) 사용 시
+    // final args = ModalRoute.of(context)!.settings.arguments as EmailScreenArgs;
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
@@ -67,9 +84,9 @@ class _EmailScreenState extends State<EmailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gaps.v40,
-              const Text(
-                'Enter Your Email',
-                style: TextStyle(
+              Text(
+                'Enter Your Email, ${widget.username}',
+                style: const TextStyle(
                   fontSize: Sizes.size20 + Sizes.size2,
                   fontWeight: FontWeight.w700,
                 ),

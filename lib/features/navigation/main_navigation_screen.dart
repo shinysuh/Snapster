@@ -96,17 +96,19 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           Offstage(
             offstage: _isPageHidden(4),
             child: RegulatedMaxWidth(
-              child: UserProfileScreen(),
+              child: UserProfileScreen(username: 'jen123', show: 'posts'),
             ),
           ),
         ],
       ),
-      bottomNavigationBar: BottomAppBar(
+      bottomNavigationBar: Container(
         color: _isScreenDark() ? Colors.black : Colors.white,
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            vertical: Sizes.size16,
-            horizontal: Sizes.size8,
+          padding: const EdgeInsets.only(
+            top: Sizes.size16,
+            bottom: Sizes.size48,
+            left: Sizes.size20,
+            right: Sizes.size20,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -120,6 +122,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 selectedIcon: FontAwesomeIcons.house,
                 onTap: () => _onTapNavigationItem(0),
               ),
+              Gaps.h14,
               NavTab(
                 isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 1,
@@ -134,7 +137,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   // );
                 },
               ),
-              Gaps.h24,
+              Gaps.h32,
               GestureDetector(
                 onTapDown: (details) => _onTapDownPostVideoButton(),
                 onTapCancel: _onReleasePostVideoButton,
@@ -144,7 +147,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                   inverted: !_isScreenDark(),
                 ),
               ),
-              Gaps.h24,
+              Gaps.h32,
               NavTab(
                 isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 3,
@@ -153,6 +156,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 selectedIcon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTapNavigationItem(3),
               ),
+              Gaps.h14,
               NavTab(
                 isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 4,

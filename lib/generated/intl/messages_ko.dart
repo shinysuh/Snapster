@@ -1,5 +1,5 @@
 // DO NOT EDIT. This is code generated via package:intl/generate_localized.dart
-// This is a library that provides messages for a en locale. All the
+// This is a library that provides messages for a ko locale. All the
 // messages from the main program should be duplicated here with the same
 // function name.
 
@@ -18,51 +18,46 @@ final messages = new MessageLookup();
 typedef String MessageIfAbsent(String messageStr, List<dynamic> args);
 
 class MessageLookup extends MessageLookupByLibrary {
-  String get localeName => 'en';
+  String get localeName => 'ko';
 
   static String m0(value) => "${value}";
 
   static String m1(value) => "${value}";
 
-  static String m2(value, value2) =>
-      "${value} ${Intl.plural(value2, one: 'comment', other: 'comments')}";
+  static String m2(value, value2) => "댓글 ${value}개";
 
   static String m3(value) => "${value}";
 
-  static String m4(gender) =>
-      "Log in ${Intl.gender(gender, female: 'Madam', male: 'Sir', other: 'Human')}";
+  static String m4(gender) => "로그인";
 
-  static String m5(nameOfTheApp) => "Log in to ${nameOfTheApp}";
+  static String m5(nameOfTheApp) => "${nameOfTheApp}에 로그인하세요";
 
-  static String m6(videoCount) =>
-      "Create a profile, follow other accounts, make your own ${Intl.plural(videoCount, zero: 'no videos', one: 'video', other: 'videos')}, and more.";
+  static String m6(videoCount) => "프로필 생성, 다른 계정 팔로우, 나만의 비디오 만들기 등.";
 
-  static String m7(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
+  static String m7(nameOfTheApp) => "${nameOfTheApp}에 가입하세요";
 
   static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
-            MessageLookupByLibrary.simpleMessage("Already have an account?"),
+            MessageLookupByLibrary.simpleMessage("이미 계정이 있으신가요?"),
         "commentCount": m0,
         "commentLikeCount": m1,
         "commentTitle": m2,
-        "continueWithApple":
-            MessageLookupByLibrary.simpleMessage("Continue with apple"),
+        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 아이디 로그인"),
         "dontHaveAnAccount":
-            MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
+            MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
-        "loginSubTitle": MessageLookupByLibrary.simpleMessage(
-            "Manage your account, check notifications, comment on videos, and more."),
-        "share": MessageLookupByLibrary.simpleMessage("share"),
-        "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
+        "loginSubTitle":
+            MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
+        "share": MessageLookupByLibrary.simpleMessage("공유"),
+        "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
-        "useEmailPassword":
-            MessageLookupByLibrary.simpleMessage("Use email & password")
+        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일 로그인")
       };
 }

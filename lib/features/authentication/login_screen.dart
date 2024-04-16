@@ -5,15 +5,19 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class LoginScreen extends StatelessWidget {
+  static String routeURL = '/login';
+  static String routeName = 'login';
+
   const LoginScreen({super.key});
 
   void _onTapSignUp(BuildContext context) {
-    goBackToPreviousPage(context);
+    goBackToPreviousRoute(context);
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
@@ -36,9 +40,9 @@ class LoginScreen extends StatelessWidget {
               child: Column(
                 children: [
                   Gaps.v80,
-                  const Text(
-                    'Log in to TikTok',
-                    style: TextStyle(
+                  Text(
+                    S.of(context).logInToTiktok('TikTok'),
+                    style: const TextStyle(
                       fontSize: Sizes.size26,
                       fontWeight: FontWeight.w700,
                     ),
@@ -53,11 +57,11 @@ class LoginScreen extends StatelessWidget {
                     // ),
                   ),
                   Gaps.v20,
-                  const Opacity(
+                  Opacity(
                     opacity: 0.7,
                     child: Text(
-                      'Manage your account, check notifications, comment on videos, and more.',
-                      style: TextStyle(
+                      S.of(context).loginSubTitle,
+                      style: const TextStyle(
                         fontSize: Sizes.size16,
                       ),
                       textAlign: TextAlign.center,
@@ -68,13 +72,13 @@ class LoginScreen extends StatelessWidget {
                   if (orientation == Orientation.portrait) ...[
                     AuthButton(
                       icon: FontAwesomeIcons.user,
-                      text: 'Use email & password',
+                      text: S.of(context).useEmailPassword,
                       onTapButton: () => _onTapEmailAndPassword(context),
                     ),
                     Gaps.v14,
                     AuthButton(
                       icon: FontAwesomeIcons.apple,
-                      text: 'Continue with apple',
+                      text: S.of(context).continueWithApple,
                       onTapButton: () => _onTapAppleLogin(context),
                     ),
                   ],
@@ -85,7 +89,7 @@ class LoginScreen extends StatelessWidget {
                         Expanded(
                           child: AuthButton(
                             icon: FontAwesomeIcons.user,
-                            text: 'Use email & password',
+                            text: S.of(context).useEmailPassword,
                             onTapButton: () => _onTapEmailAndPassword(context),
                           ),
                         ),
@@ -93,7 +97,7 @@ class LoginScreen extends StatelessWidget {
                         Expanded(
                           child: AuthButton(
                             icon: FontAwesomeIcons.apple,
-                            text: 'Continue with apple',
+                            text: S.of(context).continueWithApple,
                             onTapButton: () => _onTapAppleLogin(context),
                           ),
                         ),
@@ -104,17 +108,21 @@ class LoginScreen extends StatelessWidget {
             ),
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          color: isDarkMode(context) ? null : Colors.grey.shade50,
+        bottomNavigationBar: Container(
+          color:
+              isDarkMode(context) ? Colors.grey.shade900 : Colors.grey.shade50,
           height: 130,
           child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: Sizes.size32),
+            padding: const EdgeInsets.only(
+              top: Sizes.size32,
+              bottom: Sizes.size64,
+            ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text(
-                  'Don\'t have an account?',
-                  style: TextStyle(
+                Text(
+                  S.of(context).dontHaveAnAccount,
+                  style: const TextStyle(
                     fontSize: Sizes.size18,
                   ),
                 ),
@@ -122,7 +130,7 @@ class LoginScreen extends StatelessWidget {
                 GestureDetector(
                   onTap: () => _onTapSignUp(context),
                   child: Text(
-                    'Sign up',
+                    S.of(context).signUp,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: Sizes.size18,

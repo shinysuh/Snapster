@@ -12,7 +12,14 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class UserProfileScreen extends StatefulWidget {
-  const UserProfileScreen({super.key});
+  final String username;
+  final String show;
+
+  const UserProfileScreen({
+    super.key,
+    required this.username,
+    required this.show,
+  });
 
   @override
   State<UserProfileScreen> createState() => _UserProfileScreenState();
@@ -52,7 +59,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '@$_userAccount',
+          '@${widget.username}',
           style: const TextStyle(
             fontSize: Sizes.size16,
             fontWeight: FontWeight.w600,
@@ -70,7 +77,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   Widget _getFollowInfo() {
     return SizedBox(
-      height: Sizes.size48,
+      height: Sizes.size52,
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
@@ -205,6 +212,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     ? 4
                     : 5;
             return DefaultTabController(
+              initialIndex: widget.show == 'likes'?1:0,
               length: 2,
               /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
               child: NestedScrollView(
@@ -212,7 +220,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   SliverAppBar(
                     centerTitle: true,
                     // backgroundColor: isDark ? Colors.black : Colors.white,
-                    title: Text(_username),
+                    title: Text(
+                      widget.username.isEmpty ? _username : widget.username,
+                    ),
                     actions: [
                       IconButton(
                         onPressed: () {},

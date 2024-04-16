@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/router.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -40,13 +42,32 @@ class _TikTokAppState extends State<TikTokApp> {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    // locale 강제 지정
+    // S.load(const Locale('en'));
+    return MaterialApp.router(
+      routerConfig: router,
       title: 'TikTok Clone',
+      localizationsDelegates: const [
+        // flutter intl -> l10n
+        S.delegate,
+        // flutter 위젯 기본 번역 (AppLocalizations 에 포함됨)
+        GlobalMaterialLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+      ],
+      supportedLocales: const [
+        // supportedLocales => 지원 언어 목록 (IANA Language Registry 참고)
+        Locale('en'),
+        Locale('ko'),
+      ],
       debugShowCheckedModeBanner: false,
       // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능
       themeMode: ThemeMode.system,
+      /* FlexThemeData (flex-color-scheme) : 전반적 색상 테마 적용 패키지 */
+      // theme: FlexThemeData.light(scheme: FlexScheme.mandyRed),
+      // darkTheme: FlexThemeData.dart(scheme: FlexScheme.mandyRed),
       theme: ThemeData(
-        useMaterial3: false,
+        // useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.light,
         scaffoldBackgroundColor: Colors.white,
@@ -93,6 +114,7 @@ class _TikTokAppState extends State<TikTokApp> {
         appBarTheme: const AppBarTheme(
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
+          surfaceTintColor: Colors.white,
           elevation: 0,
           titleTextStyle: TextStyle(
             color: Colors.black,
@@ -108,13 +130,13 @@ class _TikTokAppState extends State<TikTokApp> {
         listTileTheme: const ListTileThemeData(
           iconColor: Colors.black,
         ),
-        // bottomAppBarTheme: BottomAppBarTheme(
-        //   shadowColor: Colors.black,
-        //   surfaceTintColor: Colors.grey.shade50,
-        // ),
+        bottomAppBarTheme: BottomAppBarTheme(
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.grey.shade50,
+        ),
       ),
       darkTheme: ThemeData(
-        useMaterial3: false,
+        // useMaterial3: false,
         primaryColor: const Color(0xFFE9435A),
         brightness: Brightness.dark,
         scaffoldBackgroundColor: Colors.black,
@@ -132,24 +154,34 @@ class _TikTokAppState extends State<TikTokApp> {
         appBarTheme: AppBarTheme(
           foregroundColor: Colors.white,
           backgroundColor: Colors.grey.shade900,
+          surfaceTintColor: Colors.grey.shade900,
           elevation: 0,
           titleTextStyle: const TextStyle(
             color: Colors.white,
             fontSize: Sizes.size18,
             fontWeight: FontWeight.w700,
           ),
+          actionsIconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
+          iconTheme: IconThemeData(
+            color: Colors.grey.shade100,
+          ),
         ),
         bottomAppBarTheme: BottomAppBarTheme(
           color: Colors.grey.shade900,
+          shadowColor: Colors.black,
+          surfaceTintColor: Colors.grey.shade900,
         ),
         tabBarTheme: TabBarTheme(
           labelColor: Colors.white,
-          unselectedLabelColor: Colors.grey.shade500,
+          unselectedLabelColor: Colors.grey.shade600,
           indicatorColor: Colors.white,
         ),
       ),
+      // home: const SettingsScreen(),
       // home: const SignUpScreen(),
-      home: const MainNavigationScreen(),
+      // home: const MainNavigationScreen(),
       // home: const LayoutBuilderCodeLab(),
     );
   }
