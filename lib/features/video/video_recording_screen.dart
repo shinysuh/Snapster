@@ -24,6 +24,10 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   bool _isInitialized = false;
   bool _isSelfieMode = false;
 
+  late double _maxZoom;
+  late double _minZoom;
+  double _currentZoom = 0.0;
+
   late CameraController _cameraController;
   FlashMode _flashMode = FlashMode.auto;
 
@@ -120,6 +124,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     // only for iOS - 영상과 오디오의 싱크 불일치 예방
     await _cameraController.prepareForVideoRecording();
 
+    _maxZoom = await _cameraController.getMaxZoomLevel(); // 10.0
+    _minZoom = await _cameraController.getMinZoomLevel(); // 1.0
+
     _isInitialized = _cameraController.value.isInitialized;
     _flashMode = _cameraController.value.flashMode;
     setState(() {});
@@ -147,6 +154,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   }
 
   Future<void> _stopRecording() async {
+    _currentZoom = 0.0;
     if (!_cameraController.value.isRecordingVideo) return;
 
     _buttonAnimationController.reverse();
@@ -190,6 +198,21 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
         isPicked: true,
       ),
     );
+  }
+
+  Future<void> _onDragWhileRecording(DragUpdateDetails details) async {
+    if (!_cameraController.value.isInitialized) return;
+
+    // 위 offset y -
+    // 아래 offset y +
+    var dragDelta = _currentZoom + (-details.delta.dy * 0.05);
+    _currentZoom = dragDelta > _maxZoom
+        ? _maxZoom
+        : dragDelta < _minZoom
+            ? _minZoom
+            : dragDelta;
+
+    await _cameraController.setZoomLevel(_currentZoom);
   }
 
   @override
