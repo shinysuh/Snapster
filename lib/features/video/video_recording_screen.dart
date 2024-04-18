@@ -1,5 +1,7 @@
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -78,7 +80,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     var gotPermission = !cameraDenied && !micDenied;
     _hasPermission = gotPermission;
     _permissionDenied = !gotPermission;
-    if (gotPermission) initCamera();
+    if (gotPermission) await initCamera();
 
     setState(() {});
   }
@@ -92,7 +94,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
       // cameras[0] = back camera
       cameras[_isSelfieMode ? 1 : 0],
       ResolutionPreset.ultraHigh,
-      // enableAudio: false,  // Android Emulator 사용 시 자체적 오류 방지
+      enableAudio: false, // Android Emulator 사용 시 자체적 오류 방지
     );
 
     await _cameraController.initialize();
@@ -104,10 +106,9 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     setState(() {});
   }
 
-  Future<void> _toggleSelfieMode() async {
+  void _toggleSelfieMode() {
     _isSelfieMode = !_isSelfieMode;
-    await initCamera();
-    setState(() {});
+    initCamera();
   }
 
   Future<void> _setFlashMode(FlashMode newFlashMode) async {
@@ -143,7 +144,32 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
     redirectToScreen(
       context: context,
-      targetScreen: VideoPreviewScreen(video: file),
+      targetScreen: VideoPreviewScreen(
+        video: file,
+        isPicked: false,
+      ),
+    );
+  }
+
+  Future<void> _onPressPickVideo() async {
+    // ImageSource.camera => 기기의 카메라 앱 open
+    // 직접 구현 대신 기기의 카메라를 사용하면 영상의 길이를 제한할 수 없으므로 필요에 따른 고려 필요
+    // final video = await ImagePicker().pickVideo(source: ImageSource.camera);
+
+    // ImageSource.gallery => 기기의 갤러리 open
+    final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
+
+    // when user picked nothing
+    if (video == null) return;
+
+    if (!mounted) return;
+
+    redirectToScreen(
+      context: context,
+      targetScreen: VideoPreviewScreen(
+        video: video,
+        isPicked: true,
+      ),
     );
   }
 
@@ -222,34 +248,56 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                   ),
                   Positioned(
                     bottom: Sizes.size80 + Sizes.size10,
-                    child: GestureDetector(
-                      onTapDown: _startRecording,
-                      onTapUp: (details) => _stopRecording(),
-                      child: ScaleTransition(
-                        scale: _buttonAnimation,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            Container(
-                              width: Sizes.size60 + Sizes.size14,
-                              height: Sizes.size60 + Sizes.size14,
-                              child: CircularProgressIndicator(
-                                color: Colors.red.shade400,
-                                strokeWidth: Sizes.size5,
-                                value: _progressAnimationController.value,
-                              ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Row(
+                      children: [
+                        // Spacer => 빈 공간
+                        const Spacer(),
+                        GestureDetector(
+                          onTapDown: _startRecording,
+                          onTapUp: (details) => _stopRecording(),
+                          onVerticalDragUpdate: _onDragWhileRecording,
+                          child: ScaleTransition(
+                            scale: _buttonAnimation,
+                            child: Stack(
+                              alignment: Alignment.center,
+                              children: [
+                                Container(
+                                  width: Sizes.size60 + Sizes.size14,
+                                  height: Sizes.size60 + Sizes.size14,
+                                  child: CircularProgressIndicator(
+                                    color: Colors.red.shade400,
+                                    strokeWidth: Sizes.size5,
+                                    value: _progressAnimationController.value,
+                                  ),
+                                ),
+                                Container(
+                                  width: Sizes.size60,
+                                  height: Sizes.size60,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Colors.red.shade400,
+                                  ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              width: Sizes.size60,
-                              height: Sizes.size60,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.red.shade400,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        Expanded(
+                          child: Container(
+                            // 클릭 적용 범위 제한을 위한 Container - center
+                            alignment: Alignment.center,
+                            child: IconButton(
+                              onPressed: _onPressPickVideo,
+                              icon: const FaIcon(
+                                FontAwesomeIcons.image,
+                                color: Colors.white,
+                                size: Sizes.size28,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ],
