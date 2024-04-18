@@ -139,6 +139,8 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     // print('+++++++++++++++++++++++ fileName: ${file.name}');
     // print('+++++++++++++++++++++++ filePath: ${file.path}');
 
+    if (!mounted) return;
+
     redirectToScreen(
       context: context,
       targetScreen: VideoPreviewScreen(video: file),
