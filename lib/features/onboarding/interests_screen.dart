@@ -10,6 +10,7 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 class InterestScreen extends StatefulWidget {
   static const String routeName = 'interests';
   static const String routeURL = '/tutorial';
+
   const InterestScreen({super.key});
 
   @override
@@ -163,7 +164,7 @@ class BottomButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: Sizes.size16,
-          horizontal: Sizes.size64 + Sizes.size4,
+          horizontal: Sizes.size60,
         ),
         decoration: BoxDecoration(
             color: buttonColor ??

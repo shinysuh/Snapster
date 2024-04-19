@@ -87,28 +87,28 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
           // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
           Offstage(
             offstage: _isPageHidden(0),
-            child: RegulatedMaxWidth(
+            child: const RegulatedMaxWidth(
               maxWidth: Breakpoints.sm,
               child: VideoTimelineScreen(),
             ),
           ),
           Offstage(
             offstage: _isPageHidden(1),
-            child: RegulatedMaxWidth(
+            child: const RegulatedMaxWidth(
               child: DiscoverScreen(),
             ),
           ),
           Offstage(
             offstage: _isPageHidden(3),
-            child: RegulatedMaxWidth(
+            child: const RegulatedMaxWidth(
               maxWidth: Breakpoints.sm,
               child: InboxScreen(),
             ),
           ),
           Offstage(
             offstage: _isPageHidden(4),
-            child: RegulatedMaxWidth(
-              child: UserProfileScreen(username: 'jen123', show: 'posts'),
+            child: const RegulatedMaxWidth(
+              child: UserProfileScreen(username: 'json_2426', show: 'posts'),
             ),
           ),
         ],
@@ -118,7 +118,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         child: Padding(
           padding: const EdgeInsets.only(
             top: Sizes.size16,
-            bottom: Sizes.size48,
+            bottom: Sizes.size28,
             left: Sizes.size20,
             right: Sizes.size20,
           ),
@@ -134,7 +134,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 selectedIcon: FontAwesomeIcons.house,
                 onTap: () => _onTapNavigationItem(0),
               ),
-              Gaps.h14,
+              Gaps.h8,
               NavTab(
                 isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 1,
@@ -168,7 +168,7 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
                 selectedIcon: FontAwesomeIcons.solidMessage,
                 onTap: () => _onTapNavigationItem(3),
               ),
-              Gaps.h14,
+              Gaps.h8,
               NavTab(
                 isHome: _isScreenDark(),
                 isSelected: _selectedIndex == 4,
