@@ -29,9 +29,10 @@
 	<key>NSPrincipalClass</key>
 	<string>NSApplication</string>
 	<key>NSCameraUsageDescription</key>
-    <string>your usage description here</string>
+    <string>Permission to access local cameras</string>
     <key>NSMicrophoneUsageDescription</key>
-    <string>your usage description here</string>
+    <string>Permission to access the microphone</string>
     <key>NSPhotoLibraryUsageDescription</key>
+    <string>Permission to access local gallery</string>
 </dict>
 </plist>
