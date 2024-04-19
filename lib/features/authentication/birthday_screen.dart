@@ -8,6 +8,9 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class BirthdayScreen extends StatefulWidget {
+  static const String routeURL = 'birthday'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'birthday';
+
   const BirthdayScreen({super.key});
 
   @override
@@ -40,9 +43,9 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   }
 
   void _onSubmit() {
-    redirectToScreenAndRemovePreviousRoutes(
+    goToRouteNamedWithoutStack(
       context: context,
-      targetScreen: const InterestScreen(),
+      routeName: InterestScreen.routeName,
     );
   }
 

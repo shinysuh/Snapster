@@ -41,16 +41,16 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
         formData[field] = newValue;
       });
     }
-    print(formData.values);
+    // print(formData.values);
   }
 
   void _onSubmit() {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save(); // invoke onSaved
-      redirectToScreenAndRemovePreviousRoutes(
+      goToRouteNamedWithoutStack(
         context: context,
-        targetScreen: const InterestScreen(),
+        routeName: InterestScreen.routeName,
       );
     }
   }

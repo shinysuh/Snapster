@@ -13,6 +13,9 @@ import 'package:tiktok_clone/features/video/widgets/flash_mode_button.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
+  static const String routeName = 'postVideo';
+  static const String routeURL = '/upload';
+
   const VideoRecordingScreen({super.key});
 
   @override
@@ -83,12 +86,14 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   void dispose() {
     _progressAnimationController.dispose();
     _buttonAnimationController.dispose();
-    _cameraController.dispose();
+    // iOS 오류 방지
+    if (!_noCamera) _cameraController.dispose();
     super.dispose();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (_noCamera) return; // iOS 오류 방지
     if (!_hasPermission) return;
     if (!_cameraController.value.isInitialized) return;
 
@@ -256,51 +261,58 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                 children: [
                   if (!_noCamera && _isInitialized)
                     CameraPreview(_cameraController),
-                  if (!_noCamera)
-                    Positioned(
-                      top: Sizes.size32,
-                      right: Sizes.size1,
-                      child: Column(
-                        children: [
-                          IconButton(
-                            color: Colors.white,
-                            onPressed: _toggleSelfieMode,
-                            icon: const Icon(
-                              Icons.cameraswitch,
-                              size: Sizes.size28,
-                            ),
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_off_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.off,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_on_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.always,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_auto_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.auto,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flashlight_on_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.torch,
-                          ),
-                        ],
-                      ),
+                  const Positioned(
+                    top: Sizes.size32,
+                    left: Sizes.size4,
+                    child: CloseButton(
+                      color: Colors.white,
                     ),
+                  ),
+                  if (!_noCamera)
+                  Positioned(
+                    top: Sizes.size32,
+                    right: Sizes.size1,
+                    child: Column(
+                      children: [
+                        IconButton(
+                          color: Colors.white,
+                          onPressed: _toggleSelfieMode,
+                          icon: const Icon(
+                            Icons.cameraswitch,
+                            size: Sizes.size28,
+                          ),
+                        ),
+                        Gaps.v10,
+                        FlashModeButton(
+                          icon: Icons.flash_off_rounded,
+                          setFlashMode: _setFlashMode,
+                          currentFlashMode: _flashMode,
+                          buttonFlashMode: FlashMode.off,
+                        ),
+                        Gaps.v10,
+                        FlashModeButton(
+                          icon: Icons.flash_on_rounded,
+                          setFlashMode: _setFlashMode,
+                          currentFlashMode: _flashMode,
+                          buttonFlashMode: FlashMode.always,
+                        ),
+                        Gaps.v10,
+                        FlashModeButton(
+                          icon: Icons.flash_auto_rounded,
+                          setFlashMode: _setFlashMode,
+                          currentFlashMode: _flashMode,
+                          buttonFlashMode: FlashMode.auto,
+                        ),
+                        Gaps.v10,
+                        FlashModeButton(
+                          icon: Icons.flashlight_on_rounded,
+                          setFlashMode: _setFlashMode,
+                          currentFlashMode: _flashMode,
+                          buttonFlashMode: FlashMode.torch,
+                        ),
+                      ],
+                    ),
+                  ),
                   Positioned(
                     bottom: Sizes.size80 + Sizes.size10,
                     width: MediaQuery.of(context).size.width,

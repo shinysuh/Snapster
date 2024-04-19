@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/navigation/main_navigation_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/tutorial_page.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
@@ -57,9 +56,9 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onTapEnterTheApp() {
-    redirectToScreenAndRemovePreviousRoutes(
+    goToRouteWithoutStack(
       context: context,
-      targetScreen: const MainNavigationScreen(),
+      location: '/home',
     );
   }
 

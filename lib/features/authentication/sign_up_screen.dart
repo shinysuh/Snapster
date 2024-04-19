@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -8,17 +7,24 @@ import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class SignUpScreen extends StatelessWidget {
-  static String routeURL = '/';
-  static String routeName = 'signUp';
+  static const String routeURL = '/';
+  static const String routeName = 'signUp';
 
   const SignUpScreen({super.key});
 
   void _onTapLogin(BuildContext context) async {
-    context.push(LoginScreen.routeURL);
+    // context.push(LoginScreen.routeURL);
+
+    goToRouteNamed(
+      context: context,
+      routeName: LoginScreen.routeName,
+    );
+
     // redirectToRoute(context: context, route: LoginScreen.routeName);
     // redirectToScreen(context: context, targetScreen: const LoginScreen());
     // final result = await Navigator.of(context).push(
@@ -31,8 +37,14 @@ class SignUpScreen extends StatelessWidget {
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    context.pushNamed(UsernameScreen.routeName);
-    // context.push(UsernameScreen.routeName);
+    redirectToScreen(
+      context: context,
+      targetScreen: const UsernameScreen(),
+    );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: UsernameScreen.routeName,
+    // );
     // context.push('/user/jenna?show=likes');
 
     // redirectToRoute(context: context, route: UsernameScreen.routeName);

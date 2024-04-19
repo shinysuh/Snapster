@@ -10,11 +10,17 @@ class InboxScreen extends StatelessWidget {
   const InboxScreen({super.key});
 
   void _onTapDM(BuildContext context) {
-    redirectToScreen(context: context, targetScreen: const ChatsScreen());
+    goToRouteNamed(
+      context: context,
+      routeName: ChatsScreen.routeName,
+    );
   }
 
   void _onTapActivity(BuildContext context) {
-    redirectToScreen(context: context, targetScreen: const ActivityScreen());
+    goToRouteNamed(
+      context: context,
+      routeName: ActivityScreen.routeName,
+    );
   }
 
   @override

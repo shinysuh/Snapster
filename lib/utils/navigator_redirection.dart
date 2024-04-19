@@ -71,11 +71,39 @@ void routeWithFadeSlideAnimation({
 }
 
 /* Go Router */
+void goToRouteNamed({
+  required BuildContext context,
+  required String routeName,
+  Object? extra,
+  Map<String, String>? params,
+}) {
+  context.pushNamed(routeName, extra: extra, params: params ?? {});
+}
+
 void goBackToPreviousRoute(BuildContext context) {
   context.pop();
 }
 
-void goToNewPageWithoutStack(BuildContext context, String location) {
+// pushAndRemoveUntil 처럼 이전 route 들 접근 불가 => go 랑 같음
+void goRouteReplacementNamed({
+  required BuildContext context,
+  required String routeName,
+}) {
+  context.pushReplacementNamed(routeName);
+}
+
+// push 는 pop 이 가능하지만 go 는 route stack 의 이전 routes 모두 삭제 (pop 불가능)
+void goToRouteWithoutStack({
+  required BuildContext context,
+  required String location,
+}) {
   context.go(location);
   // context.goNamed(location);
+}
+
+void goToRouteNamedWithoutStack({
+  required BuildContext context,
+  required String routeName,
+}) {
+  context.goNamed(routeName);
 }

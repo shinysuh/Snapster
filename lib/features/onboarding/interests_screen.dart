@@ -8,6 +8,8 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class InterestScreen extends StatefulWidget {
+  static const String routeName = 'interests';
+  static const String routeURL = '/tutorial';
   const InterestScreen({super.key});
 
   @override

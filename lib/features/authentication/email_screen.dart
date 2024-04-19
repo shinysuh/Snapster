@@ -15,8 +15,8 @@ class EmailScreenArgs {
 }
 
 class EmailScreen extends StatefulWidget {
-  static String routeURL = 'email';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
-  static String routeName = 'email';
+  static const String routeURL = 'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'email';
   final String username;
 
   const EmailScreen({
@@ -63,7 +63,14 @@ class _EmailScreenState extends State<EmailScreen> {
 
   void _onSubmit() {
     if (_email.isEmpty || !_isEmailValid) return;
-    redirectToScreen(context: context, targetScreen: const PasswordScreen());
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: PasswordScreen.routeName,
+    // );
+    redirectToScreen(
+      context: context,
+      targetScreen: const PasswordScreen(),
+    );
   }
 
   @override

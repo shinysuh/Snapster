@@ -8,6 +8,9 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class PasswordScreen extends StatefulWidget {
+  static const String routeURL = 'password'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'password';
+
   const PasswordScreen({super.key});
 
   @override
@@ -83,7 +86,14 @@ class _PasswordScreenState extends State<PasswordScreen> {
 
   void _onSubmit() {
     if (!_isPasswordValid) return;
-    redirectToScreen(context: context, targetScreen: const BirthdayScreen());
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: BirthdayScreen.routeName,
+    // );
+    redirectToScreen(
+      context: context,
+      targetScreen: const BirthdayScreen(),
+    );
   }
 
   @override

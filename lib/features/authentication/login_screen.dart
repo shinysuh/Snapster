@@ -11,8 +11,8 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class LoginScreen extends StatelessWidget {
-  static String routeURL = '/login';
-  static String routeName = 'login';
+  static const String routeURL = '/login';
+  static const String routeName = 'login';
 
   const LoginScreen({super.key});
 

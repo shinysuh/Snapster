@@ -8,6 +8,9 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ActivityScreen extends StatefulWidget {
+  static const String routeName = 'activity';
+  static const String routeURL = '/activity';
+
   const ActivityScreen({super.key});
 
   @override
@@ -207,7 +210,10 @@ class _ActivityScreenState extends State<ActivityScreen>
               position: _panelAnimation,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme.of(context).appBarTheme.backgroundColor,
+                  color: Theme
+                      .of(context)
+                      .appBarTheme
+                      .backgroundColor,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(
                       Sizes.size5,

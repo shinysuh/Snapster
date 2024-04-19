@@ -1,20 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/common/widgets/navigation/widgets/nav_tab.dart';
+import 'package:tiktok_clone/common/widgets/navigation/widgets/post_video_button.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
+import 'package:tiktok_clone/constants/navigation_tabs.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/discover/discover_screen.dart';
 import 'package:tiktok_clone/features/inbox/inbox_screen.dart';
-import 'package:tiktok_clone/features/navigation/widgets/nav_tab.dart';
-import 'package:tiktok_clone/features/navigation/widgets/post_video_button.dart';
 import 'package:tiktok_clone/features/user/user_profile_screen.dart';
+import 'package:tiktok_clone/features/video/video_recording_screen.dart';
 import 'package:tiktok_clone/features/video/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class MainNavigationScreen extends StatefulWidget {
-  const MainNavigationScreen({super.key});
+  static const String routeName = 'mainNavigation';
+
+  final String tab;
+
+  const MainNavigationScreen({
+    super.key,
+    required this.tab,
+  });
 
   @override
   State<MainNavigationScreen> createState() => _MainNavigationScreenState();
@@ -22,9 +31,11 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   bool _isPostVideoClicked = false;
-  int _selectedIndex = 0;
+  late int _selectedIndex = tabs.indexOf(widget.tab);
 
   void _onTapNavigationItem(int index) {
+    var tab = tabs[index];
+    goToRouteWithoutStack(context: context, location: '/$tab');
     setState(() {
       _selectedIndex = index;
     });
@@ -32,15 +43,16 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   void _onTapPostVideoButton() {
     _onReleasePostVideoButton();
-    redirectToScreen(
-      context: context,
-      targetScreen: Scaffold(
-        appBar: AppBar(
-          title: const Text('record video'),
-        ),
-      ),
-      isFullScreen: true,
-    );
+    goToRouteNamed(context: context, routeName: VideoRecordingScreen.routeName);
+    // redirectToScreen(
+    //   context: context,
+    //   targetScreen: Scaffold(
+    //     appBar: AppBar(
+    //       title: const Text('record video'),
+    //     ),
+    //   ),
+    //   isFullScreen: true,
+    // );
   }
 
   void _onTapDownPostVideoButton() {
