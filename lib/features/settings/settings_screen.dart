@@ -100,6 +100,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 activeColor: Theme.of(context).primaryColor,
                 // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               ),
+              CheckboxListTile.adaptive(
+                value: _marketingEmails,
+                onChanged: _onChangeMarketingEmails,
+                title: const Text('Marketing emails'),
+                subtitle: const Text(
+                  'Marketing emails from TikTok will be sent',
+                  style: TextStyle(fontSize: Sizes.size12),
+                ),
+                checkColor: Colors.white,
+                activeColor: const Color(0xff52ac0b),
+              ),
               ListTile(
                 onTap: () async {
                   final date = await showDatePicker(
