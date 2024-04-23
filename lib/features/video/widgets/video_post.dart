@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -83,6 +84,11 @@ class _VideoPostState extends State<VideoPost>
     // 영상 자동 넘김 시 필요
     // _videoPlayerController.addListener(_onVideoChange);
 
+
+    /* inheritedWidget 의 필드값 가져오기 */
+    // if (!mounted) return;
+    // var autoMuted = VideoConfigData.of(context).autoMute;
+
     _videoPlayerController.setVolume(widget.isMuted ? 0 : 1);
 
     setState(() {
@@ -156,6 +162,7 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   Widget build(BuildContext context) {
+    print(VideoConfigData.of(context).autoMute);
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
       onVisibilityChanged: _onVisibilityChanged,
@@ -276,7 +283,7 @@ class _VideoPostState extends State<VideoPost>
                   ),
                 ),
                 Gaps.v24,
-                 VideoButton(
+                VideoButton(
                   icon: FontAwesomeIcons.share,
                   iconColor: Colors.white,
                   text: S.of(context).share,

@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
+import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
@@ -14,12 +16,20 @@ class SettingsScreen extends StatefulWidget {
 }
 
 class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notifications = false;
+  bool _notifications = true;
+  bool _marketingEmails = true;
 
   void _onChangeNotifications(bool? newValue) {
     if (newValue == null) return;
     setState(() {
       _notifications = newValue;
+    });
+  }
+
+  void _onChangeMarketingEmails(bool? newValue) {
+    if (newValue == null) return;
+    setState(() {
+      _marketingEmails = newValue;
     });
   }
 
@@ -93,6 +103,17 @@ class _SettingsScreenState extends State<SettingsScreen> {
               //   activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               // ),
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
+              SwitchListTile.adaptive(
+                value: VideoConfigData.of(context).autoMute,
+                onChanged: (value) => VideoConfigData.of(context).toggleMuted(),
+                title: const Text('Auto mute videos'),
+                subtitle: const Text(
+                  'Videos will be muted by default',
+                  style: TextStyle(fontSize: Sizes.size12),
+                ),
+                activeColor: Theme.of(context).primaryColor,
+                // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+              ),
               SwitchListTile.adaptive(
                 value: _notifications,
                 onChanged: _onChangeNotifications,
