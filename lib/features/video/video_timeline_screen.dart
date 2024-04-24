@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/features/video/widgets/video_post.dart';
 
@@ -16,14 +15,6 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
   final PageController _pageController = PageController();
   final Duration _scrollDuration = const Duration(milliseconds: 200);
   final Curve _scrollCurve = Curves.linear;
-
-  bool isMuted = false;
-
-  void onTapVolume(bool muted) {
-    setState(() {
-      isMuted = muted;
-    });
-  }
 
   void _onPageChanged(int pageIndex) {
     _pageController.animateToPage(
@@ -44,15 +35,6 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
       duration: _scrollDuration,
       curve: _scrollCurve,
     );
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
-    // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    if (kIsWeb) isMuted = true;
   }
 
   @override
@@ -87,8 +69,6 @@ class _VideoTimelineScreenState extends State<VideoTimelineScreen> {
         itemBuilder: (context, index) => VideoPost(
           onVideoFinished: _onVideoFinished,
           pageIndex: index,
-          isMuted: isMuted,
-          onTapVolume: onTapVolume,
         ),
       ),
     );
