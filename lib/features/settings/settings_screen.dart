@@ -103,12 +103,34 @@ class _SettingsScreenState extends State<SettingsScreen> {
               //   activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               // ),
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
+              ValueListenableBuilder(
+                valueListenable: videoConfig,
+                builder: (context, value, child) => SwitchListTile.adaptive(
+                  // ValueNotifier
+                  value: value,
+                  onChanged: (value) => videoConfig.value = !videoConfig.value,
+                  // ChangeNotifier
+                  // value: videoConfig.autoMute,
+                  // onChanged: (value) => videoConfig.toggleMuted(),
+                  title: const Text('Auto mute videos(ValueListenableBuilder)'),
+                  subtitle: const Text(
+                    'Videos will be muted by default\n(currently not connected)',
+                    style: TextStyle(fontSize: Sizes.size12),
+                  ),
+                  activeColor: Theme.of(context).primaryColor,
+                  // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+                ),
+              ),
               AnimatedBuilder(
                 animation: videoConfig,
                 builder: (context, child) => SwitchListTile.adaptive(
-                  value: videoConfig.autoMute,
-                  onChanged: (value) => videoConfig.toggleMuted(),
-                  title: const Text('Auto mute videos'),
+                  // ValueNotifier
+                  value: videoConfig.value,
+                  onChanged: (value) => videoConfig.value = !videoConfig.value,
+                  // ChangeNotifier
+                  // value: videoConfig.autoMute,
+                  // onChanged: (value) => videoConfig.toggleMuted(),
+                  title: const Text('Auto mute videos(AnimatedBuilder)'),
                   subtitle: const Text(
                     'Videos will be muted by default\n(currently not connected)',
                     style: TextStyle(fontSize: Sizes.size12),

@@ -44,10 +44,18 @@ class _VideoPostState extends State<VideoPost>
   bool _isPaused = false;
   bool _isLiked = false;
 
-  bool _isMuted = videoConfig.autoMute;
+  // ValueNotifier
+  bool _isMuted = videoConfig.value;
+
+  // ChangeNotifier
+  // bool _isMuted = videoConfig.autoMute;
 
   void _toggleMuted() {
-    videoConfig.toggleMuted();
+    // ValueNotifier
+    videoConfig.value = !videoConfig.value;
+
+    // ChangeNotifier
+    // videoConfig.toggleMuted();
   }
 
   @override
@@ -72,7 +80,10 @@ class _VideoPostState extends State<VideoPost>
 
     videoConfig.addListener(() {
       setState(() {
-        _isMuted = videoConfig.autoMute;
+        // ValueNotifier
+        _isMuted = videoConfig.value;
+        // ChangeNotifier
+        // _isMuted = videoConfig.autoMute;
       });
     });
 

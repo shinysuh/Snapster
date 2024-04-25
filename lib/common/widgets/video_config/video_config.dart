@@ -1,18 +1,21 @@
 import 'package:flutter/cupertino.dart';
 
-/* ChangeNotifier 학습용 클래스 */
-class VideoConfig extends ChangeNotifier {
-  // 데이터 Listening 하는 부분에서 AnimatedBuilder 사용 OR 이벤트 리스너 추가
-  // 데이터 변경 시, AnimatedBuilder 부분만 rebuild 됨 -> 성능 향상
-  bool autoMute = false;
+/* ValueNotifier - 값이 하나일 때 적용 */
+final videoConfig = ValueNotifier(false);
 
-  void toggleMuted() {
-    autoMute = !autoMute;
-    notifyListeners();    // 데이터를 리스닝하는 파트에 notify
-  }
-}
-
-final videoConfig = VideoConfig();
+/* ChangeNotifier 학습용 클래스 - 더 복잡한 요구사항, 다양한 값과 메소드에 유리 */
+// class VideoConfig extends ChangeNotifier {
+//   // 데이터 Listening 하는 부분에서 AnimatedBuilder 사용 OR 이벤트 리스너 추가
+//   // 데이터 변경 시, AnimatedBuilder 부분만 rebuild 됨 -> 성능 향상
+//   bool autoMute = false;
+//
+//   void toggleMuted() {
+//     autoMute = !autoMute;
+//     notifyListeners();    // 데이터를 리스닝하는 파트에 notify
+//   }
+// }
+//
+// final videoConfig = VideoConfig();
 
 // /* InheritedWidget 학습용 클래스 */
 // class VideoConfigData extends InheritedWidget {
