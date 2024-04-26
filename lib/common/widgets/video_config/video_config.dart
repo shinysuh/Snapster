@@ -1,7 +1,9 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 
 /* ValueNotifier - 값이 하나일 때 적용 */
 final videoConfig = ValueNotifier(false);
+
+final screenModeConfig = ValueNotifier(ThemeMode.light);
 
 /* ChangeNotifier 학습용 클래스 - 더 복잡한 요구사항, 다양한 값과 메소드에 유리 */
 // class VideoConfig extends ChangeNotifier {

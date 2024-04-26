@@ -104,6 +104,23 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // ),
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
               ValueListenableBuilder(
+                valueListenable: screenModeConfig,
+                builder: (context, value, child) => SwitchListTile.adaptive(
+                  // ValueNotifier
+                  value: value == ThemeMode.dark,
+                  onChanged: (value) => screenModeConfig.value =
+                      screenModeConfig.value == ThemeMode.light
+                          ? ThemeMode.dark
+                          : ThemeMode.light,
+                  // ChangeNotifier
+                  // value: videoConfig.autoMute,
+                  // onChanged: (value) => videoConfig.toggleMuted(),
+                  title: const Text('Dark Mode'),
+                  activeColor: Theme.of(context).primaryColor,
+                  // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+                ),
+              ),
+              ValueListenableBuilder(
                 valueListenable: videoConfig,
                 builder: (context, value, child) => SwitchListTile.adaptive(
                   // ValueNotifier
