@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
@@ -44,15 +45,17 @@ class _VideoPostState extends State<VideoPost>
   bool _isPaused = false;
   bool _isLiked = false;
 
+  bool _isMuted = false;
+
   // ValueNotifier
-  bool _isMuted = videoConfig.value;
+  // bool _isMuted = videoConfig.value;
 
   // ChangeNotifier
   // bool _isMuted = videoConfig.autoMute;
 
   void _toggleMuted() {
     // ValueNotifier
-    videoConfig.value = !videoConfig.value;
+    // videoConfig.value = !videoConfig.value;
 
     // ChangeNotifier
     // videoConfig.toggleMuted();
@@ -259,7 +262,7 @@ class _VideoPostState extends State<VideoPost>
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: _toggleMuted,
+                  onTap: () => context.read<VideoConfig>().toggleIsMuted(),
                   child: FaIcon(
                     _isMuted
                         ? FontAwesomeIcons.volumeXmark
