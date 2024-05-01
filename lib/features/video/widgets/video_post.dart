@@ -64,6 +64,13 @@ class _VideoPostState extends State<VideoPost>
   @override
   void initState() {
     super.initState();
+    // 여기서는 접근 XX => 위젯트리가 구현되기 전이므로. build() 메소드 내부에서의 접근이 바람직
+    // provider
+    // // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
+    // // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
+    // _isMuted = context.watch<VideoConfig>().isMuted;
+    // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
+
     _initVideoPlayer();
 
     _animationController = AnimationController(
@@ -81,18 +88,14 @@ class _VideoPostState extends State<VideoPost>
     //   setState(() {});
     // });
 
-    videoConfig.addListener(() {
-      setState(() {
-        // ValueNotifier
-        _isMuted = videoConfig.value;
-        // ChangeNotifier
-        // _isMuted = videoConfig.autoMute;
-      });
-    });
-
-    // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
-    // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    if (kIsWeb && !_isMuted) _toggleMuted(); // web -> isMuted=true
+    // videoConfig.addListener(() {
+    //   setState(() {
+    //     // ValueNotifier
+    //     _isMuted = videoConfig.value;
+    //     // ChangeNotifier
+    //     // _isMuted = videoConfig.autoMute;
+    //   });
+    // });
   }
 
   @override
@@ -180,6 +183,11 @@ class _VideoPostState extends State<VideoPost>
 
   @override
   Widget build(BuildContext context) {
+    // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
+    // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
+    _isMuted = context.watch<VideoConfig>().isMuted;
+    if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
+
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
       onVisibilityChanged: _onVisibilityChanged,
