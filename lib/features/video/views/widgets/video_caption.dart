@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/video/widgets/video_tags.dart';
+import 'package:tiktok_clone/features/video/views/widgets/video_tags.dart';
 
 class VideoCaption extends StatefulWidget {
   const VideoCaption({super.key});

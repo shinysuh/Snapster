@@ -8,8 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/video/video_preview_screen.dart';
-import 'package:tiktok_clone/features/video/widgets/flash_mode_button.dart';
+import 'package:tiktok_clone/features/video/views/video_preview_screen.dart';
+import 'package:tiktok_clone/features/video/views/widgets/flash_mode_button.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class VideoRecordingScreen extends StatefulWidget {
@@ -269,50 +269,50 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
                     ),
                   ),
                   if (!_noCamera)
-                  Positioned(
-                    top: Sizes.size32,
-                    right: Sizes.size1,
-                    child: Column(
-                      children: [
-                        IconButton(
-                          color: Colors.white,
-                          onPressed: _toggleSelfieMode,
-                          icon: const Icon(
-                            Icons.cameraswitch,
-                            size: Sizes.size28,
+                    Positioned(
+                      top: Sizes.size32,
+                      right: Sizes.size1,
+                      child: Column(
+                        children: [
+                          IconButton(
+                            color: Colors.white,
+                            onPressed: _toggleSelfieMode,
+                            icon: const Icon(
+                              Icons.cameraswitch,
+                              size: Sizes.size28,
+                            ),
                           ),
-                        ),
-                        Gaps.v10,
-                        FlashModeButton(
-                          icon: Icons.flash_off_rounded,
-                          setFlashMode: _setFlashMode,
-                          currentFlashMode: _flashMode,
-                          buttonFlashMode: FlashMode.off,
-                        ),
-                        Gaps.v10,
-                        FlashModeButton(
-                          icon: Icons.flash_on_rounded,
-                          setFlashMode: _setFlashMode,
-                          currentFlashMode: _flashMode,
-                          buttonFlashMode: FlashMode.always,
-                        ),
-                        Gaps.v10,
-                        FlashModeButton(
-                          icon: Icons.flash_auto_rounded,
-                          setFlashMode: _setFlashMode,
-                          currentFlashMode: _flashMode,
-                          buttonFlashMode: FlashMode.auto,
-                        ),
-                        Gaps.v10,
-                        FlashModeButton(
-                          icon: Icons.flashlight_on_rounded,
-                          setFlashMode: _setFlashMode,
-                          currentFlashMode: _flashMode,
-                          buttonFlashMode: FlashMode.torch,
-                        ),
-                      ],
+                          Gaps.v10,
+                          FlashModeButton(
+                            icon: Icons.flash_off_rounded,
+                            setFlashMode: _setFlashMode,
+                            currentFlashMode: _flashMode,
+                            buttonFlashMode: FlashMode.off,
+                          ),
+                          Gaps.v10,
+                          FlashModeButton(
+                            icon: Icons.flash_on_rounded,
+                            setFlashMode: _setFlashMode,
+                            currentFlashMode: _flashMode,
+                            buttonFlashMode: FlashMode.always,
+                          ),
+                          Gaps.v10,
+                          FlashModeButton(
+                            icon: Icons.flash_auto_rounded,
+                            setFlashMode: _setFlashMode,
+                            currentFlashMode: _flashMode,
+                            buttonFlashMode: FlashMode.auto,
+                          ),
+                          Gaps.v10,
+                          FlashModeButton(
+                            icon: Icons.flashlight_on_rounded,
+                            setFlashMode: _setFlashMode,
+                            currentFlashMode: _flashMode,
+                            buttonFlashMode: FlashMode.torch,
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
                   Positioned(
                     bottom: Sizes.size80 + Sizes.size10,
                     width: MediaQuery.of(context).size.width,

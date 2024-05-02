@@ -8,7 +8,7 @@ import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/chats_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
-import 'package:tiktok_clone/features/video/video_recording_screen.dart';
+import 'package:tiktok_clone/features/video/views/video_recording_screen.dart';
 
 /*
       TikTok Clone route description
