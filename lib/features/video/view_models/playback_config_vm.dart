@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:tiktok_clone/features/video/models/playback_config_model.dart';
-import 'package:tiktok_clone/features/video/repositories/video_playback_config_repository.dart';
+import 'package:tiktok_clone/features/video/repositories/playback_config_repository.dart';
 
 class PlaybackConfigViewModel extends ChangeNotifier {
-  final VideoPlaybackConfigRepository _repository;
+  final PlaybackConfigRepository _repository;
 
   late final PlaybackConfigModel _model = PlaybackConfigModel(
     muted: _repository.isMuted(),

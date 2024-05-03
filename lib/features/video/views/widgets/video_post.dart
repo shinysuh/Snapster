@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -185,8 +184,8 @@ class _VideoPostState extends State<VideoPost>
   Widget build(BuildContext context) {
     // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
     // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    _isMuted = context.watch<VideoConfig>().isMuted;
-    if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
+    // _isMuted = context.watch<VideoConfig>().isMuted;
+    // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
 
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
