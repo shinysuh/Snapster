@@ -1,10 +1,11 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
-import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/video/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_comments.dart';
@@ -44,7 +45,8 @@ class _VideoPostState extends State<VideoPost>
   bool _isPaused = false;
   bool _isLiked = false;
 
-  bool _isMuted = false;
+  // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
+  late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
 
   // ValueNotifier
   // bool _isMuted = videoConfig.value;
@@ -53,6 +55,10 @@ class _VideoPostState extends State<VideoPost>
   // bool _isMuted = videoConfig.autoMute;
 
   void _toggleMuted() {
+    setState(() {
+      _isMuted = !_isMuted;
+    });
+
     // ValueNotifier
     // videoConfig.value = !videoConfig.value;
 
@@ -81,6 +87,10 @@ class _VideoPostState extends State<VideoPost>
       // default (설정하지 않으면 lowerBound 로 설정됨)
       duration: _animationDuration,
     );
+
+    // context
+    //     .read<PlaybackConfigViewModel>()
+    //     .addListener(_onChangePlaybackConfig);
 
     // ** AnimatedBuilder 를 사용하지 않을 때의 방법
     // _animationController.addListener(() {
@@ -124,6 +134,11 @@ class _VideoPostState extends State<VideoPost>
     });
   }
 
+  void _onChangePlaybackConfig() {
+    _videoPlayerController
+        .setVolume(context.read<PlaybackConfigViewModel>().muted ? 0 : 1);
+  }
+
   void _onVideoChange() {
     if (_videoPlayerController.value.isInitialized &&
         _videoPlayerController.value.duration ==
@@ -138,7 +153,11 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      _videoPlayerController.play();
+      if (context.read<PlaybackConfigViewModel>().autoplay) {
+        _videoPlayerController.play();
+      } else {
+        _animationController.forward();
+      }
     }
 
     if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {
@@ -184,8 +203,11 @@ class _VideoPostState extends State<VideoPost>
   Widget build(BuildContext context) {
     // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
     // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    // _isMuted = context.watch<VideoConfig>().isMuted;
-    // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
+    // _isMuted = context.watch<PlaybackConfigViewModel>().muted;
+    if (kIsWeb) _isMuted = true;
+    // context
+    //     .read<PlaybackConfigViewModel>()
+    //     .setMuted(true); // web -> isMuted=true
 
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
@@ -269,7 +291,7 @@ class _VideoPostState extends State<VideoPost>
             child: Column(
               children: [
                 GestureDetector(
-                  onTap: () => context.read<VideoConfig>().toggleIsMuted(),
+                  onTap: _toggleMuted,
                   child: FaIcon(
                     _isMuted
                         ? FontAwesomeIcons.volumeXmark
