@@ -47,6 +47,7 @@ class _VideoPostState extends State<VideoPost>
 
   // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
   late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
+  late bool _showPlayButton = context.watch<PlaybackConfigViewModel>().autoplay;
 
   // ValueNotifier
   // bool _isMuted = videoConfig.value;
@@ -130,7 +131,7 @@ class _VideoPostState extends State<VideoPost>
     });
 
     setState(() {
-      _isPaused = false;
+      _isPaused = !context.read<PlaybackConfigViewModel>().autoplay;
     });
   }
 
@@ -155,8 +156,6 @@ class _VideoPostState extends State<VideoPost>
         !_videoPlayerController.value.isPlaying) {
       if (context.read<PlaybackConfigViewModel>().autoplay) {
         _videoPlayerController.play();
-      } else {
-        _animationController.forward();
       }
     }
 
@@ -166,6 +165,8 @@ class _VideoPostState extends State<VideoPost>
   }
 
   void _togglePause() {
+    if (!_showPlayButton) _showPlayButton = true;
+
     if (_videoPlayerController.value.isPlaying) {
       _videoPlayerController.pause();
       _animationController.reverse();
@@ -252,15 +253,17 @@ class _VideoPostState extends State<VideoPost>
                   },
                   // child: Transform.scale(
                   // scale: _animationController.value,
-                  child: AnimatedOpacity(
-                    duration: _animationDuration,
-                    opacity: _isPaused ? 1 : 0,
-                    child: const FaIcon(
-                      FontAwesomeIcons.play,
-                      color: Colors.white,
-                      size: Sizes.size72,
-                    ),
-                  ),
+                  child: _showPlayButton
+                      ? AnimatedOpacity(
+                          duration: _animationDuration,
+                          opacity: _isPaused ? 1 : 0,
+                          child: const FaIcon(
+                            FontAwesomeIcons.play,
+                            color: Colors.white,
+                            size: Sizes.size72,
+                          ),
+                        )
+                      : null,
                   // ),
                 ),
               ),
