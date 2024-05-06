@@ -46,7 +46,8 @@ class _VideoPostState extends State<VideoPost>
   bool _isLiked = false;
 
   // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
-  late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
+  bool _isMuted = false;
+  // late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
   late bool _showPlayButton = context.watch<PlaybackConfigViewModel>().autoplay;
 
   // ValueNotifier
@@ -131,13 +132,14 @@ class _VideoPostState extends State<VideoPost>
     });
 
     setState(() {
-      _isPaused = !context.read<PlaybackConfigViewModel>().autoplay;
+      _isPaused = false;
+      // _isPaused = !context.read<PlaybackConfigViewModel>().autoplay;
     });
   }
 
   void _onChangePlaybackConfig() {
-    _videoPlayerController
-        .setVolume(context.read<PlaybackConfigViewModel>().muted ? 0 : 1);
+    _videoPlayerController.setVolume(_isPaused ? 0 : 1);
+    // _videoPlayerController.setVolume(context.read<PlaybackConfigViewModel>().muted ? 0 : 1);
   }
 
   void _onVideoChange() {
@@ -154,9 +156,9 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      if (context.read<PlaybackConfigViewModel>().autoplay) {
-        _videoPlayerController.play();
-      }
+      // if (context.read<PlaybackConfigViewModel>().autoplay) {
+      _videoPlayerController.play();
+      // }
     }
 
     if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {

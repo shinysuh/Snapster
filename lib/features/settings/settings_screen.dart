@@ -2,11 +2,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
-import 'package:tiktok_clone/features/video/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
@@ -107,17 +105,19 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
 
               SwitchListTile.adaptive(
-                value: context.watch<PlaybackConfigViewModel>().muted,
-                onChanged: (value) =>
-                    context.read<PlaybackConfigViewModel>().setMuted(value),
+                value: false,
+                // value: context.watch<PlaybackConfigViewModel>().muted,
+                onChanged: (value) {},
+                // onChanged: (value) => context.read<PlaybackConfigViewModel>().setMuted(value),
                 title: const Text('Mute videos'),
                 activeColor: Theme.of(context).primaryColor,
                 // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               ),
               SwitchListTile.adaptive(
-                value: context.watch<PlaybackConfigViewModel>().autoplay,
-                onChanged: (value) =>
-                    context.read<PlaybackConfigViewModel>().setAutoplay(value),
+                value: true,
+                // value: context.watch<PlaybackConfigViewModel>().autoplay,
+                onChanged: (value) {},
+                // onChanged: (value) => context.read<PlaybackConfigViewModel>().setAutoplay(value),
                 title: const Text('Autoplay videos'),
                 activeColor: Theme.of(context).primaryColor,
                 // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
