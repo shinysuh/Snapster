@@ -718,10 +718,10 @@ packages:
     dependency: "direct main"
     description:
       name: video_player
-      sha256: "86b4fb9e30613ef4ff7e47367bfec4b080ab17205b7d969cd12bbebde49476b1"
+      sha256: db6a72d8f4fd155d0189845678f55ad2fd54b02c10dcafd11c068dbb631286c0
       url: "https://pub.dev"
     source: hosted
-    version: "2.4.10"
+    version: "2.8.6"
   video_player_android:
     dependency: transitive
     description:
