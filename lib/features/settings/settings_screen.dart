@@ -1,43 +1,26 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/video/view_models/playback_config_vm.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class SettingsScreen extends StatefulWidget {
+// ConsumerWidget => Riverpod StatelessWidget
+// ConsumerStatefulWidget => Riverpod StatefulWidget
+class SettingsScreen extends ConsumerWidget {
   const SettingsScreen({super.key});
 
-  @override
-  State<SettingsScreen> createState() => _SettingsScreenState();
-}
-
-class _SettingsScreenState extends State<SettingsScreen> {
-  bool _notifications = true;
-  bool _marketingEmails = true;
-
-  void _onChangeNotifications(bool? newValue) {
-    if (newValue == null) return;
-    setState(() {
-      _notifications = newValue;
-    });
-  }
-
-  void _onChangeMarketingEmails(bool? newValue) {
-    if (newValue == null) return;
-    setState(() {
-      _marketingEmails = newValue;
-    });
-  }
-
-  void _cancelLogOut() {
+  // bool _notifications = true;
+  void _cancelLogOut(BuildContext context) {
     Navigator.of(context).pop();
   }
 
-  void _logOut() {
+  void _logOut(BuildContext context) {
     // TODO - 로그아웃 기능 여기 구현
 
     redirectToScreenAndRemovePreviousRoutes(
@@ -47,7 +30,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return RegulatedMaxWidth(
       // Localizations.override - locale => 언어 설정 강제 기능
       child: Localizations.override(
@@ -105,18 +88,21 @@ class _SettingsScreenState extends State<SettingsScreen> {
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
 
               SwitchListTile.adaptive(
-                value: false,
+                value: ref.watch(playbackConfigProvider).muted,
                 // value: context.watch<PlaybackConfigViewModel>().muted,
-                onChanged: (value) {},
+                onChanged: (value) =>
+                    ref.read(playbackConfigProvider.notifier).setMuted(value),
                 // onChanged: (value) => context.read<PlaybackConfigViewModel>().setMuted(value),
                 title: const Text('Mute videos'),
                 activeColor: Theme.of(context).primaryColor,
                 // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               ),
               SwitchListTile.adaptive(
-                value: true,
+                value: ref.watch(playbackConfigProvider).autoplay,
                 // value: context.watch<PlaybackConfigViewModel>().autoplay,
-                onChanged: (value) {},
+                onChanged: (value) => ref
+                    .read(playbackConfigProvider.notifier)
+                    .setAutoplay(value),
                 // onChanged: (value) => context.read<PlaybackConfigViewModel>().setAutoplay(value),
                 title: const Text('Autoplay videos'),
                 activeColor: Theme.of(context).primaryColor,
@@ -205,15 +191,15 @@ class _SettingsScreenState extends State<SettingsScreen> {
               //   // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               // ),
               SwitchListTile.adaptive(
-                value: _notifications,
-                onChanged: _onChangeNotifications,
+                value: false,
+                onChanged: (value) {},
                 title: const Text('Enable Notifications'),
                 activeColor: Theme.of(context).primaryColor,
                 // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
               ),
               CheckboxListTile.adaptive(
-                value: _marketingEmails,
-                onChanged: _onChangeMarketingEmails,
+                value: false,
+                onChanged: (value) {},
                 title: const Text('Marketing emails'),
                 subtitle: const Text(
                   'Marketing emails from TikTok will be sent',
@@ -232,7 +218,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   );
                   if (kDebugMode) print(date);
 
-                  if (!mounted) return;
+                  // if (!mounted) return;
                   final time = await showTimePicker(
                     context: context,
                     initialTime: TimeOfDay.now(),
@@ -272,11 +258,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     content: const Text('Please confirm'),
                     actions: [
                       CupertinoDialogAction(
-                        onPressed: _cancelLogOut,
+                        onPressed: () => _cancelLogOut(context),
                         child: const Text("No"),
                       ),
                       CupertinoDialogAction(
-                        onPressed: _logOut,
+                        onPressed: () => _logOut(context),
                         isDestructiveAction: true,
                         child: const Text("Yes"),
                       ),
@@ -302,11 +288,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     content: const Text('Please confirm'),
                     actions: [
                       TextButton(
-                        onPressed: _cancelLogOut,
+                        onPressed: () => _cancelLogOut(context),
                         child: const Text('No'),
                       ),
                       TextButton(
-                        onPressed: _logOut,
+                        onPressed: () => _logOut(context),
                         child: const Text(
                           'Yes',
                           style: TextStyle(
@@ -332,11 +318,11 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     content: const Text('Please confirm'),
                     actions: [
                       CupertinoDialogAction(
-                        onPressed: _cancelLogOut,
+                        onPressed: () => _cancelLogOut(context),
                         child: const Text("No"),
                       ),
                       CupertinoDialogAction(
-                        onPressed: _logOut,
+                        onPressed: () => _logOut(context),
                         isDestructiveAction: true,
                         child: const Text("Yes"),
                       ),
@@ -360,12 +346,12 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     message: const Text('Please confirm'),
                     actions: [
                       CupertinoActionSheetAction(
-                        onPressed: _cancelLogOut,
+                        onPressed: () => _cancelLogOut(context),
                         isDefaultAction: true,
                         child: const Text('No'),
                       ),
                       CupertinoActionSheetAction(
-                        onPressed: _logOut,
+                        onPressed: () => _logOut(context),
                         isDestructiveAction: true,
                         child: const Text('Yes'),
                       ),

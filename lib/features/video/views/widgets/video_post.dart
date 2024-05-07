@@ -1,7 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:provider/provider.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -13,7 +13,7 @@ import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class VideoPost extends StatefulWidget {
+class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int pageIndex;
 
@@ -24,12 +24,13 @@ class VideoPost extends StatefulWidget {
   });
 
   @override
-  State<VideoPost> createState() => _VideoPostState();
+  VideoPostState createState() => VideoPostState();
 }
 
-class _VideoPostState extends State<VideoPost>
+class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
   static const List<String> videoUrls = [
+    'assets/videos/answering_pumpkin.mp4',
     'assets/videos/barfie_pie.mp4',
     'assets/videos/no_barf_but_yarn.mp4',
     'assets/videos/face_changer.mp4',
@@ -46,9 +47,13 @@ class _VideoPostState extends State<VideoPost>
   bool _isLiked = false;
 
   // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
-  bool _isMuted = false;
+  /* Riverpod */
+  late bool _isMuted = kIsWeb ? true : ref.watch(playbackConfigProvider).muted;
+  late bool _showPlayButton = ref.watch(playbackConfigProvider).autoplay;
+
+  /* Provider */
   // late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
-  late bool _showPlayButton = context.watch<PlaybackConfigViewModel>().autoplay;
+  // late bool _showPlayButton = context.watch<PlaybackConfigViewModel>().autoplay;
 
   // ValueNotifier
   // bool _isMuted = videoConfig.value;
@@ -56,23 +61,11 @@ class _VideoPostState extends State<VideoPost>
   // ChangeNotifier
   // bool _isMuted = videoConfig.autoMute;
 
-  void _toggleMuted() {
-    setState(() {
-      _isMuted = !_isMuted;
-    });
-
-    // ValueNotifier
-    // videoConfig.value = !videoConfig.value;
-
-    // ChangeNotifier
-    // videoConfig.toggleMuted();
-  }
-
   @override
   void initState() {
     super.initState();
-    // 여기서는 접근 XX => 위젯트리가 구현되기 전이므로. build() 메소드 내부에서의 접근이 바람직
     // provider
+    // 여기서는 접근 XX => 위젯트리가 구현되기 전이므로. build() 메소드 내부에서의 접근이 바람직
     // // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
     // // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
     // _isMuted = context.watch<VideoConfig>().isMuted;
@@ -132,13 +125,30 @@ class _VideoPostState extends State<VideoPost>
     });
 
     setState(() {
-      _isPaused = false;
+      _isPaused = !ref.read(playbackConfigProvider).autoplay;
       // _isPaused = !context.read<PlaybackConfigViewModel>().autoplay;
     });
   }
 
+  // local change
+  void _toggleMuted() {
+    setState(() {
+      _isMuted = !_isMuted;
+    });
+
+    // ValueNotifier
+    // videoConfig.value = !videoConfig.value;
+
+    // ChangeNotifier
+    // videoConfig.toggleMuted();
+  }
+
+  // 전역적 change
   void _onChangePlaybackConfig() {
-    _videoPlayerController.setVolume(_isPaused ? 0 : 1);
+    if (!mounted) return;
+
+    _videoPlayerController
+        .setVolume(!ref.read(playbackConfigProvider).muted ? 0 : 1);
     // _videoPlayerController.setVolume(context.read<PlaybackConfigViewModel>().muted ? 0 : 1);
   }
 
@@ -156,9 +166,9 @@ class _VideoPostState extends State<VideoPost>
     if (info.visibleFraction == 1 &&
         !_isPaused &&
         !_videoPlayerController.value.isPlaying) {
-      // if (context.read<PlaybackConfigViewModel>().autoplay) {
-      _videoPlayerController.play();
-      // }
+      if (ref.read(playbackConfigProvider).autoplay) {
+        _videoPlayerController.play();
+      }
     }
 
     if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {
@@ -207,7 +217,7 @@ class _VideoPostState extends State<VideoPost>
     // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
     // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
     // _isMuted = context.watch<PlaybackConfigViewModel>().muted;
-    if (kIsWeb) _isMuted = true;
+    // if (kIsWeb) _isMuted = true;
     // context
     //     .read<PlaybackConfigViewModel>()
     //     .setMuted(true); // web -> isMuted=true
