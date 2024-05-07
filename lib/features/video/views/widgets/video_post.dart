@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/video/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_comments.dart';
@@ -34,9 +34,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     'assets/videos/barfie_pie.mp4',
     'assets/videos/no_barf_but_yarn.mp4',
     'assets/videos/face_changer.mp4',
-    'assets/videos/smiling_after_mom.mp4',
     'assets/videos/dreaming.mp4',
-    'assets/videos/what_are_you_looking_at_mom.mp4',
   ];
   late final VideoPlayerController _videoPlayerController;
   late final AnimationController _animationController;

@@ -7,7 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/repositories/playback_config_repository.dart';
-import 'package:tiktok_clone/features/video/view_models/playback_config_vm.dart';
+import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/router.dart';
 
