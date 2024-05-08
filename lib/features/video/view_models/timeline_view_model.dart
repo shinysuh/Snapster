@@ -13,6 +13,16 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
     VideoModel(title: 'Fifth Video'),
   ];
 
+  void uploadVideo() async {
+    state = const AsyncValue.loading(); // loading 상태 강제 유발
+    await Future.delayed(const Duration(seconds: 2));
+
+    final newVideo = VideoModel(title: '${DateTime.now()}');
+    _list = [..._list, newVideo];
+
+    state = AsyncValue.data(_list);
+  }
+
   // FutureOr => Future 또는 Model 반환
   @override
   FutureOr<List<VideoModel>> build() async {
