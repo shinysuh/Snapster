@@ -16,15 +16,16 @@ import 'package:tiktok_clone/router.dart';
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
-  // 화면 전환 방지 (허락되는 방향만 지정)
-  await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.portraitUp,
-  ]);
 
   // firebase initialization
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  // 화면 전환 방지 (허락되는 방향만 지정)
+  await SystemChrome.setPreferredOrientations([
+    DeviceOrientation.portraitUp,
+  ]);
 
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
 
@@ -38,7 +39,7 @@ void main() async {
         playbackConfigProvider
             .overrideWith(() => PlaybackConfigViewModel(repository)),
       ],
-      child: const TikTokApp(),
+      child: TikTokApp(),
     ),
   );
 
@@ -55,15 +56,10 @@ void main() async {
   // );
 }
 
-class TikTokApp extends StatefulWidget {
-  const TikTokApp({super.key});
+class TikTokApp extends ConsumerWidget {
+  TikTokApp({super.key});
 
-  @override
-  State<TikTokApp> createState() => _TikTokAppState();
-}
-
-class _TikTokAppState extends State<TikTokApp> {
-  var lightTextTheme = GoogleFonts.itimTextTheme(
+  final lightTextTheme = GoogleFonts.itimTextTheme(
     const TextTheme(
       headlineLarge: TextStyle(
         fontWeight: FontWeight.bold,
@@ -71,19 +67,20 @@ class _TikTokAppState extends State<TikTokApp> {
       ),
     ),
   );
-  var darkTextTheme = GoogleFonts.itimTextTheme(
+
+  final darkTextTheme = GoogleFonts.itimTextTheme(
     ThemeData(brightness: Brightness.dark).textTheme,
   );
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     // locale 강제 지정
     // S.load(const Locale('en'));
     return ValueListenableBuilder(
       valueListenable: screenModeConfig,
       builder: (context, value, child) => MaterialApp.router(
-        routerConfig: router,
+        routerConfig: ref.watch(routerProvider),
         title: 'TikTok Clone',
         localizationsDelegates: const [
           // flutter intl -> l10n
