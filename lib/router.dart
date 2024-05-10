@@ -43,7 +43,7 @@ o
 
  */
 final routerProvider = Provider((ref) {
-  ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
+  // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
   return GoRouter(
     initialLocation: '/home',
     redirect: (context, state) {

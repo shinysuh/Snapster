@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
+import 'package:tiktok_clone/utils/firebase_exception_handler.dart';
 
 class SignUpViewModel extends AsyncNotifier<void> {
   late final AuthenticationRepository _authRepository;
@@ -12,7 +14,7 @@ class SignUpViewModel extends AsyncNotifier<void> {
     _authRepository = ref.read(authRepository);
   }
 
-  Future<void> signUp() async {
+  Future<void> signUp(BuildContext context) async {
     state = const AsyncValue.loading();
     final form = ref.read(signUpForm);
     state = await AsyncValue.guard(
@@ -21,6 +23,9 @@ class SignUpViewModel extends AsyncNotifier<void> {
         form['password'],
       ),
     );
+    if (state.hasError) {
+      showFirebaseErrorSnack(context, state.error);
+    }
   }
 }
 

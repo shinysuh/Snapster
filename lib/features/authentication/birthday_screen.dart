@@ -46,7 +46,7 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   }
 
   void _onSubmit() {
-    ref.read(signUpProvider.notifier).signUp();
+    ref.read(signUpProvider.notifier).signUp(context);
 
     goToRouteNamedWithoutStack(
       context: context,
@@ -113,7 +113,7 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
               ),
               Gaps.v36,
               FormButton(
-                disabled: ref.read(signUpProvider).isLoading,
+                disabled: ref.watch(signUpProvider).isLoading,
                 onTapButton: _onSubmit,
                 buttonText: 'Sign Up',
               ),
