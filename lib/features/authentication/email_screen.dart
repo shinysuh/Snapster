@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
 import 'package:tiktok_clone/features/authentication/password_screen.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
@@ -14,8 +16,9 @@ class EmailScreenArgs {
   });
 }
 
-class EmailScreen extends StatefulWidget {
-  static const String routeURL = 'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+class EmailScreen extends ConsumerStatefulWidget {
+  static const String routeURL =
+      'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
   static const String routeName = 'email';
   final String username;
 
@@ -25,10 +28,10 @@ class EmailScreen extends StatefulWidget {
   });
 
   @override
-  State<EmailScreen> createState() => _EmailScreenState();
+  ConsumerState<EmailScreen> createState() => _EmailScreenState();
 }
 
-class _EmailScreenState extends State<EmailScreen> {
+class _EmailScreenState extends ConsumerState<EmailScreen> {
   String _email = '';
   bool _isEmailValid = true;
 
@@ -67,6 +70,9 @@ class _EmailScreenState extends State<EmailScreen> {
     //   context: context,
     //   routeName: PasswordScreen.routeName,
     // );
+
+    ref.read(signUpForm.notifier).state = {'email': _email};
+
     redirectToScreen(
       context: context,
       targetScreen: const PasswordScreen(),
@@ -129,7 +135,7 @@ class _EmailScreenState extends State<EmailScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: _email.isEmpty || !_isEmailValid,
+                disabled: _email.isEmpty || !_isEmailValid,
                 onTapButton: _onSubmit,
                 buttonText: 'Next',
               ),

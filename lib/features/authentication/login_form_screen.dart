@@ -114,7 +114,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                 ),
                 Gaps.v28,
                 FormButton(
-                  isDisabled: false,
+                  disabled: false,
                   onTapButton: _onSubmit,
                   buttonText: 'Log in',
                 ),

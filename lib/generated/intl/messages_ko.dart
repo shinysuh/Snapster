@@ -45,7 +45,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "commentCount": m0,
         "commentLikeCount": m1,
         "commentTitle": m2,
-        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 아이디 로그인"),
+        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 아이디"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
         "likeCount": m3,
@@ -58,6 +58,6 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
-        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일 로그인")
+        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호")
       };
 }

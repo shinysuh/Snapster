@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/common/widgets/video_config/video_config.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
 import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
@@ -20,8 +21,8 @@ class SettingsScreen extends ConsumerWidget {
     Navigator.of(context).pop();
   }
 
-  void _logOut(BuildContext context) {
-    // TODO - 로그아웃 기능 여기 구현
+  void _logOut(BuildContext context, WidgetRef ref) {
+    ref.read(authRepository).signOut();
 
     redirectToScreenAndRemovePreviousRoutes(
       context: context,
@@ -262,7 +263,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: const Text("No"),
                       ),
                       CupertinoDialogAction(
-                        onPressed: () => _logOut(context),
+                        onPressed: () => _logOut(context, ref),
                         isDestructiveAction: true,
                         child: const Text("Yes"),
                       ),
@@ -292,7 +293,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: const Text('No'),
                       ),
                       TextButton(
-                        onPressed: () => _logOut(context),
+                        onPressed: () => _logOut(context, ref),
                         child: const Text(
                           'Yes',
                           style: TextStyle(
@@ -322,7 +323,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: const Text("No"),
                       ),
                       CupertinoDialogAction(
-                        onPressed: () => _logOut(context),
+                        onPressed: () => _logOut(context, ref),
                         isDestructiveAction: true,
                         child: const Text("Yes"),
                       ),
@@ -351,7 +352,7 @@ class SettingsScreen extends ConsumerWidget {
                         child: const Text('No'),
                       ),
                       CupertinoActionSheetAction(
-                        onPressed: () => _logOut(context),
+                        onPressed: () => _logOut(context, ref),
                         isDestructiveAction: true,
                         child: const Text('Yes'),
                       ),

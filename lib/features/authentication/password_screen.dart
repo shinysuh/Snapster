@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/birthday_screen.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
-class PasswordScreen extends StatefulWidget {
-  static const String routeURL = 'password'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+class PasswordScreen extends ConsumerStatefulWidget {
+  static const String routeURL =
+      'password'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
   static const String routeName = 'password';
 
   const PasswordScreen({super.key});
 
   @override
-  State<PasswordScreen> createState() => _PasswordScreenState();
+  ConsumerState<PasswordScreen> createState() => _PasswordScreenState();
 }
 
-class _PasswordScreenState extends State<PasswordScreen> {
+class _PasswordScreenState extends ConsumerState<PasswordScreen> {
   String _password = '';
   bool _isPasswordValid = true;
 
@@ -90,6 +93,12 @@ class _PasswordScreenState extends State<PasswordScreen> {
     //   context: context,
     //   routeName: BirthdayScreen.routeName,
     // );
+
+    ref.read(signUpForm.notifier).state = {
+      ...ref.read(signUpForm.notifier).state,
+      'password': _password,
+    };
+
     redirectToScreen(
       context: context,
       targetScreen: const BirthdayScreen(),
@@ -196,7 +205,7 @@ class _PasswordScreenState extends State<PasswordScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: !_isPasswordValid,
+                disabled: !_isPasswordValid,
                 onTapButton: _onSubmit,
                 buttonText: 'Next',
               ),
