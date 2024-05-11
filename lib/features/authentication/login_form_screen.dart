@@ -19,6 +19,9 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
 
   late FocusNode _secondFocus; // 두번째 칸 focus
 
+  final _initialEmail = 'jenna@qwer.qwer';
+  final _initialPassword = 'qwer1234?';
+
   @override
   void initState() {
     super.initState();
@@ -54,11 +57,6 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
             formData['email'] ?? '',
             formData['password'] ?? '',
           );
-
-      // goToRouteNamedWithoutStack(
-      //   context: context,
-      //   routeName: InterestScreen.routeName,
-      // );
     }
   }
 
@@ -78,6 +76,7 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
               children: [
                 Gaps.v28,
                 TextFormField(
+                  initialValue: _initialEmail,
                   autofocus: true,
                   textCapitalization: TextCapitalization.none,
                   decoration: const InputDecoration(
@@ -99,13 +98,15 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                   onEditingComplete: _onTapNext,
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your email'
-                      : value == 'jenna'
-                          ? null
-                          : 'User Info Not Exist',
+                      : null,
+                  // : value == 'jenna'
+                  //     ? null
+                  //     : 'User Info Not Exist',
                   onSaved: (newValue) => _setFormData('email', newValue),
                 ),
                 Gaps.v16,
                 TextFormField(
+                  initialValue: _initialPassword,
                   focusNode: _secondFocus,
                   textCapitalization: TextCapitalization.none,
                   decoration: const InputDecoration(
@@ -114,14 +115,15 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                   onEditingComplete: _onSubmit,
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your password'
-                      : value == '1234'
-                          ? null
-                          : 'Password Not Matched',
+                      : null,
+                  // : value == '1234'
+                  //     ? null
+                  //     : 'Password Not Matched',
                   onSaved: (newValue) => _setFormData('password', newValue),
                 ),
                 Gaps.v28,
                 FormButton(
-                  disabled: false,
+                  disabled: ref.watch(loginProvider).isLoading,
                   onTapButton: _onSubmit,
                   buttonText: 'Log in',
                 ),
