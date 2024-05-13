@@ -50,6 +50,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "commentTitle": m2,
         "continueWithApple":
             MessageLookupByLibrary.simpleMessage("Continue with apple"),
+        "continueWithGithub":
+            MessageLookupByLibrary.simpleMessage("Continue with Github"),
+        "continueWithGoogle":
+            MessageLookupByLibrary.simpleMessage("Continue with Google"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
         "likeCount": m3,

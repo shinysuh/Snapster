@@ -45,7 +45,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "commentCount": m0,
         "commentLikeCount": m1,
         "commentTitle": m2,
-        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 아이디"),
+        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 계정"),
+        "continueWithGithub": MessageLookupByLibrary.simpleMessage("깃허브 계정"),
+        "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
         "likeCount": m3,

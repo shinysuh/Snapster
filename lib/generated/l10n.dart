@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -99,6 +100,16 @@ class S {
     return Intl.message(
       'Continue with apple',
       name: 'continueWithApple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue with Github`
+  String get continueWithGithub {
+    return Intl.message(
+      'Continue with Github',
+      name: 'continueWithGithub',
       desc: '',
       args: [],
     );
@@ -231,6 +242,16 @@ class S {
       name: 'commentLikeCount',
       desc: 'comment like count',
       args: [valueString],
+    );
+  }
+
+  /// `Continue with Google`
+  String get continueWithGoogle {
+    return Intl.message(
+      'Continue with Google',
+      name: 'continueWithGoogle',
+      desc: '',
+      args: [],
     );
   }
 }

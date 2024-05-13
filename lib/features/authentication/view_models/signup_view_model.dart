@@ -25,6 +25,9 @@ class SignUpViewModel extends AsyncNotifier<void> {
         form['password'],
       ),
     );
+
+    if (!context.mounted) return;
+
     if (state.hasError) {
       showFirebaseErrorSnack(context, state.error);
     } else {

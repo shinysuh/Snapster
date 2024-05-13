@@ -17,6 +17,7 @@ import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class MainNavigationScreen extends StatefulWidget {
   static const String routeName = 'mainNavigation';
+  static const String homeRouteURL = '/home';
 
   final String tab;
 
