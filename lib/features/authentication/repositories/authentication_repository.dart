@@ -35,6 +35,18 @@ class AuthenticationRepository {
           ),
         );
   }
+
+  Future<void> githubSingIn() async {
+    await _firebaseAuth.signInWithProvider(GithubAuthProvider());
+  }
+
+  Future<void> appleSingIn() async {
+    await _firebaseAuth.signInWithProvider(AppleAuthProvider());
+  }
+
+  Future<void> googleSingIn() async {
+    await _firebaseAuth.signInWithProvider(GoogleAuthProvider());
+  }
 }
 
 final authRepository = Provider(
