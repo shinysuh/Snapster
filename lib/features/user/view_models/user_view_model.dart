@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/repository/user_repository.dart';
 
@@ -20,13 +21,15 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     }
 
     state = const AsyncValue.loading();
+    final form = ref.read(signUpForm);
 
     final profile = UserProfileModel(
       uid: credential.user!.uid,
-      name: credential.user!.displayName ?? 'Anonymous',
+      name: credential.user!.displayName ?? form['name'] ?? 'Anonymous',
       email: credential.user!.email ?? 'undefined',
       bio: 'undefined',
       link: 'undefined',
+      birthday: form['birthday'] ?? '1900-01-01',
     );
 
     // firestore

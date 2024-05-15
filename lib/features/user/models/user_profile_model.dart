@@ -4,6 +4,7 @@ class UserProfileModel {
   final String email;
   final String bio;
   final String link;
+  final String birthday;
 
   UserProfileModel({
     required this.uid,
@@ -11,6 +12,7 @@ class UserProfileModel {
     required this.email,
     required this.bio,
     required this.link,
+    required this.birthday,
   });
 
   UserProfileModel.empty()
@@ -18,7 +20,8 @@ class UserProfileModel {
         name = '',
         bio = '',
         email = '',
-        link = '';
+        link = '',
+        birthday = '';
 
   Map<String, String> toJson() {
     return {
@@ -27,6 +30,7 @@ class UserProfileModel {
       'bio': bio,
       'email': email,
       'link': link,
+      'birthday': birthday,
     };
   }
 }

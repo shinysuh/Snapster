@@ -71,7 +71,10 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     //   routeName: PasswordScreen.routeName,
     // );
 
-    ref.read(signUpForm.notifier).state = {'email': _email};
+    ref.read(signUpForm.notifier).state = {
+      ...ref.read(signUpForm.notifier).state,
+      'email': _email,
+    };
 
     redirectToScreen(
       context: context,

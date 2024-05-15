@@ -22,6 +22,8 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   late DateTime initDate;
   final TextEditingController _birthdayController = TextEditingController();
 
+  String _birthday = '';
+
   @override
   void initState() {
     super.initState();
@@ -41,9 +43,16 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   void _setTextFieldDate(DateTime dateValue) {
     final textDate = dateValue.toString().split(' ').first;
     _birthdayController.value = TextEditingValue(text: textDate);
+    setState(() {
+      _birthday = textDate;
+    });
   }
 
   void _onSubmit() {
+    ref.read(signUpForm.notifier).state = {
+      ...ref.read(signUpForm.notifier).state,
+      'birthday': _birthday,
+    };
     ref.read(signUpProvider.notifier).signUp(context);
   }
 
