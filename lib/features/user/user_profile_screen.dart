@@ -3,11 +3,11 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
+import 'package:tiktok_clone/features/user/widgets/avatar.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
 import 'package:tiktok_clone/features/user/widgets/profile_button.dart';
 import 'package:tiktok_clone/features/user/widgets/user_profile_tab_bar.dart';
@@ -44,11 +44,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     return Column(
       children: [
         Gaps.v10,
-        CircleAvatar(
-          radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
-          foregroundColor: Colors.indigo,
-          foregroundImage: jasonImage,
-          child: Text(_userAccount),
+        Avatar(
+          isVertical: isVertical,
+          user: user,
         ),
         Gaps.v20,
         _getUserId(user),

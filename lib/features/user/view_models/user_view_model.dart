@@ -11,9 +11,11 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
   late final UserRepository _userRepository;
   late final AuthenticationRepository _authRepository;
 
+  late final UserProfileModel loginUser;
+
   @override
   FutureOr<UserProfileModel> build() async {
-    await Future.delayed(const Duration(seconds: 2));
+    // await Future.delayed(const Duration(seconds: 2));
 
     _userRepository = ref.read(userRepository);
     _authRepository = ref.read(authRepository);
@@ -44,12 +46,19 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
       bio: 'undefined',
       link: 'undefined',
       birthday: form['birthday'] ?? '1900-01-01',
+      hasAvatar: false,
     );
 
     // firestore
     await _userRepository.createProfile(profile);
     // firebase
     state = AsyncValue.data(profile);
+  }
+
+  Future<void> onAvatarUploaded(UserProfileModel profile) async {
+    if (state.value == null) return;
+    state = AsyncValue.data(state.value!.copyWith(hasAvatar: true));
+    await _userRepository.updateProfile(state.value!.uid, {'hasAvatar': true});
   }
 }
 
