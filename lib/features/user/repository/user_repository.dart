@@ -20,13 +20,34 @@ class UserRepository {
     return doc.data();
   }
 
-// update avatar
+  // update profile
+  Future<void> updateProfile(UserProfileModel profile) async {
+    await _database
+        .collection(userCollection)
+        .doc(profile.uid)
+        .update(profile.toJson());
+  }
 
-// update bio
+  // update bio
+  Future<void> updateBio(UserProfileModel profile) async {
+    await _database
+        .collection(userCollection)
+        .doc(profile.uid)
+        .update({'bio': profile.bio});
+  }
 
-// update link
+  // update link
+  Future<void> updateLink(UserProfileModel profile) async {
+    await _database
+        .collection(userCollection)
+        .doc(profile.uid)
+        .update({'link': profile.link});
+  }
 
-// delete
+  // delete
+  Future<void> deleteProfile(UserProfileModel profile) async {
+    await _database.collection(userCollection).doc(profile.uid).delete();
+  }
 }
 
 final userRepository = Provider(
