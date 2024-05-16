@@ -60,7 +60,9 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
 
     return ref.watch(timelineProvider).when(
           loading: () => const Center(
-            child: CircularProgressIndicator(),
+            child: CircularProgressIndicator.adaptive(
+              backgroundColor: Colors.white,
+            ),
           ),
           error: (error, stackTrace) => Center(
             child: Text(
