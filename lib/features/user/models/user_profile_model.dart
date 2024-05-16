@@ -23,6 +23,14 @@ class UserProfileModel {
         link = '',
         birthday = '';
 
+  UserProfileModel.fromJson(Map<String, dynamic> json)
+      : uid = json['uid'],
+        name = json['name'],
+        bio = json['bio'],
+        email = json['email'],
+        link = json['link'],
+        birthday = json['birthday'];
+
   Map<String, String> toJson() {
     return {
       'uid': uid,
