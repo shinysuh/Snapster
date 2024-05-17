@@ -31,14 +31,20 @@ class Avatar extends ConsumerWidget {
     }
   }
 
-  String _getFileLocation() {
-    return 'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F${user.uid}?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0';
+  NetworkImage _getProfileImage() {
+    /* NetworkImage - 한번 fetch 후 이미지를 캐싱한다
+            -> 프로필 있는 상태에서 사진 업로드하면 이전 사진 뜨는 issue
+              >>> fix: URL 마지막에 DateTime.now() 를 추가해 새로운 URL 로 인식하게 함
+     */
+    var imageURL =
+        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F${user.uid}?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0';
+    imageURL += '&haha=${DateTime.now().toString()}';
+    return NetworkImage(imageURL);
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var isLoading = ref.watch(avatarProvider).isLoading;
-    print(user.hasAvatar);
 
     return GestureDetector(
       onTap: isLoading ? () {} : () => _onTapAvatar(ref),
@@ -55,8 +61,7 @@ class Avatar extends ConsumerWidget {
           : CircleAvatar(
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
-              foregroundImage:
-                  user.hasAvatar ? NetworkImage(_getFileLocation()) : null,
+              foregroundImage: user.hasAvatar ? _getProfileImage() : null,
               child: Text(user.name),
             ),
     );
