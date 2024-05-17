@@ -7,6 +7,7 @@ import 'package:tiktok_clone/features/authentication/password_screen.dart';
 import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
+import 'package:tiktok_clone/utils/validation.dart';
 
 class EmailScreenArgs {
   final String username;
@@ -43,7 +44,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
     _emailController.addListener(() {
       setState(() {
         _email = _emailController.text;
-        _isEmailValid = _validateEmailAddress();
+        _isEmailValid = validateEmailAddress(_email);
       });
     });
   }
@@ -52,16 +53,6 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
   void dispose() {
     _emailController.dispose();
     super.dispose();
-  }
-
-  bool _validateEmailAddress() {
-    final regExp = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-
-    return _email.isNotEmpty && regExp.hasMatch(_email);
-
-    // if (_email.isEmpty) return null;
-    // if (!regExp.hasMatch(_email)) return 'Invalid Email Format';
   }
 
   void _onSubmit() {
