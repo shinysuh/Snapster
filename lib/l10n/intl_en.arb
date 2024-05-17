@@ -75,5 +75,6 @@
       }
     }
   },
-  "continueWithGoogle": "Continue with Google"
+  "continueWithGoogle": "Continue with Google",
+  "save": "Save"
 }

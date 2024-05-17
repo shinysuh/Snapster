@@ -15,3 +15,17 @@ void showFirebaseErrorSnack(BuildContext context, Object? error) {
     ),
   );
 }
+
+void showCustomErrorSnack(BuildContext context, String message) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      // action: SnackBarAction(
+      //   label: 'Got it',
+      //   onPressed: () {},
+      // ),
+      backgroundColor: const Color(0xFFCE8782),
+      showCloseIcon: true,
+      content: Text(message),
+    ),
+  );
+}

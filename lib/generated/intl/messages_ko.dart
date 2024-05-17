@@ -55,6 +55,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logInToTiktok": m5,
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
+        "save": MessageLookupByLibrary.simpleMessage("저장"),
         "share": MessageLookupByLibrary.simpleMessage("공유"),
         "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
         "signUpSubtitle": m6,

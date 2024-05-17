@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
-import 'package:tiktok_clone/utils/firebase_exception_handler.dart';
+import 'package:tiktok_clone/utils/base_exception_handler.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class SignUpViewModel extends AsyncNotifier<void> {

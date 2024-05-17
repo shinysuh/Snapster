@@ -61,6 +61,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "logInToTiktok": m5,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
         "share": MessageLookupByLibrary.simpleMessage("share"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
         "signUpSubtitle": m6,
