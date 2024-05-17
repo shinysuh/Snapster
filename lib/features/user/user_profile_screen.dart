@@ -177,32 +177,40 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     return [
       Padding(
         padding: const EdgeInsets.symmetric(horizontal: Sizes.size32),
-        child: Text(
-          user.bio.isNotEmpty && user.bio != 'undefined'
-              ? user.bio
-              : "If you are looking for lovely moments of Jason, \nyou're at the right place:)",
-          textAlign: TextAlign.center,
+        child: Column(
+          children: [
+            if (user.bio.isNotEmpty && user.bio != 'undefined')
+              Text(
+                user.bio,
+                textAlign: TextAlign.center,
+              ),
+            Gaps.v14,
+            if (user.link.isNotEmpty && user.link != 'undefined')
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.only(top: Sizes.size2),
+                    child: FaIcon(
+                      FontAwesomeIcons.link,
+                      size: Sizes.size14,
+                    ),
+                  ),
+                  Gaps.h8,
+                  Expanded(
+                    child: Text(
+                      user.link,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ),
+                ],
+              )
+          ],
         ),
       ),
-      Gaps.v14,
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const FaIcon(
-            FontAwesomeIcons.link,
-            size: Sizes.size14,
-          ),
-          Gaps.h4,
-          Text(
-            user.link.isNotEmpty && user.link != 'undefined'
-                ? user.link
-                : 'https://www.jason_cutie_pie.com',
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ],
-      )
     ];
   }
 

@@ -125,7 +125,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
             onTap: () => onTapOutsideAndDismissKeyboard(context),
             child: Scaffold(
               appBar: AppBar(
-                title: const Text('Edit Profile'),
+                title: Text(S.of(context).editProfile),
               ),
               body: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),

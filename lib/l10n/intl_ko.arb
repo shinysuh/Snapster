@@ -17,5 +17,6 @@
   "share": "공유",
   "commentTitle": "댓글 {value}개",
   "commentLikeCount": "{value}",
-  "save": "저장"
+  "save": "저장",
+  "editProfile": "프로필 수정"
 }

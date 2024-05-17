@@ -50,6 +50,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
+        "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
