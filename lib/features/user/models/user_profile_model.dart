@@ -1,6 +1,7 @@
 class UserProfileModel {
   final String uid;
   final String name;
+  final String username;
   final String email;
   final String bio;
   final String link;
@@ -10,6 +11,7 @@ class UserProfileModel {
   UserProfileModel({
     required this.uid,
     required this.name,
+    required this.username,
     required this.email,
     required this.bio,
     required this.link,
@@ -20,6 +22,7 @@ class UserProfileModel {
   UserProfileModel.empty()
       : uid = '',
         name = '',
+        username = '',
         bio = '',
         email = '',
         link = '',
@@ -29,6 +32,7 @@ class UserProfileModel {
   UserProfileModel.fromJson(Map<String, dynamic> json)
       : uid = json['uid'],
         name = json['name'],
+        username = json['username'],
         bio = json['bio'],
         email = json['email'],
         link = json['link'],
@@ -39,6 +43,7 @@ class UserProfileModel {
     return {
       'uid': uid,
       'name': name,
+      'username': username,
       'bio': bio,
       'email': email,
       'link': link,
@@ -50,6 +55,7 @@ class UserProfileModel {
   UserProfileModel copyWith({
     String? uid,
     String? name,
+    String? username,
     String? email,
     String? bio,
     String? link,
@@ -59,6 +65,7 @@ class UserProfileModel {
     return UserProfileModel(
       uid: uid ?? this.uid,
       name: name ?? this.name,
+      username: username ?? this.username,
       email: email ?? this.email,
       bio: bio ?? this.bio,
       link: link ?? this.link,

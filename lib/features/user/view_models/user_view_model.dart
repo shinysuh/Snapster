@@ -1,11 +1,13 @@
 import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/repository/user_repository.dart';
+import 'package:tiktok_clone/utils/base_exception_handler.dart';
 
 class UserViewModel extends AsyncNotifier<UserProfileModel> {
   late final UserRepository _userRepository;
@@ -41,7 +43,8 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
     final profile = UserProfileModel(
       uid: credential.user!.uid,
-      name: credential.user!.displayName ?? form['name'] ?? 'Anonymous',
+      name: form['name'] ?? '',
+      username: credential.user!.displayName ?? form['username'] ?? 'Anonymous',
       email: credential.user!.email ?? 'undefined',
       bio: 'undefined',
       link: 'undefined',
@@ -55,10 +58,34 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     state = AsyncValue.data(profile);
   }
 
+  Future<void> updateProfile(
+      BuildContext context, UserProfileModel profile) async {
+    await checkLoginUser(context);
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(
+        () async => await _userRepository.updateProfile(profile.uid, profile));
+  }
+
   Future<void> onAvatarUploaded(UserProfileModel profile) async {
     if (state.value == null) return;
     state = AsyncValue.data(state.value!.copyWith(hasAvatar: true));
-    await _userRepository.updateProfile(state.value!.uid, {'hasAvatar': true});
+    await _userRepository.patchProfile(state.value!.uid, {'hasAvatar': true});
+  }
+
+  Future<void> onAvatarDeleted(UserProfileModel profile) async {
+    if (state.value == null) return;
+    state = AsyncValue.data(state.value!.copyWith(hasAvatar: false));
+    await _userRepository.patchProfile(state.value!.uid, {'hasAvatar': false});
+  }
+
+  Future<void> checkLoginUser(BuildContext context) async {
+    var isLoggedIn = ref.read(authRepository).isLoggedIn;
+    if (!isLoggedIn) {
+      _authRepository.signOut(context);
+      showCustomErrorSnack(
+          context, 'Session has been expired. Please log in first.');
+      throw Exception();
+    }
   }
 }
 

@@ -26,6 +26,16 @@ class AvatarViewModel extends AsyncNotifier<void> {
       await ref.read(userProvider.notifier).onAvatarUploaded(profile);
     });
   }
+
+  Future<void> deleteAvatar(UserProfileModel profile) async {
+    state = const AsyncValue.loading();
+
+    final fileName = ref.read(authRepository).user!.uid;
+    state = await AsyncValue.guard(() async {
+      await _repository.deleteAvatar(fileName);
+      await ref.read(userProvider.notifier).onAvatarDeleted(profile);
+    });
+  }
 }
 
 final avatarProvider = AsyncNotifierProvider<AvatarViewModel, void>(

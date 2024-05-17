@@ -26,7 +26,17 @@ class UserRepository {
   }
 
   // update profile
-  Future<void> updateProfile(String uid, Map<String, dynamic> newData) async {
+  Future<UserProfileModel> updateProfile(
+      String uid, UserProfileModel profile) async {
+    await _database
+        .collection(userCollection)
+        .doc(uid)
+        .update(profile.toJson());
+    return profile;
+  }
+
+  // update profile
+  Future<void> patchProfile(String uid, Map<String, dynamic> newData) async {
     await _database.collection(userCollection).doc(uid).update(newData);
   }
 
@@ -38,6 +48,11 @@ class UserRepository {
   Future<void> uploadAvatar(File file, String fileName) async {
     final fileRef = _storage.ref().child('$avatarStoragePath/$fileName');
     await fileRef.putFile(file);
+  }
+
+  Future<void> deleteAvatar(String fileName) async {
+    final fileRef = _storage.ref().child('$avatarStoragePath/$fileName');
+    await fileRef.delete();
   }
 }
 

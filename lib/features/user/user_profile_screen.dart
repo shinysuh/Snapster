@@ -4,8 +4,10 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/user/user_profile_form_screen.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/features/user/widgets/avatar.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
@@ -31,6 +33,21 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   final _username = '쭌희';
   final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
+
+  void _onTapEditProfile(UserProfileModel profile) {
+    goToRouteNamed(
+      context: context,
+      routeName: UserProfileFormScreen.routeName,
+      extra: profile,
+    );
+  }
+
+  void _onTapBell() {
+    goToRouteNamed(
+      context: context,
+      routeName: ActivityScreen.routeName,
+    );
+  }
 
   void _onTapGear() {
     redirectToScreen(
@@ -59,7 +76,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '@${user.name}',
+          '@${user.username}',
           style: const TextStyle(
             fontSize: Sizes.size16,
             fontWeight: FontWeight.w600,
@@ -231,14 +248,17 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                         SliverAppBar(
                           centerTitle: true,
                           // backgroundColor: isDark ? Colors.black : Colors.white,
-                          title: Text(user.name
-                              // widget.username.isEmpty
-                              //     ? _username
-                              //     : widget.username,
-                              ),
+                          title: Text(user.name),
                           actions: [
                             IconButton(
-                              onPressed: () {},
+                              onPressed: () => _onTapEditProfile(user),
+                              icon: const FaIcon(
+                                FontAwesomeIcons.pen,
+                                size: Sizes.size18,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _onTapBell,
                               icon: const FaIcon(
                                 FontAwesomeIcons.bell,
                                 size: Sizes.size20,

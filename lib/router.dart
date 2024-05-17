@@ -10,6 +10,8 @@ import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/chats_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
+import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/user/user_profile_form_screen.dart';
 import 'package:tiktok_clone/features/video/views/video_recording_screen.dart';
 
 /*
@@ -59,6 +61,16 @@ final routerProvider = Provider((ref) {
       //   path: '/',
       //   builder: (context, state) => const VideoRecordingScreen(),
       // ),
+      GoRoute(
+        name: UserProfileFormScreen.routeName,
+        path: UserProfileFormScreen.routeURL,
+        builder: (context, state) {
+          var profile = state.extra != null
+              ? state.extra as UserProfileModel
+              : UserProfileModel.empty();
+          return UserProfileFormScreen(profile: profile);
+        },
+      ),
       GoRoute(
         name: SignUpScreen.routeName,
         path: SignUpScreen.routeURL,
