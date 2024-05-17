@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
@@ -72,6 +73,39 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
             isVertical: false,
             user: profile,
           ),
+          if (!ref.watch(avatarProvider).isLoading) ...[
+            Positioned(
+              bottom: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: _onTapDeleteAvatar,
+                child: Container(
+                  width: Sizes.size28 + Sizes.size2,
+                  height: Sizes.size28 + Sizes.size2,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: Colors.white,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: Sizes.size5,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Positioned(
+              bottom: 3,
+              right: 3,
+              child: GestureDetector(
+                onTap: _onTapDeleteAvatar,
+                child: FaIcon(
+                  FontAwesomeIcons.solidCircleXmark,
+                  color: Colors.grey.shade600,
+                  size: Sizes.size24,
+                ),
+              ),
+            ),
+          ]
         ],
       ),
       Gaps.v20,
