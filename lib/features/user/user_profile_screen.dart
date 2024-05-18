@@ -173,45 +173,44 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  List<Widget> _getBio(UserProfileModel user) {
-    return [
-      Padding(
-        padding: const EdgeInsets.symmetric(horizontal: Sizes.size32),
-        child: Column(
-          children: [
-            if (user.bio.isNotEmpty && user.bio != 'undefined')
-              Text(
-                user.bio,
-                textAlign: TextAlign.center,
-              ),
-            Gaps.v14,
-            if (user.link.isNotEmpty && user.link != 'undefined')
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.only(top: Sizes.size2),
-                    child: FaIcon(
-                      FontAwesomeIcons.link,
-                      size: Sizes.size14,
+  Widget _getBio(UserProfileModel user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Sizes.size32),
+      child: Column(
+        children: [
+          if (user.bio.isNotEmpty)
+            Text(
+              user.bio,
+              textAlign: TextAlign.center,
+            ),
+          Gaps.v14,
+          if (user.link.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: Sizes.size3),
+                  child: FaIcon(
+                    FontAwesomeIcons.link,
+                    size: Sizes.size14,
+                  ),
+                ),
+                Gaps.h8,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  child: Text(
+                    user.link,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
-                  Gaps.h8,
-                  Expanded(
-                    child: Text(
-                      user.link,
-                      style: const TextStyle(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ),
-                ],
-              )
-          ],
-        ),
+                ),
+              ],
+            )
+        ],
       ),
-    ];
+    );
   }
 
   List<Widget> _getUserInfo(UserProfileModel user) {
@@ -220,7 +219,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       Gaps.v14,
       _getButtons(),
       Gaps.v14,
-      ..._getBio(user),
+      _getBio(user),
     ];
   }
 
