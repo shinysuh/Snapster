@@ -12,6 +12,8 @@ import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
+enum EditableFields { name, username, bio, link }
+
 class UserProfileFormScreen extends ConsumerStatefulWidget {
   static const String routeName = 'edit_user';
   static const String routeURL = '/edit_user';
@@ -32,10 +34,29 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late Map<String, dynamic> _profile;
 
+  // late FocusNode _usernameFocus = FocusNode();
+  // late FocusNode _bioFocus = FocusNode();
+  // late FocusNode _linkFocus = FocusNode();
+
+  List<FocusNode> focusList = [];
+
   @override
   void initState() {
     super.initState();
     _profile = widget.profile.toJson();
+
+    for (var field in EditableFields.values) {
+      focusList.add(FocusNode());
+    }
+  }
+
+  @override
+  void dispose() {
+    for (var focus in focusList) {
+      focus.dispose();
+    }
+
+    super.dispose();
   }
 
   void _setNewProfile(String field, String? newValue) {
@@ -44,7 +65,15 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
     });
   }
 
-  void _onTapNext() {}
+  void _onTapNext(EditableFields field) {
+    var index = EditableFields.values.indexOf(field) + 1;
+    index < focusList.length ? focusList[index].requestFocus() : _onTapSave();
+  }
+
+  FocusNode? _getFocusNode(EditableFields field) {
+    if (focusList.isEmpty) return null;
+    return focusList[EditableFields.values.indexOf(field)];
+  }
 
   void _onTapSave() {
     if (_formKey.currentState != null &&
@@ -124,6 +153,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
           data: (user) => GestureDetector(
             onTap: () => onTapOutsideAndDismissKeyboard(context),
             child: Scaffold(
+              resizeToAvoidBottomInset: false,
               appBar: AppBar(
                 title: Text(S.of(context).editProfile),
               ),
@@ -148,14 +178,15 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                              onEditingComplete: _onTapNext,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.name),
                               onSaved: (newValue) =>
                                   _setNewProfile('name', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
                               initialValue: _profile['username'],
-                              autofocus: true,
+                              focusNode: _getFocusNode(EditableFields.username),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
                                 hintText: 'Username',
@@ -163,14 +194,15 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                              onEditingComplete: _onTapNext,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.username),
                               onSaved: (newValue) =>
                                   _setNewProfile('username', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
                               initialValue: _profile['bio'],
-                              autofocus: true,
+                              focusNode: _getFocusNode(EditableFields.bio),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
                                 hintText: 'Bio',
@@ -178,14 +210,15 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                              onEditingComplete: _onTapNext,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.bio),
                               onSaved: (newValue) =>
                                   _setNewProfile('bio', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
                               initialValue: _profile['link'],
-                              // focusNode: _secondFocus,
+                              focusNode: _getFocusNode(EditableFields.link),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
                                 hintText: 'Link',
@@ -193,7 +226,8 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                              onEditingComplete: _onTapSave,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.link),
                               onSaved: (newValue) =>
                                   _setNewProfile('link', newValue),
                             ),
