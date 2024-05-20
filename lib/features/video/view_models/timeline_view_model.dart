@@ -6,19 +6,20 @@ import 'package:tiktok_clone/features/video/models/video_model.dart';
 // Async - Because it's fetching values from APIs
 class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   List<VideoModel> _list = [
-    VideoModel(title: 'First Video'),
-    VideoModel(title: 'Second Video'),
-    VideoModel(title: 'Third Video'),
-    VideoModel(title: 'Fourth Video'),
-    VideoModel(title: 'Fifth Video'),
+    // VideoModel(title: 'First Video'),
+    // VideoModel(title: 'Second Video'),
+    // VideoModel(title: 'Third Video'),
+    // VideoModel(title: 'Fourth Video'),
+    // VideoModel(title: 'Fifth Video'),
   ];
 
   void uploadVideo() async {
     state = const AsyncValue.loading(); // loading 상태 강제 유발
     await Future.delayed(const Duration(seconds: 2));
 
-    final newVideo = VideoModel(title: '${DateTime.now()}');
-    _list = [..._list, newVideo];
+    // final newVideo = VideoModel(title: '${DateTime.now()}');
+    // _list = [..._list, newVideo];
+    _list = [..._list];
 
     state = AsyncValue.data(_list);
   }

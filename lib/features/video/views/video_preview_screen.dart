@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/video/view_models/timeline_view_model.dart';
+import 'package:tiktok_clone/features/video/view_models/video_upload_view_model.dart';
 import 'package:video_player/video_player.dart';
 
 class VideoPreviewScreen extends ConsumerStatefulWidget {
@@ -63,12 +63,17 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   }
 
   void _onTapUpload() {
-    ref.read(timelineProvider.notifier).uploadVideo();
+    ref.read(videoUploadProvider.notifier).uploadVideo(
+          context: context,
+          video: File(widget.video.path),
+          title: '',
+          description: '',
+        );
   }
 
   @override
   Widget build(BuildContext context) {
-    var isLoading = ref.watch(timelineProvider).isLoading;
+    var isLoading = ref.watch(videoUploadProvider).isLoading;
 
     return Scaffold(
       backgroundColor: Colors.black,

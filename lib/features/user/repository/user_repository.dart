@@ -8,6 +8,7 @@ import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 class UserRepository {
   static const String userCollection = 'users';
   static const String avatarStoragePath = 'avatars';
+
   final FirebaseFirestore _database = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
 

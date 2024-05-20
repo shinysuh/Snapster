@@ -82,8 +82,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     var isLoggedIn = ref.read(authRepository).isLoggedIn;
     if (!isLoggedIn) {
       _authRepository.signOut(context);
-      showCustomErrorSnack(
-          context, 'Session has been expired. Please log in first.');
+      showSessionErrorSnack(context);
       throw Exception();
     }
   }

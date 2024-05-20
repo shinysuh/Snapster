@@ -85,6 +85,14 @@ void goBackToPreviousRoute(BuildContext context) {
 }
 
 // pushAndRemoveUntil 처럼 이전 route 들 접근 불가 => go 랑 같음
+void goRouteReplacementRoute({
+  required BuildContext context,
+  required String routeURL,
+}) {
+  context.pushReplacement(routeURL);
+}
+
+// pushAndRemoveUntil 처럼 이전 route 들 접근 불가 => go 랑 같음
 void goRouteReplacementNamed({
   required BuildContext context,
   required String routeName,

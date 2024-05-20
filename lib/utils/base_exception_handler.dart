@@ -16,6 +16,20 @@ void showFirebaseErrorSnack(BuildContext context, Object? error) {
   );
 }
 
+void showSessionErrorSnack(BuildContext context) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    const SnackBar(
+      // action: SnackBarAction(
+      //   label: 'Got it',
+      //   onPressed: () {},
+      // ),
+      backgroundColor: Color(0xFFCE8782),
+      showCloseIcon: true,
+      content: Text('Session has been expired. Please log in first.'),
+    ),
+  );
+}
+
 void showCustomErrorSnack(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
