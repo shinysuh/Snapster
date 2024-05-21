@@ -12,6 +12,7 @@ import 'package:tiktok_clone/features/user/user_profile_screen.dart';
 import 'package:tiktok_clone/features/video/views/video_recording_screen.dart';
 import 'package:tiktok_clone/features/video/views/video_timeline_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
@@ -78,107 +79,110 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
-      resizeToAvoidBottomInset: false,
-      backgroundColor: _isScreenDark() ? Colors.black : Colors.white,
-      body: Stack(
-        children: [
-          // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
-          // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
-          Offstage(
-            offstage: _isPageHidden(0),
-            child: const RegulatedMaxWidth(
-              maxWidth: Breakpoints.sm,
-              child: VideoTimelineScreen(),
-            ),
-          ),
-          Offstage(
-            offstage: _isPageHidden(1),
-            child: const RegulatedMaxWidth(
-              child: DiscoverScreen(),
-            ),
-          ),
-          Offstage(
-            offstage: _isPageHidden(3),
-            child: const RegulatedMaxWidth(
-              maxWidth: Breakpoints.sm,
-              child: InboxScreen(),
-            ),
-          ),
-          Offstage(
-            offstage: _isPageHidden(4),
-            child: const RegulatedMaxWidth(
-              child: UserProfileScreen(username: 'json_2426', show: 'posts'),
-            ),
-          ),
-        ],
-      ),
-      bottomNavigationBar: Container(
-        color: _isScreenDark() ? Colors.black : Colors.white,
-        child: Padding(
-          padding: const EdgeInsets.only(
-            top: Sizes.size16,
-            bottom: Sizes.size28,
-            left: Sizes.size20,
-            right: Sizes.size20,
-          ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              NavTab(
-                isHome: _isScreenDark(),
-                isSelected: _selectedIndex == 0,
-                label: 'Home',
-                icon: FontAwesomeIcons.house,
-                selectedIcon: FontAwesomeIcons.house,
-                onTap: () => _onTapNavigationItem(0),
+    return GestureDetector(
+      onTap: () => onTapOutsideAndDismissKeyboard(context),
+      child: Scaffold(
+        // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
+        resizeToAvoidBottomInset: false,
+        backgroundColor: _isScreenDark() ? Colors.black : Colors.white,
+        body: Stack(
+          children: [
+            // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
+            // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
+            Offstage(
+              offstage: _isPageHidden(0),
+              child: const RegulatedMaxWidth(
+                maxWidth: Breakpoints.sm,
+                child: VideoTimelineScreen(),
               ),
-              Gaps.h8,
-              NavTab(
-                isHome: _isScreenDark(),
-                isSelected: _selectedIndex == 1,
-                label: 'Discover',
-                icon: FontAwesomeIcons.compass,
-                selectedIcon: FontAwesomeIcons.solidCompass,
-                onTap: () {
-                  _onTapNavigationItem(1);
-                  // redirectToScreen(
-                  //   context: context,
-                  //   targetScreen: const DiscoverScreen(),
-                  // );
-                },
+            ),
+            Offstage(
+              offstage: _isPageHidden(1),
+              child: const RegulatedMaxWidth(
+                child: DiscoverScreen(),
               ),
-              Gaps.h32,
-              GestureDetector(
-                onTapDown: (details) => _onTapDownPostVideoButton(),
-                onTapCancel: _onReleasePostVideoButton,
-                onTap: _onTapPostVideoButton,
-                child: PostVideoButton(
-                  isClicked: _isPostVideoClicked,
-                  inverted: !_isScreenDark(),
+            ),
+            Offstage(
+              offstage: _isPageHidden(3),
+              child: const RegulatedMaxWidth(
+                maxWidth: Breakpoints.sm,
+                child: InboxScreen(),
+              ),
+            ),
+            Offstage(
+              offstage: _isPageHidden(4),
+              child: const RegulatedMaxWidth(
+                child: UserProfileScreen(username: 'json_2426', show: 'posts'),
+              ),
+            ),
+          ],
+        ),
+        bottomNavigationBar: Container(
+          color: _isScreenDark() ? Colors.black : Colors.white,
+          child: Padding(
+            padding: const EdgeInsets.only(
+              top: Sizes.size16,
+              bottom: Sizes.size28,
+              left: Sizes.size20,
+              right: Sizes.size20,
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                NavTab(
+                  isHome: _isScreenDark(),
+                  isSelected: _selectedIndex == 0,
+                  label: 'Home',
+                  icon: FontAwesomeIcons.house,
+                  selectedIcon: FontAwesomeIcons.house,
+                  onTap: () => _onTapNavigationItem(0),
                 ),
-              ),
-              Gaps.h32,
-              NavTab(
-                isHome: _isScreenDark(),
-                isSelected: _selectedIndex == 3,
-                label: 'Inbox',
-                icon: FontAwesomeIcons.message,
-                selectedIcon: FontAwesomeIcons.solidMessage,
-                onTap: () => _onTapNavigationItem(3),
-              ),
-              Gaps.h8,
-              NavTab(
-                isHome: _isScreenDark(),
-                isSelected: _selectedIndex == 4,
-                label: 'Profile',
-                icon: FontAwesomeIcons.user,
-                selectedIcon: FontAwesomeIcons.solidUser,
-                onTap: () => _onTapNavigationItem(4),
-              ),
-            ],
+                Gaps.h8,
+                NavTab(
+                  isHome: _isScreenDark(),
+                  isSelected: _selectedIndex == 1,
+                  label: 'Discover',
+                  icon: FontAwesomeIcons.compass,
+                  selectedIcon: FontAwesomeIcons.solidCompass,
+                  onTap: () {
+                    _onTapNavigationItem(1);
+                    // redirectToScreen(
+                    //   context: context,
+                    //   targetScreen: const DiscoverScreen(),
+                    // );
+                  },
+                ),
+                Gaps.h32,
+                GestureDetector(
+                  onTapDown: (details) => _onTapDownPostVideoButton(),
+                  onTapCancel: _onReleasePostVideoButton,
+                  onTap: _onTapPostVideoButton,
+                  child: PostVideoButton(
+                    isClicked: _isPostVideoClicked,
+                    inverted: !_isScreenDark(),
+                  ),
+                ),
+                Gaps.h32,
+                NavTab(
+                  isHome: _isScreenDark(),
+                  isSelected: _selectedIndex == 3,
+                  label: 'Inbox',
+                  icon: FontAwesomeIcons.message,
+                  selectedIcon: FontAwesomeIcons.solidMessage,
+                  onTap: () => _onTapNavigationItem(3),
+                ),
+                Gaps.h8,
+                NavTab(
+                  isHome: _isScreenDark(),
+                  isSelected: _selectedIndex == 4,
+                  label: 'Profile',
+                  icon: FontAwesomeIcons.user,
+                  selectedIcon: FontAwesomeIcons.solidUser,
+                  onTap: () => _onTapNavigationItem(4),
+                ),
+              ],
+            ),
           ),
         ),
       ),

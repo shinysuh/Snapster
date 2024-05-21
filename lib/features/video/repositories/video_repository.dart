@@ -17,7 +17,7 @@ class VideoRepository {
     return fileRef.putFile(video);
   }
 
-// create a video document
+  // create a video document
   Future<void> saveVideo(VideoModel data) async {
     await _database.collection(videoCollection).add(data.toJson());
   }

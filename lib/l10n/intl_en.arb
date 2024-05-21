@@ -77,5 +77,8 @@
   },
   "continueWithGoogle": "Continue with Google",
   "save": "Save",
-  "editProfile": "Edit Profile"
+  "editProfile": "Edit Profile",
+  "videoDetail": "Video Detail",
+  "title": "title",
+  "description": "description"
 }

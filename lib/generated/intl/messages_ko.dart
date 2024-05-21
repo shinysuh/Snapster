@@ -48,6 +48,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 계정"),
         "continueWithGithub": MessageLookupByLibrary.simpleMessage("깃허브 계정"),
         "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
+        "description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
         "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
@@ -62,6 +63,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
-        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호")
+        "title": MessageLookupByLibrary.simpleMessage("제목"),
+        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호"),
+        "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세")
       };
 }

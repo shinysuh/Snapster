@@ -274,6 +274,36 @@ class S {
       args: [],
     );
   }
+
+  /// `Video Detail`
+  String get videoDetail {
+    return Intl.message(
+      'Video Detail',
+      name: 'videoDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `title`
+  String get title {
+    return Intl.message(
+      'title',
+      name: 'title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `description`
+  String get description {
+    return Intl.message(
+      'description',
+      name: 'description',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

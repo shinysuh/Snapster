@@ -54,6 +54,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue with Github"),
         "continueWithGoogle":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
         "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
@@ -68,7 +69,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
+        "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
-            MessageLookupByLibrary.simpleMessage("Use email & password")
+            MessageLookupByLibrary.simpleMessage("Use email & password"),
+        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail")
       };
 }

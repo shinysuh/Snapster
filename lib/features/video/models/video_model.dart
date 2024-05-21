@@ -34,4 +34,14 @@ class VideoModel {
       'createdAt': createdAt,
     };
   }
+
+  VideoModel.sample({required this.title})
+      : description = '',
+        fileUrl = '',
+        thumbnailURL = '',
+        uploader = '',
+        uploaderUid = '',
+        likes = 0,
+        comments = 0,
+        createdAt = 0;
 }
