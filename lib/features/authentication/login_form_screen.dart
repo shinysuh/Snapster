@@ -66,6 +66,7 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('Log in'),
         ),
         body: Padding(

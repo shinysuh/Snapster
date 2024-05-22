@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -45,13 +46,17 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
     _secondFocus.requestFocus();
   }
 
+  void _closeModal() {
+    Navigator.pop(context);
+  }
+
   void _onSubmit() {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save();
     }
 
-    Navigator.pop(context);
+    _closeModal();
   }
 
   @override
@@ -59,7 +64,9 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
     final size = MediaQuery.of(context).size;
     final isDark = isDarkMode(context);
 
-    return SingleChildScrollView(
+    return Positioned(
+      // TODO - 키보드 트리거 시, 입력 폼 가려지는 이슈 fix 필요
+      bottom: 0,
       child: SizedBox(
         height: size.height * 0.35,
         child: RegulatedMaxWidth(
@@ -77,6 +84,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
               backgroundColor: isDark
                   ? Theme.of(context).appBarTheme.surfaceTintColor
                   : Colors.grey.shade50,
+              centerTitle: true,
               title: Text(
                 S.of(context).videoDetail,
                 style: const TextStyle(
@@ -84,6 +92,16 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                   fontWeight: FontWeight.w600,
                 ),
               ),
+              automaticallyImplyLeading: false,
+              actions: [
+                IconButton(
+                  onPressed: _closeModal,
+                  icon: const FaIcon(
+                    FontAwesomeIcons.xmark,
+                    size: Sizes.size22,
+                  ),
+                ),
+              ],
             ),
             bottomNavigationBar: GestureDetector(
               onTap: () => onTapOutsideAndDismissKeyboard(context),

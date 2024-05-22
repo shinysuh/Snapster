@@ -71,6 +71,7 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),

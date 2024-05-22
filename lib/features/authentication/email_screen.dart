@@ -81,6 +81,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),

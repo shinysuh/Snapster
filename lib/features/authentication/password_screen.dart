@@ -111,6 +111,7 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),

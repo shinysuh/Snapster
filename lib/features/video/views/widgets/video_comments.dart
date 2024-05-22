@@ -118,6 +118,7 @@ class _VideoCommentsState extends State<VideoComments> {
             backgroundColor: isDark
                 ? Theme.of(context).appBarTheme.surfaceTintColor
                 : Colors.grey.shade50,
+            centerTitle: true,
             title: Text(
               S.of(context).commentTitle(22796, 22796),
               style: const TextStyle(

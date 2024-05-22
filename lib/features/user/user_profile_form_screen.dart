@@ -155,6 +155,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
             child: Scaffold(
               resizeToAvoidBottomInset: false,
               appBar: AppBar(
+                centerTitle: true,
                 title: Text(S.of(context).editProfile),
               ),
               body: Padding(

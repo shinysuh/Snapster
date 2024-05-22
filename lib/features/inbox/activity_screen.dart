@@ -82,6 +82,7 @@ class _ActivityScreenState extends State<ActivityScreen>
       maxWidth: Breakpoints.sm,
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: GestureDetector(
             onTap: _toggleAnimation,
             child: Row(

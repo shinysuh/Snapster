@@ -96,6 +96,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 1,
+          centerTitle: true,
           title: const Text('Direct messages'),
           actions: [
             IconButton(

@@ -111,6 +111,7 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
           child: const FaIcon(FontAwesomeIcons.penToSquare),
         ),
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('Preview video'),
           actions: [
             if (!widget.isPicked)

@@ -32,6 +32,7 @@ class SettingsScreen extends ConsumerWidget {
         // locale: const Locale('fr'),
         child: Scaffold(
           appBar: AppBar(
+            centerTitle: true,
             title: const Text('settings'),
           ),
           body: ListView(
