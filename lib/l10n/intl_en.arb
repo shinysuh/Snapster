@@ -81,5 +81,6 @@
   "videoDetail": "Video Detail",
   "title": "title",
   "description": "description",
-  "chooseYourInterests": "Choose your interests"
+  "chooseYourInterests": "Choose your interests",
+  "setTheVideoTitle": "Please set the video title before you upload it."
 }

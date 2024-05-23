@@ -66,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "setTheVideoTitle": MessageLookupByLibrary.simpleMessage(
+            "Please set the video title before you upload it."),
         "share": MessageLookupByLibrary.simpleMessage("share"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
         "signUpSubtitle": m6,

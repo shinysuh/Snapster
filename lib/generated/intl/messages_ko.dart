@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
+        "setTheVideoTitle":
+            MessageLookupByLibrary.simpleMessage("비디오 제목을 입력한 후 업로드 해 주세요."),
         "share": MessageLookupByLibrary.simpleMessage("공유"),
         "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
         "signUpSubtitle": m6,

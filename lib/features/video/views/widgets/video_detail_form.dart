@@ -13,7 +13,7 @@ import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class VideoDetailForm extends ConsumerStatefulWidget {
   final Map<String, String> videoDetail;
-  final Function onChangeVideoDetail;
+  final void Function(Map<String, String> detail) onChangeVideoDetail;
 
   const VideoDetailForm({
     super.key,
@@ -27,6 +27,12 @@ class VideoDetailForm extends ConsumerStatefulWidget {
 
 class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  static const String title = 'title';
+  static const String description = 'description';
+  Map<String, String> detail = {
+    title: '',
+    description: '',
+  };
 
   late FocusNode _secondFocus;
 
@@ -34,6 +40,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
   void initState() {
     super.initState();
     _secondFocus = FocusNode();
+    _initVideoDetail();
   }
 
   @override
@@ -42,11 +49,29 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
     super.dispose();
   }
 
+  void _initVideoDetail() {
+    detail = {
+      title: widget.videoDetail[title] ?? '',
+      description: widget.videoDetail[description] ?? '',
+    };
+  }
+
+  void _setVideoDetail(String field, String? info) {
+    if (info != null) {
+      setState(() {
+        detail[field] = info;
+      });
+    }
+  }
+
   void _onTapNext() {
     _secondFocus.requestFocus();
   }
 
-  void _closeModal() {
+  void _closeModal(bool isSaved) {
+    if (isSaved) {
+      widget.onChangeVideoDetail(detail);
+    }
     Navigator.pop(context);
   }
 
@@ -54,9 +79,8 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save();
+      _closeModal(true);
     }
-
-    _closeModal();
   }
 
   @override
@@ -95,7 +119,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
               automaticallyImplyLeading: false,
               actions: [
                 IconButton(
-                  onPressed: _closeModal,
+                  onPressed: () => _closeModal(false),
                   icon: const FaIcon(
                     FontAwesomeIcons.xmark,
                     size: Sizes.size22,
@@ -113,7 +137,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       TextFormField(
-                        initialValue: widget.videoDetail['title'],
+                        initialValue: detail[title],
                         autofocus: true,
                         // textCapitalization: TextCapitalization.none,
                         decoration: InputDecoration(
@@ -122,13 +146,17 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                             color: Colors.grey.shade500,
                           ),
                         ),
+                        validator: (value) =>
+                            value == null || value.trim() == ''
+                                ? 'Enter video title'
+                                : null,
                         onEditingComplete: _onTapNext,
                         onSaved: (description) =>
-                            widget.onChangeVideoDetail('title', description),
+                            _setVideoDetail(title, description),
                       ),
                       Gaps.v16,
                       TextFormField(
-                        initialValue: widget.videoDetail['description'],
+                        initialValue: detail[description],
                         autofocus: true,
                         // textCapitalization: TextCapitalization.none,
                         decoration: InputDecoration(
@@ -138,8 +166,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                           ),
                         ),
                         onEditingComplete: _onSubmit,
-                        onSaved: (description) => widget.onChangeVideoDetail(
-                            'description', description),
+                        onSaved: (desc) => _setVideoDetail(description, desc),
                       ),
                       Gaps.v28,
                       FormButton(

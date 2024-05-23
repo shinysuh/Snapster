@@ -314,6 +314,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Please set the video title before you upload it.`
+  String get setTheVideoTitle {
+    return Intl.message(
+      'Please set the video title before you upload it.',
+      name: 'setTheVideoTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

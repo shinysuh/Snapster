@@ -23,8 +23,8 @@ void showSessionErrorSnack(BuildContext context) {
       //   label: 'Got it',
       //   onPressed: () {},
       // ),
-      backgroundColor: Color(0xFFCE8782),
       showCloseIcon: true,
+      backgroundColor: Color(0xFFCE8782),
       content: Text('Session has been expired. Please log in first.'),
     ),
   );
@@ -37,8 +37,8 @@ void showCustomErrorSnack(BuildContext context, String message) {
       //   label: 'Got it',
       //   onPressed: () {},
       // ),
-      backgroundColor: const Color(0xFFCE8782),
-      showCloseIcon: true,
+      // showCloseIcon: true,
+      backgroundColor: const Color(0xFFCC726B),
       content: Text(message),
     ),
   );

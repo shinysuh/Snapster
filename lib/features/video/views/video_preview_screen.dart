@@ -8,6 +8,8 @@ import 'package:gallery_saver/gallery_saver.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/view_models/video_upload_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_detail_form.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/base_exception_handler.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:video_player/video_player.dart';
 
@@ -27,9 +29,11 @@ class VideoPreviewScreen extends ConsumerStatefulWidget {
 
 class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   late final VideoPlayerController _videoPlayerController;
+  static const String title = 'title';
+  static const String description = 'description';
   Map<String, String> videoDetail = {
-    'title': '',
-    'description': '',
+    title: '',
+    description: '',
   };
   bool _isSaved = false;
 
@@ -80,20 +84,26 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     });
   }
 
-  void _setVideoDetail(String field, String? info) {
-    if (info != null) {
+  void _setVideoDetail(Map<String, String> detail) {
+    if (detail.isNotEmpty) {
       setState(() {
-        videoDetail[field] = info;
+        videoDetail[title] = detail[title] ?? '';
+        videoDetail[description] = detail[description] ?? '';
       });
     }
   }
 
   void _onTapUpload() {
+    if (videoDetail[title] == null || videoDetail[title]!.trim() == '') {
+      showCustomErrorSnack(context, S.of(context).setTheVideoTitle);
+      return;
+    }
+
     ref.read(videoUploadProvider.notifier).uploadVideo(
           context: context,
           video: File(widget.video.path),
-          title: videoDetail['title'] ?? '',
-          description: videoDetail['description'] ?? '',
+          title: videoDetail[title] ?? '',
+          description: videoDetail[description] ?? '',
         );
   }
 
@@ -108,7 +118,11 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
         backgroundColor: Colors.black,
         floatingActionButton: FloatingActionButton(
           onPressed: () => showModalBottom(),
-          child: const FaIcon(FontAwesomeIcons.penToSquare),
+          backgroundColor: Colors.white,
+          child: const FaIcon(
+            FontAwesomeIcons.penToSquare,
+            color: Colors.black,
+          ),
         ),
         appBar: AppBar(
           centerTitle: true,
