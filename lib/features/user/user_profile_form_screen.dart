@@ -34,10 +34,6 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late Map<String, dynamic> _profile;
 
-  // late FocusNode _usernameFocus = FocusNode();
-  // late FocusNode _bioFocus = FocusNode();
-  // late FocusNode _linkFocus = FocusNode();
-
   List<FocusNode> focusList = [];
 
   @override

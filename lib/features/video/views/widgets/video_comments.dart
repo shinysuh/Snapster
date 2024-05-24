@@ -21,6 +21,12 @@ class _VideoCommentsState extends State<VideoComments> {
 
   final ScrollController _scrollController = ScrollController();
 
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
+
   void _closePopup() {
     Navigator.of(context).pop();
   }
