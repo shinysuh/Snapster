@@ -30,33 +30,64 @@ class UserProfileFormScreen extends ConsumerStatefulWidget {
       _UserProfileFormScreenState();
 }
 
-class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
+class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
+    with WidgetsBindingObserver {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final ScrollController _scrollController = ScrollController();
   late Map<String, dynamic> _profile;
 
-  List<FocusNode> focusList = [];
+  List<FocusNode> _focusList = [];
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
     _profile = widget.profile.toJson();
 
-    for (var field in EditableFields.values) {
-      focusList.add(FocusNode());
+    // _focusList = List.generate(
+    //   EditableFields.values.length,
+    //   (_) => FocusNode(),
+    // );
+    //
+    // for (var focus in _focusList) {
+    //   focus.addListener(_scrollToFocusedNode);
+    // }
+
+    // textfield 개수만큼 focusNode 생성
+    for (var i = 0; i < EditableFields.values.length; i++) {
+      var focus = FocusNode();
+      focus.addListener(_scrollToFocusedNode);
+      _focusList.add(focus);
     }
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _scrollController.dispose();
+
     for (var focus in _focusList) {
+      focus.removeListener(_scrollToFocusedNode);
       focus.dispose();
     }
+
     super.dispose();
   }
 
-  void _setNewProfile(EditableFields field, String? newValue) {
+  void _scrollToFocusedNode() {
+    final focusedNode = _focusList.firstWhere((node) => node.hasFocus);
+    Scrollable.ensureVisible(
+      focusedNode.context!,
+      duration: const Duration(milliseconds: 300),
+      curve: Curves.easeInOut,
+      alignment: 0.5, // center the focused widget
+    );
+  }
+
+  void _setNewProfile(String field, String? newValue) {
     setState(() {
-      _profile[field.toString()] = newValue ?? '';
+      _profile[field] = newValue ?? '';
     });
   }
 
@@ -154,6 +185,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                 title: Text(S.of(context).editProfile),
               ),
               body: SingleChildScrollView(
+                controller: _scrollController,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
                   child: Column(
@@ -165,8 +197,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                           children: [
                             Gaps.v28,
                             TextFormField(
-                              initialValue:
-                                  _profile[EditableFields.name.toString()],
+                              initialValue: _profile['name'],
                               autofocus: true,
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
@@ -179,12 +210,11 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                               onEditingComplete: () =>
                                   _onTapNext(EditableFields.name),
                               onSaved: (newValue) =>
-                                  _setNewProfile(EditableFields.name, newValue),
+                                  _setNewProfile('name', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
-                              initialValue:
-                                  _profile[EditableFields.username.toString()],
+                              initialValue: _profile['username'],
                               focusNode: _getFocusNode(EditableFields.username),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
@@ -196,13 +226,12 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                               textInputAction: TextInputAction.next,
                               onEditingComplete: () =>
                                   _onTapNext(EditableFields.username),
-                              onSaved: (newValue) => _setNewProfile(
-                                  EditableFields.username, newValue),
+                              onSaved: (newValue) =>
+                                  _setNewProfile('username', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
-                              initialValue:
-                                  _profile[EditableFields.bio.toString()],
+                              initialValue: _profile['bio'],
                               focusNode: _getFocusNode(EditableFields.bio),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
@@ -215,12 +244,11 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                               onEditingComplete: () =>
                                   _onTapNext(EditableFields.bio),
                               onSaved: (newValue) =>
-                                  _setNewProfile(EditableFields.bio, newValue),
+                                  _setNewProfile('bio', newValue),
                             ),
                             Gaps.v16,
                             TextFormField(
-                              initialValue:
-                                  _profile[EditableFields.link.toString()],
+                              initialValue: _profile['link'],
                               focusNode: _getFocusNode(EditableFields.link),
                               textCapitalization: TextCapitalization.none,
                               decoration: InputDecoration(
@@ -232,7 +260,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                               onEditingComplete: () =>
                                   _onTapNext(EditableFields.link),
                               onSaved: (newValue) =>
-                                  _setNewProfile(EditableFields.link, newValue),
+                                  _setNewProfile('link', newValue),
                             ),
                             Gaps.v28,
                             FormButton(
@@ -240,13 +268,10 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen> {
                               onTapButton: _onTapSave,
                               buttonText: S.of(context).save,
                             ),
-                            // 키보드가 트리거될 때 위젯을 키보드 아래로 스크롤
                             SizedBox(
-                              height: MediaQuery.of(context).viewInsets.bottom,
+                              height: MediaQuery.of(context).viewInsets.bottom +
+                                  Sizes.size32,
                             ),
-                            // const SizedBox(
-                            //   height: 370,
-                            // )
                           ],
                         ),
                       ),

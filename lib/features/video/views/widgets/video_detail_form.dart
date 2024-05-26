@@ -174,6 +174,10 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                         onTapButton: _onSubmit,
                         buttonText: S.of(context).save,
                       ),
+                      SizedBox(
+                        height: MediaQuery.of(context).viewInsets.bottom +
+                            Sizes.size32,
+                      ),
                     ],
                   ),
                 ),

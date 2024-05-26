@@ -62,6 +62,14 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   }
 
   void showModalBottom() {
+    // showCupertinoModalPopup(
+    //   context: context,
+    //   builder: (context) => VideoDetailForm(
+    //     videoDetail: videoDetail,
+    //     onChangeVideoDetail: _setVideoDetail,
+    //   ),
+    // );
+
     showModalBottomSheet(
       context: context,
       // backgroundColor: transparent 설정으로 Scaffold의 설정이 보일 수 있게 됨 (borderRadius 도 마찬가지)
