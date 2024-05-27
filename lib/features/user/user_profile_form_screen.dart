@@ -257,7 +257,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
                                   color: Colors.grey.shade500,
                                 ),
                               ),
-                              onEditingComplete: () =>
+                              onFieldSubmitted: (_) =>
                                   _onTapNext(EditableFields.link),
                               onSaved: (newValue) =>
                                   _setNewProfile('link', newValue),
