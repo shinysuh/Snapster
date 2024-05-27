@@ -324,6 +324,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Enter video title`
+  String get enterVideoTitle {
+    return Intl.message(
+      'Enter video title',
+      name: 'enterVideoTitle',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

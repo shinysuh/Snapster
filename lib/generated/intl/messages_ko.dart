@@ -54,6 +54,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
         "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
+        "enterVideoTitle":
+            MessageLookupByLibrary.simpleMessage("비디오 제목을 입력해 주세요."),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,

@@ -36,11 +36,12 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     description: '',
   };
   bool _isSaved = false;
+  bool _isAutoValidationTriggered = false;
 
   @override
   void initState() {
     super.initState();
-    _initVideo().then((value) => showModalBottom());
+    _initVideo().then((value) => showDialogForm());
   }
 
   @override
@@ -61,16 +62,21 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     setState(() {});
   }
 
-  void showModalBottom() {
+  void showDialogForm() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return VideoDetailForm(
           videoDetail: videoDetail,
           onChangeVideoDetail: _setVideoDetail,
+          isAutoValidationTriggered: _isAutoValidationTriggered,
         );
       },
-    );
+    ).then((value) {
+      setState(() {
+        _isAutoValidationTriggered = false;
+      });
+    });
   }
 
   Future<void> _saveToGallery() async {
@@ -94,6 +100,11 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
 
   void _onTapUpload() {
     if (videoDetail[title] == null || videoDetail[title]!.trim() == '') {
+      setState(() {
+        _isAutoValidationTriggered = true;
+      });
+
+      showDialogForm();
       showCustomErrorSnack(context, S.of(context).setTheVideoTitle);
       return;
     }
@@ -116,7 +127,7 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
         resizeToAvoidBottomInset: false,
         backgroundColor: Colors.black,
         floatingActionButton: FloatingActionButton(
-          onPressed: () => showModalBottom(),
+          onPressed: () => showDialogForm(),
           backgroundColor: Colors.white,
           child: const FaIcon(
             FontAwesomeIcons.penToSquare,

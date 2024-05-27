@@ -60,6 +60,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
         "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
+        "enterVideoTitle":
+            MessageLookupByLibrary.simpleMessage("Enter video title"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,

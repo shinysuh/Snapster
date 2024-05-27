@@ -82,5 +82,6 @@
   "title": "title",
   "description": "description",
   "chooseYourInterests": "Choose your interests",
-  "setTheVideoTitle": "Please set the video title before you upload it."
+  "setTheVideoTitle": "Please set the video title before you upload it.",
+  "enterVideoTitle": "Enter video title"
 }

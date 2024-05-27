@@ -11,11 +11,13 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 class VideoDetailForm extends ConsumerStatefulWidget {
   final Map<String, String> videoDetail;
   final void Function(Map<String, String> detail) onChangeVideoDetail;
+  final bool isAutoValidationTriggered;
 
   const VideoDetailForm({
     super.key,
     required this.videoDetail,
     required this.onChangeVideoDetail,
+    required this.isAutoValidationTriggered,
   });
 
   @override
@@ -101,7 +103,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
         constraints: const BoxConstraints(
           maxWidth: Breakpoints.md,
           minWidth: Breakpoints.sm,
-          maxHeight: 130,
+          maxHeight: 150,
         ),
         child: Form(
           key: _formKey,
@@ -122,8 +124,11 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                       color: Colors.grey.shade500,
                     ),
                   ),
+                  autovalidateMode: widget.isAutoValidationTriggered
+                      ? AutovalidateMode.always
+                      : AutovalidateMode.disabled,
                   validator: (value) => value == null || value.trim() == ''
-                      ? 'Enter video title'
+                      ? S.of(context).enterVideoTitle
                       : null,
                   onEditingComplete: _onTapNext,
                   onSaved: (description) => _setVideoDetail(title, description),
