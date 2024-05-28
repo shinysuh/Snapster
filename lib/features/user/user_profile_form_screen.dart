@@ -93,7 +93,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
 
   void _onTapNext(EditableFields field) {
     var index = EditableFields.values.indexOf(field) + 1;
-    index < _focusList.length ? _focusList[index].requestFocus() : _onTapSave();
+    index < _focusList.length ? _focusList[index].requestFocus() : _focusList[index].unfocus();
   }
 
   FocusNode? _getFocusNode(EditableFields field) {
