@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
+import 'package:tiktok_clone/features/authentication/common/auth_buttons_by_orientation.dart';
 import 'package:tiktok_clone/features/authentication/login_form_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class LoginScreen extends StatelessWidget {
-  static String routeURL = '/login';
-  static String routeName = 'login';
+class LoginScreen extends ConsumerWidget {
+  static const String routeURL = '/login';
+  static const String routeName = 'login';
 
   const LoginScreen({super.key});
 
@@ -24,12 +24,8 @@ class LoginScreen extends StatelessWidget {
     redirectToScreen(context: context, targetScreen: const LoginFormScreen());
   }
 
-  void _onTapAppleLogin(BuildContext context) {
-    // redirectToScreen(context: context, targetScreen: const LoginFormScreen());
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return OrientationBuilder(
       builder: (context, orientation) => Scaffold(
         body: SafeArea(
@@ -68,41 +64,11 @@ class LoginScreen extends StatelessWidget {
                     ),
                   ),
                   Gaps.v40,
-                  // 세로 방향 (COLUMN)
-                  if (orientation == Orientation.portrait) ...[
-                    AuthButton(
-                      icon: FontAwesomeIcons.user,
-                      text: S.of(context).useEmailPassword,
-                      onTapButton: () => _onTapEmailAndPassword(context),
-                    ),
-                    Gaps.v14,
-                    AuthButton(
-                      icon: FontAwesomeIcons.apple,
-                      text: S.of(context).continueWithApple,
-                      onTapButton: () => _onTapAppleLogin(context),
-                    ),
-                  ],
-                  // 가로 방향 (ROW)
-                  if (orientation == Orientation.landscape)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AuthButton(
-                            icon: FontAwesomeIcons.user,
-                            text: S.of(context).useEmailPassword,
-                            onTapButton: () => _onTapEmailAndPassword(context),
-                          ),
-                        ),
-                        Gaps.h14,
-                        Expanded(
-                          child: AuthButton(
-                            icon: FontAwesomeIcons.apple,
-                            text: S.of(context).continueWithApple,
-                            onTapButton: () => _onTapAppleLogin(context),
-                          ),
-                        ),
-                      ],
-                    ),
+                  AuthButtonsByOrientation(
+                    orientation: orientation,
+                    isNewUser: false,
+                    onTapEmailAndPassword: _onTapEmailAndPassword,
+                  )
                 ],
               ),
             ),

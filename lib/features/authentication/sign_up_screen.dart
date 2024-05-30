@@ -1,24 +1,30 @@
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/authentication/common/auth_button.dart';
+import 'package:tiktok_clone/features/authentication/common/auth_buttons_by_orientation.dart';
 import 'package:tiktok_clone/features/authentication/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/username_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class SignUpScreen extends StatelessWidget {
-  static String routeURL = '/';
-  static String routeName = 'signUp';
+class SignUpScreen extends ConsumerWidget {
+  static const String routeURL = '/';
+  static const String routeName = 'signUp';
 
   const SignUpScreen({super.key});
 
   void _onTapLogin(BuildContext context) async {
-    context.push(LoginScreen.routeURL);
+    // context.push(LoginScreen.routeURL);
+
+    goToRouteNamed(
+      context: context,
+      routeName: LoginScreen.routeName,
+    );
+
     // redirectToRoute(context: context, route: LoginScreen.routeName);
     // redirectToScreen(context: context, targetScreen: const LoginScreen());
     // final result = await Navigator.of(context).push(
@@ -31,8 +37,14 @@ class SignUpScreen extends StatelessWidget {
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
-    context.pushNamed(UsernameScreen.routeName);
-    // context.push(UsernameScreen.routeName);
+    redirectToScreen(
+      context: context,
+      targetScreen: const UsernameScreen(),
+    );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: UsernameScreen.routeName,
+    // );
     // context.push('/user/jenna?show=likes');
 
     // redirectToRoute(context: context, route: UsernameScreen.routeName);
@@ -42,12 +54,8 @@ class SignUpScreen extends StatelessWidget {
     // );
   }
 
-  void _onTapAppleLogin(BuildContext context) {
-    // redirectToScreen(context: context, targetScreen: const EmailScreen());
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return OrientationBuilder(
       builder: (context, orientation) => Scaffold(
         body: SafeArea(
@@ -80,41 +88,11 @@ class SignUpScreen extends StatelessWidget {
                     ),
                   ),
                   Gaps.v40,
-                  // 세로 방향 (COLUMN)
-                  if (orientation == Orientation.portrait) ...[
-                    AuthButton(
-                      icon: FontAwesomeIcons.user,
-                      text: S.of(context).useEmailPassword,
-                      onTapButton: () => _onTapEmailAndPassword(context),
-                    ),
-                    Gaps.v14,
-                    AuthButton(
-                      icon: FontAwesomeIcons.apple,
-                      text: S.of(context).continueWithApple,
-                      onTapButton: () => _onTapAppleLogin(context),
-                    ),
-                  ],
-                  // 가로 방향 (ROW)
-                  if (orientation == Orientation.landscape)
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AuthButton(
-                            icon: FontAwesomeIcons.user,
-                            text: S.of(context).useEmailPassword,
-                            onTapButton: () => _onTapEmailAndPassword(context),
-                          ),
-                        ),
-                        Gaps.h14,
-                        Expanded(
-                          child: AuthButton(
-                            icon: FontAwesomeIcons.apple,
-                            text: S.of(context).continueWithApple,
-                            onTapButton: () => _onTapAppleLogin(context),
-                          ),
-                        ),
-                      ],
-                    ),
+                  AuthButtonsByOrientation(
+                    orientation: orientation,
+                    isNewUser: true,
+                    onTapEmailAndPassword: _onTapEmailAndPassword,
+                  )
                 ],
               ),
             ),

@@ -2,8 +2,10 @@
   "signUpTitle": "{nameOfTheApp}에 가입하세요",
   "signUpTitleWithDateTime": "Sign Up for {nameOfTheApp} {when}",
   "signUpSubtitle": "프로필 생성, 다른 계정 팔로우, 나만의 비디오 만들기 등.",
-  "useEmailPassword": "이메일 로그인",
-  "continueWithApple": "애플 아이디 로그인",
+  "useEmailPassword": "이메일/비밀번호",
+  "continueWithApple": "애플 계정",
+  "continueWithGithub": "깃허브 계정",
+  "continueWithGoogle": "구글 계정",
   "alreadyHaveAnAccount": "이미 계정이 있으신가요?",
   "logIn": "로그인",
   "logInToTiktok": "{nameOfTheApp}에 로그인하세요",
@@ -14,5 +16,13 @@
   "commentCount": "{value}",
   "share": "공유",
   "commentTitle": "댓글 {value}개",
-  "commentLikeCount": "{value}"
+  "commentLikeCount": "{value}",
+  "save": "저장",
+  "editProfile": "프로필 수정",
+  "videoDetail": "비디오 상세",
+  "title": "제목",
+  "description": "상세 정보",
+  "chooseYourInterests": "Choose your interests",
+  "setTheVideoTitle": "비디오 제목을 입력한 후 업로드 해 주세요.",
+  "enterVideoTitle": "비디오 제목을 입력해 주세요."
 }

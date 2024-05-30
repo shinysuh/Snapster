@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -99,6 +100,16 @@ class S {
     return Intl.message(
       'Continue with apple',
       name: 'continueWithApple',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Continue with Github`
+  String get continueWithGithub {
+    return Intl.message(
+      'Continue with Github',
+      name: 'continueWithGithub',
       desc: '',
       args: [],
     );
@@ -231,6 +242,96 @@ class S {
       name: 'commentLikeCount',
       desc: 'comment like count',
       args: [valueString],
+    );
+  }
+
+  /// `Continue with Google`
+  String get continueWithGoogle {
+    return Intl.message(
+      'Continue with Google',
+      name: 'continueWithGoogle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Save`
+  String get save {
+    return Intl.message(
+      'Save',
+      name: 'save',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Edit Profile`
+  String get editProfile {
+    return Intl.message(
+      'Edit Profile',
+      name: 'editProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Video Detail`
+  String get videoDetail {
+    return Intl.message(
+      'Video Detail',
+      name: 'videoDetail',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `title`
+  String get title {
+    return Intl.message(
+      'title',
+      name: 'title',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `description`
+  String get description {
+    return Intl.message(
+      'description',
+      name: 'description',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose your interests`
+  String get chooseYourInterests {
+    return Intl.message(
+      'Choose your interests',
+      name: 'chooseYourInterests',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Please set the video title before you upload it.`
+  String get setTheVideoTitle {
+    return Intl.message(
+      'Please set the video title before you upload it.',
+      name: 'setTheVideoTitle',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Enter video title`
+  String get enterVideoTitle {
+    return Intl.message(
+      'Enter video title',
+      name: 'enterVideoTitle',
+      desc: '',
+      args: [],
     );
   }
 }

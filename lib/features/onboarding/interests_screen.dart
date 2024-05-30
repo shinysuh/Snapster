@@ -4,10 +4,14 @@ import 'package:tiktok_clone/constants/interests.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/onboarding/tutorial_screen.dart';
 import 'package:tiktok_clone/features/onboarding/widgets/interest_button.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 
 class InterestScreen extends StatefulWidget {
+  static const String routeName = 'interests';
+  static const String routeURL = '/tutorial';
+
   const InterestScreen({super.key});
 
   @override
@@ -53,11 +57,12 @@ class _InterestScreenState extends State<InterestScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: AnimatedOpacity(
           duration: const Duration(milliseconds: 300),
           opacity: _isTitleShown ? 1 : 0,
-          child: const Text(
-            'Choose your interests',
+          child: Text(
+            S.of(context).chooseYourInterests,
           ),
         ),
       ),
@@ -75,9 +80,9 @@ class _InterestScreenState extends State<InterestScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Gaps.v32,
-                const Text(
-                  'Choose your interests',
-                  style: TextStyle(
+                Text(
+                  S.of(context).chooseYourInterests,
+                  style: const TextStyle(
                     fontSize: Sizes.size40 + Sizes.size2,
                     fontWeight: FontWeight.bold,
                   ),
@@ -161,7 +166,7 @@ class BottomButton extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.symmetric(
           vertical: Sizes.size16,
-          horizontal: Sizes.size64 + Sizes.size4,
+          horizontal: Sizes.size60,
         ),
         decoration: BoxDecoration(
             color: buttonColor ??

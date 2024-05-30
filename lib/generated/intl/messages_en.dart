@@ -45,24 +45,39 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Already have an account?"),
+        "chooseYourInterests":
+            MessageLookupByLibrary.simpleMessage("Choose your interests"),
         "commentCount": m0,
         "commentLikeCount": m1,
         "commentTitle": m2,
         "continueWithApple":
             MessageLookupByLibrary.simpleMessage("Continue with apple"),
+        "continueWithGithub":
+            MessageLookupByLibrary.simpleMessage("Continue with Github"),
+        "continueWithGoogle":
+            MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
+        "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
+        "enterVideoTitle":
+            MessageLookupByLibrary.simpleMessage("Enter video title"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
+        "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "setTheVideoTitle": MessageLookupByLibrary.simpleMessage(
+            "Please set the video title before you upload it."),
         "share": MessageLookupByLibrary.simpleMessage("share"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
+        "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
-            MessageLookupByLibrary.simpleMessage("Use email & password")
+            MessageLookupByLibrary.simpleMessage("Use email & password"),
+        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail")
       };
 }

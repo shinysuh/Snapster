@@ -8,6 +8,9 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatsScreen extends StatefulWidget {
+  static const String routeName = 'chats';
+  static const String routeURL = '/chats';
+
   const ChatsScreen({super.key});
 
   @override
@@ -42,17 +45,20 @@ class _ChatsScreenState extends State<ChatsScreen> {
     _items.removeAt(index);
   }
 
-  void _onTapChat() {
-    redirectToScreen(
+  void _onTapChat(int index) {
+    var tmpChatId = '$index';
+
+    goToRouteNamed(
       context: context,
-      targetScreen: ChatDetailScreen(),
+      routeName: ChatDetailScreen.routeName,
+      params: {'chatId': tmpChatId},
     );
   }
 
   Widget _getListTile(int index) {
     return ListTile(
       onLongPress: () => _onDeleteItem(index),
-      onTap: _onTapChat,
+      onTap: () => _onTapChat(index),
       leading: CircleAvatar(
         radius: Sizes.size28,
         foregroundImage: junheeImage,
@@ -63,7 +69,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '쭌희 (${index + 1})',
+            '쭌희 ($index)',
             style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),
@@ -90,6 +96,7 @@ class _ChatsScreenState extends State<ChatsScreen> {
       child: Scaffold(
         appBar: AppBar(
           elevation: 1,
+          centerTitle: true,
           title: const Text('Direct messages'),
           actions: [
             IconButton(

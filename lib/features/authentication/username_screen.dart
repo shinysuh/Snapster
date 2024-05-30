@@ -1,23 +1,25 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
 import 'package:tiktok_clone/features/authentication/email_screen.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
-class UsernameScreen extends StatefulWidget {
-  static String routeURL = 'username';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
-  static String routeName = 'username';
+class UsernameScreen extends ConsumerStatefulWidget {
+  static const String routeURL =
+      'username'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'username';
 
   const UsernameScreen({super.key});
 
   @override
-  State<UsernameScreen> createState() => _UsernameScreenState();
+  ConsumerState<UsernameScreen> createState() => _UsernameScreenState();
 }
 
-class _UsernameScreenState extends State<UsernameScreen> {
+class _UsernameScreenState extends ConsumerState<UsernameScreen> {
   String _username = '';
 
   final TextEditingController _usernameController = TextEditingController();
@@ -45,7 +47,18 @@ class _UsernameScreenState extends State<UsernameScreen> {
 
   void _onSubmit() {
     if (_username.isEmpty) return;
-    context.pushNamed(EmailScreen.routeName, extra: EmailScreenArgs(username: _username));
+
+    ref.read(signUpForm.notifier).state = {'name': _username};
+
+    redirectToScreen(
+      context: context,
+      targetScreen: EmailScreen(username: _username),
+    );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: EmailScreen.routeName,
+    //   extra: EmailScreenArgs(username: _username),
+    // );
     // redirectToRoute(
     //     context: context,
     //     route: EmailScreen.routeName,
@@ -58,6 +71,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),
@@ -110,7 +124,7 @@ class _UsernameScreenState extends State<UsernameScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: _username.isEmpty,
+                disabled: _username.isEmpty,
                 onTapButton: _onSubmit,
                 buttonText: 'Next',
               ),

@@ -1,22 +1,28 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
-import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
-import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
-class BirthdayScreen extends StatefulWidget {
+class BirthdayScreen extends ConsumerStatefulWidget {
+  static const String routeURL =
+      'birthday'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'birthday';
+
   const BirthdayScreen({super.key});
 
   @override
-  State<BirthdayScreen> createState() => _BirthdayScreenState();
+  ConsumerState<BirthdayScreen> createState() => _BirthdayScreenState();
 }
 
-class _BirthdayScreenState extends State<BirthdayScreen> {
+class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
   late DateTime initDate;
   final TextEditingController _birthdayController = TextEditingController();
+
+  String _birthday = '';
 
   @override
   void initState() {
@@ -37,13 +43,17 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
   void _setTextFieldDate(DateTime dateValue) {
     final textDate = dateValue.toString().split(' ').first;
     _birthdayController.value = TextEditingValue(text: textDate);
+    setState(() {
+      _birthday = textDate;
+    });
   }
 
   void _onSubmit() {
-    redirectToScreenAndRemovePreviousRoutes(
-      context: context,
-      targetScreen: const InterestScreen(),
-    );
+    ref.read(signUpForm.notifier).state = {
+      ...ref.read(signUpForm.notifier).state,
+      'birthday': _birthday,
+    };
+    ref.read(signUpProvider.notifier).signUp(context);
   }
 
   @override
@@ -52,6 +62,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),
@@ -105,7 +116,7 @@ class _BirthdayScreenState extends State<BirthdayScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: false,
+                disabled: ref.watch(signUpProvider).isLoading,
                 onTapButton: _onSubmit,
                 buttonText: 'Sign Up',
               ),

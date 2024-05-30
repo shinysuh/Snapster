@@ -42,22 +42,35 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("이미 계정이 있으신가요?"),
+        "chooseYourInterests":
+            MessageLookupByLibrary.simpleMessage("Choose your interests"),
         "commentCount": m0,
         "commentLikeCount": m1,
         "commentTitle": m2,
-        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 아이디 로그인"),
+        "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 계정"),
+        "continueWithGithub": MessageLookupByLibrary.simpleMessage("깃허브 계정"),
+        "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
+        "description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
+        "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
+        "enterVideoTitle":
+            MessageLookupByLibrary.simpleMessage("비디오 제목을 입력해 주세요."),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
+        "save": MessageLookupByLibrary.simpleMessage("저장"),
+        "setTheVideoTitle":
+            MessageLookupByLibrary.simpleMessage("비디오 제목을 입력한 후 업로드 해 주세요."),
         "share": MessageLookupByLibrary.simpleMessage("공유"),
         "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
         "signUpSubtitle": m6,
         "signUpTitle": m7,
         "signUpTitleWithDateTime": m8,
-        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일 로그인")
+        "title": MessageLookupByLibrary.simpleMessage("제목"),
+        "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호"),
+        "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세")
       };
 }

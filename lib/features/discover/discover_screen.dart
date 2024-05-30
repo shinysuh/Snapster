@@ -199,7 +199,7 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       crossAxisCount: colCount,
                       crossAxisSpacing: Sizes.size8,
                       mainAxisSpacing: Sizes.size20,
-                      childAspectRatio: 9 / 20,
+                      childAspectRatio: 9 / 21,
                     ),
                     // Image.asset(url) 로 asset 폴더 내 이미지 fetch
                     // Image.network(url) 로 네트워크 상 이미지 fetch

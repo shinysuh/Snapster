@@ -1,23 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
-import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
-import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/features/authentication/view_models/login_view_model.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
-class LoginFormScreen extends StatefulWidget {
+class LoginFormScreen extends ConsumerStatefulWidget {
   const LoginFormScreen({super.key});
 
   @override
-  State<LoginFormScreen> createState() => _LoginFormScreenState();
+  ConsumerState<LoginFormScreen> createState() => _LoginFormScreenState();
 }
 
-class _LoginFormScreenState extends State<LoginFormScreen> {
+class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   Map<String, String> formData = {};
 
   late FocusNode _secondFocus; // 두번째 칸 focus
+
+  final _initialEmail = 'jenna@qwer.qwer';
+  final _initialPassword = 'qwer1234?';
 
   @override
   void initState() {
@@ -41,17 +44,19 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
         formData[field] = newValue;
       });
     }
-    print(formData.values);
+    // print(formData.values);
   }
 
   void _onSubmit() {
     if (_formKey.currentState != null &&
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save(); // invoke onSaved
-      redirectToScreenAndRemovePreviousRoutes(
-        context: context,
-        targetScreen: const InterestScreen(),
-      );
+
+      ref.read(loginProvider.notifier).login(
+            context,
+            formData['email'] ?? '',
+            formData['password'] ?? '',
+          );
     }
   }
 
@@ -61,6 +66,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text('Log in'),
         ),
         body: Padding(
@@ -71,6 +77,7 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
               children: [
                 Gaps.v28,
                 TextFormField(
+                  initialValue: _initialEmail,
                   autofocus: true,
                   textCapitalization: TextCapitalization.none,
                   decoration: const InputDecoration(
@@ -92,13 +99,15 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   onEditingComplete: _onTapNext,
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your email'
-                      : value == 'jenna'
-                          ? null
-                          : 'User Info Not Exist',
+                      : null,
+                  // : value == 'jenna'
+                  //     ? null
+                  //     : 'User Info Not Exist',
                   onSaved: (newValue) => _setFormData('email', newValue),
                 ),
                 Gaps.v16,
                 TextFormField(
+                  initialValue: _initialPassword,
                   focusNode: _secondFocus,
                   textCapitalization: TextCapitalization.none,
                   decoration: const InputDecoration(
@@ -107,14 +116,15 @@ class _LoginFormScreenState extends State<LoginFormScreen> {
                   onEditingComplete: _onSubmit,
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your password'
-                      : value == '1234'
-                          ? null
-                          : 'Password Not Matched',
+                      : null,
+                  // : value == '1234'
+                  //     ? null
+                  //     : 'Password Not Matched',
                   onSaved: (newValue) => _setFormData('password', newValue),
                 ),
                 Gaps.v28,
                 FormButton(
-                  isDisabled: false,
+                  disabled: ref.watch(loginProvider).isLoading,
                   onTapButton: _onSubmit,
                   buttonText: 'Log in',
                 ),

@@ -5,12 +5,12 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 class FormButton extends StatelessWidget {
   const FormButton({
     super.key,
-    required this.isDisabled,
+    required this.disabled,
     required this.onTapButton,
     required this.buttonText,
   });
 
-  final bool isDisabled;
+  final bool disabled;
   final Function onTapButton;
   final String buttonText;
 
@@ -19,14 +19,14 @@ class FormButton extends StatelessWidget {
     return FractionallySizedBox(
       widthFactor: 1,
       child: GestureDetector(
-        onTap: isDisabled ? () {} : () => onTapButton(),
+        onTap: disabled ? () {} : () => onTapButton(),
         child: AnimatedContainer(
             duration: const Duration(milliseconds: 300),
             padding: const EdgeInsets.symmetric(
               vertical: Sizes.size16,
             ),
             decoration: BoxDecoration(
-              color: isDisabled
+              color: disabled
                   ? isDarkMode(context)
                       ? Colors.grey.shade800
                       : Colors.grey.shade200
@@ -36,7 +36,7 @@ class FormButton extends StatelessWidget {
             child: AnimatedDefaultTextStyle(
               duration: const Duration(milliseconds: 300),
               style: TextStyle(
-                color: isDisabled ? Colors.grey.shade400 : Colors.white,
+                color: disabled ? Colors.grey.shade400 : Colors.white,
                 fontSize: Sizes.size16,
                 fontWeight: FontWeight.w600,
               ),

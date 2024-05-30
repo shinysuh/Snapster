@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
 import 'package:tiktok_clone/features/authentication/password_screen.dart';
+import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
+import 'package:tiktok_clone/utils/validation.dart';
 
 class EmailScreenArgs {
   final String username;
@@ -14,9 +17,10 @@ class EmailScreenArgs {
   });
 }
 
-class EmailScreen extends StatefulWidget {
-  static String routeURL = 'email';   // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
-  static String routeName = 'email';
+class EmailScreen extends ConsumerStatefulWidget {
+  static const String routeURL =
+      'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'email';
   final String username;
 
   const EmailScreen({
@@ -25,10 +29,10 @@ class EmailScreen extends StatefulWidget {
   });
 
   @override
-  State<EmailScreen> createState() => _EmailScreenState();
+  ConsumerState<EmailScreen> createState() => _EmailScreenState();
 }
 
-class _EmailScreenState extends State<EmailScreen> {
+class _EmailScreenState extends ConsumerState<EmailScreen> {
   String _email = '';
   bool _isEmailValid = true;
 
@@ -40,7 +44,7 @@ class _EmailScreenState extends State<EmailScreen> {
     _emailController.addListener(() {
       setState(() {
         _email = _emailController.text;
-        _isEmailValid = _validateEmailAddress();
+        _isEmailValid = validateEmailAddress(_email);
       });
     });
   }
@@ -51,19 +55,22 @@ class _EmailScreenState extends State<EmailScreen> {
     super.dispose();
   }
 
-  bool _validateEmailAddress() {
-    final regExp = RegExp(
-        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+");
-
-    return _email.isNotEmpty && regExp.hasMatch(_email);
-
-    // if (_email.isEmpty) return null;
-    // if (!regExp.hasMatch(_email)) return 'Invalid Email Format';
-  }
-
   void _onSubmit() {
     if (_email.isEmpty || !_isEmailValid) return;
-    redirectToScreen(context: context, targetScreen: const PasswordScreen());
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: PasswordScreen.routeName,
+    // );
+
+    ref.read(signUpForm.notifier).state = {
+      ...ref.read(signUpForm.notifier).state,
+      'email': _email,
+    };
+
+    redirectToScreen(
+      context: context,
+      targetScreen: const PasswordScreen(),
+    );
   }
 
   @override
@@ -74,6 +81,7 @@ class _EmailScreenState extends State<EmailScreen> {
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
         appBar: AppBar(
+          centerTitle: true,
           title: const Text(
             'Sign up',
           ),
@@ -122,7 +130,7 @@ class _EmailScreenState extends State<EmailScreen> {
               ),
               Gaps.v36,
               FormButton(
-                isDisabled: _email.isEmpty || !_isEmailValid,
+                disabled: _email.isEmpty || !_isEmailValid,
                 onTapButton: _onSubmit,
                 buttonText: 'Next',
               ),

@@ -1,17 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/activity_screen.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
+import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/user/user_profile_form_screen.dart';
+import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
+import 'package:tiktok_clone/features/user/widgets/avatar.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
 import 'package:tiktok_clone/features/user/widgets/profile_button.dart';
 import 'package:tiktok_clone/features/user/widgets/user_profile_tab_bar.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
-import 'package:tiktok_clone/utils/theme_mode.dart';
 
-class UserProfileScreen extends StatefulWidget {
+class UserProfileScreen extends ConsumerStatefulWidget {
   final String username;
   final String show;
 
@@ -22,13 +26,28 @@ class UserProfileScreen extends StatefulWidget {
   });
 
   @override
-  State<UserProfileScreen> createState() => _UserProfileScreenState();
+  ConsumerState<UserProfileScreen> createState() => _UserProfileScreenState();
 }
 
-class _UserProfileScreenState extends State<UserProfileScreen> {
+class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   final _username = '쭌희';
   final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
+
+  void _onTapEditProfile(UserProfileModel profile) {
+    goToRouteNamed(
+      context: context,
+      routeName: UserProfileFormScreen.routeName,
+      extra: profile,
+    );
+  }
+
+  void _onTapBell() {
+    goToRouteNamed(
+      context: context,
+      routeName: ActivityScreen.routeName,
+    );
+  }
 
   void _onTapGear() {
     redirectToScreen(
@@ -38,28 +57,26 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _getUserPic(bool isVertical) {
+  Widget _getUserPic(UserProfileModel user, bool isVertical) {
     return Column(
       children: [
         Gaps.v10,
-        CircleAvatar(
-          radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
-          foregroundColor: Colors.indigo,
-          foregroundImage: jasonImage,
-          child: Text(_userAccount),
+        Avatar(
+          isVertical: isVertical,
+          user: user,
         ),
         Gaps.v20,
-        _getUserId(),
+        _getUserId(user),
       ],
     );
   }
 
-  Widget _getUserId() {
+  Widget _getUserId(UserProfileModel user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Text(
-          '@${widget.username}',
+          '@${user.username}',
           style: const TextStyle(
             fontSize: Sizes.size16,
             fontWeight: FontWeight.w600,
@@ -75,7 +92,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  Widget _getFollowInfo() {
+  Widget _getFollowInfo(UserProfileModel user) {
     return SizedBox(
       height: Sizes.size52,
       child: Row(
@@ -156,169 +173,248 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     );
   }
 
-  List<Widget> _getBio() {
-    return [
-      const Padding(
-        padding: EdgeInsets.symmetric(horizontal: Sizes.size32),
-        child: Text(
-          "If you are looking for lovely moments of Jason, \nyou're at the right place:)",
-          textAlign: TextAlign.center,
-        ),
-      ),
-      Gaps.v14,
-      const Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+  Widget _getBio(UserProfileModel user) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: Sizes.size32),
+      child: Column(
         children: [
-          FaIcon(
-            FontAwesomeIcons.link,
-            size: Sizes.size14,
-          ),
-          Gaps.h4,
-          Text(
-            'https://www.jason_cutie_pie.com',
-            style: TextStyle(
-              fontWeight: FontWeight.w600,
+          if (user.bio.isNotEmpty)
+            Text(
+              user.bio,
+              textAlign: TextAlign.center,
             ),
-          ),
+          Gaps.v14,
+          if (user.link.isNotEmpty)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(top: Sizes.size3),
+                  child: FaIcon(
+                    FontAwesomeIcons.link,
+                    size: Sizes.size14,
+                  ),
+                ),
+                Gaps.h8,
+                ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 320),
+                  child: Text(
+                    user.link,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ),
+              ],
+            )
         ],
-      )
-    ];
+      ),
+    );
   }
 
-  List<Widget> _getUserInfo() {
+  List<Widget> _getUserInfo(UserProfileModel user) {
     return [
-      _getFollowInfo(),
+      _getFollowInfo(user),
       Gaps.v14,
       _getButtons(),
       Gaps.v14,
-      ..._getBio(),
+      _getBio(user),
     ];
   }
 
   @override
   Widget build(BuildContext context) {
-    final isDark = isDarkMode(context);
-    return Scaffold(
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // var width = MediaQuery.of(context).size.width;
-            var width = constraints.maxWidth;
-            var isVertical = width < Breakpoints.md;
-            var colCount = isVertical
-                ? 3
-                : width < Breakpoints.lg
-                    ? 4
-                    : 5;
-            return DefaultTabController(
-              initialIndex: widget.show == 'likes'?1:0,
-              length: 2,
-              /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-              child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    centerTitle: true,
-                    // backgroundColor: isDark ? Colors.black : Colors.white,
-                    title: Text(
-                      widget.username.isEmpty ? _username : widget.username,
-                    ),
-                    actions: [
-                      IconButton(
-                        onPressed: () {},
-                        icon: const FaIcon(
-                          FontAwesomeIcons.bell,
-                          size: Sizes.size20,
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: _onTapGear,
-                        icon: const FaIcon(
-                          FontAwesomeIcons.gear,
-                          size: Sizes.size20,
-                        ),
-                      ),
-                    ],
-                  ),
-                  SliverToBoxAdapter(
-                    child: isVertical
-                        ? Column(
-                            children: [
-                              _getUserPic(isVertical),
-                              Gaps.v24,
-                              ..._getUserInfo(),
-                              Gaps.v20,
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _getUserPic(isVertical),
-                              Column(
-                                children: [
-                                  ..._getUserInfo(),
-                                  Gaps.v20,
-                                ],
+    // final isDark = isDarkMode(context);
+    return ref.watch(userProvider).when(
+          loading: () => const Center(
+            child: CircularProgressIndicator.adaptive(),
+          ),
+          error: (error, stackTrace) => Center(
+            child: Text(error.toString()),
+          ),
+          data: (user) => Scaffold(
+            backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+            body: SafeArea(
+              child: LayoutBuilder(
+                builder: (context, constraints) {
+                  // var width = MediaQuery.of(context).size.width;
+                  var width = constraints.maxWidth;
+                  var isVertical = width < Breakpoints.md;
+                  var colCount = isVertical
+                      ? 3
+                      : width < Breakpoints.lg
+                          ? 4
+                          : 5;
+                  return DefaultTabController(
+                    initialIndex: widget.show == 'likes' ? 1 : 0,
+                    length: 2,
+                    /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+                    child: NestedScrollView(
+                      headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                        SliverAppBar(
+                          centerTitle: true,
+                          // backgroundColor: isDark ? Colors.black : Colors.white,
+                          title: Text(user.name),
+                          actions: [
+                            IconButton(
+                              onPressed: () => _onTapEditProfile(user),
+                              icon: const FaIcon(
+                                FontAwesomeIcons.pen,
+                                size: Sizes.size18,
                               ),
-                            ],
-                          ),
-                  ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    floating: true,
-                    delegate: UserProfileTabBar(),
-                  ),
-                ],
-                body: TabBarView(
-                  children: [
-                    GridView.builder(
-                      // 드래그 시에 keyboard dismiss
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      itemCount: 20,
-                      padding: const EdgeInsets.only(top: Sizes.size5),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        // crossAxisCount => grid 의 컬럼 개수
-                        crossAxisCount: colCount,
-                        crossAxisSpacing: Sizes.size2,
-                        mainAxisSpacing: Sizes.size2,
-                        childAspectRatio: _videoRatio,
-                      ),
-                      // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                      // Image.network(url) 로 네트워크 상 이미지 fetch
-                      // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                      itemBuilder: (context, index) => Stack(
+                            ),
+                            IconButton(
+                              onPressed: _onTapBell,
+                              icon: const FaIcon(
+                                FontAwesomeIcons.bell,
+                                size: Sizes.size20,
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: _onTapGear,
+                              icon: const FaIcon(
+                                FontAwesomeIcons.gear,
+                                size: Sizes.size20,
+                              ),
+                            ),
+                          ],
+                        ),
+                        SliverToBoxAdapter(
+                          child: isVertical
+                              ? Column(
+                                  children: [
+                                    _getUserPic(user, isVertical),
+                                    Gaps.v24,
+                                    ..._getUserInfo(user),
+                                    Gaps.v20,
+                                  ],
+                                )
+                              : Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _getUserPic(user, isVertical),
+                                    Column(
+                                      children: [
+                                        ..._getUserInfo(user),
+                                        Gaps.v20,
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                        ),
+                        SliverPersistentHeader(
+                          pinned: true,
+                          floating: true,
+                          delegate: UserProfileTabBar(),
+                        ),
+                      ],
+                      body: TabBarView(
                         children: [
-                          Column(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: _videoRatio,
-                                child: FadeInImage.assetNetwork(
-                                  fit: BoxFit.cover,
-                                  placeholder: 'assets/images/1.jpeg',
-                                  image:
-                                      "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Positioned(
-                            bottom: 0,
-                            left: 0,
-                            child: Row(
+                          GridView.builder(
+                            // 드래그 시에 keyboard dismiss
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount: 20,
+                            padding: const EdgeInsets.only(top: Sizes.size5),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              // crossAxisCount => grid 의 컬럼 개수
+                              crossAxisCount: colCount,
+                              crossAxisSpacing: Sizes.size2,
+                              mainAxisSpacing: Sizes.size2,
+                              childAspectRatio: _videoRatio,
+                            ),
+                            // Image.asset(url) 로 asset 폴더 내 이미지 fetch
+                            // Image.network(url) 로 네트워크 상 이미지 fetch
+                            // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
+                            itemBuilder: (context, index) => Stack(
                               children: [
-                                Icon(
-                                  Icons.play_arrow_outlined,
-                                  color: Colors.white,
-                                  size: Sizes.size26,
+                                Column(
+                                  children: [
+                                    AspectRatio(
+                                      aspectRatio: _videoRatio,
+                                      child: FadeInImage.assetNetwork(
+                                        fit: BoxFit.cover,
+                                        placeholder: 'assets/images/1.jpeg',
+                                        image:
+                                            "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  '2.6K',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: Sizes.size14,
-                                    fontWeight: FontWeight.w600,
+                                const Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.play_arrow_outlined,
+                                        color: Colors.white,
+                                        size: Sizes.size26,
+                                      ),
+                                      Text(
+                                        '2.6K',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: Sizes.size14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          GridView.builder(
+                            // 드래그 시에 keyboard dismiss
+                            keyboardDismissBehavior:
+                                ScrollViewKeyboardDismissBehavior.onDrag,
+                            itemCount: 20,
+                            padding: const EdgeInsets.only(top: Sizes.size5),
+                            gridDelegate:
+                                SliverGridDelegateWithFixedCrossAxisCount(
+                              // crossAxisCount => grid 의 컬럼 개수
+                              crossAxisCount: colCount,
+                              crossAxisSpacing: Sizes.size2,
+                              mainAxisSpacing: Sizes.size2,
+                              childAspectRatio: _videoRatio,
+                            ),
+                            itemBuilder: (context, index) => Stack(
+                              children: [
+                                Column(
+                                  children: [
+                                    AspectRatio(
+                                      aspectRatio: _videoRatio,
+                                      child: const Image(
+                                        fit: BoxFit.cover,
+                                        image:
+                                            AssetImage('assets/images/2.jpeg'),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const Positioned(
+                                  bottom: 0,
+                                  left: 0,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.play_arrow_outlined,
+                                        color: Colors.white,
+                                        size: Sizes.size26,
+                                      ),
+                                      Text(
+                                        '36.1K',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: Sizes.size14,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
@@ -327,63 +423,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                         ],
                       ),
                     ),
-                    GridView.builder(
-                      // 드래그 시에 keyboard dismiss
-                      keyboardDismissBehavior:
-                          ScrollViewKeyboardDismissBehavior.onDrag,
-                      itemCount: 20,
-                      padding: const EdgeInsets.only(top: Sizes.size5),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        // crossAxisCount => grid 의 컬럼 개수
-                        crossAxisCount: colCount,
-                        crossAxisSpacing: Sizes.size2,
-                        mainAxisSpacing: Sizes.size2,
-                        childAspectRatio: _videoRatio,
-                      ),
-                      itemBuilder: (context, index) => Stack(
-                        children: [
-                          Column(
-                            children: [
-                              AspectRatio(
-                                aspectRatio: _videoRatio,
-                                child: const Image(
-                                  fit: BoxFit.cover,
-                                  image: AssetImage('assets/images/2.jpeg'),
-                                ),
-                              ),
-                            ],
-                          ),
-                          const Positioned(
-                            bottom: 0,
-                            left: 0,
-                            child: Row(
-                              children: [
-                                Icon(
-                                  Icons.play_arrow_outlined,
-                                  color: Colors.white,
-                                  size: Sizes.size26,
-                                ),
-                                Text(
-                                  '36.1K',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: Sizes.size14,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+                  );
+                },
               ),
-            );
-          },
-        ),
-      ),
-    );
+            ),
+          ),
+        );
   }
 }
