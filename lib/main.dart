@@ -42,18 +42,6 @@ void main() async {
       child: TikTokApp(),
     ),
   );
-
-  /* Provider 사용 시 */
-  // runApp(
-  //   MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(
-  //         create: (context) => PlaybackConfigViewModel(repository),
-  //       )
-  //     ],
-  //     child: const TikTokApp(),
-  //   ),
-  // );
 }
 
 class TikTokApp extends ConsumerWidget {
@@ -75,33 +63,23 @@ class TikTokApp extends ConsumerWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // locale 강제 지정
-    // S.load(const Locale('en'));
     return ValueListenableBuilder(
       valueListenable: screenModeConfig,
       builder: (context, value, child) => MaterialApp.router(
         routerConfig: ref.watch(routerProvider),
         title: 'TikTok Clone',
         localizationsDelegates: const [
-          // flutter intl -> l10n
           S.delegate,
-          // flutter 위젯 기본 번역 (AppLocalizations 에 포함됨)
           GlobalMaterialLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
         ],
         supportedLocales: const [
-          // supportedLocales => 지원 언어 목록 (IANA Language Registry 참고)
           Locale('en'),
           Locale('ko'),
         ],
         debugShowCheckedModeBanner: false,
-        // themeMode => light / dark 명시할 경우, 해당 모드 강제 가능 / ThemeMode.system 시스템(폰) 설정 따르기
-        // themeMode: ThemeMode.system,
         themeMode: value,
-        /* FlexThemeData (flex-color-scheme) : 전반적 색상 테마 적용 패키지 */
-        // theme: FlexThemeData.light(scheme: FlexScheme.mandyRed),
-        // darkTheme: FlexThemeData.dart(scheme: FlexScheme.mandyRed),
         theme: ThemeData(
           // useMaterial3: false,
           primaryColor: const Color(0xFFE9435A),
@@ -112,42 +90,10 @@ class TikTokApp extends ConsumerWidget {
           highlightColor: Colors.transparent,
           // textTheme: lightTextTheme,
           textTheme: Typography.blackMountainView,
-          /* material design 2 -> the type system 에서 원하는 폰트 코드 사용 가능 */
-          // textTheme: TextTheme(
-          //   displayLarge: GoogleFonts.openSans(
-          //       fontSize: 96, fontWeight: FontWeight.w300, letterSpacing: -1.5),
-          //   displayMedium: GoogleFonts.openSans(
-          //       fontSize: 60, fontWeight: FontWeight.w300, letterSpacing: -0.5),
-          //   displaySmall:
-          //       GoogleFonts.openSans(fontSize: 48, fontWeight: FontWeight.w400),
-          //   headlineMedium: GoogleFonts.openSans(
-          //       fontSize: 34, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-          //   headlineSmall:
-          //       GoogleFonts.openSans(fontSize: 24, fontWeight: FontWeight.w400),
-          //   titleLarge: GoogleFonts.openSans(
-          //       fontSize: 20, fontWeight: FontWeight.w500, letterSpacing: 0.15),
-          //   titleMedium: GoogleFonts.openSans(
-          //       fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.15),
-          //   titleSmall: GoogleFonts.openSans(
-          //       fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 0.1),
-          //   bodyLarge: GoogleFonts.roboto(
-          //       fontSize: 16, fontWeight: FontWeight.w400, letterSpacing: 0.5),
-          //   bodyMedium: GoogleFonts.roboto(
-          //       fontSize: 14, fontWeight: FontWeight.w400, letterSpacing: 0.25),
-          //   labelLarge: GoogleFonts.roboto(
-          //       fontSize: 14, fontWeight: FontWeight.w500, letterSpacing: 1.25),
-          //   bodySmall: GoogleFonts.roboto(
-          //       fontSize: 12, fontWeight: FontWeight.w400, letterSpacing: 0.4),
-          //   labelSmall: GoogleFonts.roboto(
-          //       fontSize: 10, fontWeight: FontWeight.w400, letterSpacing: 1.5),
-          // ),
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color(0xFFE9435A),
             selectionColor: Color(0xFFFAA9B3),
           ),
-          // iconTheme: IconThemeData(
-          //   color: Colors.grey.shade900,
-          // ),
           appBarTheme: const AppBarTheme(
             foregroundColor: Colors.black,
             backgroundColor: Colors.white,
@@ -185,9 +131,6 @@ class TikTokApp extends ConsumerWidget {
             cursorColor: Color(0xFFE9435A),
             selectionColor: Color(0xFFFAA9B3),
           ),
-          // iconTheme: IconThemeData(
-          //   color: Colors.grey.shade400,
-          // ),
           appBarTheme: AppBarTheme(
             foregroundColor: Colors.white,
             backgroundColor: Colors.grey.shade900,
@@ -216,41 +159,7 @@ class TikTokApp extends ConsumerWidget {
             indicatorColor: Colors.white,
           ),
         ),
-        // home: const SettingsScreen(),
-        // home: const SignUpScreen(),
-        // home: const MainNavigationScreen(),
-        // home: const LayoutBuilderCodeLab(),
       ),
     );
   }
 }
-
-// class LayoutBuilderCodeLab extends StatelessWidget {
-//   const LayoutBuilderCodeLab({super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     final size = MediaQuery.of(context).size;
-//     return Scaffold(
-//       body: SizedBox(
-//         width: size.width / 2,
-//         child: LayoutBuilder(
-//           builder: (context, constraints) => Container(
-//             width: constraints.maxWidth,
-//             height: constraints.maxHeight,
-//             color: Colors.teal,
-//             child: Center(
-//               child: Text(
-//                 '${size.width} / ${constraints.maxWidth}',
-//                 style: const TextStyle(
-//                   color: Colors.white,
-//                   fontSize: 98,
-//                 ),
-//               ),
-//             ),
-//           ),
-//         ),
-//       ),
-//     );
-//   }
-// }
