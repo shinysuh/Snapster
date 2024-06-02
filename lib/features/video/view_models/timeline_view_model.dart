@@ -19,19 +19,14 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
 
     final newVideo = VideoModel.sample(title: '${DateTime.now()}');
     _list = [..._list, newVideo];
-    // _list = [..._list];
 
     state = AsyncValue.data(_list);
   }
 
-  // FutureOr => Future 또는 Model 반환
   @override
   FutureOr<List<VideoModel>> build() async {
     // calling the API here
     await Future.delayed(const Duration(seconds: 3));
-
-    // throw Exception("Wasn't able to fetch videos");
-
     return _list;
   }
 }
