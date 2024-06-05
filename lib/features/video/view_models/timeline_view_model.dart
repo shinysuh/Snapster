@@ -30,7 +30,7 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
     // calling the API here
     await Future.delayed(const Duration(seconds: 3));
 
-    // throw Exception("Wasn't able to fetch videos");
+    throw Exception("Wasn't able to fetch videos");
 
     return _list;
   }
