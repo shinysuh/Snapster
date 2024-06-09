@@ -12,11 +12,11 @@ import 'package:tiktok_clone/utils/base_exception_handler.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class VideoUploadViewModel extends AsyncNotifier<void> {
-  late final VideoRepository _repository;
+  late final VideoRepository _videoRepository;
 
   @override
   FutureOr<void> build() {
-    _repository = ref.read(videoRepository);
+    _videoRepository = ref.read(videoRepository);
   }
 
   Future<void> uploadVideo({
@@ -37,14 +37,14 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       int createdAt = DateTime.now().millisecondsSinceEpoch;
-      final task = await _repository.uploadVideoFile(
+      final task = await _videoRepository.uploadVideoFile(
         video,
         user!.uid,
         createdAt.toString(),
       );
 
       if (task.metadata != null) {
-        await _repository.saveVideo(
+        var uploadedVideo = await _videoRepository.saveVideo(
           VideoModel(
             title: title,
             description: description,
@@ -58,6 +58,10 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
           ),
         );
 
+        var videoId = uploadedVideo.id;
+
+        await saveThumbnailInfo(videoId);
+
         if (!context.mounted) return;
         goRouteReplacementRoute(
           context: context,
@@ -65,6 +69,24 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
         );
       }
     });
+  }
+
+  Future<void> saveThumbnailInfo(String videoId) async {
+    while (true) {
+      await Future.delayed(const Duration(milliseconds: 500));
+
+      var video = await _videoRepository.findVideo(videoId);
+      var thumbnailURL = video?['thumbnailURL'] ?? '';
+
+      if (thumbnailURL.isNotEmpty) {
+        await _videoRepository.saveVideoAndThumbnail(
+          video!,
+          videoId,
+          thumbnailURL,
+        );
+        break;
+      }
+    }
   }
 }
 
