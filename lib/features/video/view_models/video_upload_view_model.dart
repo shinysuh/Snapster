@@ -60,7 +60,9 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
 
         var videoId = uploadedVideo.id;
 
-        await saveThumbnailInfo(videoId);
+        // 비동기 처리
+        // await 하면 유저가 너무 오래 기다리게 됨(백단으로 보내는 게 제일 좋음..)
+        saveThumbnailInfo(videoId);
 
         if (!context.mounted) return;
         goRouteReplacementRoute(
