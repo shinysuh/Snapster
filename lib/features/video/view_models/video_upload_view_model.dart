@@ -78,7 +78,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
       var thumbnailURL = video?['thumbnailURL'] ?? '';
 
       if (thumbnailURL.isNotEmpty) {
-        await _videoRepository.saveVideoAndThumbnail(
+        await _videoRepository.saveVideoAndThumbnailInfo(
           video!,
           videoId,
           thumbnailURL,

@@ -24,7 +24,15 @@ class VideoRepository {
     return await _database.collection(videoCollection).add(data.toJson());
   }
 
-  // get a video
+  // get videos by 최신순
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchVideos() async {
+    return await _database
+        .collection(videoCollection)
+        .orderBy("createdAt", descending: true)
+        .get();
+  }
+
+  // get a video by videoId
   Future<Map<String, dynamic>?> findVideo(String videoId) async {
     final doc = await _database.collection(videoCollection).doc(videoId).get();
     return doc.data();
@@ -37,7 +45,7 @@ class VideoRepository {
   }
 
   // save video & thumbnail info to user collection
-  Future<void> saveVideoAndThumbnail(
+  Future<void> saveVideoAndThumbnailInfo(
       Map<String, dynamic> video, String videoId, String thumbnailURL) async {
     String uploaderUid = video['uploaderUid'] ?? '';
     if (uploaderUid.isEmpty) return;

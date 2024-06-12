@@ -35,6 +35,17 @@ class VideoModel {
     };
   }
 
+  VideoModel.fromJson(Map<String, dynamic> json)
+      : title = json['title'],
+        description = json['description'],
+        fileUrl = json['fileUrl'],
+        thumbnailURL = json['thumbnailURL'],
+        uploader = json['uploader'],
+        uploaderUid = json['uploaderUid'],
+        likes = json['likes'],
+        comments = json['comments'],
+        createdAt = json['createdAt'];
+
   VideoModel.sample({required this.title})
       : description = '',
         fileUrl = '',
