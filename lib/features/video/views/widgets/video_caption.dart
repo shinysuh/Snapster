@@ -4,7 +4,12 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_tags.dart';
 
 class VideoCaption extends StatefulWidget {
-  const VideoCaption({super.key});
+  final String description;
+
+  const VideoCaption({
+    super.key,
+    required this.description,
+  });
 
   @override
   State<VideoCaption> createState() => _VideoCaptionState();
@@ -46,7 +51,8 @@ class _VideoCaptionState extends State<VideoCaption> {
   }
 
   String _getCaption() {
-    var displayCaption = _caption;
+    var displayCaption =
+        widget.description.isNotEmpty ? widget.description : _caption;
     var length = 27;
     if (!_isCaptionOpened && displayCaption.length > length) {
       displayCaption = displayCaption.substring(0, length);
