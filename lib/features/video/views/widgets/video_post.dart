@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
@@ -16,11 +16,13 @@ import 'package:visibility_detector/visibility_detector.dart';
 class VideoPost extends ConsumerStatefulWidget {
   final Function onVideoFinished;
   final int pageIndex;
+  final VideoModel videoData;
 
   const VideoPost({
     super.key,
     required this.onVideoFinished,
     required this.pageIndex,
+    required this.videoData,
   });
 
   @override
@@ -210,6 +212,18 @@ class VideoPostState extends ConsumerState<VideoPost>
     _togglePause();
   }
 
+  NetworkImage _getUploaderAvatarImg(String uid) {
+    var normal =
+        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2Fe9gkeezZRxUzU1B3uFex.jpg?alt=media';
+    var dd =
+        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2FJHPKbvwQvEdPQ5aG0WHl.jpg?alt=mediaf';
+    var abnormal =
+        "https://storage.googleapis.com/tiktok-clone-jenn.appspot.com/thumbnails/JHPKbvwQvEdPQ5aG0WHl.jpg";
+
+    return NetworkImage(
+        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F$uid?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0');
+  }
+
   @override
   Widget build(BuildContext context) {
     // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
@@ -228,20 +242,25 @@ class VideoPostState extends ConsumerState<VideoPost>
           Positioned.fill(
             child: _videoPlayerController.value.isInitialized
                 ? VideoPlayer(_videoPlayerController)
-                : Container(
-                    color: Colors.black,
-                    child: const Center(
-                      child: Text(
-                        "No more videos to display. \nYou've seen all of 'em.",
-                        style: TextStyle(
-                          fontSize: Sizes.size20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
+                : Image.network(
+                    // 'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2Fe9gkeezZRxUzU1B3uFex.jpg?alt=media',
+                    '${widget.videoData.thumbnailURL}?alt=media',
+                    // fit: BoxFit.cover,
                   ),
+            // : Container(
+            //     color: Colors.black,
+            //     child: const Center(
+            //       child: Text(
+            //         "No more videos to display. \nYou've seen all of 'em.",
+            //         style: TextStyle(
+            //           fontSize: Sizes.size20,
+            //           color: Colors.white,
+            //           fontWeight: FontWeight.bold,
+            //         ),
+            //         textAlign: TextAlign.center,
+            //       ),
+            //     ),
+            //   ),
           ),
           Positioned.fill(
             child: GestureDetector(
@@ -279,22 +298,24 @@ class VideoPostState extends ConsumerState<VideoPost>
               ),
             ),
           ),
-          const Positioned(
+          Positioned(
             bottom: 25,
             left: 15,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '@jen',
-                  style: TextStyle(
+                  '@${widget.videoData.uploader}',
+                  style: const TextStyle(
                     color: Colors.white,
                     fontSize: Sizes.size20,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
                 Gaps.v18,
-                VideoCaption(),
+                VideoCaption(
+                  description: widget.videoData.description,
+                ),
               ],
             ),
           ),
@@ -318,10 +339,9 @@ class VideoPostState extends ConsumerState<VideoPost>
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  foregroundImage: profileImage,
-                  child: const Text(
-                    'Jenna',
-                  ),
+                  foregroundImage:
+                      _getUploaderAvatarImg(widget.videoData.uploaderUid),
+                  child: Text(widget.videoData.uploader),
                 ),
                 Gaps.v24,
                 GestureDetector(
@@ -329,7 +349,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidHeart,
                     iconColor: _isLiked ? Colors.red : Colors.white,
-                    text: S.of(context).likeCount(3233),
+                    text: S.of(context).likeCount(widget.videoData.likes),
                   ),
                 ),
                 Gaps.v24,
@@ -338,7 +358,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidCommentDots,
                     iconColor: Colors.white,
-                    text: S.of(context).commentCount(823522),
+                    text: S.of(context).commentCount(widget.videoData.comments),
                   ),
                 ),
                 Gaps.v24,
