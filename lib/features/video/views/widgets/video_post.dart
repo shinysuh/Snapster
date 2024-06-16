@@ -213,13 +213,6 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   NetworkImage _getUploaderAvatarImg(String uid) {
-    var normal =
-        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2Fe9gkeezZRxUzU1B3uFex.jpg?alt=media';
-    var dd =
-        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2FJHPKbvwQvEdPQ5aG0WHl.jpg?alt=mediaf';
-    var abnormal =
-        "https://storage.googleapis.com/tiktok-clone-jenn.appspot.com/thumbnails/JHPKbvwQvEdPQ5aG0WHl.jpg";
-
     return NetworkImage(
         'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F$uid?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0');
   }
@@ -243,24 +236,9 @@ class VideoPostState extends ConsumerState<VideoPost>
             child: _videoPlayerController.value.isInitialized
                 ? VideoPlayer(_videoPlayerController)
                 : Image.network(
-                    // 'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/thumbnails%2Fe9gkeezZRxUzU1B3uFex.jpg?alt=media',
-                    '${widget.videoData.thumbnailURL}?alt=media',
-                    // fit: BoxFit.cover,
+                    widget.videoData.thumbnailURL,
+                    fit: BoxFit.cover,
                   ),
-            // : Container(
-            //     color: Colors.black,
-            //     child: const Center(
-            //       child: Text(
-            //         "No more videos to display. \nYou've seen all of 'em.",
-            //         style: TextStyle(
-            //           fontSize: Sizes.size20,
-            //           color: Colors.white,
-            //           fontWeight: FontWeight.bold,
-            //         ),
-            //         textAlign: TextAlign.center,
-            //       ),
-            //     ),
-            //   ),
           ),
           Positioned.fill(
             child: GestureDetector(
