@@ -3,13 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/repositories/video_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
-import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class VideoUploadViewModel extends AsyncNotifier<void> {
   late final VideoRepository _videoRepository;
@@ -65,10 +64,8 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
         saveThumbnailInfo(videoId);
 
         if (!context.mounted) return;
-        goRouteReplacementRoute(
-          context: context,
-          routeURL: MainNavigationScreen.homeRouteURL,
-        );
+        context.pop();
+        context.pop();
       }
     });
   }
