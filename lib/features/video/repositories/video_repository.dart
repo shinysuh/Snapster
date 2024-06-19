@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/features/user/repository/user_repository.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 
 class VideoRepository {
@@ -19,9 +18,8 @@ class VideoRepository {
   }
 
   // create a video document
-  Future<DocumentReference<Map<String, dynamic>>> saveVideo(
-      VideoModel data) async {
-    return await _database.collection(videoCollection).add(data.toJson());
+  Future<void> saveVideo(VideoModel data) async {
+    await _database.collection(videoCollection).add(data.toJson());
   }
 
   // get videos by 최신순
@@ -43,25 +41,6 @@ class VideoRepository {
     var video = await findVideo(videoId);
     return video?['thumbnailURL'] ?? '';
   }
-
-  // save video & thumbnail info to user collection
-  Future<void> saveVideoAndThumbnailInfo(
-      Map<String, dynamic> video, String videoId, String thumbnailURL) async {
-    String uploaderUid = video['uploaderUid'] ?? '';
-    if (uploaderUid.isEmpty) return;
-
-    await _database
-        .collection(UserRepository.userCollection)
-        .doc(uploaderUid)
-        .collection(videoCollection)
-        .doc(videoId)
-        .set({
-      'thumbnailURL': thumbnailURL,
-      'videoId': videoId,
-    });
-  }
-
-// get a thumbnail
 
 // delete a video
 }

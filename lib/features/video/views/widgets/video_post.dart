@@ -239,6 +239,20 @@ class VideoPostState extends ConsumerState<VideoPost>
                     widget.videoData.thumbnailURL,
                     fit: BoxFit.cover,
                   ),
+            // : Container(
+            //    color: Colors.black,
+            //    child: const Center(
+            //      child: Text(
+            //        "No more videos to display. \nYou've seen all of 'em.",
+            //        style: TextStyle(
+            //          fontSize: Sizes.size20,
+            //          color: Colors.white,
+            //          fontWeight: FontWeight.bold,
+            //        ),
+            //        textAlign: TextAlign.center,
+            //      ),
+            //    ),
+            //  )
           ),
           Positioned.fill(
             child: GestureDetector(

@@ -43,7 +43,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
       );
 
       if (task.metadata != null) {
-        var uploadedVideo = await _videoRepository.saveVideo(
+        await _videoRepository.saveVideo(
           VideoModel(
             title: title,
             description: description,
@@ -57,35 +57,11 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
           ),
         );
 
-        var videoId = uploadedVideo.id;
-
-        // 비동기 처리
-        // await 하면 유저가 너무 오래 기다리게 됨(백단으로 보내는 게 제일 좋음..)
-        saveThumbnailInfo(videoId);
-
         if (!context.mounted) return;
         context.pop();
         context.pop();
       }
     });
-  }
-
-  Future<void> saveThumbnailInfo(String videoId) async {
-    while (true) {
-      await Future.delayed(const Duration(milliseconds: 500));
-
-      var video = await _videoRepository.findVideo(videoId);
-      var thumbnailURL = video?['thumbnailURL'] ?? '';
-
-      if (thumbnailURL.isNotEmpty) {
-        await _videoRepository.saveVideoAndThumbnailInfo(
-          video!,
-          videoId,
-          thumbnailURL,
-        );
-        break;
-      }
-    }
   }
 }
 

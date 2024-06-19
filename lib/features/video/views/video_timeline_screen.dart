@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/view_models/timeline_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_post.dart';
 
@@ -79,36 +78,21 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
             displacement: 50,
             edgeOffset: 20,
             color: Theme.of(context).primaryColor,
-            child: videos.isEmpty
-                ? Container(
-                    color: Colors.black,
-                    child: const Center(
-                      child: Text(
-                        "No more videos to display. \nYou've seen all of 'em.",
-                        style: TextStyle(
-                          fontSize: Sizes.size20,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  )
-                : PageView.builder(
-                    controller: _pageController,
-                    // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
-                    scrollDirection: Axis.vertical,
-                    itemCount: videos.length,
-                    onPageChanged: _onPageChanged,
-                    itemBuilder: (context, index) {
-                      final videoData = videos[index];
-                      return VideoPost(
-                        onVideoFinished: _onVideoFinished,
-                        pageIndex: index,
-                        videoData: videoData,
-                      );
-                    },
-                  ),
+            child: PageView.builder(
+              controller: _pageController,
+              // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
+              scrollDirection: Axis.vertical,
+              itemCount: videos.length,
+              onPageChanged: _onPageChanged,
+              itemBuilder: (context, index) {
+                final videoData = videos[index];
+                return VideoPost(
+                  onVideoFinished: _onVideoFinished,
+                  pageIndex: index,
+                  videoData: videoData,
+                );
+              },
+            ),
           ),
         );
 
