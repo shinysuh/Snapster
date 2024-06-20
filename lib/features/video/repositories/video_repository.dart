@@ -27,6 +27,7 @@ class VideoRepository {
     return await _database
         .collection(videoCollection)
         .orderBy("createdAt", descending: true)
+        .limit(2)
         .get();
   }
 
