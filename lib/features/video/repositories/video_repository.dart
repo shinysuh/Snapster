@@ -23,12 +23,17 @@ class VideoRepository {
   }
 
   // get videos by 최신순
-  Future<QuerySnapshot<Map<String, dynamic>>> fetchVideos() async {
-    return await _database
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchVideos({
+    int? lastItemCreatedAt,
+  }) async {
+    final query = _database
         .collection(videoCollection)
         .orderBy("createdAt", descending: true)
-        .limit(2)
-        .get();
+        .limit(2);
+
+    return lastItemCreatedAt == null
+        ? await query.get()
+        : await query.startAfter([lastItemCreatedAt]).get();
   }
 
   // get a video by videoId
