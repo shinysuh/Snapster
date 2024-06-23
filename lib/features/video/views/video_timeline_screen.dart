@@ -45,9 +45,9 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   }
 
   /* RefreshIndicator 의 onRefresh 는 반드시 Future 리턴 */
-  // TODO - 추후 적절한 기능 적용 필요
   Future<void> _onRefresh() {
-    return Future.delayed(const Duration(seconds: 3));
+    // return Future.delayed(const Duration(seconds: 3));
+    return ref.watch(timelineProvider.notifier).refresh();
   }
 
   @override
