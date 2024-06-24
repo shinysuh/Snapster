@@ -1,11 +1,17 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
+import { firestore } from "firebase-admin";
+import Timestamp = firestore.Timestamp;
 
 // Firestore 초기화
 admin.initializeApp();
 
+const userCollection = 'users';
+const videoCollection = 'videos';
+const likeCollection = 'likes';
+
 export const onVideoCreated = functions.firestore
-    .document("videos/{videoId}")
+    .document(`${ videoCollection }/{videoId}`)
     .onCreate(async (snapshot, context) => {
         const video = snapshot.data();
         
@@ -49,9 +55,9 @@ export const onVideoCreated = functions.firestore
             
             // Firestore operation
             try {
-                await db.collection('users')
+                await db.collection(userCollection)
                     .doc(video.uploaderUid)
-                    .collection('videos')
+                    .collection(videoCollection)
                     .doc(id)
                     .set({
                         thumbnailUrl: file.publicUrl(),
@@ -64,4 +70,43 @@ export const onVideoCreated = functions.firestore
         } catch(e) {
             console.error("Error processing video:", e);
         }
+    });
+
+export const onLiked = functions.firestore
+    .document(`${ likeCollection }/{likeId}`)
+    .onCreate(async (snapshot, context) => {
+        const [ videoId, userId ] = snapshot.id.split('000000');
+        const db = admin.firestore();
+        
+        await db.collection(videoCollection)
+            .doc(videoId)
+            .update({ likes: admin.firestore.FieldValue.increment(1) });
+        
+        await
+            db.collection(userCollection)
+                .doc(userId)
+                .collection(likeCollection)
+                .doc(videoId)
+                .set({
+                    createdAt: Timestamp.now().toMillis(),
+                });
+        
+    });
+
+export const onUnliked = functions.firestore
+    .document(`${ likeCollection }/{likeId}`)
+    .onDelete(async (snapshot, context) => {
+        const [ videoId, userId ] = snapshot.id.split('000000');
+        const db = admin.firestore();
+        
+        await db.collection(videoCollection)
+            .doc(videoId)
+            .update({ likes: admin.firestore.FieldValue.increment(-1) });
+        
+        await
+            db.collection(userCollection)
+                .doc(userId)
+                .collection(likeCollection)
+                .doc(videoId)
+                .delete();
     });
