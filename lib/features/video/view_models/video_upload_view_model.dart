@@ -45,6 +45,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
       if (task.metadata != null) {
         await _videoRepository.saveVideo(
           VideoModel(
+            id: '',
             title: title,
             description: description,
             fileUrl: await task.ref.getDownloadURL(),

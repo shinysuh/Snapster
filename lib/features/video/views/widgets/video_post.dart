@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
+import 'package:tiktok_clone/features/video/view_models/video_post_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_comments.dart';
@@ -193,6 +194,8 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _onTapLike() {
+    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
+
     setState(() {
       _isLiked = !_isLiked;
     });

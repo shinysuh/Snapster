@@ -7,6 +7,7 @@ import 'package:tiktok_clone/features/video/models/video_model.dart';
 
 class VideoRepository {
   static const String videoCollection = 'videos';
+  static const String likeCollection = 'likes';
 
   final FirebaseFirestore _database = FirebaseFirestore.instance;
   final FirebaseStorage _storage = FirebaseStorage.instance;
@@ -36,17 +37,27 @@ class VideoRepository {
         : await query.startAfter([lastItemCreatedAt]).get();
   }
 
-  // get a video by videoId
-  Future<Map<String, dynamic>?> findVideo(String videoId) async {
-    final doc = await _database.collection(videoCollection).doc(videoId).get();
-    return doc.data();
+  Future<void> likeVideo({
+    required String videoId,
+    required String userId,
+  }) async {
+    await _database.collection(likeCollection).add({
+      "videoId": videoId,
+      "userId": userId,
+    });
   }
 
-  // get a thumbnailURL
-  Future<String> findThumbnailURL(String videoId) async {
-    var video = await findVideo(videoId);
-    return video?['thumbnailURL'] ?? '';
-  }
+// // get a video by videoId
+// Future<Map<String, dynamic>?> findVideo(String videoId) async {
+//   final doc = await _database.collection(videoCollection).doc(videoId).get();
+//   return doc.data();
+// }
+//
+// // get a thumbnailURL
+// Future<String> findThumbnailURL(String videoId) async {
+//   var video = await findVideo(videoId);
+//   return video?['thumbnailURL'] ?? '';
+// }
 
 // delete a video
 }
