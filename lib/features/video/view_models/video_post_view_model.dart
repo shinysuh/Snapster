@@ -7,16 +7,21 @@ import 'package:tiktok_clone/features/video/repositories/video_repository.dart';
 class VideoPostViewModel extends FamilyAsyncNotifier<void, String> {
   late final VideoRepository _repository;
   late final _videoId;
+  late final _user;
 
   @override
-  FutureOr<void> build(String videoId) {
-    _videoId = videoId;
+  FutureOr<void> build(String arg) {
+    _videoId = arg;
     _repository = ref.read(videoRepository);
+    _user = ref.read(authRepository).user;
   }
 
-  Future<void> likeVideo() async {
-    final user = ref.read(authRepository).user;
-    await _repository.likeVideo(videoId: _videoId, userId: user!.uid);
+  Future<void> toggleLikeVideo() async {
+    await _repository.toggleLikeVideo(videoId: _videoId, userId: _user!.uid);
+  }
+
+  Future<bool> isLiked() async {
+    return _repository.isLiked(videoId: _videoId, userId: _user!.uid);
   }
 }
 

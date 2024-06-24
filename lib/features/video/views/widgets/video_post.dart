@@ -46,6 +46,7 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   bool _isPaused = false;
   bool _isLiked = false;
+  int _likeCount = 0;
 
   // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
   /* Riverpod */
@@ -73,6 +74,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
 
     _initVideoPlayer();
+    _initLike();
 
     _animationController = AnimationController(
       vsync: this,
@@ -108,6 +110,13 @@ class VideoPostState extends ConsumerState<VideoPost>
     _animationController.dispose();
     _videoPlayerController.dispose();
     super.dispose();
+  }
+
+  Future<void> _initLike() async {
+    _likeCount = widget.videoData.likes;
+    _isLiked = await ref
+        .read(videoPostProvider(widget.videoData.id).notifier)
+        .isLiked();
   }
 
   void _initVideoPlayer() async {
@@ -194,10 +203,11 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _onTapLike() {
-    ref.read(videoPostProvider(widget.videoData.id).notifier).likeVideo();
+    ref.read(videoPostProvider(widget.videoData.id).notifier).toggleLikeVideo();
 
     setState(() {
       _isLiked = !_isLiked;
+      _isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
     });
   }
 
@@ -344,7 +354,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidHeart,
                     iconColor: _isLiked ? Colors.red : Colors.white,
-                    text: S.of(context).likeCount(widget.videoData.likes),
+                    text: S.of(context).likeCount(_likeCount),
                   ),
                 ),
                 Gaps.v24,

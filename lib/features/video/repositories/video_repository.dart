@@ -37,22 +37,46 @@ class VideoRepository {
         : await query.startAfter([lastItemCreatedAt]).get();
   }
 
-  Future<void> likeVideo({
+  // // get a video by videoId
+  // Future<Map<String, dynamic>?> findVideo(String videoId) async {
+  //   final doc = await _database.collection(videoCollection).doc(videoId).get();
+  //   return doc.data();
+  // }
+
+  // like toggle
+  Future<void> toggleLikeVideo({
     required String videoId,
     required String userId,
   }) async {
-    await _database.collection(likeCollection).add({
-      "videoId": videoId,
-      "userId": userId,
-    });
+    final query = await _fetchLike(videoId: videoId, userId: userId);
+    final like = await query.get();
+
+    if (!like.exists) {
+      await query.set({
+        "createdAt": DateTime.now().millisecondsSinceEpoch,
+      });
+    } else {
+      await query.delete();
+    }
   }
 
-// // get a video by videoId
-// Future<Map<String, dynamic>?> findVideo(String videoId) async {
-//   final doc = await _database.collection(videoCollection).doc(videoId).get();
-//   return doc.data();
-// }
-//
+  // get like
+  Future<bool> isLiked({
+    required String videoId,
+    required String userId,
+  }) async {
+    final doc = await _fetchLike(videoId: videoId, userId: userId);
+    return doc.get().then((value) => value.exists);
+  }
+
+  Future<DocumentReference> _fetchLike({
+    required String videoId,
+    required String userId,
+  }) async {
+    final key = '${videoId}000000$userId';
+    return _database.collection(likeCollection).doc(key);
+  }
+
 // // get a thumbnailURL
 // Future<String> findThumbnailURL(String videoId) async {
 //   var video = await findVideo(videoId);
