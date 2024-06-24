@@ -73,7 +73,7 @@ class VideoRepository {
     required String videoId,
     required String userId,
   }) async {
-    final key = '${videoId}000000$userId';
+    final key = '${videoId}%00000%$userId';
     return _database.collection(likeCollection).doc(key);
   }
 
