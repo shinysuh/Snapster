@@ -217,7 +217,7 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(
                       vertical: Sizes.size4,
-                      horizontal: Sizes.size20,
+                      horizontal: Sizes.size10,
                     ),
                     child: LayoutBuilder(
                       builder: (context, constraints) {
@@ -250,28 +250,50 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                 ),
                               ),
                             Gaps.h12,
-                            GestureDetector(
-                              onTap: _onSendMessage,
-                              child: Container(
-                                width: Sizes.size40,
-                                height: Sizes.size40,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: circleColor,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: Sizes.size8,
-                                    horizontal: Sizes.size8,
+                            IconButton(
+                              padding: const EdgeInsets.only(top: Sizes.size2),
+                              onPressed: _onSendMessage,
+                              icon: FaIcon(
+                                FontAwesomeIcons.solidPaperPlane,
+                                size: Sizes.size22,
+                                color: planeColor,
+                              ),
+                              style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        circleColor),
+                                padding: MaterialStateProperty.all<
+                                    EdgeInsetsGeometry>(
+                                  const EdgeInsets.only(
+                                    bottom: Sizes.size2,
+                                    right: Sizes.size3,
                                   ),
-                                  child: FaIcon(
-                                    FontAwesomeIcons.solidPaperPlane,
-                                    size: Sizes.size22,
-                                    color: planeColor,
-                                  ),
                                 ),
+                                splashFactory: NoSplash.splashFactory,
                               ),
                             ),
+                            // GestureDetector(
+                            //   onTap: _onSendMessage,
+                            //   child: Container(
+                            //     width: Sizes.size40,
+                            //     height: Sizes.size40,
+                            //     decoration: BoxDecoration(
+                            //       shape: BoxShape.circle,
+                            //       color: circleColor,
+                            //     ),
+                            //     child: Padding(
+                            //       padding: const EdgeInsets.symmetric(
+                            //         vertical: Sizes.size8,
+                            //         horizontal: Sizes.size8,
+                            //       ),
+                            //       child: FaIcon(
+                            //         FontAwesomeIcons.solidPaperPlane,
+                            //         size: Sizes.size22,
+                            //         color: planeColor,
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ),
                           ],
                         );
                       },

@@ -120,8 +120,12 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _initVideoPlayer() async {
+    // _videoPlayerController =
+    //     VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
     _videoPlayerController = VideoPlayerController.asset(
-        videoUrls[widget.pageIndex % videoUrls.length]);
+      videoUrls[widget.pageIndex % videoUrls.length],
+    );
+
     // initialize
     await _videoPlayerController.initialize();
 
@@ -206,8 +210,8 @@ class VideoPostState extends ConsumerState<VideoPost>
     ref.read(videoPostProvider(widget.videoData.id).notifier).toggleLikeVideo();
 
     setState(() {
+      !_isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
       _isLiked = !_isLiked;
-      _isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
     });
   }
 

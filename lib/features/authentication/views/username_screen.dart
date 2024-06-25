@@ -3,80 +3,70 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
-import 'package:tiktok_clone/features/authentication/password_screen.dart';
 import 'package:tiktok_clone/features/authentication/view_models/signup_view_model.dart';
+import 'package:tiktok_clone/features/authentication/views/email_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
-import 'package:tiktok_clone/utils/validation.dart';
 
-class EmailScreenArgs {
-  final String username;
-
-  EmailScreenArgs({
-    required this.username,
-  });
-}
-
-class EmailScreen extends ConsumerStatefulWidget {
+class UsernameScreen extends ConsumerStatefulWidget {
   static const String routeURL =
-      'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
-  static const String routeName = 'email';
-  final String username;
+      'username'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeName = 'username';
 
-  const EmailScreen({
-    super.key,
-    required this.username,
-  });
+  const UsernameScreen({super.key});
 
   @override
-  ConsumerState<EmailScreen> createState() => _EmailScreenState();
+  ConsumerState<UsernameScreen> createState() => _UsernameScreenState();
 }
 
-class _EmailScreenState extends ConsumerState<EmailScreen> {
-  String _email = '';
-  bool _isEmailValid = true;
+class _UsernameScreenState extends ConsumerState<UsernameScreen> {
+  String _username = '';
 
-  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   @override
   void initState() {
-    super.initState();
-    _emailController.addListener(() {
+    super.initState(); // at the beginning of everything
+    _usernameController.addListener(() {
       setState(() {
-        _email = _emailController.text;
-        _isEmailValid = validateEmailAddress(_email);
+        _username = _usernameController.text;
       });
     });
   }
 
   @override
   void dispose() {
-    _emailController.dispose();
-    super.dispose();
+    /*
+       위젯이 사라질 때 _usernameController dispose
+       메모리를 위패 필수 => 잊었을 경우 eventually 앱이 crash 됨
+       This removes all the eventListeners
+    */
+    _usernameController.dispose();
+    super.dispose(); // better do this at the end => cleaning up
   }
 
   void _onSubmit() {
-    if (_email.isEmpty || !_isEmailValid) return;
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: PasswordScreen.routeName,
-    // );
+    if (_username.isEmpty) return;
 
-    ref.read(signUpForm.notifier).state = {
-      ...ref.read(signUpForm.notifier).state,
-      'email': _email,
-    };
+    ref.read(signUpForm.notifier).state = {'name': _username};
 
     redirectToScreen(
       context: context,
-      targetScreen: const PasswordScreen(),
+      targetScreen: EmailScreen(username: _username),
     );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: EmailScreen.routeName,
+    //   extra: EmailScreenArgs(username: _username),
+    // );
+    // redirectToRoute(
+    //     context: context,
+    //     route: EmailScreen.routeName,
+    //     args: EmailScreenArgs(username: _username));
   }
 
   @override
   Widget build(BuildContext context) {
-    // ModalRoute.of(context) => Navigator 1(pushNamed) 사용 시
-    // final args = ModalRoute.of(context)!.settings.arguments as EmailScreenArgs;
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
@@ -92,30 +82,34 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Gaps.v40,
-              Text(
-                'Enter Your Email, ${widget.username}',
-                style: const TextStyle(
+              const Text(
+                'Create Username',
+                style: TextStyle(
                   fontSize: Sizes.size20 + Sizes.size2,
                   fontWeight: FontWeight.w700,
                 ),
               ),
+              Gaps.v6,
+              const Text(
+                'You can always change this later.',
+                style: TextStyle(
+                  color: Colors.black54,
+                  fontSize: Sizes.size16,
+                ),
+              ),
               Gaps.v36,
               TextField(
-                controller: _emailController,
+                controller: _usernameController,
                 cursorColor: Theme.of(context).primaryColor,
-                // 특정 keyboard 타입 설정
-                keyboardType: TextInputType.emailAddress,
+                keyboardType: TextInputType.text,
                 autofocus: true,
                 autocorrect: false,
                 onEditingComplete: _onSubmit,
                 decoration: InputDecoration(
-                  hintText: 'Email Address',
+                  hintText: 'Username',
                   hintStyle: TextStyle(
                     color: Colors.grey.shade500,
                   ),
-                  errorText: _email.isEmpty || _isEmailValid
-                      ? null
-                      : 'Invalid Email Address',
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,
@@ -130,7 +124,7 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
               ),
               Gaps.v36,
               FormButton(
-                disabled: _email.isEmpty || !_isEmailValid,
+                disabled: _username.isEmpty,
                 onTapButton: _onSubmit,
                 buttonText: 'Next',
               ),

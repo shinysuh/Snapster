@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/authentication/views/sign_up_screen.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class AuthenticationRepository {
