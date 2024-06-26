@@ -60,7 +60,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
   Future<void> updateProfile(
       BuildContext context, UserProfileModel profile) async {
-    await checkLoginUser(context);
+    await _authRepository.checkLoginUser(context);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
         () async => await _userRepository.updateProfile(profile.uid, profile));

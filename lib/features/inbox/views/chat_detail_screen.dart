@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
+import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class ChatDetailScreen extends StatefulWidget {
+class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeName = 'chatDetail';
   static const String routeURL = ':chatId';
 
@@ -20,10 +23,11 @@ class ChatDetailScreen extends StatefulWidget {
   final String chatId;
 
   @override
-  State<ChatDetailScreen> createState() => _ChatDetailScreenState();
+  ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
-class _ChatDetailScreenState extends State<ChatDetailScreen> {
+class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
+  late final user = ref.read(userProvider.notifier).loginUser;
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
 
@@ -34,17 +38,20 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
   }
 
   void _onChangeMessage(String message) {
+    bool hasText = _textEditingController.text.trim().isNotEmpty;
+    if (_isWriting && hasText) return;
+
     setState(() {
-      if (_textEditingController.value.text.trim().isNotEmpty) {
-        _isWriting = true;
-      } else {
-        _isWriting = false;
-      }
+      _isWriting = hasText;
     });
   }
 
   void _onSendMessage() {
-    _textEditingController.clear();
+    ref
+        .read(messageProvider.notifier)
+        .sendMessage(context, _textEditingController.text)
+        .then((_) => _textEditingController.clear());
+
     setState(() {
       _isWriting = false;
     });
@@ -97,6 +104,8 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
         ? Theme.of(context).appBarTheme.backgroundColor
         : Colors.grey.shade50;
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
+
+    final isLoading = ref.watch(messageProvider).isLoading;
 
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
@@ -167,48 +176,61 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
           ),
           body: Stack(
             children: [
-              ListView.separated(
-                padding: const EdgeInsets.symmetric(
-                  vertical: Sizes.size20,
-                  horizontal: Sizes.size14,
-                ),
-                itemCount: 10,
-                separatorBuilder: (context, index) => Gaps.v10,
-                itemBuilder: (context, index) {
-                  final isMine = index % 3 < 2;
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: isMine
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          color: isMine
-                              ? const Color(0xFF609EC2)
-                              : Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.only(
-                            topLeft: const Radius.circular(Sizes.size20),
-                            topRight: const Radius.circular(Sizes.size20),
-                            bottomLeft: Radius.circular(
-                                isMine ? Sizes.size20 : Sizes.size5),
-                            bottomRight: Radius.circular(
-                                isMine ? Sizes.size5 : Sizes.size20),
-                          ),
-                        ),
-                        padding: const EdgeInsets.all(Sizes.size14),
-                        child: const Text(
-                          '쭌희 이모 곧 4주차',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Sizes.size16,
-                          ),
-                        ),
+              ref.watch(chatProvider).when(
+                    loading: () => const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    ),
+                    error: (error, stackTrace) => Center(
+                      child: Text(error.toString()),
+                    ),
+                    data: (messages) => ListView.separated(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: Sizes.size20,
+                        horizontal: Sizes.size14,
                       ),
-                    ],
-                  );
-                },
-              ),
+                      itemCount: messages.length,
+                      separatorBuilder: (context, index) => Gaps.v10,
+                      itemBuilder: (context, index) {
+                        final message = messages[index];
+                        final isMine = ref
+                            .read(messageProvider.notifier)
+                            .isMine(context, message.userId);
+                        // final isMine = ref.watch(authRepository).user!.uid ==
+                        //     message.userId;
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          mainAxisAlignment: isMine
+                              ? MainAxisAlignment.end
+                              : MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                color: isMine
+                                    ? const Color(0xFF609EC2)
+                                    : Theme.of(context).primaryColor,
+                                borderRadius: BorderRadius.only(
+                                  topLeft: const Radius.circular(Sizes.size20),
+                                  topRight: const Radius.circular(Sizes.size20),
+                                  bottomLeft: Radius.circular(
+                                      isMine ? Sizes.size20 : Sizes.size5),
+                                  bottomRight: Radius.circular(
+                                      isMine ? Sizes.size5 : Sizes.size20),
+                                ),
+                              ),
+                              padding: const EdgeInsets.all(Sizes.size14),
+                              child: Text(
+                                message.text,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: Sizes.size16,
+                                ),
+                              ),
+                            ),
+                          ],
+                        );
+                      },
+                    ),
+                  ),
               Positioned(
                 bottom: 0,
                 width: MediaQuery.of(context).size.width,
@@ -252,9 +274,11 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                             Gaps.h12,
                             IconButton(
                               padding: const EdgeInsets.only(top: Sizes.size2),
-                              onPressed: _onSendMessage,
+                              onPressed: isLoading ? null : _onSendMessage,
                               icon: FaIcon(
-                                FontAwesomeIcons.solidPaperPlane,
+                                isLoading
+                                    ? FontAwesomeIcons.hourglass
+                                    : FontAwesomeIcons.solidPaperPlane,
                                 size: Sizes.size22,
                                 color: planeColor,
                               ),
@@ -264,9 +288,9 @@ class _ChatDetailScreenState extends State<ChatDetailScreen> {
                                         circleColor),
                                 padding: MaterialStateProperty.all<
                                     EdgeInsetsGeometry>(
-                                  const EdgeInsets.only(
+                                  EdgeInsets.only(
                                     bottom: Sizes.size2,
-                                    right: Sizes.size3,
+                                    right: isLoading ? 0 : Sizes.size3,
                                   ),
                                 ),
                                 splashFactory: NoSplash.splashFactory,
