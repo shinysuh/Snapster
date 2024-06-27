@@ -74,6 +74,8 @@ final chatProvider = StreamProvider.autoDispose<List<MessageModel>>((ref) {
             .map(
               (doc) => MessageModel.fromJson(doc.data()),
             )
+            .toList()
+            .reversed
             .toList(),
       );
 });
