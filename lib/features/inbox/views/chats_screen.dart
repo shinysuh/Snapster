@@ -1,28 +1,42 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
+import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class ChatsScreen extends StatefulWidget {
+class ChatsScreen extends ConsumerStatefulWidget {
   static const String routeName = 'chats';
   static const String routeURL = '/chats';
 
   const ChatsScreen({super.key});
 
   @override
-  State<ChatsScreen> createState() => _ChatsScreenState();
+  ConsumerState<ChatsScreen> createState() => _ChatsScreenState();
 }
 
-class _ChatsScreenState extends State<ChatsScreen> {
+class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
   final Duration _duration = const Duration(milliseconds: 300);
   List<int> _items = [];
 
   void _addItem() {
+    // chatroom create
+    ref.read(chatroomProvider.notifier).createChatroom(
+          context,
+          UserProfileModel.empty().copyWith(
+            uid: 'OoYZOnxDN5XfGvUxshnY394uhRq2',
+            name: 'Jenna',
+            username: 'Jenn92',
+            hasAvatar: true,
+          ),
+        );
+
     _key.currentState?.insertItem(
       _items.length,
       duration: _duration,
