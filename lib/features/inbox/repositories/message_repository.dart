@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/features/inbox/models/MessageModel.dart';
+import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 
 class MessageRepository {
   static const String chatroomCollection = 'chat_rooms';
@@ -14,6 +14,12 @@ class MessageRepository {
         .doc(chatroomId)
         .collection(textCollection)
         .add(message.toJson());
+  }
+
+  Future<Map<String, dynamic>?> fetchChatroom(String chatroomId) async {
+    final chatroom =
+        await _database.collection(chatroomCollection).doc(chatroomId).get();
+    return chatroom.data();
   }
 }
 

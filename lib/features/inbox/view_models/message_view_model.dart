@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
-import 'package:tiktok_clone/features/inbox/models/MessageModel.dart';
+import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/repositories/message_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
 
