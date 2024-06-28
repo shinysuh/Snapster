@@ -9,7 +9,7 @@ admin.initializeApp();
 const userCollection = 'users';
 const videoCollection = 'videos';
 const likeCollection = 'likes';
-const divider = '%00000%';
+const commonIdDivider = '%00000%';
 
 export const onVideoCreated = functions.firestore
     .document(`${ videoCollection }/{videoId}`)
@@ -76,7 +76,7 @@ export const onVideoCreated = functions.firestore
 export const onLiked = functions.firestore
     .document(`${ likeCollection }/{likeId}`)
     .onCreate(async (snapshot, context) => {
-        const [ videoId, userId ] = snapshot.id.split(divider);
+        const [ videoId, userId ] = snapshot.id.split(commonIdDivider);
         const db = admin.firestore();
         
         await db.collection(videoCollection)
@@ -97,7 +97,7 @@ export const onLiked = functions.firestore
 export const onUnliked = functions.firestore
     .document(`${ likeCollection }/{likeId}`)
     .onDelete(async (snapshot, context) => {
-        const [ videoId, userId ] = snapshot.id.split(divider);
+        const [ videoId, userId ] = snapshot.id.split(commonIdDivider);
         const db = admin.firestore();
         
         console.log('####################', videoId, snapshot.id)

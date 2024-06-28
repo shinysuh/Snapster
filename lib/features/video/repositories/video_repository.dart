@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiktok_clone/constants/common_divider.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 
 class VideoRepository {
@@ -73,7 +74,7 @@ class VideoRepository {
     required String videoId,
     required String userId,
   }) async {
-    final key = '${videoId}%00000%$userId';
+    final key = '$videoId$commonIdDivider$userId';
     return _database.collection(likeCollection).doc(key);
   }
 
