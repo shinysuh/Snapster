@@ -26,6 +26,8 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
+  final String _chatroomId = 'R8pKQLmEhrKrHYrOJ4mX';    // TODO : 동적 fetch 필요
+
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
 
@@ -46,7 +48,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   void _onSendMessage() {
     ref
-        .read(messageProvider.notifier)
+        .read(messageProvider(_chatroomId).notifier)
         .sendMessage(context, _textEditingController.text)
         .then((_) => _textEditingController.clear());
 
@@ -103,7 +105,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         : Colors.grey.shade50;
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
 
-    final isLoading = ref.watch(messageProvider).isLoading;
+    final isLoading = ref.watch(messageProvider(_chatroomId)).isLoading;
 
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
@@ -174,7 +176,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           ),
           body: Stack(
             children: [
-              ref.watch(chatProvider).when(
+              ref.watch(chatProvider(_chatroomId)).when(
                     loading: () => const Center(
                       child: CircularProgressIndicator.adaptive(),
                     ),
@@ -195,7 +197,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                       itemBuilder: (context, index) {
                         final message = messages[index];
                         final isMine = ref
-                            .read(messageProvider.notifier)
+                            .read(messageProvider(_chatroomId).notifier)
                             .isMine(context, message.userId);
                         // final isMine = ref.watch(authRepository).user!.uid ==
                         //     message.userId;
