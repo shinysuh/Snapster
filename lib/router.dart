@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/navigation_tabs.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/authentication/views/login_screen.dart';
 import 'package:tiktok_clone/features/authentication/views/sign_up_screen.dart';
+import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/views/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/views/chats_screen.dart';
@@ -39,7 +40,7 @@ o
       /inbox -> inbox
         /activity
         /chats
-          /:chatId
+          /:chatroomId
 
       /profile -> profile
 
@@ -155,8 +156,12 @@ final routerProvider = Provider((ref) {
             name: ChatDetailScreen.routeName,
             path: ChatDetailScreen.routeURL,
             builder: (context, state) {
-              final id = state.params['chatId'] ?? '';
-              return ChatDetailScreen(chatId: id);
+              final id = state.params['chatroomId'] ?? '';
+              final chatroom = state.extra;
+              return ChatDetailScreen(
+                chatroomId: id,
+                chatroom: chatroom as ChatPartnerModel,
+              );
             },
           ),
         ],

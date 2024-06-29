@@ -3,31 +3,32 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeName = 'chatDetail';
-  static const String routeURL = ':chatId';
+  static const String routeURL = ':chatroomId';
+
+  final String chatroomId;
+  final ChatPartnerModel chatroom;
 
   const ChatDetailScreen({
     super.key,
-    required this.chatId,
+    required this.chatroomId,
+    required this.chatroom,
   });
-
-  final String chatId;
 
   @override
   ConsumerState<ChatDetailScreen> createState() => _ChatDetailScreenState();
 }
 
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
-  final String _chatroomId = 'R8pKQLmEhrKrHYrOJ4mX';    // TODO : 동적 fetch 필요
-
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
 
@@ -48,7 +49,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   void _onSendMessage() {
     ref
-        .read(messageProvider(_chatroomId).notifier)
+        .read(messageProvider(widget.chatroomId).notifier)
         .sendMessage(context, _textEditingController.text)
         .then((_) => _textEditingController.clear());
 
@@ -105,7 +106,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         : Colors.grey.shade50;
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
 
-    final isLoading = ref.watch(messageProvider(_chatroomId)).isLoading;
+    final isLoading = ref.watch(messageProvider(widget.chatroomId)).isLoading;
 
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
@@ -126,8 +127,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     padding: const EdgeInsets.all(Sizes.size4),
                     child: CircleAvatar(
                       radius: Sizes.size24,
-                      foregroundImage: jasonImage,
-                      child: const Text('쩨이쓴'),
+                      foregroundImage: getProfileImgByUserId(
+                        widget.chatroom.chatPartner.uid,
+                        false,
+                      ),
+                      child: Text(widget.chatroom.chatPartner.name),
                     ),
                   ),
                   Positioned(
@@ -150,7 +154,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                 ],
               ),
               title: Text(
-                '쭌희 (${widget.chatId})',
+                widget.chatroom.chatPartner.username,
                 style: const TextStyle(
                   fontWeight: FontWeight.w600,
                 ),
@@ -176,7 +180,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           ),
           body: Stack(
             children: [
-              ref.watch(chatProvider(_chatroomId)).when(
+              ref.watch(chatProvider(widget.chatroomId)).when(
                     loading: () => const Center(
                       child: CircularProgressIndicator.adaptive(),
                     ),
@@ -197,7 +201,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                       itemBuilder: (context, index) {
                         final message = messages[index];
                         final isMine = ref
-                            .read(messageProvider(_chatroomId).notifier)
+                            .read(messageProvider(widget.chatroomId).notifier)
                             .isMine(context, message.userId);
                         // final isMine = ref.watch(authRepository).user!.uid ==
                         //     message.userId;
@@ -300,28 +304,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                 splashFactory: NoSplash.splashFactory,
                               ),
                             ),
-                            // GestureDetector(
-                            //   onTap: _onSendMessage,
-                            //   child: Container(
-                            //     width: Sizes.size40,
-                            //     height: Sizes.size40,
-                            //     decoration: BoxDecoration(
-                            //       shape: BoxShape.circle,
-                            //       color: circleColor,
-                            //     ),
-                            //     child: Padding(
-                            //       padding: const EdgeInsets.symmetric(
-                            //         vertical: Sizes.size8,
-                            //         horizontal: Sizes.size8,
-                            //       ),
-                            //       child: FaIcon(
-                            //         FontAwesomeIcons.solidPaperPlane,
-                            //         size: Sizes.size22,
-                            //         color: planeColor,
-                            //       ),
-                            //     ),
-                            //   ),
-                            // ),
                           ],
                         );
                       },

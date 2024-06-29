@@ -5,12 +5,12 @@ import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
-import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatsScreen extends ConsumerStatefulWidget {
@@ -32,6 +32,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     // chatroom create
     ref.read(chatroomProvider.notifier).createChatroom(
           context,
+          // TODO - 선택한 상대 프로필 info 적용
           UserProfileModel.empty().copyWith(
             uid: 'OoYZOnxDN5XfGvUxshnY394uhRq2',
             name: 'Jenna',
@@ -63,13 +64,12 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     // _items.removeAt(index);
   }
 
-  void _onTapChat(int index) {
-    var tmpChatId = '$index';
-
+  void _onTapChat(ChatPartnerModel chatroom) {
     goToRouteNamed(
       context: context,
       routeName: ChatDetailScreen.routeName,
-      params: {'chatId': tmpChatId},
+      params: {'chatroomId': chatroom.chatroomId},
+      extra: chatroom,
     );
   }
 
@@ -77,7 +77,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     final chatPartner = chatroom.chatPartner;
     return ListTile(
       onLongPress: () => _onDeleteItem(index),
-      onTap: () => _onTapChat(index),
+      onTap: () => _onTapChat(chatroom),
       leading: CircleAvatar(
         radius: Sizes.size28,
         foregroundImage: chatPartner.hasAvatar
