@@ -53,12 +53,6 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
   }
 
 /*
-      TODO [1] - 대화방
-       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)
-       2) personA / personB 중 로그인 유저 구분 해내기
-       3) 구분 후 대화 뿌리기
-       4) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기
-
       TODO [2] - 목록
        1) 목록에 내가 참여하는 대화방 리스트 뿌려주기 (isParticipating=true)
        2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동)

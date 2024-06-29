@@ -8,13 +8,13 @@ import 'package:tiktok_clone/constants/common_divider.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
-import 'package:tiktok_clone/features/inbox/repositories/message_repository.dart';
+import 'package:tiktok_clone/features/inbox/repositories/chatroom_repository.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/repository/user_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
 
 class ChatroomViewModel extends AsyncNotifier<void> {
-  late final MessageRepository _messageRepository;
+  late final ChatroomRepository _chatroomRepository;
   late final AuthenticationRepository _authRepository;
   late final UserRepository _userRepository;
   late final User? _user;
@@ -23,7 +23,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
   @override
   FutureOr<void> build() {
-    _messageRepository = ref.read(messageRepository);
+    _chatroomRepository = ref.read(chatroomRepository);
     _userRepository = ref.read(userRepository);
     _authRepository = ref.read(authRepository);
     _user = _authRepository.user;
@@ -54,7 +54,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       );
 
       final chatroomCreated =
-          await _messageRepository.createChatroom(chatroomInfo);
+          await _chatroomRepository.createChatroom(chatroomInfo);
       chatroom = ChatroomModel.fromJson(chatroomCreated.data()!);
 
       if (state.hasError) {
@@ -80,19 +80,31 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     }
   }
 
+  /*
+      TODO [1] - 대화방
+       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
+       ---
+       2) personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
+       3) 구분 후 대화 뿌리기
+       4) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기
+
+   */
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _getChatroom(
       String myId, String inviteeId) async {
     var chatroomId = '$myId$commonIdDivider$inviteeId';
-    var chatroom = await _messageRepository.fetchChatroom(chatroomId);
+    var chatroom = await _chatroomRepository.fetchChatroom(chatroomId);
 
     if (chatroom.docs.isEmpty) {
       // chatroomId 가 person A/B 반대로 생성 되었을 경우도 체크
       chatroomId = '$inviteeId$commonIdDivider$myId';
-      chatroom = await _messageRepository.fetchChatroom(chatroomId);
+      chatroom = await _chatroomRepository.fetchChatroom(chatroomId);
     }
 
     return chatroom.docs;
   }
+
+  Future<String> getChateeProfile(String chatroomId) async {}
 
   Future<UserProfileModel> _getMyProfile(BuildContext context) async {
     var myProfile = UserProfileModel.empty();
