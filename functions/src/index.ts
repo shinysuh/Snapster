@@ -9,6 +9,7 @@ admin.initializeApp();
 const userCollection = 'users';
 const videoCollection = 'videos';
 const likeCollection = 'likes';
+const chatroomCollection = 'chat_rooms';
 const commonIdDivider = '%00000%';
 
 export const onVideoCreated = functions.firestore
@@ -100,8 +101,6 @@ export const onUnliked = functions.firestore
         const [ videoId, userId ] = snapshot.id.split(commonIdDivider);
         const db = admin.firestore();
         
-        console.log('####################', videoId, snapshot.id)
-        
         await db.collection(videoCollection)
             .doc(videoId)
             .update({ likes: admin.firestore.FieldValue.increment(-1) });
@@ -112,4 +111,45 @@ export const onUnliked = functions.firestore
                 .collection(likeCollection)
                 .doc(videoId)
                 .delete();
+    });
+
+export const onChatroomCreated = functions.firestore
+    .document(`${ chatroomCollection }/{chatroomId}`)
+    .onCreate(async (snapshot, context) => {
+        const chatroomId = snapshot.id;
+        const chatroomData = snapshot.data();
+        const db = admin.firestore();
+        
+        const inviter = chatroomData.personA;
+        const invitee = chatroomData.personB;
+        
+        await db.collection(userCollection)
+            .doc(inviter.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .set({
+                chatroomId: chatroomId,
+                chatPartner: invitee,
+                updatedAt: Timestamp.now().toMillis()
+            });
+        
+        await db.collection(userCollection)
+            .doc(invitee.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .set({
+                chatroomId: chatroomId,
+                chatPartner: inviter,
+                updatedAt: Timestamp.now().toMillis()
+            });
+    });
+
+export const onChatroomUpdated = functions.firestore
+    .document(`${ chatroomCollection }/{chatroomId}`)
+    .onUpdate(async (snapshot, context) => {
+        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating 도 update 필요
+    });
+export const onChatroomDeleted = functions.firestore
+    .document(`${ chatroomCollection }/{chatroomId}`)
+    .onDelete(async (snapshot, context) => {
     });
