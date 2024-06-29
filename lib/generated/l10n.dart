@@ -334,6 +334,36 @@ class S {
       args: [],
     );
   }
+
+  /// `MMM d yyyy`
+  String get yearMonthDate {
+    return Intl.message(
+      'MMM d yyyy',
+      name: 'yearMonthDate',
+      desc: 'Format for year, month, and day.',
+      args: [],
+    );
+  }
+
+  /// `MMM d`
+  String get monthDate {
+    return Intl.message(
+      'MMM d',
+      name: 'monthDate',
+      desc: 'Format for month and day.',
+      args: [],
+    );
+  }
+
+  /// `h:ma`
+  String get hourMinuteAPM {
+    return Intl.message(
+      'h:ma',
+      name: 'hourMinuteAPM',
+      desc: 'Format for hour and minute with AM/PM.',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

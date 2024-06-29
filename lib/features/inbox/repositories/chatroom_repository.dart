@@ -4,16 +4,16 @@ import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 
 class ChatroomRepository {
   static const String chatroomCollection = 'chat_rooms';
+  static const String chatroomIdField = 'chatroomId';
 
   final FirebaseFirestore _database = FirebaseFirestore.instance;
 
   // create a chatroom
-  Future<DocumentSnapshot<Map<String, dynamic>>> createChatroom(
-      ChatroomModel chatroom) async {
-    final chatroomCreated = await _database
+  Future<void> createChatroom(ChatroomModel chatroom) async {
+    await _database
         .collection(ChatroomRepository.chatroomCollection)
-        .add(chatroom.toJson());
-    return chatroomCreated.get();
+        .doc(chatroom.chatroomId)
+        .set(chatroom.toJson());
   }
 
   // fetch a chatroom
@@ -21,7 +21,7 @@ class ChatroomRepository {
       String chatroomId) async {
     return await _database
         .collection(chatroomCollection)
-        .where('chatroomId', isEqualTo: chatroomId)
+        .where(chatroomIdField, isEqualTo: chatroomId)
         .get();
   }
 }

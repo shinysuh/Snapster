@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/common_divider.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
+import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
 import 'package:tiktok_clone/features/inbox/repositories/chatroom_repository.dart';
@@ -46,16 +47,17 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
       // 없을 경우 생성
       final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
+      final now = DateTime.now().millisecondsSinceEpoch;
       final chatroomInfo = ChatroomModel(
         chatroomId: chatroomId,
         personA: _getChatterByProfile(myProfile),
         personB: _getChatterByProfile(invitee),
-        createdAt: DateTime.now().millisecondsSinceEpoch,
+        createdAt: now,
+        updatedAt: now,
       );
 
-      final chatroomCreated =
-          await _chatroomRepository.createChatroom(chatroomInfo);
-      chatroom = ChatroomModel.fromJson(chatroomCreated.data()!);
+      await _chatroomRepository.createChatroom(chatroomInfo);
+      chatroom = chatroomInfo;
 
       if (state.hasError) {
         if (context.mounted) showFirebaseErrorSnack(context, state.error);
@@ -80,16 +82,6 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     }
   }
 
-  /*
-      TODO [1] - 대화방
-       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
-       ---
-       2) personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
-       3) 구분 후 대화 뿌리기
-       4) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기
-
-   */
-
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _getChatroom(
       String myId, String inviteeId) async {
     var chatroomId = '$myId$commonIdDivider$inviteeId';
@@ -104,7 +96,19 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return chatroom.docs;
   }
 
-  Future<String> getChateeProfile(String chatroomId) async {}
+  /*
+      TODO [1] - 대화방
+       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
+           >>> onChatroomCreated 클라우드함수 사용해서 -> user 하위에 chat_rooms - chatroomId 랑 autoId 랑 상대chatter 정보 저장 (V)
+           >>> 대화방 생성 후 바로 대화방으로 이동 - 리스트는 알아서 fetch 되도록 함
+       ---
+       2) personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
+       3) 구분 후 대화 뿌리기
+       4) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기
+
+   */
+
+  Future<void> getChatPartners(String chatroomId) async {}
 
   Future<UserProfileModel> _getMyProfile(BuildContext context) async {
     var myProfile = UserProfileModel.empty();
@@ -143,3 +147,25 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 final chatroomProvider = AsyncNotifierProvider<ChatroomViewModel, void>(
   () => ChatroomViewModel(),
 );
+
+// Stream 은 변화가 바로 반영됨 (watch)
+final chatroomListProvider =
+    StreamProvider.autoDispose<List<ChatPartnerModel>>((ref) {
+  final user = ref.read(authRepository).user;
+  final database = FirebaseFirestore.instance;
+  return database
+      .collection('users')
+      .doc(user!.uid)
+      .collection('chat_rooms')
+      .orderBy('updatedAt')
+      .snapshots()
+      .map(
+        (event) => event.docs
+            .map(
+              (doc) => ChatPartnerModel.fromJson(doc.data()),
+            )
+            .toList()
+            .reversed
+            .toList(),
+      );
+});

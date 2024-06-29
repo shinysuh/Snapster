@@ -24,5 +24,8 @@
   "description": "상세 정보",
   "chooseYourInterests": "Choose your interests",
   "setTheVideoTitle": "비디오 제목을 입력한 후 업로드 해 주세요.",
-  "enterVideoTitle": "비디오 제목을 입력해 주세요."
+  "enterVideoTitle": "비디오 제목을 입력해 주세요.",
+  "yearMonthDate": "yyyy년 M월 d일",
+  "monthDate": "M월 d일",
+  "hourMinuteAPM": "h:ma"
 }

@@ -83,5 +83,20 @@
   "description": "description",
   "chooseYourInterests": "Choose your interests",
   "setTheVideoTitle": "Please set the video title before you upload it.",
-  "enterVideoTitle": "Enter video title"
+  "enterVideoTitle": "Enter video title",
+  "yearMonthDate": "MMM d yyyy",
+  "@yearMonthDate": {
+    "description": "Format for year, month, and day.",
+    "placeholders": {}
+  },
+  "monthDate": "MMM d",
+  "@monthDate": {
+    "description": "Format for month and day.",
+    "placeholders": {}
+  },
+  "hourMinuteAPM": "h:ma",
+  "@hourMinuteAPM": {
+    "description": "Format for hour and minute with AM/PM.",
+    "placeholders": {}
+  }
 }

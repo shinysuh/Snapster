@@ -62,11 +62,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
         "enterVideoTitle":
             MessageLookupByLibrary.simpleMessage("Enter video title"),
+        "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:ma"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
+        "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "setTheVideoTitle": MessageLookupByLibrary.simpleMessage(
             "Please set the video title before you upload it."),
@@ -78,6 +80,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password"),
-        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail")
+        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
+        "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy")
       };
 }

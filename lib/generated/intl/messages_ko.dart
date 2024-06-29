@@ -56,11 +56,13 @@ class MessageLookup extends MessageLookupByLibrary {
         "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
         "enterVideoTitle":
             MessageLookupByLibrary.simpleMessage("비디오 제목을 입력해 주세요."),
+        "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:ma"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
+        "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
         "setTheVideoTitle":
             MessageLookupByLibrary.simpleMessage("비디오 제목을 입력한 후 업로드 해 주세요."),
@@ -71,6 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUpTitleWithDateTime": m8,
         "title": MessageLookupByLibrary.simpleMessage("제목"),
         "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호"),
-        "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세")
+        "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세"),
+        "yearMonthDate": MessageLookupByLibrary.simpleMessage("yyyy년 M월 d일")
       };
 }

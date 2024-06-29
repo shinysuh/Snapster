@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
+import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
@@ -45,18 +48,19 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   }
 
   void _onDeleteItem(int index) {
-    _key.currentState?.removeItem(
-      index,
-      (context, animation) => SizeTransition(
-        sizeFactor: animation,
-        child: Container(
-          color: Colors.red.shade300,
-          child: _getListTile(index),
-        ),
-      ),
-      duration: _duration,
-    );
-    _items.removeAt(index);
+    /* TODO - 방 나갈지 alert */
+    // _key.currentState?.removeItem(
+    //   index,
+    //   (context, animation) => SizeTransition(
+    //     sizeFactor: animation,
+    //     child: Container(
+    //       color: Colors.red.shade300,
+    //       child: _getListTile(index),
+    //     ),
+    //   ),
+    //   duration: _duration,
+    // );
+    // _items.removeAt(index);
   }
 
   void _onTapChat(int index) {
@@ -69,27 +73,28 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     );
   }
 
-  Widget _getListTile(int index) {
+  Widget _getListTile(ChatPartnerModel chatroom, int index) {
+    final chatPartner = chatroom.chatPartner;
     return ListTile(
       onLongPress: () => _onDeleteItem(index),
       onTap: () => _onTapChat(index),
       leading: CircleAvatar(
         radius: Sizes.size28,
-        foregroundImage: junheeImage,
-        child: const Text('Jenna'),
+        foregroundImage: _getChatPartnerProfileImage(chatPartner),
+        child: Text(chatPartner.name),
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           Text(
-            '쭌희 ($index)',
+            chatPartner.username,
             style: const TextStyle(
               fontWeight: FontWeight.w600,
             ),
           ),
           Text(
-            '2:16PM',
+            _getLastUpdatedAt(chatroom.updatedAt),
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: Sizes.size12,
@@ -101,6 +106,31 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         "This is message that has been sent from myself:)",
       ),
     );
+  }
+
+  NetworkImage? _getChatPartnerProfileImage(ChatterModel chatPartner) {
+    var imageURL =
+        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F${chatPartner.uid}?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0';
+    // imageURL += '&haha=${DateTime.now().toString()}';
+    return chatPartner.hasAvatar ? NetworkImage(imageURL) : null;
+  }
+
+  String _getLastUpdatedAt(int updatedAt) {
+    var today = DateTime.now();
+    var lastUpdate = DateTime.fromMillisecondsSinceEpoch(updatedAt);
+
+    var isThisYear = today.year == lastUpdate.year;
+    var isToday = isThisYear &&
+        today.month == lastUpdate.month &&
+        today.day == lastUpdate.day;
+
+    var format = isToday
+        ? S.of(context).hourMinuteAPM
+        : isThisYear
+            ? S.of(context).monthDate
+            : S.of(context).yearMonthDate;
+
+    return DateFormat(format, 'en_US').format(lastUpdate);
   }
 
   @override
@@ -121,22 +151,33 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             ),
           ],
         ),
-        body: AnimatedList(
-          key: _key,
-          padding: const EdgeInsets.symmetric(
-            vertical: Sizes.size10,
-          ),
-          itemBuilder: (context, index, animation) {
-            return FadeTransition(
-              key: UniqueKey(),
-              opacity: animation,
-              child: SizeTransition(
-                sizeFactor: animation,
-                child: _getListTile(index),
+        body: ref.watch(chatroomListProvider).when(
+              loading: () => const Center(
+                child: CircularProgressIndicator.adaptive(),
               ),
-            );
-          },
-        ),
+              error: (error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+              data: (chatrooms) {
+                return AnimatedList(
+                  key: _key,
+                  initialItemCount: chatrooms.length,
+                  padding: const EdgeInsets.symmetric(
+                    vertical: Sizes.size10,
+                  ),
+                  itemBuilder: (context, index, animation) {
+                    return FadeTransition(
+                      key: UniqueKey(),
+                      opacity: animation,
+                      child: SizeTransition(
+                        sizeFactor: animation,
+                        child: _getListTile(chatrooms[index], index),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
       ),
     );
   }
