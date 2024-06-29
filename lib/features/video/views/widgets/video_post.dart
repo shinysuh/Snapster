@@ -11,6 +11,7 @@ import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_comments.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
@@ -229,11 +230,6 @@ class VideoPostState extends ConsumerState<VideoPost>
     _togglePause();
   }
 
-  NetworkImage _getUploaderAvatarImg(String uid) {
-    return NetworkImage(
-        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F$uid?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0');
-  }
-
   @override
   Widget build(BuildContext context) {
     // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
@@ -348,8 +344,10 @@ class VideoPostState extends ConsumerState<VideoPost>
                   radius: 25,
                   backgroundColor: Colors.black,
                   foregroundColor: Colors.white,
-                  foregroundImage:
-                      _getUploaderAvatarImg(widget.videoData.uploaderUid),
+                  foregroundImage: getProfileImgByUserId(
+                    widget.videoData.uploaderUid,
+                    false,
+                  ),
                   child: Text(widget.videoData.uploader),
                 ),
                 Gaps.v24,

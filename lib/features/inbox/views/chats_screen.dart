@@ -80,7 +80,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       onTap: () => _onTapChat(index),
       leading: CircleAvatar(
         radius: Sizes.size28,
-        foregroundImage: _getChatPartnerProfileImage(chatPartner),
+        foregroundImage: chatPartner.hasAvatar
+            ? getProfileImgByUserId(chatPartner.uid, false)
+            : null,
         child: Text(chatPartner.name),
       ),
       title: Row(
@@ -106,13 +108,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         "This is message that has been sent from myself:)",
       ),
     );
-  }
-
-  NetworkImage? _getChatPartnerProfileImage(ChatterModel chatPartner) {
-    var imageURL =
-        'https://firebasestorage.googleapis.com/v0/b/tiktok-clone-jenn.appspot.com/o/avatars%2F${chatPartner.uid}?alt=media&token=74240f15-3f4d-4f81-9cf0-577b153413c0';
-    // imageURL += '&haha=${DateTime.now().toString()}';
-    return chatPartner.hasAvatar ? NetworkImage(imageURL) : null;
   }
 
   String _getLastUpdatedAt(int updatedAt) {
