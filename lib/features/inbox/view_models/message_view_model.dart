@@ -55,14 +55,15 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
 
 /*
       TODO [2] - 목록
-       1) 목록에 내가 참여하는 대화방 리스트 뿌려주기 (isParticipating=true)
-       2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동)
+       1) 구분 후 대화 뿌리기 (V)
+       2) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기 (V)
+       3) 목록에 최근 메세지 출력 (V)
+       4) [XX] personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
 
        TODO [3] - extra
         1) 대화 text 중 system 이 보낸 항목 UI 구분하기 ('OOO님이 대화방을 나갔습니다.' 문구)
         2) recentlyReadAt 으로 [여기까지 읽음] 구현 및 recentlyReadAt 업데이트
         3) [*2분 내로 보내진 메세지만] 메세지를 꾹(2-3초) 눌렀을 때, 메세지 지우는 컨펌 dialog 후 메세지를 [deleted message] 로 변경하거나 삭제하는 로직 구현
-
   */
 
   void _checkLoginUser(BuildContext context) {
@@ -97,4 +98,19 @@ final chatProvider = StreamProvider.autoDispose
             .reversed
             .toList(),
       );
+});
+
+// latest message for chatroom list page
+final lastMessageProvider =
+    StreamProvider.autoDispose.family<MessageModel?, String>((ref, chatroomId) {
+  return FirebaseFirestore.instance
+      .collection(ChatroomRepository.chatroomCollection)
+      .doc(chatroomId)
+      .collection(MessageRepository.textCollection)
+      .orderBy('createdAt', descending: true)
+      .limit(1)
+      .snapshots()
+      .map((snapshot) => snapshot.docs.isNotEmpty
+          ? MessageModel.fromJson(snapshot.docs.first.data())
+          : null);
 });

@@ -56,6 +56,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue with Github"),
         "continueWithGoogle":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "conversationNotStarted":
+            MessageLookupByLibrary.simpleMessage("Conversation Not Started"),
         "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),

@@ -50,6 +50,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueWithApple": MessageLookupByLibrary.simpleMessage("애플 계정"),
         "continueWithGithub": MessageLookupByLibrary.simpleMessage("깃허브 계정"),
         "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
+        "conversationNotStarted":
+            MessageLookupByLibrary.simpleMessage("대화가 시작되지 않았습니다"),
         "description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),

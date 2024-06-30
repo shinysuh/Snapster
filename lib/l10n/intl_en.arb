@@ -98,5 +98,6 @@
   "@hourMinuteAPM": {
     "description": "Format for hour and minute with AM/PM.",
     "placeholders": {}
-  }
+  },
+  "conversationNotStarted": "Conversation Not Started"
 }

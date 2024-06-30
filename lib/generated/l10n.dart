@@ -364,6 +364,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Conversation Not Started`
+  String get conversationNotStarted {
+    return Intl.message(
+      'Conversation Not Started',
+      name: 'conversationNotStarted',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

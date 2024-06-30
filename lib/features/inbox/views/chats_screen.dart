@@ -6,6 +6,7 @@ import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
+import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
@@ -104,9 +105,18 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           ),
         ],
       ),
-      subtitle: const Text(
-        "This is message that has been sent from myself:)",
-      ),
+      subtitle: ref.watch(lastMessageProvider(chatroom.chatroomId)).when(
+          loading: () => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+          error: (error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+          data: (message) {
+            return Text(message != null
+                ? message.text
+                : S.of(context).conversationNotStarted);
+          }),
     );
   }
 
