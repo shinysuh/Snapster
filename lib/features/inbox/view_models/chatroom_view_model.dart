@@ -100,7 +100,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       TODO [1] - 대화방
        1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
            >>> onChatroomCreated 클라우드함수 사용해서 -> user 하위에 chat_rooms - chatroomId 랑 autoId 랑 상대chatter 정보 저장 (V)
-       2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동) (V)
+       2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동)
        ---
        3) 대화방 생성 후 바로 대화방으로 이동 - 리스트는 알아서 fetch 되도록 함
        4) 목록에 내가 참여하는 대화방 리스트 뿌려주기 (isParticipating=true)

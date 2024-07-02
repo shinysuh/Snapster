@@ -9,6 +9,7 @@ import 'package:tiktok_clone/features/authentication/views/sign_up_screen.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/views/activity_screen.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
+import 'package:tiktok_clone/features/inbox/views/chatroom_user_list_screen.dart';
 import 'package:tiktok_clone/features/inbox/views/chats_screen.dart';
 import 'package:tiktok_clone/features/onboarding/interests_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
@@ -197,6 +198,11 @@ final routerProvider = Provider((ref) {
         //     );
         //   },
         // ),
+      ),
+      GoRoute(
+        name: UserListScreen.routeName,
+        path: UserListScreen.routeURL,
+        builder: (context, state) => const UserListScreen(),
       ),
       // GoRoute(
       //   name: UsernameScreen.routeName,

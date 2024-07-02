@@ -8,7 +8,7 @@ import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
-import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/inbox/views/chatroom_user_list_screen.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
@@ -29,24 +29,29 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   final Duration _duration = const Duration(milliseconds: 300);
   List<int> _items = [];
 
-  void _addItem() {
-    // chatroom create
-    ref.read(chatroomProvider.notifier).createChatroom(
-          context,
-          // TODO - 선택한 상대 프로필 info 적용
-          UserProfileModel.empty().copyWith(
-            uid: 'OoYZOnxDN5XfGvUxshnY394uhRq2',
-            name: 'Jenna',
-            username: 'Jenn92',
-            hasAvatar: true,
-          ),
-        );
-
-    _key.currentState?.insertItem(
-      _items.length,
-      duration: _duration,
+  void _onClickAddChat() {
+    goToRouteNamed(
+      context: context,
+      routeName: UserListScreen.routeName,
     );
-    _items.add(_items.length);
+
+    // chatroom create
+    // ref.read(chatroomProvider.notifier).createChatroom(
+    //       context,
+    //       // TODO - 선택한 상대 프로필 info 적용
+    //       UserProfileModel.empty().copyWith(
+    //         uid: 'RandomChatRoomUserId',
+    //         name: 'Random',
+    //         username: 'Random123',
+    //         hasAvatar: true,
+    //       ),
+    //     );
+    //
+    // _key.currentState?.insertItem(
+    //   _items.length,
+    //   duration: _duration,
+    // );
+    // _items.add(_items.length);
   }
 
   void _onDeleteItem(int index) {
@@ -149,7 +154,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           title: const Text('Direct messages'),
           actions: [
             IconButton(
-              onPressed: _addItem,
+              onPressed: _onClickAddChat,
               icon: const FaIcon(
                 FontAwesomeIcons.plus,
               ),

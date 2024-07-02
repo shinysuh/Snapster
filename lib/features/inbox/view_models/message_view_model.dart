@@ -63,7 +63,8 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
        TODO [3] - extra
         1) 대화 text 중 system 이 보낸 항목 UI 구분하기 ('OOO님이 대화방을 나갔습니다.' 문구)
         2) recentlyReadAt 으로 [여기까지 읽음] 구현 및 recentlyReadAt 업데이트
-        3) [*2분 내로 보내진 메세지만] 메세지를 꾹(2-3초) 눌렀을 때, 메세지 지우는 컨펌 dialog 후 메세지를 [deleted message] 로 변경하거나 삭제하는 로직 구현
+        3) 이전 메세지랑 날짜가 다르면 UI에 날짜 구분 말풍선 표시해주기
+        4) [*2분 내로 보내진 메세지만] 메세지를 꾹(2-3초) 눌렀을 때, 메세지 지우는 컨펌 dialog 후 메세지를 [deleted message] 로 변경하거나 삭제하는 로직 구현
   */
 
   void _checkLoginUser(BuildContext context) {
