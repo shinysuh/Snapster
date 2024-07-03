@@ -48,4 +48,24 @@ class ChatterModel {
       'showMsgFrom': showMsgFrom,
     };
   }
+
+  ChatterModel copyWith({
+    String? uid,
+    String? name,
+    String? username,
+    bool? hasAvatar,
+    bool? isParticipating,
+    int? recentlyReadAt,
+    int? showMsgFrom,
+  }) {
+    return ChatterModel(
+      uid: uid ?? this.uid,
+      name: name ?? this.name,
+      username: username ?? this.username,
+      hasAvatar: hasAvatar ?? this.hasAvatar,
+      isParticipating: isParticipating ?? this.isParticipating,
+      recentlyReadAt: recentlyReadAt ?? this.recentlyReadAt,
+      showMsgFrom: showMsgFrom ?? this.showMsgFrom,
+    );
+  }
 }
