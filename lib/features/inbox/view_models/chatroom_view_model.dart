@@ -84,21 +84,17 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     });
   }
 
-  Future<List<UserProfileModel>> fetchAllUsers() async {
+  Future<List<UserProfileModel>> fetchAllOtherUsers() async {
     final result = await _userRepository.fetchAllUsers();
-    final users = result.docs.map((doc) {
-      return UserProfileModel.fromJson(doc.data());
-      // final user = UserProfileModel.fromJson(doc.data());
-      // return ChatterModel.fromJson({
-      //   'uid': user.uid,
-      //   'name': user.name,
-      //   'username': user.username,
-      //   'hasAvatar': user.hasAvatar,
-      //   'isParticipating': false,
-      //   'recentlyReadAt': 0,
-      //   'showMsgFrom': 0,
-      // });
-    }).toList();
+    List<UserProfileModel> users = [];
+
+    for (var doc in result.docs) {
+      final user = UserProfileModel.fromJson(doc.data());
+      if (user.uid != _user!.uid) {
+        users.add(user);
+      }
+    }
+
     return users;
   }
 
