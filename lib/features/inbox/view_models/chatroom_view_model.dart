@@ -4,15 +4,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/common_divider.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
 import 'package:tiktok_clone/features/inbox/repositories/chatroom_repository.dart';
+import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/repository/user_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
+import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class ChatroomViewModel extends AsyncNotifier<void> {
   late final ChatroomRepository _chatroomRepository;
@@ -61,6 +64,15 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
       if (state.hasError) {
         if (context.mounted) showFirebaseErrorSnack(context, state.error);
+      } else {
+        if (context.mounted) {
+          context.pop();
+          goToRouteNamed(
+            context: context,
+            routeName: ChatDetailScreen.routeName,
+            params: {'chatroomId': chatroomId},
+          );
+        }
       }
     });
   }
