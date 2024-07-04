@@ -51,10 +51,12 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       // 없을 경우 생성
       final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
       final now = DateTime.now().millisecondsSinceEpoch;
+
+      final inviteeAsChatter = _getChatterByProfile(invitee);
       final chatroomInfo = ChatroomModel(
         chatroomId: chatroomId,
         personA: _getChatterByProfile(myProfile),
-        personB: _getChatterByProfile(invitee),
+        personB: inviteeAsChatter,
         createdAt: now,
         updatedAt: now,
       );
@@ -71,6 +73,11 @@ class ChatroomViewModel extends AsyncNotifier<void> {
             context: context,
             routeName: ChatDetailScreen.routeName,
             params: {'chatroomId': chatroomId},
+            extra: ChatPartnerModel(
+              chatroomId: chatroomId,
+              chatPartner: inviteeAsChatter,
+              updatedAt: now,
+            ),
           );
         }
       }

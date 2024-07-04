@@ -99,5 +99,6 @@
     "description": "Format for hour and minute with AM/PM.",
     "placeholders": {}
   },
-  "conversationNotStarted": "Conversation Not Started"
+  "conversationNotStarted": "Conversation Not Started",
+  "selectAProfileToStartAConversation": "Select a profile to start a conversation"
 }

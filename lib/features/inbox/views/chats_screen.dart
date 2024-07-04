@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
@@ -30,10 +31,19 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   List<int> _items = [];
 
   void _onClickAddChat() {
-    goToRouteNamed(
-      context: context,
-      routeName: UserListScreen.routeName,
-    );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: ChatroomUserListScreen.routeName,
+    // );
+
+    Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const ChatroomUserListScreen(),
+          transitionDuration: Duration.zero,
+          reverseTransitionDuration: Duration.zero,
+        ));
 
     // chatroom create
     // ref.read(chatroomProvider.notifier).createChatroom(
@@ -79,7 +89,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     );
   }
 
-  Widget _getListTile(ChatPartnerModel chatroom, int index) {
+  Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
     final chatPartner = chatroom.chatPartner;
     return ListTile(
       onLongPress: () => _onDeleteItem(index),
@@ -169,23 +179,51 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 child: Text(error.toString()),
               ),
               data: (chatrooms) {
-                return AnimatedList(
-                  key: _key,
-                  initialItemCount: chatrooms.length,
-                  padding: const EdgeInsets.symmetric(
-                    vertical: Sizes.size10,
-                  ),
-                  itemBuilder: (context, index, animation) {
-                    return FadeTransition(
-                      key: UniqueKey(),
-                      opacity: animation,
-                      child: SizeTransition(
-                        sizeFactor: animation,
-                        child: _getListTile(chatrooms[index], index),
-                      ),
-                    );
-                  },
-                );
+                return chatrooms.isEmpty
+                    ? Column(
+                        children: [
+                          Gaps.v20,
+                          ListTile(
+                            title: ListTile(
+                              onTap: _onClickAddChat,
+                              contentPadding: const EdgeInsets.only(
+                                left: Sizes.size20,
+                              ),
+                              title: Text(
+                                S
+                                    .of(context)
+                                    .selectAProfileToStartAConversation,
+                                style: const TextStyle(
+                                  fontSize: Sizes.size16,
+                                ),
+                              ),
+                              trailing: FaIcon(
+                                FontAwesomeIcons.chevronRight,
+                                size: Sizes.size14,
+                                color: Colors.grey.shade700,
+                              ),
+                            ),
+                          ),
+                        ],
+                      )
+                    : AnimatedList(
+                        key: _key,
+                        initialItemCount: chatrooms.length,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Sizes.size10,
+                        ),
+                        itemBuilder: (context, index, animation) {
+                          return FadeTransition(
+                            key: UniqueKey(),
+                            opacity: animation,
+                            child: SizeTransition(
+                              sizeFactor: animation,
+                              child:
+                                  _getChatroomListTile(chatrooms[index], index),
+                            ),
+                          );
+                        },
+                      );
               },
             ),
       ),

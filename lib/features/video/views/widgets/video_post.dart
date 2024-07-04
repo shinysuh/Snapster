@@ -74,8 +74,8 @@ class VideoPostState extends ConsumerState<VideoPost>
     // _isMuted = context.watch<VideoConfig>().isMuted;
     // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
 
-    _initVideoPlayer();
     _initLike();
+    _initVideoPlayer();
 
     _animationController = AnimationController(
       vsync: this,

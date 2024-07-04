@@ -1,31 +1,78 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
+import 'package:tiktok_clone/constants/gaps.dart';
+import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
+import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class UserListScreen extends ConsumerStatefulWidget {
+class ChatroomUserListScreen extends ConsumerStatefulWidget {
   static const String routeURL = '/chatroom-user-list';
   static const String routeName = 'chatroom-user-list';
 
-  const UserListScreen({super.key});
+  const ChatroomUserListScreen({super.key});
 
   @override
-  ConsumerState<UserListScreen> createState() => _UserListScreenState();
+  ConsumerState<ChatroomUserListScreen> createState() => _UserListScreenState();
 }
 
-class _UserListScreenState extends ConsumerState<UserListScreen> {
-  void _onClickUser(UserProfileModel invitee) {
+class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
+  List<UserProfileModel> _users = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _getAllUsers();
+  }
+
+  Future<void> _getAllUsers() async {
+    _users = await ref.read(chatroomProvider.notifier).fetchAllUsers();
+    setState(() {});
+  }
+
+  void _onClickUser(UserProfileModel chatPartner) {
     // chatroom create
     ref.read(chatroomProvider.notifier).createChatroom(
           context,
-          invitee,
+          chatPartner,
         );
   }
 
   @override
   Widget build(BuildContext context) {
-    final users = ref.read(chatroomProvider.notifier).fetchAllUsers();
-
-    return const Placeholder();
+    return RegulatedMaxWidth(
+      maxWidth: Breakpoints.sm,
+      child: Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          title: const Text('Chat partners'),
+        ),
+        body: Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: Sizes.size10,
+          ),
+          child: Column(
+            children: [
+              Gaps.v20,
+              for (var user in _users)
+                ListTile(
+                  onTap: () => _onClickUser(user),
+                  leading: CircleAvatar(
+                    radius: Sizes.size28,
+                    foregroundImage: user.hasAvatar
+                        ? getProfileImgByUserId(user.uid, false)
+                        : null,
+                    child: Text(user.name),
+                  ),
+                  title: Text(user.username),
+                  subtitle: Text(user.name),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }

@@ -374,6 +374,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Select a profile to start a conversation`
+  String get selectAProfileToStartAConversation {
+    return Intl.message(
+      'Select a profile to start a conversation',
+      name: 'selectAProfileToStartAConversation',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

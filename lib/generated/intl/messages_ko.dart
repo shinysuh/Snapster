@@ -66,6 +66,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
         "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
+        "selectAProfileToStartAConversation":
+            MessageLookupByLibrary.simpleMessage("대화를 시작할 상대의 프로필을 선택하세요"),
         "setTheVideoTitle":
             MessageLookupByLibrary.simpleMessage("비디오 제목을 입력한 후 업로드 해 주세요."),
         "share": MessageLookupByLibrary.simpleMessage("공유"),

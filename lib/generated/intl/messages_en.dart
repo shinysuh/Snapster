@@ -72,6 +72,9 @@ class MessageLookup extends MessageLookupByLibrary {
             "Manage your account, check notifications, comment on videos, and more."),
         "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "selectAProfileToStartAConversation":
+            MessageLookupByLibrary.simpleMessage(
+                "Select a profile to start a conversation"),
         "setTheVideoTitle": MessageLookupByLibrary.simpleMessage(
             "Please set the video title before you upload it."),
         "share": MessageLookupByLibrary.simpleMessage("share"),

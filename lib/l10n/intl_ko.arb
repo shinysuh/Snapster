@@ -28,5 +28,6 @@
   "yearMonthDate": "yyyy년 M월 d일",
   "monthDate": "M월 d일",
   "hourMinuteAPM": "h:ma",
-  "conversationNotStarted": "대화가 시작되지 않았습니다"
+  "conversationNotStarted": "대화가 시작되지 않았습니다",
+  "selectAProfileToStartAConversation": "대화를 시작할 상대의 프로필을 선택하세요"
 }
