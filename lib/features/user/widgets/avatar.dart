@@ -53,7 +53,7 @@ class Avatar extends ConsumerWidget {
               foregroundColor: Colors.indigo,
               foregroundImage:
                   user.hasAvatar ? getProfileImgByUserId(user.uid, true) : null,
-              child: Text(user.name),
+              child: ClipOval(child: Text(user.name)),
             ),
     );
   }

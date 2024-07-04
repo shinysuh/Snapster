@@ -131,7 +131,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                         widget.chatroom.chatPartner.uid,
                         false,
                       ),
-                      child: Text(widget.chatroom.chatPartner.name),
+                      child: ClipOval(
+                        child: Text(widget.chatroom.chatPartner.name),
+                      ),
                     ),
                   ),
                   Positioned(

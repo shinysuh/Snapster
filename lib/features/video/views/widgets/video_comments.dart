@@ -166,7 +166,7 @@ class _VideoCommentsState extends State<VideoComments> {
                         CircleAvatar(
                           radius: Sizes.size18,
                           backgroundColor: isDark ? Colors.grey.shade500 : null,
-                          child: const Text('쩨나'),
+                          child: const ClipOval(child: Text('쩨나')),
                         ),
                         Gaps.h10,
                         Expanded(
@@ -232,7 +232,7 @@ class _VideoCommentsState extends State<VideoComments> {
                                 backgroundColor: Colors.grey.shade500,
                                 foregroundColor: Colors.white,
                                 foregroundImage: profileImage,
-                                child: const Text('쩨나'),
+                                child: const ClipOval(child: Text('쩨나')),
                               ),
                               Gaps.h10,
                               if (isWiderThanSm)

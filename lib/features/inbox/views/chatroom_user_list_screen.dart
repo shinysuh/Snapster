@@ -28,7 +28,7 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
   }
 
   Future<void> _getAllUsers() async {
-    _users = await ref.read(chatroomProvider.notifier).fetchAllUsers();
+    _users = await ref.read(chatroomProvider.notifier).fetchAllOtherUsers();
     setState(() {});
   }
 
@@ -64,7 +64,7 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
                     foregroundImage: user.hasAvatar
                         ? getProfileImgByUserId(user.uid, false)
                         : null,
-                    child: Text(user.name),
+                    child: ClipOval(child: Text(user.name)),
                   ),
                   title: Text(user.username),
                   subtitle: Text(user.name),

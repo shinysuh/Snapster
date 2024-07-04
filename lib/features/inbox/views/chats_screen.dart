@@ -99,7 +99,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         foregroundImage: chatPartner.hasAvatar
             ? getProfileImgByUserId(chatPartner.uid, false)
             : null,
-        child: Text(chatPartner.name),
+        child: ClipOval(child: Text(chatPartner.name)),
       ),
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,

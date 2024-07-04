@@ -348,7 +348,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                     widget.videoData.uploaderUid,
                     false,
                   ),
-                  child: Text(widget.videoData.uploader),
+                  child: ClipOval(child: Text(widget.videoData.uploader)),
                 ),
                 Gaps.v24,
                 GestureDetector(
