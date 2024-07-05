@@ -4,14 +4,14 @@ class ChatroomModel {
   final String chatroomId;
   final ChatterModel personA;
   final ChatterModel personB;
-  final int createdAt;
+  int? createdAt;
   final int updatedAt;
 
   ChatroomModel({
     required this.chatroomId,
     required this.personA,
     required this.personB,
-    required this.createdAt,
+    this.createdAt,
     required this.updatedAt,
   });
 
@@ -19,7 +19,7 @@ class ChatroomModel {
       : chatroomId = json['chatroomId'],
         personA = ChatterModel.fromJson(json['personA']),
         personB = ChatterModel.fromJson(json['personB']),
-        createdAt = json['createdAt'],
+        createdAt = json['createdAt'] ?? 0,
         updatedAt = json['updatedAt'];
 
   Map<String, dynamic> toJson() {

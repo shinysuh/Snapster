@@ -404,6 +404,16 @@ class S {
       args: [],
     );
   }
+
+  /// `{username} has left the chatroom.`
+  String userHasLeftChatroom(Object username) {
+    return Intl.message(
+      '$username has left the chatroom.',
+      name: 'userHasLeftChatroom',
+      desc: '',
+      args: [username],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

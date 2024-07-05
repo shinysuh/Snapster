@@ -155,7 +155,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       myChatterProfile = myChatterProfile.copyWith(
         isParticipating: false,
         recentlyReadAt: now, // 채팅방 나가면 읽음으로 표시됨
-        showMsgFrom: now,
+        showMsgFrom: now + 1,
       );
 
       // personA / personB 중 나 구분 후 정보 넘기기 - chatroomId 에서 앞에 오면 personA
@@ -166,7 +166,6 @@ class ChatroomViewModel extends AsyncNotifier<void> {
         chatroomId: chatroomInfo.chatroomId,
         personA: amIPersonA ? myChatterProfile : chatroomInfo.chatPartner,
         personB: amIPersonA ? chatroomInfo.chatPartner : myChatterProfile,
-        createdAt: 0,
         updatedAt: now,
       );
 
