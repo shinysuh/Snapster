@@ -1,0 +1,23 @@
+interface ChatroomInterface {
+    chatroomId: string;
+    personA: ChatterInterface;
+    personB: ChatterInterface;
+    createdAt: number;
+    updatedAt: number;
+}
+
+interface ChatterInterface {
+    uid: string;
+    name: string;
+    username: string;
+    hasAvatar: boolean;
+    isParticipating: boolean;
+    recentlyReadAt: number;
+    showMsgFrom: number;
+}
+
+interface ChatPartnerInterface {
+    chatroomId: string;
+    chatPartner: ChatterInterface;
+    updatedAt: number;
+}
