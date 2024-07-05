@@ -24,6 +24,19 @@ class ChatroomRepository {
         .where(chatroomIdField, isEqualTo: chatroomId)
         .get();
   }
+
+  // update a chatroom
+  Future<void> updateChatroom(ChatroomModel chatroom) async {
+    await _database
+        .collection(chatroomCollection)
+        .doc(chatroom.chatroomId)
+        .update(chatroom.toJson());
+  }
+
+  // delete a chatroom
+  Future<void> deleteChatroom(String chatroomId) async {
+    await _database.collection(chatroomCollection).doc(chatroomId).delete();
+  }
 }
 
 final chatroomRepository = Provider((ref) => ChatroomRepository());

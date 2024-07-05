@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -31,11 +32,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   // List<ChatPartnerModel> _chatrooms = [];
 
   void _onClickAddChat() {
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: ChatroomUserListScreen.routeName,
-    // );
-
     Navigator.push(
         context,
         PageRouteBuilder(
@@ -44,40 +40,36 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ));
-
-    // chatroom create
-    // ref.read(chatroomProvider.notifier).createChatroom(
-    //       context,
-    //       // TODO - 선택한 상대 프로필 info 적용
-    //       UserProfileModel.empty().copyWith(
-    //         uid: 'RandomChatRoomUserId',
-    //         name: 'Random',
-    //         username: 'Random123',
-    //         hasAvatar: true,
-    //       ),
-    //     );
-    //
-    // _key.currentState?.insertItem(
-    //   _items.length,
-    //   duration: _duration,
-    // );
-    // _items.add(_items.length);
   }
 
-  void _onDeleteItem(int index) {
-    /* TODO - 방 나갈지 alert */
-    // _key.currentState?.removeItem(
-    //   index,
-    //   (context, animation) => SizeTransition(
-    //     sizeFactor: animation,
-    //     child: Container(
-    //       color: Colors.red.shade300,
-    //       child: _getListTile(index),
-    //     ),
-    //   ),
-    //   duration: _duration,
-    // );
-    // _items.removeAt(index);
+  void _cancelLeaving() {
+    Navigator.of(context).pop();
+  }
+
+  void _onLeaveChatroom(ChatPartnerModel chatroom) {
+    showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(S.of(context).leaveChatroom),
+        // content: const Text('Please confirm'),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: _cancelLeaving,
+            child: const Text("No"),
+          ),
+          CupertinoDialogAction(
+            onPressed: () {
+              ref
+                  .read(chatroomProvider.notifier)
+                  .leaveChatroom(context, chatroom);
+              _cancelLeaving();
+            },
+            isDestructiveAction: true,
+            child: const Text("Yes"),
+          ),
+        ],
+      ),
+    );
   }
 
   void _onTapChat(ChatPartnerModel chatroom) {
@@ -92,7 +84,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
     final chatPartner = chatroom.chatPartner;
     return ListTile(
-      onLongPress: () => _onDeleteItem(index),
+      onLongPress: () => _onLeaveChatroom(chatroom),
       onTap: () => _onTapChat(chatroom),
       leading: CircleAvatar(
         radius: Sizes.size28,

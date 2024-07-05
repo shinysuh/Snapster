@@ -384,6 +384,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Choose a profile`
+  String get chooseAProfile {
+    return Intl.message(
+      'Choose a profile',
+      name: 'chooseAProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Leave Chatroom`
+  String get leaveChatroom {
+    return Intl.message(
+      'Leave Chatroom',
+      name: 'leaveChatroom',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

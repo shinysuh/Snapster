@@ -45,6 +45,8 @@ class MessageLookup extends MessageLookupByLibrary {
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Already have an account?"),
+        "chooseAProfile":
+            MessageLookupByLibrary.simpleMessage("Choose a profile"),
         "chooseYourInterests":
             MessageLookupByLibrary.simpleMessage("Choose your interests"),
         "commentCount": m0,
@@ -65,6 +67,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "enterVideoTitle":
             MessageLookupByLibrary.simpleMessage("Enter video title"),
         "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:ma"),
+        "leaveChatroom": MessageLookupByLibrary.simpleMessage("Leave Chatroom"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,

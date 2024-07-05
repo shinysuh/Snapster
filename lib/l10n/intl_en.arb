@@ -100,5 +100,7 @@
     "placeholders": {}
   },
   "conversationNotStarted": "Conversation Not Started",
-  "selectAProfileToStartAConversation": "Select a profile to start a conversation"
+  "selectAProfileToStartAConversation": "Select a profile to start a conversation",
+  "chooseAProfile": "Choose a profile",
+  "leaveChatroom": "Leave Chatroom"
 }

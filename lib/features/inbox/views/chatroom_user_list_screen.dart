@@ -5,6 +5,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
@@ -47,7 +48,7 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
       child: Scaffold(
         appBar: AppBar(
           centerTitle: true,
-          title: const Text('Chat partners'),
+          title: Text(S.of(context).chooseAProfile),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(

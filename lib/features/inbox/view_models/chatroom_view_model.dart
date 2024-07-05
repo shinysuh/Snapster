@@ -33,6 +33,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     _user = _authRepository.user;
   }
 
+  // 채팅방 생성
   Future<void> createChatroom(
       BuildContext context, UserProfileModel invitee) async {
     state = const AsyncValue.loading();
@@ -42,17 +43,28 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       final myProfile = await _getMyProfile(context);
       if (myProfile.uid.isEmpty) return;
 
-      // 이미 채팅룸 있는지 확인
-      if (!context.mounted) return;
-      final chatroomExist = await _getChatroom(myProfile.uid, invitee.uid)
-          .then((value) => value.isNotEmpty);
-      if (chatroomExist) return;
-
-      // 없을 경우 생성
       final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
+      final inviteeAsChatter = _getChatterByProfile(invitee);
       final now = DateTime.now().millisecondsSinceEpoch;
 
-      final inviteeAsChatter = _getChatterByProfile(invitee);
+      // 이미 채팅룸 있는지 확인
+      final chatroomExist = await _getChatroom(myProfile.uid, invitee.uid)
+          .then((value) => value.isNotEmpty);
+
+      // 이미 있으면 해당 채팅방으로 이동
+      if (chatroomExist) {
+        if (context.mounted) {
+          _enterChatroom(
+            context: context,
+            chatroomId: chatroomId,
+            invitee: inviteeAsChatter,
+            now: now,
+          );
+        }
+        return;
+      }
+
+      // 없을 경우 생성
       final chatroomInfo = ChatroomModel(
         chatroomId: chatroomId,
         personA: _getChatterByProfile(myProfile),
@@ -67,37 +79,33 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       if (state.hasError) {
         if (context.mounted) showFirebaseErrorSnack(context, state.error);
       } else {
+        // 채팅방으로 이동
         if (context.mounted) {
-          context.pop();
-          goToRouteNamed(
+          _enterChatroom(
             context: context,
-            routeName: ChatDetailScreen.routeName,
-            params: {'chatroomId': chatroomId},
-            extra: ChatPartnerModel(
-              chatroomId: chatroomId,
-              chatPartner: inviteeAsChatter,
-              updatedAt: now,
-            ),
+            chatroomId: chatroomId,
+            invitee: inviteeAsChatter,
+            now: now,
           );
         }
       }
     });
   }
 
+  // 전체 유저 리스트 가져오기 (로그인 유저 제외)
   Future<List<UserProfileModel>> fetchAllOtherUsers() async {
     final result = await _userRepository.fetchAllUsers();
     List<UserProfileModel> users = [];
 
     for (var doc in result.docs) {
       final user = UserProfileModel.fromJson(doc.data());
-      if (user.uid != _user!.uid) {
-        users.add(user);
-      }
+      if (user.uid != _user!.uid) users.add(user);
     }
 
     return users;
   }
 
+  // 채팅방 정보 가져오기
   FutureOr<ChatroomModel?> fetchChatroom(
       BuildContext context, UserProfileModel invitee) async {
     final myProfile = await _getMyProfile(context);
@@ -115,6 +123,58 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     }
   }
 
+  /*
+      TODO [1] - 대화방
+       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
+           >>> onChatroomCreated 클라우드함수 사용해서 -> user 하위에 chat_rooms - chatroomId 랑 autoId 랑 상대chatter 정보 저장 (V)
+       2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동) (V)
+       3) 대화방 생성 후 바로 대화방으로 이동 (V)
+       ---
+       4) [XX - 어차피 유저 하위 컬렉션에 없을 거임] 목록에 내가 참여하는 대화방 리스트 뿌려주기 (isParticipating=true)
+
+   */
+
+  // 채팅방 나가기
+  Future<void> leaveChatroom(
+      BuildContext context, ChatPartnerModel chatroomInfo) async {
+    _checkLoginUser(context);
+    final profile = await _getMyProfile(context);
+    if (profile.uid.isEmpty) return;
+
+    // user 컬렉션에서도 제거 필요 - index.ts
+
+    if (!chatroomInfo.chatPartner.isParticipating) {
+      // 사용자 둘 다 나가기 시, 채팅방 정보 삭제
+      await _chatroomRepository.deleteChatroom(chatroomInfo.chatroomId);
+    } else {
+      // 한 명만 나가기 시, 채팅방 정보 업데이트
+      var myChatterProfile = _getChatterByProfile(profile);
+
+      int now = DateTime.now().millisecondsSinceEpoch;
+      // isParticipating = false;
+      myChatterProfile = myChatterProfile.copyWith(
+        isParticipating: false,
+        recentlyReadAt: now, // 채팅방 나가면 읽음으로 표시됨
+        showMsgFrom: now,
+      );
+
+      // personA / personB 중 나 구분 후 정보 넘기기 - chatroomId 에서 앞에 오면 personA
+      bool amIPersonA =
+          chatroomInfo.chatroomId.startsWith(myChatterProfile.uid);
+
+      ChatroomModel updatedChatroom = ChatroomModel(
+        chatroomId: chatroomInfo.chatroomId,
+        personA: amIPersonA ? myChatterProfile : chatroomInfo.chatPartner,
+        personB: amIPersonA ? chatroomInfo.chatPartner : myChatterProfile,
+        createdAt: 0,
+        updatedAt: now,
+      );
+
+      // chatroom 정보 업데이트
+      await _chatroomRepository.updateChatroom(updatedChatroom);
+    }
+  }
+
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _getChatroom(
       String myId, String inviteeId) async {
     var chatroomId = '$myId$commonIdDivider$inviteeId';
@@ -129,19 +189,27 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return chatroom.docs;
   }
 
-  /*
-      TODO [1] - 대화방
-       1) Chatroom 생성 기능 -> personA (방 생성자) / personB (초대된 사람)  (V)
-           >>> onChatroomCreated 클라우드함수 사용해서 -> user 하위에 chat_rooms - chatroomId 랑 autoId 랑 상대chatter 정보 저장 (V)
-       2) + 클릭 시, 사용자 목록 선택하게 하기 (기존 대화방 있는 상대 선택 시, 해당 대화방으로 이동)
-       ---
-       3) 대화방 생성 후 바로 대화방으로 이동 - 리스트는 알아서 fetch 되도록 함
-       4) 목록에 내가 참여하는 대화방 리스트 뿌려주기 (isParticipating=true)
+  // 채팅방으로 이동
+  void _enterChatroom({
+    required BuildContext context,
+    required String chatroomId,
+    required ChatterModel invitee,
+    required int now,
+  }) {
+    context.pop();
+    goToRouteNamed(
+      context: context,
+      routeName: ChatDetailScreen.routeName,
+      params: {'chatroomId': chatroomId},
+      extra: ChatPartnerModel(
+        chatroomId: chatroomId,
+        chatPartner: invitee,
+        updatedAt: now,
+      ),
+    );
+  }
 
-   */
-
-  Future<void> getChatPartners(String chatroomId) async {}
-
+  // 로그인 유저 피로필 fetch
   Future<UserProfileModel> _getMyProfile(BuildContext context) async {
     var myProfile = UserProfileModel.empty();
 
@@ -157,6 +225,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return myProfile;
   }
 
+  // 유저 프로필 ChatterModel 로 형병환
   ChatterModel _getChatterByProfile(UserProfileModel profile) {
     return ChatterModel(
       uid: profile.uid,
@@ -169,6 +238,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     );
   }
 
+  // 로그인 여부 체크
   void _checkLoginUser(BuildContext context) {
     if (!_authRepository.isLoggedIn) {
       showSessionErrorSnack(context);
