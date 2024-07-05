@@ -172,6 +172,17 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
       // chatroom 정보 업데이트
       await _chatroomRepository.updateChatroom(updatedChatroom);
+      // 시스템 메세지 추가
+      if (context.mounted) {
+        await ref
+            .read(messageProvider(chatroomInfo.chatroomId).notifier)
+            .sendSystemMessage(
+              context: context,
+              text:
+                  S.of(context).userHasLeftChatroom(myChatterProfile.username),
+              createdAt: now,
+            );
+      }
     }
   }
 

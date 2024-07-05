@@ -10,7 +10,11 @@ import 'package:tiktok_clone/features/inbox/repositories/chatroom_repository.dar
 import 'package:tiktok_clone/features/inbox/repositories/message_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
 
+enum MessageSenderType { me, partner, system }
+
 class MessageViewModel extends FamilyAsyncNotifier<void, String> {
+  static const String systemId = 'system_message';
+
   late final MessageRepository _messageRepository;
   late final AuthenticationRepository _authRepository;
 
@@ -38,7 +42,6 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
 
-      // TODO - chatroomId 동적 적용 필요
       await _messageRepository.sendMessage(message, _chatroomId);
 
       if (state.hasError) {
@@ -47,21 +50,52 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
     });
   }
 
-  bool isMine(BuildContext context, String senderId) {
+  Future<void> sendSystemMessage({
+    required BuildContext context,
+    required String text,
+    required int createdAt,
+  }) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final systemMessage = MessageModel(
+        text: text,
+        userId: systemId,
+        createdAt: createdAt,
+      );
+
+      await _messageRepository.sendMessage(systemMessage, _chatroomId);
+
+      if (state.hasError) {
+        if (context.mounted) showFirebaseErrorSnack(context, state.error);
+      }
+    });
+  }
+
+  MessageSenderType getMessageSender(BuildContext context, String senderId) {
     _checkLoginUser(context);
     final user = _authRepository.user;
-    return senderId == user!.uid;
+    return senderId == systemId
+        ? MessageSenderType.system
+        : user!.uid == senderId
+            ? MessageSenderType.me
+            : MessageSenderType.partner;
+  }
+
+  bool isMine(MessageSenderType senderType) {
+    return senderType == MessageSenderType.me;
   }
 
 /*
       TODO [2] - 목록
-       1) 구분 후 대화 뿌리기 (V)
-       2) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기 (V)
-       3) 목록에 최근 메세지 출력 (V)
-       4) [XX] personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
+       1) (V) 구분 후 대화 뿌리기
+       2) (V) 대화방에 상대방 Avatar / 이름 상단에 뿌려주기
+       3) (V) 목록에 최근 메세지 출력
+       4) (V) [XX] personA / personB 중 로그인 유저 구분 해내기 => chatroomId 필드 split 해서 uid가 앞에 있는지 뒤에 있는지로 구분 가능할듯
 
        TODO [3] - extra
-        1) 대화 text 중 system 이 보낸 항목 UI 구분하기 ('OOO님이 대화방을 나갔습니다.' 문구)
+        **) 내가 생성한 채팅방 아닐 때, 대화상대 선택 리스트에서 기존 대화상대 선택 후 채팅방 이동 시, 메세지들 안보이는 이슈 fix
+        **) 상대방이 나간 채팅방에서 다시 메세지 보내면, 다시 상대 초대됨
+        1) (V) 대화 text 중 system 이 보낸 항목 UI 구분하기 ('OOO님이 대화방을 나갔습니다.' 문구) (V)
         2) recentlyReadAt 으로 [여기까지 읽음] 구현 및 recentlyReadAt 업데이트
         3) 이전 메세지랑 날짜가 다르면 UI에 날짜 구분 말풍선 표시해주기
         4) [*2분 내로 보내진 메세지만] 메세지를 꾹(2-3초) 눌렀을 때, 메세지 지우는 컨펌 dialog 후 메세지를 [deleted message] 로 변경하거나 삭제하는 로직 구현

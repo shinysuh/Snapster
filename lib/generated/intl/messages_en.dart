@@ -41,6 +41,8 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
 
+  static String m9(username) => "${username} has left the chatroom.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
@@ -88,6 +90,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password"),
+        "userHasLeftChatroom": m9,
         "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
         "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy")
       };

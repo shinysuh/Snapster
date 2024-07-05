@@ -202,37 +202,48 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                       separatorBuilder: (context, index) => Gaps.v10,
                       itemBuilder: (context, index) {
                         final message = messages[index];
-                        final isMine = ref
+                        final messageSender = ref
                             .read(messageProvider(widget.chatroomId).notifier)
-                            .isMine(context, message.userId);
-                        // final isMine = ref.watch(authRepository).user!.uid ==
-                        //     message.userId;
+                            .getMessageSender(context, message.userId);
+                        final isMine = messageSender == MessageSenderType.me;
+                        final isPartner =
+                            messageSender == MessageSenderType.partner;
+                        final isSystem = !isMine && !isPartner;
+                        final systemColor = Colors.black.withOpacity(0.3);
                         return Row(
                           mainAxisSize: MainAxisSize.min,
                           mainAxisAlignment: isMine
                               ? MainAxisAlignment.end
-                              : MainAxisAlignment.start,
+                              : isPartner
+                                  ? MainAxisAlignment.start
+                                  : MainAxisAlignment.center,
                           children: [
                             Container(
                               decoration: BoxDecoration(
                                 color: isMine
                                     ? const Color(0xFF609EC2)
-                                    : Theme.of(context).primaryColor,
+                                    : isPartner
+                                        ? Theme.of(context).primaryColor
+                                        : systemColor,
                                 borderRadius: BorderRadius.only(
                                   topLeft: const Radius.circular(Sizes.size20),
                                   topRight: const Radius.circular(Sizes.size20),
                                   bottomLeft: Radius.circular(
-                                      isMine ? Sizes.size20 : Sizes.size5),
+                                    isPartner ? Sizes.size5 : Sizes.size20,
+                                  ),
                                   bottomRight: Radius.circular(
-                                      isMine ? Sizes.size5 : Sizes.size20),
+                                    isMine ? Sizes.size5 : Sizes.size20,
+                                  ),
                                 ),
                               ),
-                              padding: const EdgeInsets.all(Sizes.size14),
+                              padding: EdgeInsets.all(
+                                  isSystem ? Sizes.size8 : Sizes.size14),
                               child: Text(
                                 message.text,
-                                style: const TextStyle(
+                                style: TextStyle(
                                   color: Colors.white,
-                                  fontSize: Sizes.size16,
+                                  fontSize:
+                                      isSystem ? Sizes.size12 : Sizes.size16,
                                 ),
                               ),
                             ),
