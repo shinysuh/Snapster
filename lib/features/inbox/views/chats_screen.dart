@@ -26,9 +26,9 @@ class ChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatsScreenState extends ConsumerState<ChatsScreen> {
-  final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
-  final Duration _duration = const Duration(milliseconds: 300);
-  List<int> _items = [];
+  // final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
+  // final Duration _duration = const Duration(milliseconds: 300);
+  // List<ChatPartnerModel> _chatrooms = [];
 
   void _onClickAddChat() {
     // goToRouteNamed(
@@ -206,24 +206,34 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                           ),
                         ],
                       )
-                    : AnimatedList(
-                        key: _key,
-                        initialItemCount: chatrooms.length,
+                    : ListView.separated(
+                        // key: _key,
+                        itemCount: chatrooms.length,
                         padding: const EdgeInsets.symmetric(
                           vertical: Sizes.size10,
                         ),
-                        itemBuilder: (context, index, animation) {
-                          return FadeTransition(
-                            key: UniqueKey(),
-                            opacity: animation,
-                            child: SizeTransition(
-                              sizeFactor: animation,
-                              child:
-                                  _getChatroomListTile(chatrooms[index], index),
-                            ),
-                          );
-                        },
+                        separatorBuilder: (context, index) => Gaps.v5,
+                        itemBuilder: (context, index) =>
+                            _getChatroomListTile(chatrooms[index], index),
                       );
+                // AnimatedList(
+                //         key: _key,
+                //         initialItemCount: _chatrooms.length,
+                //         padding: const EdgeInsets.symmetric(
+                //           vertical: Sizes.size10,
+                //         ),
+                //         itemBuilder: (context, index, animation) {
+                //           return FadeTransition(
+                //             key: UniqueKey(),
+                //             opacity: animation,
+                //             child: SizeTransition(
+                //               sizeFactor: animation,
+                //               child: _getChatroomListTile(
+                //                   _chatrooms[index], index),
+                //             ),
+                //           );
+                //         },
+                //       );
               },
             ),
       ),
