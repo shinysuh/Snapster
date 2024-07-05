@@ -29,7 +29,7 @@ class ChatsScreen extends ConsumerStatefulWidget {
 class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   // final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
   // final Duration _duration = const Duration(milliseconds: 300);
-  // List<ChatPartnerModel> _chatrooms = [];
+  List<ChatPartnerModel> _chatrooms = [];
 
   void _onClickAddChat() {
     Navigator.push(
@@ -42,8 +42,14 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         ));
   }
 
-  void _cancelLeaving() {
+  void _closeLeavingDialog() {
     Navigator.of(context).pop();
+  }
+
+  void _removeLeftChatroom(ChatPartnerModel chatroom) {
+    final index = _chatrooms.indexOf(chatroom);
+    _chatrooms.removeAt(index);
+    setState(() {});
   }
 
   void _onLeaveChatroom(ChatPartnerModel chatroom) {
@@ -54,15 +60,16 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         // content: const Text('Please confirm'),
         actions: [
           CupertinoDialogAction(
-            onPressed: _cancelLeaving,
+            onPressed: _closeLeavingDialog,
             child: const Text("No"),
           ),
           CupertinoDialogAction(
             onPressed: () {
+              _removeLeftChatroom(chatroom);
               ref
                   .read(chatroomProvider.notifier)
                   .leaveChatroom(context, chatroom);
-              _cancelLeaving();
+              _closeLeavingDialog();
             },
             isDestructiveAction: true,
             child: const Text("Yes"),
@@ -171,7 +178,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 child: Text(error.toString()),
               ),
               data: (chatrooms) {
-                return chatrooms.isEmpty
+                _chatrooms = chatrooms;
+                return _chatrooms.isEmpty
                     ? Column(
                         children: [
                           Gaps.v20,
@@ -200,13 +208,13 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                       )
                     : ListView.separated(
                         // key: _key,
-                        itemCount: chatrooms.length,
+                        itemCount: _chatrooms.length,
                         padding: const EdgeInsets.symmetric(
                           vertical: Sizes.size10,
                         ),
                         separatorBuilder: (context, index) => Gaps.v5,
                         itemBuilder: (context, index) =>
-                            _getChatroomListTile(chatrooms[index], index),
+                            _getChatroomListTile(_chatrooms[index], index),
                       );
                 // AnimatedList(
                 //         key: _key,
