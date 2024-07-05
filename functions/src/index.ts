@@ -117,7 +117,7 @@ export const onChatroomCreated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}`)
     .onCreate(async (snapshot, context) => {
         const chatroomId = snapshot.id;
-        const chatroomData = snapshot.data();
+        const chatroomData = snapshot.data() as ChatroomInterface;
         const db = admin.firestore();
         
         const inviter = chatroomData.personA;
@@ -147,9 +147,74 @@ export const onChatroomCreated = functions.firestore
 export const onChatroomUpdated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}`)
     .onUpdate(async (snapshot, context) => {
-        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating 도 update 필요
+        const chatroomId = snapshot.before.id;
+        const oldChatroomData = snapshot.before.data() as ChatroomInterface;
+        const newChatroomData = snapshot.after.data() as ChatroomInterface;
+        const db = admin.firestore();
+        
+        const isPersonALeaving = !newChatroomData.personA.isParticipating;
+        
+        let leaver: ChatterInterface;
+        let remainder: ChatterInterface;
+        
+        if(isPersonALeaving) {
+            leaver = newChatroomData.personA;
+            remainder = newChatroomData.personB;
+        } else {
+            leaver = newChatroomData.personB;
+            remainder = newChatroomData.personA;
+        }
+        
+        // createdAt 다시 기존 데이터로 업데이트
+        await db.collection(chatroomCollection)
+            .doc(chatroomId)
+            .set({
+                createdAt: oldChatroomData.createdAt,
+            });
+        
+        // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
+        await db.collection(userCollection)
+            .doc(leaver.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .delete();
+        
+        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating=false
+        await db.collection(userCollection)
+            .doc(remainder.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .update(
+                {
+                    chatroomId: chatroomId,
+                    chatPartner: leaver,
+                    updatedAt: Timestamp.now().toMillis()
+                }
+            );
+        
+        console.log('##################### leaver:', leaver);
+        console.log('##################### remainder:', remainder);
+        console.log('##################### oldData:', oldChatroomData);
+        console.log('##################### newData:', newChatroomData);
     });
+
 export const onChatroomDeleted = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}`)
     .onDelete(async (snapshot, context) => {
+        const chatroomId = snapshot.id;
+        const chatroomData = snapshot.data() as ChatroomInterface;
+        const db = admin.firestore();
+        
+        // 양쪽 대화자 하위 컬렉션에서 해당 chatroom 정보 제거 필요
+        await db.collection(userCollection)
+            .doc(chatroomData.personA.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .delete();
+        
+        await db.collection(userCollection)
+            .doc(chatroomData.personB.uid)
+            .collection(chatroomCollection)
+            .doc(chatroomId)
+            .delete();
     });
