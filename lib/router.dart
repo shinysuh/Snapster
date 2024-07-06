@@ -200,9 +200,9 @@ final routerProvider = Provider((ref) {
         // ),
       ),
       GoRoute(
-        name: UserListScreen.routeName,
-        path: UserListScreen.routeURL,
-        builder: (context, state) => const UserListScreen(),
+        name: ChatroomUserListScreen.routeName,
+        path: ChatroomUserListScreen.routeURL,
+        builder: (context, state) => const ChatroomUserListScreen(),
       ),
       // GoRoute(
       //   name: UsernameScreen.routeName,
