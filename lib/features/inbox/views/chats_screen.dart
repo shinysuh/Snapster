@@ -14,6 +14,7 @@ import 'package:tiktok_clone/features/inbox/views/chatroom_user_list_screen.dart
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
+import 'package:tiktok_clone/utils/system_message.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class ChatsScreen extends ConsumerStatefulWidget {
@@ -127,9 +128,13 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 child: Text(error.toString()),
               ),
           data: (message) {
-            return Text(message != null
-                ? message.text
-                : S.of(context).conversationNotStarted);
+            return Text(
+              message == null
+                  ? S.of(context).conversationNotStarted
+                  : !message.userId.startsWith(MessageViewModel.systemId)
+                      ? message.text
+                      : getSystemMessage(context, message.text),
+            );
           }),
     );
   }

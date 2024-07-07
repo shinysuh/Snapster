@@ -5,12 +5,12 @@ import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
+import 'package:tiktok_clone/utils/system_message.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
@@ -215,16 +215,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     return messagessss;
   }
 
-  String _getSystemMessage(String message) {
-    var msgElms = message.split(systemMessageDivider);
-    if (msgElms.length < 2) return message;
-    var username = msgElms[0];
-    var type = msgElms[1].toString();
-    return type == SystemMessageType.left.name
-        ? S.of(context).userHasLeftChatroom(username)
-        : message;
-  }
-
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(context);
@@ -380,7 +370,10 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                         isSystem ? Sizes.size8 : Sizes.size14),
                                     child: Text(
                                       isSystem
-                                          ? _getSystemMessage(message.text)
+                                          ? getSystemMessage(
+                                              context,
+                                              message.text,
+                                            )
                                           : message.text,
                                       style: TextStyle(
                                         color: Colors.white,

@@ -4,4 +4,4 @@ enum SystemMessageType {
   msgStartsFrom,
 }
 
-const systemMessageDivider = ':';
+const systemMessageDivider = ':::';
