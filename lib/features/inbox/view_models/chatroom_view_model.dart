@@ -50,45 +50,46 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       final now = DateTime.now().millisecondsSinceEpoch;
 
       // 이미 채팅룸 있는지 확인
-      final chatroomExist = await _getChatroom(myProfile.uid, invitee.uid)
-          .then((value) => value.isNotEmpty);
+      final checkedChatroom = await _getChatroom(myProfile.uid, invitee.uid);
+      final chatroomExist = checkedChatroom.isNotEmpty;
 
       // 이미 있으면 해당 채팅방으로 이동
       if (chatroomExist) {
+        final oldChatroom =
+            ChatroomModel.fromJson(checkedChatroom.first.data());
         if (context.mounted) {
           _enterChatroom(
             context: context,
-            chatroomId: chatroomId,
+            chatroomId: oldChatroom.chatroomId,
             invitee: inviteeAsChatter,
             now: now,
           );
         }
-        return;
-      }
-
-      // 없을 경우 생성
-      final chatroomInfo = ChatroomModel(
-        chatroomId: chatroomId,
-        personA: _getChatterByProfile(myProfile),
-        personB: inviteeAsChatter,
-        createdAt: now,
-        updatedAt: now,
-      );
-
-      await _chatroomRepository.createChatroom(chatroomInfo);
-      chatroom = chatroomInfo;
-
-      if (state.hasError) {
-        if (context.mounted) showFirebaseErrorSnack(context, state.error);
       } else {
-        // 채팅방으로 이동
-        if (context.mounted) {
-          _enterChatroom(
-            context: context,
-            chatroomId: chatroomId,
-            invitee: inviteeAsChatter,
-            now: now,
-          );
+        // 없을 경우 생성
+        final chatroomInfo = ChatroomModel(
+          chatroomId: chatroomId,
+          personA: _getChatterByProfile(myProfile),
+          personB: inviteeAsChatter,
+          createdAt: now,
+          updatedAt: now,
+        );
+
+        await _chatroomRepository.createChatroom(chatroomInfo);
+        chatroom = chatroomInfo;
+
+        if (state.hasError) {
+          if (context.mounted) showFirebaseErrorSnack(context, state.error);
+        } else {
+          // 채팅방으로 이동
+          if (context.mounted) {
+            _enterChatroom(
+              context: context,
+              chatroomId: chatroomId,
+              invitee: inviteeAsChatter,
+              now: now,
+            );
+          }
         }
       }
     });
@@ -126,7 +127,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
   }
 
   // 채팅방 나가기
-  Future<void> leaveChatroom(
+  Future<void> exitChatroom(
       BuildContext context, ChatPartnerModel chatroomInfo) async {
     _checkLoginUser(context);
     final profile = await _getMyProfile(context);
@@ -162,7 +163,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
       // chatroom 정보 업데이트
       await _chatroomRepository.updateChatroom(updatedChatroom);
-      // 시스템 메세지 추가
+      // 시스템 메세지 추가 (방 나감 메세지)
       if (context.mounted) {
         await ref
             .read(messageProvider(chatroomInfo.chatroomId).notifier)
