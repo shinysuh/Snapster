@@ -20,4 +20,11 @@ interface ChatPartnerInterface {
     chatroomId: string;
     chatPartner: ChatterInterface;
     updatedAt: number;
+    showMsgFrom: number;
+}
+
+interface MessageInterface {
+    text: string;
+    userId: string;
+    createdAt: number;
 }

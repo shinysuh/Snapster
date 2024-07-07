@@ -61,8 +61,9 @@ class MessageLookup extends MessageLookupByLibrary {
         "editProfile": MessageLookupByLibrary.simpleMessage("프로필 수정"),
         "enterVideoTitle":
             MessageLookupByLibrary.simpleMessage("비디오 제목을 입력해 주세요."),
+        "exit": MessageLookupByLibrary.simpleMessage("나가기"),
+        "exitChatroom": MessageLookupByLibrary.simpleMessage("채팅방 나가기"),
         "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:ma"),
-        "leaveChatroom": MessageLookupByLibrary.simpleMessage("채팅방 나가기"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,

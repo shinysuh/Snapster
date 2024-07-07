@@ -42,7 +42,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
         ));
   }
 
-  void _closeLeavingDialog() {
+  void _closeExitDialog() {
     Navigator.of(context).pop();
   }
 
@@ -52,15 +52,15 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     setState(() {});
   }
 
-  void _onLeaveChatroom(ChatPartnerModel chatroom) {
+  void _onExitChatroom(ChatPartnerModel chatroom) {
     showCupertinoDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
-        title: Text(S.of(context).leaveChatroom),
+        title: Text(S.of(context).exitChatroom),
         // content: const Text('Please confirm'),
         actions: [
           CupertinoDialogAction(
-            onPressed: _closeLeavingDialog,
+            onPressed: _closeExitDialog,
             child: const Text("No"),
           ),
           CupertinoDialogAction(
@@ -68,8 +68,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
               _removeLeftChatroom(chatroom);
               ref
                   .read(chatroomProvider.notifier)
-                  .leaveChatroom(context, chatroom);
-              _closeLeavingDialog();
+                  .exitChatroom(context, chatroom);
+              _closeExitDialog();
             },
             isDestructiveAction: true,
             child: const Text("Yes"),
@@ -91,7 +91,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
     final chatPartner = chatroom.chatPartner;
     return ListTile(
-      onLongPress: () => _onLeaveChatroom(chatroom),
+      onLongPress: () => _onExitChatroom(chatroom),
       onTap: () => _onTapChat(chatroom),
       leading: CircleAvatar(
         radius: Sizes.size28,

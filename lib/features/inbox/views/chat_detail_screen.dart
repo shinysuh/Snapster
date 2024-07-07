@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
+import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
@@ -31,6 +35,7 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _textEditingController = TextEditingController();
   bool _isWriting = false;
+  bool _isDropdownOpen = false;
 
   @override
   void dispose() {
@@ -48,6 +53,10 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   void _onSendMessage() {
+    final partner = widget.chatroom.chatPartner;
+    print(partner.name);
+    print(partner.isParticipating);
+
     ref
         .read(messageProvider(widget.chatroomId).notifier)
         .sendMessage(context, _textEditingController.text)
@@ -98,6 +107,124 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
+  void _onTapDots() {
+    // setState(() {
+    //   _isDropdownOpen = true;
+    // });
+  }
+
+  void _closeExitDialog() {
+    Navigator.of(context).pop();
+  }
+
+  void _onExitChatroom() {
+    context.pop();
+    // TODO - 방 나가기 로직 (alert 포함)
+    // showCupertinoDialog(
+    //   context: context,
+    //   builder: (context) => CupertinoAlertDialog(
+    //     title: Text(S.of(context).exitChatroom),
+    //     // content: const Text('Please confirm'),
+    //     actions: [
+    //       CupertinoDialogAction(
+    //         onPressed: _closeExitDialog,
+    //         child: const Text("No"),
+    //       ),
+    //       CupertinoDialogAction(
+    //         onPressed: () {
+    //           ref
+    //               .read(chatroomProvider.notifier)
+    //               .exitChatroom(context, chatroom);
+    //           _closeExitDialog();
+    //         },
+    //         isDestructiveAction: true,
+    //         child: const Text("Yes"),
+    //       ),
+    //     ],
+    //   ),
+    // );
+  }
+
+  void _onTapScaffold() {
+    onTapOutsideAndDismissKeyboard(context);
+    _isDropdownOpen = false;
+    setState(() {});
+  }
+
+  Widget _getDropdown(bool isDark) {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + Sizes.size36,
+      right: Sizes.size14,
+      child: Container(
+        clipBehavior: Clip.hardEdge,
+        height: Sizes.size64,
+        width: Sizes.size96 + Sizes.size52,
+        decoration: BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: isDark ? Colors.grey.shade800 : Colors.white,
+          borderRadius: BorderRadius.circular(
+            Sizes.size14,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.2),
+              blurRadius: 20,
+              spreadRadius: 3,
+              offset: const Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            GestureDetector(
+              onTap: _onExitChatroom,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    S.of(context).exitChatroom,
+                    style: TextStyle(
+                      color: isDark ? Colors.white : Colors.black,
+                      fontWeight: FontWeight.w500,
+                      fontSize: Sizes.size14 + Sizes.size1,
+                    ),
+                  ),
+                  Gaps.h10,
+                  const FaIcon(
+                    FontAwesomeIcons.arrowUpRightFromSquare,
+                    size: Sizes.size14,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
+    final messagessss = messages
+        .where((msg) => msg.createdAt > widget.chatroom.showMsgFrom)
+        .toList();
+    print(widget.chatroom.showMsgFrom);
+    print(messagessss.map(
+      (e) => e.createdAt,
+    ));
+    return messagessss;
+  }
+
+  String _getSystemMessage(String message) {
+    var msgElms = message.split(systemMessageDivider);
+    if (msgElms.length < 2) return message;
+    var username = msgElms[0];
+    var type = msgElms[1].toString();
+    return type == SystemMessageType.left.name
+        ? S.of(context).userHasLeftChatroom(username)
+        : message;
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(context);
@@ -110,223 +237,247 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
-      child: GestureDetector(
-        onTap: () => onTapOutsideAndDismissKeyboard(context),
-        child: Scaffold(
-          backgroundColor: commonBcgColor,
-          appBar: AppBar(
-            backgroundColor: commonBcgColor,
-            title: ListTile(
-              contentPadding: EdgeInsets.zero,
-              horizontalTitleGap: Sizes.size8,
-              leading: Stack(
-                // 아래 Positioned 대신 사용 가능
-                // alignment: AlignmentDirectional.bottomEnd,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(Sizes.size4),
-                    child: CircleAvatar(
-                      radius: Sizes.size24,
-                      foregroundImage: getProfileImgByUserId(
-                        widget.chatroom.chatPartner.uid,
-                        false,
+      child: Stack(
+        children: [
+          GestureDetector(
+            onTap: _onTapScaffold,
+            child: Scaffold(
+              backgroundColor: commonBcgColor,
+              appBar: AppBar(
+                backgroundColor: commonBcgColor,
+                title: ListTile(
+                  contentPadding: EdgeInsets.zero,
+                  horizontalTitleGap: Sizes.size8,
+                  leading: Stack(
+                    // 아래 Positioned 대신 사용 가능
+                    // alignment: AlignmentDirectional.bottomEnd,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.all(Sizes.size4),
+                        child: CircleAvatar(
+                          radius: Sizes.size24,
+                          foregroundImage: getProfileImgByUserId(
+                            widget.chatroom.chatPartner.uid,
+                            false,
+                          ),
+                          child: ClipOval(
+                            child: Text(widget.chatroom.chatPartner.name),
+                          ),
+                        ),
                       ),
-                      child: ClipOval(
-                        child: Text(widget.chatroom.chatPartner.name),
+                      Positioned(
+                        bottom: 0,
+                        right: 0,
+                        child: Container(
+                          clipBehavior: Clip.hardEdge,
+                          height: Sizes.size20,
+                          width: Sizes.size20,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Colors.green.shade400,
+                            border: Border.all(
+                              color: Colors.white,
+                              width: Sizes.size3,
+                            ),
+                          ),
+                        ),
                       ),
+                    ],
+                  ),
+                  title: Text(
+                    widget.chatroom.chatPartner.username,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                  subtitle: const Text('Active now'),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      FaIcon(
+                        FontAwesomeIcons.flag,
+                        size: Sizes.size22,
+                        color: iconColor,
+                      ),
+                      Gaps.h32,
+                      GestureDetector(
+                        onTap: _onTapDots,
+                        child: FaIcon(
+                          FontAwesomeIcons.ellipsis,
+                          size: Sizes.size20,
+                          color: iconColor,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              body: Stack(
+                children: [
+                  ref.watch(chatProvider(widget.chatroomId)).when(
+                        loading: () => const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        ),
+                        error: (error, stackTrace) => Center(
+                          child: Text(error.toString()),
+                        ),
+                        data: (messages) {
+                          messages = _getAllowedMessages(messages);
+                          return ListView.separated(
+                            reverse: true,
+                            padding: EdgeInsets.only(
+                              top: Sizes.size20,
+                              bottom: MediaQuery.of(context).padding.bottom +
+                                  Sizes.size96,
+                              left: Sizes.size20,
+                              right: Sizes.size20,
+                            ),
+                            itemCount: messages.length,
+                            separatorBuilder: (context, index) => Gaps.v10,
+                            itemBuilder: (context, index) {
+                              final message = messages[index];
+                              final messageSender = ref
+                                  .read(messageProvider(widget.chatroomId)
+                                      .notifier)
+                                  .getMessageSender(context, message.userId);
+                              final isMine =
+                                  messageSender == MessageSenderType.me;
+                              final isPartner =
+                                  messageSender == MessageSenderType.partner;
+                              final isSystem = !isMine && !isPartner;
+                              final systemColor = Colors.black.withOpacity(0.3);
+                              return Row(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: isMine
+                                    ? MainAxisAlignment.end
+                                    : isPartner
+                                        ? MainAxisAlignment.start
+                                        : MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: isMine
+                                          ? const Color(0xFF609EC2)
+                                          : isPartner
+                                              ? Theme.of(context).primaryColor
+                                              : systemColor,
+                                      borderRadius: BorderRadius.only(
+                                        topLeft:
+                                            const Radius.circular(Sizes.size20),
+                                        topRight:
+                                            const Radius.circular(Sizes.size20),
+                                        bottomLeft: Radius.circular(
+                                          isPartner
+                                              ? Sizes.size5
+                                              : Sizes.size20,
+                                        ),
+                                        bottomRight: Radius.circular(
+                                          isMine ? Sizes.size5 : Sizes.size20,
+                                        ),
+                                      ),
+                                    ),
+                                    padding: EdgeInsets.all(
+                                        isSystem ? Sizes.size8 : Sizes.size14),
+                                    child: Text(
+                                      isSystem
+                                          ? _getSystemMessage(message.text)
+                                          : message.text,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: isSystem
+                                            ? Sizes.size12
+                                            : Sizes.size16,
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              );
+                            },
+                          );
+                        },
+                      ),
                   Positioned(
                     bottom: 0,
-                    right: 0,
-                    child: Container(
-                      clipBehavior: Clip.hardEdge,
-                      height: Sizes.size20,
-                      width: Sizes.size20,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.green.shade400,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: Sizes.size3,
+                    width: MediaQuery.of(context).size.width,
+                    child: BottomAppBar(
+                      color: commonBcgColor,
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Sizes.size4,
+                          horizontal: Sizes.size10,
+                        ),
+                        child: LayoutBuilder(
+                          builder: (context, constraints) {
+                            var isWiderThanSm = constraints.maxWidth >
+                                Breakpoints.sm - Sizes.size28;
+                            var circleColor = isDark
+                                ? Colors.grey.shade400
+                                : _isWriting
+                                    ? Colors.grey.shade200
+                                    : Colors.grey.shade300;
+                            var planeColor =
+                                _isWriting ? Colors.blue : Colors.white;
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                if (isWiderThanSm)
+                                  Container(
+                                    height: Sizes.size48,
+                                    constraints: const BoxConstraints(
+                                      maxWidth: Breakpoints.sm - Sizes.size80,
+                                    ),
+                                    child: _getMessageField(isDark, iconColor),
+                                  ),
+                                if (!isWiderThanSm)
+                                  Expanded(
+                                    child: SizedBox(
+                                      height: Sizes.size48,
+                                      child:
+                                          _getMessageField(isDark, iconColor),
+                                    ),
+                                  ),
+                                Gaps.h12,
+                                IconButton(
+                                  padding:
+                                      const EdgeInsets.only(top: Sizes.size2),
+                                  onPressed: isLoading || !_isWriting
+                                      ? null
+                                      : _onSendMessage,
+                                  icon: FaIcon(
+                                    isLoading
+                                        ? FontAwesomeIcons.hourglass
+                                        : FontAwesomeIcons.solidPaperPlane,
+                                    size: Sizes.size22,
+                                    color: planeColor,
+                                  ),
+                                  style: ButtonStyle(
+                                    backgroundColor:
+                                        MaterialStateProperty.all<Color>(
+                                            circleColor),
+                                    padding: MaterialStateProperty.all<
+                                        EdgeInsetsGeometry>(
+                                      EdgeInsets.only(
+                                        bottom: Sizes.size2,
+                                        right: isLoading ? 0 : Sizes.size3,
+                                      ),
+                                    ),
+                                    splashFactory: NoSplash.splashFactory,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              title: Text(
-                widget.chatroom.chatPartner.username,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              subtitle: const Text('Active now'),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  FaIcon(
-                    FontAwesomeIcons.flag,
-                    size: Sizes.size22,
-                    color: iconColor,
-                  ),
-                  Gaps.h32,
-                  FaIcon(
-                    FontAwesomeIcons.ellipsis,
-                    size: Sizes.size20,
-                    color: iconColor,
-                  ),
+                  )
                 ],
               ),
             ),
           ),
-          body: Stack(
-            children: [
-              ref.watch(chatProvider(widget.chatroomId)).when(
-                    loading: () => const Center(
-                      child: CircularProgressIndicator.adaptive(),
-                    ),
-                    error: (error, stackTrace) => Center(
-                      child: Text(error.toString()),
-                    ),
-                    data: (messages) => ListView.separated(
-                      reverse: true,
-                      padding: EdgeInsets.only(
-                        top: Sizes.size20,
-                        bottom: MediaQuery.of(context).padding.bottom +
-                            Sizes.size96,
-                        left: Sizes.size14,
-                        right: Sizes.size14,
-                      ),
-                      itemCount: messages.length,
-                      separatorBuilder: (context, index) => Gaps.v10,
-                      itemBuilder: (context, index) {
-                        final message = messages[index];
-                        final messageSender = ref
-                            .read(messageProvider(widget.chatroomId).notifier)
-                            .getMessageSender(context, message.userId);
-                        final isMine = messageSender == MessageSenderType.me;
-                        final isPartner =
-                            messageSender == MessageSenderType.partner;
-                        final isSystem = !isMine && !isPartner;
-                        final systemColor = Colors.black.withOpacity(0.3);
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          mainAxisAlignment: isMine
-                              ? MainAxisAlignment.end
-                              : isPartner
-                                  ? MainAxisAlignment.start
-                                  : MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              decoration: BoxDecoration(
-                                color: isMine
-                                    ? const Color(0xFF609EC2)
-                                    : isPartner
-                                        ? Theme.of(context).primaryColor
-                                        : systemColor,
-                                borderRadius: BorderRadius.only(
-                                  topLeft: const Radius.circular(Sizes.size20),
-                                  topRight: const Radius.circular(Sizes.size20),
-                                  bottomLeft: Radius.circular(
-                                    isPartner ? Sizes.size5 : Sizes.size20,
-                                  ),
-                                  bottomRight: Radius.circular(
-                                    isMine ? Sizes.size5 : Sizes.size20,
-                                  ),
-                                ),
-                              ),
-                              padding: EdgeInsets.all(
-                                  isSystem ? Sizes.size8 : Sizes.size14),
-                              child: Text(
-                                message.text,
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize:
-                                      isSystem ? Sizes.size12 : Sizes.size16,
-                                ),
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-              Positioned(
-                bottom: 0,
-                width: MediaQuery.of(context).size.width,
-                child: BottomAppBar(
-                  color: commonBcgColor,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: Sizes.size4,
-                      horizontal: Sizes.size10,
-                    ),
-                    child: LayoutBuilder(
-                      builder: (context, constraints) {
-                        var isWiderThanSm = constraints.maxWidth >
-                            Breakpoints.sm - Sizes.size28;
-                        var circleColor = isDark
-                            ? Colors.grey.shade400
-                            : _isWriting
-                                ? Colors.grey.shade200
-                                : Colors.grey.shade300;
-                        var planeColor =
-                            _isWriting ? Colors.blue : Colors.white;
-                        return Row(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            if (isWiderThanSm)
-                              Container(
-                                height: Sizes.size48,
-                                constraints: const BoxConstraints(
-                                  maxWidth: Breakpoints.sm - Sizes.size80,
-                                ),
-                                child: _getMessageField(isDark, iconColor),
-                              ),
-                            if (!isWiderThanSm)
-                              Expanded(
-                                child: SizedBox(
-                                  height: Sizes.size48,
-                                  child: _getMessageField(isDark, iconColor),
-                                ),
-                              ),
-                            Gaps.h12,
-                            IconButton(
-                              padding: const EdgeInsets.only(top: Sizes.size2),
-                              onPressed: isLoading ? null : _onSendMessage,
-                              icon: FaIcon(
-                                isLoading
-                                    ? FontAwesomeIcons.hourglass
-                                    : FontAwesomeIcons.solidPaperPlane,
-                                size: Sizes.size22,
-                                color: planeColor,
-                              ),
-                              style: ButtonStyle(
-                                backgroundColor:
-                                    MaterialStateProperty.all<Color>(
-                                        circleColor),
-                                padding: MaterialStateProperty.all<
-                                    EdgeInsetsGeometry>(
-                                  EdgeInsets.only(
-                                    bottom: Sizes.size2,
-                                    right: isLoading ? 0 : Sizes.size3,
-                                  ),
-                                ),
-                                splashFactory: NoSplash.splashFactory,
-                              ),
-                            ),
-                          ],
-                        );
-                      },
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
+          if (_isDropdownOpen) _getDropdown(isDark),
+        ],
       ),
     );
   }

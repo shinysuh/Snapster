@@ -31,6 +31,7 @@
   "conversationNotStarted": "대화가 시작되지 않았습니다",
   "selectAProfileToStartAConversation": "대화를 시작할 상대의 프로필을 선택하세요",
   "chooseAProfile": "프로필 선택",
-  "leaveChatroom": "채팅방 나가기",
-  "userHasLeftChatroom": "{username} 님이 채팅방을 나갔습니다."
+  "exitChatroom": "채팅방 나가기",
+  "userHasLeftChatroom": "{username} 님이 채팅방을 나갔습니다.",
+  "exit": "나가기"
 }

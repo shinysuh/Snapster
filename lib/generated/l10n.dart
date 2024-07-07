@@ -395,11 +395,11 @@ class S {
     );
   }
 
-  /// `Leave Chatroom`
-  String get leaveChatroom {
+  /// `Exit chatroom`
+  String get exitChatroom {
     return Intl.message(
-      'Leave Chatroom',
-      name: 'leaveChatroom',
+      'Exit chatroom',
+      name: 'exitChatroom',
       desc: '',
       args: [],
     );
@@ -412,6 +412,16 @@ class S {
       name: 'userHasLeftChatroom',
       desc: '',
       args: [username],
+    );
+  }
+
+  /// `Exit`
+  String get exit {
+    return Intl.message(
+      'Exit',
+      name: 'exit',
+      desc: '',
+      args: [],
     );
   }
 }

@@ -10,7 +10,7 @@ const userCollection = 'users';
 const videoCollection = 'videos';
 const likeCollection = 'likes';
 const chatroomCollection = 'chat_rooms';
-const textollection = 'texts';
+const textCollection = 'texts';
 const commonIdDivider = '%00000%';
 
 export const onVideoCreated = functions.firestore
@@ -127,25 +127,31 @@ export const onChatroomCreated = functions.firestore
             const inviter = chatroomData.personA;
             const invitee = chatroomData.personB;
             
+            const inviterChatPartnerInfo: ChatPartnerInterface = {
+                chatroomId: chatroomId,
+                chatPartner: invitee,
+                updatedAt: chatroomData.updatedAt,
+                showMsgFrom: 0,
+            }
+            const inviteeChatPartnerInfo: ChatPartnerInterface = {
+                chatroomId: chatroomId,
+                chatPartner: inviter,
+                updatedAt: chatroomData.updatedAt,
+                showMsgFrom: 0,
+            }
+            
+            
             await db.collection(userCollection)
                 .doc(inviter.uid)
                 .collection(chatroomCollection)
                 .doc(chatroomId)
-                .set({
-                    chatroomId: chatroomId,
-                    chatPartner: invitee,
-                    updatedAt: chatroomData.updatedAt,
-                });
+                .set(inviterChatPartnerInfo);
             
             await db.collection(userCollection)
                 .doc(invitee.uid)
                 .collection(chatroomCollection)
                 .doc(chatroomId)
-                .set({
-                    chatroomId: chatroomId,
-                    chatPartner: inviter,
-                    updatedAt: chatroomData.updatedAt,
-                });
+                .set(inviteeChatPartnerInfo);
         }
     );
 
@@ -159,35 +165,53 @@ export const onChatroomUpdated = functions.firestore
         
         if(!oldChatroomData || !newChatroomData) return;
         
-        const isPersonALeaving = !newChatroomData.personA.isParticipating;
+        const isPersonAUpdated = JSON.stringify(oldChatroomData.personA)
+            !== JSON.stringify(newChatroomData.personA);
         
-        let leaver: ChatterInterface;
-        let remainder: ChatterInterface;
-        
-        if(isPersonALeaving) {
-            leaver = newChatroomData.personA;
-            remainder = newChatroomData.personB;
+        let updatedOne: ChatterInterface;
+        let notUpdatedOne: ChatterInterface;
+        if(isPersonAUpdated) {
+            updatedOne = newChatroomData.personA;
+            notUpdatedOne = newChatroomData.personB;
         } else {
-            leaver = newChatroomData.personB;
-            remainder = newChatroomData.personA;
+            updatedOne = newChatroomData.personB;
+            notUpdatedOne = newChatroomData.personA;
         }
         
-        // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
-        await db.collection(userCollection)
-            .doc(leaver.uid)
-            .collection(chatroomCollection)
-            .doc(chatroomId)
-            .delete();
+        const isPersonAParticipating = newChatroomData.personA.isParticipating;
+        const isPersonBParticipating = newChatroomData.personB.isParticipating;
         
-        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating=false
+        if(isPersonAParticipating && isPersonBParticipating) {
+            await db.collection(userCollection)
+                .doc(updatedOne.uid)
+                .collection(chatroomCollection)
+                .doc(chatroomId)
+                .set({
+                    chatroomId: chatroomId,
+                    chatPartner: notUpdatedOne,
+                    updatedAt: newChatroomData.updatedAt,
+                    showMsgFrom: updatedOne.showMsgFrom,
+                });
+        } else {
+            // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
+            await db.collection(userCollection)
+                .doc(updatedOne.uid)
+                .collection(chatroomCollection)
+                .doc(chatroomId)
+                .delete();
+        }
+        
+        console.log('################# updatedOne', updatedOne)
+        console.log('################# notUpdatedOne', notUpdatedOne)
+        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner 정보 업데이트
         await db.collection(userCollection)
-            .doc(remainder.uid)
+            .doc(notUpdatedOne.uid)
             .collection(chatroomCollection)
             .doc(chatroomId)
             .update(
                 {
                     chatroomId: chatroomId,
-                    chatPartner: leaver,
+                    chatPartner: updatedOne,
                     updatedAt: newChatroomData.updatedAt,
                 }
             );
@@ -225,8 +249,8 @@ export const onChatroomDeleted = functions.firestore
                     .doc(chatroomId);
                 
                 // 해당 chatroom 문서의 하위 texts 컬렉션 삭제
-                await deleteCollections(personAChatroomRef, textollection);
-                await deleteCollections(personBChatroomRef, textollection);
+                await deleteCollections(personAChatroomRef, textCollection);
+                await deleteCollections(personBChatroomRef, textCollection);
                 
                 // chatroom 문서 삭제
                 transaction.delete(personAChatroomRef);
@@ -234,10 +258,69 @@ export const onChatroomDeleted = functions.firestore
                 
                 // 상위 chatroom 컬렉션 하위 컬렉션도 삭제
                 const chatroomDocRef = db.collection(chatroomCollection).doc(chatroomId);
-                await deleteCollections(chatroomDocRef, textollection);
+                await deleteCollections(chatroomDocRef, textCollection);
                 
                 // 최종적으로 상위 chatroom 문서 삭제
                 transaction.delete(chatroomDocRef);
             });
         }
     );
+
+export const onTextCreated = functions.firestore
+    .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
+    .onCreate(async (snapshot, context) => {
+        // const chatroomId = context.params.chatroomId;
+        // const textId = context.params.textId;
+        //
+        // console.log('###################### created chatroomId:', chatroomId);
+        // console.log('###################### created textId:', textId);
+        // console.log('###################### created id:', snapshot.id);
+        // console.log('###################### created data:', snapshot.data());
+    });
+
+export const onTextUpdated = functions.firestore
+    .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
+    .onUpdate(async (snapshot, context) => {
+        // const chatroomId = snapshot.before.id;
+        // console.log('###################### updated id:', snapshot.before.id);
+        // console.log('###################### before:', snapshot.before.data())
+        // console.log('###################### after:', snapshot.after.data())
+        const oldText = snapshot.before.data() as ChatroomInterface;
+        const newText = snapshot.after.data() as ChatroomInterface;
+        // const db = admin.firestore();
+        
+        if(!oldText || !newText) return;
+        
+        // const isPersonALeaving = !newChatroomData.personA.isParticipating;
+        //
+        // let leaver: ChatterInterface;
+        // let remainder: ChatterInterface;
+        //
+        // if(isPersonALeaving) {
+        //     leaver = newChatroomData.personA;
+        //     remainder = newChatroomData.personB;
+        // } else {
+        //     leaver = newChatroomData.personB;
+        //     remainder = newChatroomData.personA;
+        // }
+        //
+        // // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
+        // await db.collection(userCollection)
+        //     .doc(leaver.uid)
+        //     .collection(chatroomCollection)
+        //     .doc(chatroomId)
+        //     .delete();
+        //
+        // // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating=false
+        // await db.collection(userCollection)
+        //     .doc(remainder.uid)
+        //     .collection(chatroomCollection)
+        //     .doc(chatroomId)
+        //     .update(
+        //         {
+        //             chatroomId: chatroomId,
+        //             chatPartner: leaver,
+        //             updatedAt: newChatroomData.updatedAt,
+        //         }
+        //     );
+    });

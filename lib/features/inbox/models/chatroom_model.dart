@@ -31,4 +31,20 @@ class ChatroomModel {
       'updatedAt': updatedAt,
     };
   }
+
+  ChatroomModel copyWith({
+    String? chatroomId,
+    ChatterModel? personA,
+    ChatterModel? personB,
+    int? createdAt,
+    int? updatedAt,
+  }) {
+    return ChatroomModel(
+      chatroomId: chatroomId ?? this.chatroomId,
+      personA: personA ?? this.personA,
+      personB: personB ?? this.personB,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+    );
+  }
 }

@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/constants/common_divider.dart';
+import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
@@ -15,7 +16,6 @@ import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart'
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/user/repository/user_repository.dart';
-import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
@@ -53,23 +53,43 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       final checkedChatroom = await _getChatroom(myProfile.uid, invitee.uid);
       final chatroomExist = checkedChatroom.isNotEmpty;
 
+      ChatterModel myChatInfo;
+
       // 이미 있으면 해당 채팅방으로 이동
       if (chatroomExist) {
-        final oldChatroom =
-            ChatroomModel.fromJson(checkedChatroom.first.data());
+        var oldChatroom = ChatroomModel.fromJson(checkedChatroom.first.data());
+
+        final amIPersonA = oldChatroom.personA.uid == myProfile.uid;
+        myChatInfo = amIPersonA ? oldChatroom.personA : oldChatroom.personB;
+
+        if (!myChatInfo.isParticipating) {
+          if (context.mounted) {
+            // 나오기 했던 채팅방이면 다시 참여
+            await reJoinChatroom(
+              context: context,
+              chatroom: oldChatroom,
+              isPersonARejoining: amIPersonA,
+              now: now,
+            );
+          }
+        }
+
         if (context.mounted) {
           _enterChatroom(
             context: context,
             chatroomId: oldChatroom.chatroomId,
             invitee: inviteeAsChatter,
             now: now,
+            recentlyReadAt: myChatInfo.recentlyReadAt,
           );
         }
       } else {
         // 없을 경우 생성
+        myChatInfo = _getChatterByProfile(myProfile);
+
         final chatroomInfo = ChatroomModel(
           chatroomId: chatroomId,
-          personA: _getChatterByProfile(myProfile),
+          personA: myChatInfo,
           personB: inviteeAsChatter,
           createdAt: now,
           updatedAt: now,
@@ -88,6 +108,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
               chatroomId: chatroomId,
               invitee: inviteeAsChatter,
               now: now,
+              recentlyReadAt: myChatInfo.recentlyReadAt,
             );
           }
         }
@@ -140,24 +161,23 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       await _chatroomRepository.deleteChatroom(chatroomInfo.chatroomId);
     } else {
       // 한 명만 나가기 시, 채팅방 정보 업데이트
-      var myChatterProfile = _getChatterByProfile(profile);
+      var myChatInfo = _getChatterByProfile(profile);
 
       int now = DateTime.now().millisecondsSinceEpoch;
       // isParticipating = false;
-      myChatterProfile = myChatterProfile.copyWith(
+      myChatInfo = myChatInfo.copyWith(
         isParticipating: false,
         recentlyReadAt: now, // 채팅방 나가면 읽음으로 표시됨
-        showMsgFrom: now + 1,
+        showMsgFrom: now,
       );
 
       // personA / personB 중 나 구분 후 정보 넘기기 - chatroomId 에서 앞에 오면 personA
-      bool amIPersonA =
-          chatroomInfo.chatroomId.startsWith(myChatterProfile.uid);
+      bool amIPersonA = chatroomInfo.chatroomId.startsWith(myChatInfo.uid);
 
       ChatroomModel updatedChatroom = ChatroomModel(
         chatroomId: chatroomInfo.chatroomId,
-        personA: amIPersonA ? myChatterProfile : chatroomInfo.chatPartner,
-        personB: amIPersonA ? chatroomInfo.chatPartner : myChatterProfile,
+        personA: amIPersonA ? myChatInfo : chatroomInfo.chatPartner,
+        personB: amIPersonA ? chatroomInfo.chatPartner : myChatInfo,
         updatedAt: now,
       );
 
@@ -169,12 +189,34 @@ class ChatroomViewModel extends AsyncNotifier<void> {
             .read(messageProvider(chatroomInfo.chatroomId).notifier)
             .sendSystemMessage(
               context: context,
-              text:
-                  S.of(context).userHasLeftChatroom(myChatterProfile.username),
+              text: '${myChatInfo.username}${systemMessageDivider}left',
               createdAt: now,
             );
       }
     }
+  }
+
+  // 채팅방 다시 참여
+  Future<void> reJoinChatroom({
+    required BuildContext context,
+    required ChatroomModel chatroom,
+    required bool isPersonARejoining,
+    required int now,
+  }) async {
+    final renewedChatroom = isPersonARejoining
+        ? chatroom.copyWith(
+            personA: chatroom.personA.copyWith(
+              isParticipating: true,
+              showMsgFrom: now,
+            ),
+          )
+        : chatroom.copyWith(
+            personB: chatroom.personB.copyWith(
+              isParticipating: true,
+              showMsgFrom: now,
+            ),
+          );
+    await _chatroomRepository.updateChatroom(renewedChatroom);
   }
 
   Future<List<QueryDocumentSnapshot<Map<String, dynamic>>>> _getChatroom(
@@ -191,12 +233,13 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return chatroom.docs;
   }
 
-  // 채팅방으로 이동
+// 채팅방으로 이동
   void _enterChatroom({
     required BuildContext context,
     required String chatroomId,
     required ChatterModel invitee,
     required int now,
+    required int recentlyReadAt,
   }) {
     context.pop();
     goToRouteNamed(
@@ -207,11 +250,12 @@ class ChatroomViewModel extends AsyncNotifier<void> {
         chatroomId: chatroomId,
         chatPartner: invitee,
         updatedAt: now,
+        showMsgFrom: recentlyReadAt,
       ),
     );
   }
 
-  // 로그인 유저 피로필 fetch
+// 로그인 유저 피로필 fetch
   Future<UserProfileModel> _getMyProfile(BuildContext context) async {
     var myProfile = UserProfileModel.empty();
 
@@ -227,7 +271,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return myProfile;
   }
 
-  // 유저 프로필 ChatterModel 로 형병환
+// 유저 프로필 ChatterModel 로 형병환
   ChatterModel _getChatterByProfile(UserProfileModel profile) {
     return ChatterModel(
       uid: profile.uid,
@@ -240,7 +284,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     );
   }
 
-  // 로그인 여부 체크
+// 로그인 여부 체크
   void _checkLoginUser(BuildContext context) {
     if (!_authRepository.isLoggedIn) {
       showSessionErrorSnack(context);
@@ -266,7 +310,11 @@ final chatroomListProvider =
       .map(
         (event) => event.docs
             .map(
-              (doc) => ChatPartnerModel.fromJson(doc.data()),
+              (doc) {
+                var chatroom = ChatPartnerModel.fromJson(doc.data());
+
+                return ChatPartnerModel.fromJson(doc.data());
+              },
             )
             .toList()
             .reversed

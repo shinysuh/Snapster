@@ -102,6 +102,7 @@
   "conversationNotStarted": "Conversation Not Started",
   "selectAProfileToStartAConversation": "Select a profile to start a conversation",
   "chooseAProfile": "Choose a profile",
-  "leaveChatroom": "Leave Chatroom",
-  "userHasLeftChatroom": "{username} has left the chatroom."
+  "exitChatroom": "Exit chatroom",
+  "userHasLeftChatroom": "{username} has left the chatroom.",
+  "exit": "Exit"
 }
