@@ -311,8 +311,6 @@ final chatroomListProvider =
         (event) => event.docs
             .map(
               (doc) {
-                var chatroom = ChatPartnerModel.fromJson(doc.data());
-
                 return ChatPartnerModel.fromJson(doc.data());
               },
             )

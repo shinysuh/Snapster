@@ -133,7 +133,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   ? S.of(context).conversationNotStarted
                   : !message.userId.startsWith(MessageViewModel.systemId)
                       ? message.text
-                      : getSystemMessage(context, message.text),
+                      : getLeftTypeSystemMessage(context, message.text),
             );
           }),
     );

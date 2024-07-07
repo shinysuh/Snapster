@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 
-String getSystemMessage(BuildContext context, String message) {
+String getLeftTypeSystemMessage(BuildContext context, String message) {
   var msgElms = message.split(systemMessageDivider);
   if (msgElms.length < 2) return message;
   var username = msgElms[0];

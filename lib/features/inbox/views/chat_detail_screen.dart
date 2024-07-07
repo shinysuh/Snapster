@@ -370,7 +370,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                         isSystem ? Sizes.size8 : Sizes.size14),
                                     child: Text(
                                       isSystem
-                                          ? getSystemMessage(
+                                          ? getLeftTypeSystemMessage(
                                               context,
                                               message.text,
                                             )
