@@ -205,14 +205,20 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
-    final messagessss = messages
-        .where((msg) => msg.createdAt > widget.chatroom.showMsgFrom)
-        .toList();
-    print(widget.chatroom.showMsgFrom);
-    print(messagessss.map(
-      (e) => e.createdAt,
-    ));
-    return messagessss;
+    if (widget.chatroom.showMsgFrom == 0) return messages;
+
+    List<MessageModel> allowedMessages = [];
+
+    var idx = 0;
+
+    for (; idx < messages.length; idx++) {
+      var msg = messages[idx];
+      if (msg.createdAt < widget.chatroom.showMsgFrom) break;
+
+      allowedMessages.add(msg);
+    }
+
+    return allowedMessages;
   }
 
   @override
