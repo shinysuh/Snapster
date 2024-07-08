@@ -310,7 +310,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
     for (; idx < messages.length; idx++) {
       var msg = messages[idx];
-      if (msg.createdAt < _chatroomBasic.showMsgFrom) break;
+      if (!(msg.createdAt > _chatroomBasic.showMsgFrom)) break;
 
       allowedMessages.add(msg);
     }

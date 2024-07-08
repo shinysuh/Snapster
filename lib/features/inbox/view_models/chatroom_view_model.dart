@@ -156,8 +156,6 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     final profile = await _getMyProfile(context);
     if (profile.uid.isEmpty) return;
 
-    // user 컬렉션에서도 제거 필요 - index.ts
-
     if (!chatroomInfo.chatPartner.isParticipating) {
       // 사용자 둘 다 나가기 시, 채팅방 정보 삭제
       await _chatroomRepository.deleteChatroom(chatroomInfo.chatroomId);

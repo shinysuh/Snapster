@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
@@ -133,10 +134,18 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                   ? S.of(context).conversationNotStarted
                   : !message.userId.startsWith(MessageViewModel.systemId)
                       ? message.text
-                      : getLeftTypeSystemMessage(context, message.text),
+                      : _getLatestSystemMsg(message.text, chatPartner.uid),
             );
           }),
     );
+  }
+
+  String _getLatestSystemMsg(String text, String partnerId) {
+    var textElms = text.split(systemMessageDivider);
+    var userId = textElms[0];
+    return userId == partnerId
+        ? getLeftTypeSystemMessage(context, text)
+        : S.of(context).conversationNotStarted;
   }
 
   String _getLastUpdatedAt(int updatedAt) {

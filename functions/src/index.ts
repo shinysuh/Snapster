@@ -166,8 +166,7 @@ export const onChatroomUpdated = functions.firestore
         
         if(!oldChatroomData || !newChatroomData) return;
         
-        const isPersonAUpdated = JSON.stringify(oldChatroomData.personA)
-            !== JSON.stringify(newChatroomData.personA);
+        const isPersonAUpdated = JSON.stringify(oldChatroomData.personA) !== JSON.stringify(newChatroomData.personA);
         
         let updatedOne: ChatterInterface;
         let notUpdatedOne: ChatterInterface;
@@ -182,7 +181,6 @@ export const onChatroomUpdated = functions.firestore
         const isPersonAParticipating = newChatroomData.personA.isParticipating;
         const isPersonBParticipating = newChatroomData.personB.isParticipating;
         
-        // 나가기 한 사람 없을 때 (rejoined)
         if(isPersonAParticipating && isPersonBParticipating) {
             await db.collection(userCollection)
                 .doc(updatedOne.uid)
@@ -195,27 +193,37 @@ export const onChatroomUpdated = functions.firestore
                     showMsgFrom: updatedOne.showMsgFrom,
                 });
         } else {
-            // 나가기 한 사람(updatedOne) user 하위 컬렉션에서 chatroom 정보 삭제
             await db.collection(userCollection)
                 .doc(updatedOne.uid)
                 .collection(chatroomCollection)
                 .doc(chatroomId)
                 .delete();
+            
+            const textCollectionRef = db.collection(chatroomCollection).doc(chatroomId).collection(textCollection);
+            let hasMore = true;
+            while(hasMore) {
+                const textDocs = await textCollectionRef.where('createdAt', '<', notUpdatedOne.showMsgFrom).limit(500).get();
+                if(textDocs.empty) {
+                    hasMore = false;
+                } else {
+                    const batch = db.batch();
+                    textDocs.forEach(doc => batch.delete(doc.ref));
+                    await batch.commit();
+                }
+            }
         }
         
-        // 상대방 user(notUpdatedOne) 하위 chat_rooms 컬렉션에서 chatPartner 정보 업데이트
         await db.collection(userCollection)
             .doc(notUpdatedOne.uid)
             .collection(chatroomCollection)
             .doc(chatroomId)
-            .update(
-                {
-                    chatroomId: chatroomId,
-                    chatPartner: updatedOne,
-                    updatedAt: newChatroomData.updatedAt,
-                }
-            );
+            .update({
+                chatroomId: chatroomId,
+                chatPartner: updatedOne,
+                updatedAt: newChatroomData.updatedAt,
+            });
     });
+
 
 export const onChatroomDeleted = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}`)
