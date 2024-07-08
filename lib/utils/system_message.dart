@@ -11,3 +11,10 @@ String getLeftTypeSystemMessage(BuildContext context, String message) {
       ? S.of(context).userHasLeftChatroom(username)
       : message;
 }
+
+bool isLeftTypeSystemMessage(String message) {
+  var msgElms = message.split(systemMessageDivider);
+  if (msgElms.length < 2) return false;
+  var type = msgElms[1].toString();
+  return type == SystemMessageType.left.name;
+}

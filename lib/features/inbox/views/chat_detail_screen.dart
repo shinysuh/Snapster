@@ -23,12 +23,12 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
   static const String routeURL = ':chatroomId';
 
   final String chatroomId;
-  final ChatPartnerModel chatroom;
+  final ChatPartnerModel chatroomBasicInfo;
 
   const ChatDetailScreen({
     super.key,
     required this.chatroomId,
-    required this.chatroom,
+    required this.chatroomBasicInfo,
   });
 
   @override
@@ -37,6 +37,7 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _textEditingController = TextEditingController();
+  late ChatPartnerModel _chatroomBasic;
   late ChatroomModel? _chatroomInfo;
   bool _isWriting = false;
   bool _isDropdownOpen = false;
@@ -44,14 +45,15 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _getChatroomInfo();
+    _chatroomBasic = widget.chatroomBasicInfo;
+    _getChatroomInfo(_chatroomBasic.chatPartner.uid);
   }
 
-  Future<void> _getChatroomInfo() async {
+  Future<void> _getChatroomInfo(String partnerId) async {
     _chatroomInfo =
         await ref.read(chatroomProvider.notifier).fetchChatroomByPartnerId(
               context,
-              widget.chatroom.chatPartner.uid,
+              partnerId,
             );
   }
 
@@ -71,7 +73,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   Future<void> _onSendMessage() async {
-    final isPartnerParticipating = widget.chatroom.chatPartner.isParticipating;
+    final isPartnerParticipating = _chatroomBasic.chatPartner.isParticipating;
 
     var reInvitationConfirm = true;
 
@@ -80,7 +82,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
       reInvitationConfirm = await _getReInvitationConfirm();
     }
 
-    if (reInvitationConfirm) {
+    if (reInvitationConfirm && mounted) {
       ref
           .read(messageProvider(widget.chatroomId).notifier)
           .sendMessage(context, _textEditingController.text)
@@ -96,7 +98,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     if (_chatroomInfo == null) return false;
 
     var chatroom = _chatroomInfo;
-    var partner = widget.chatroom.chatPartner;
+    var partner = _chatroomBasic.chatPartner;
     var now = DateTime.now().millisecondsSinceEpoch;
 
     var isPartnerPersonA = _chatroomInfo!.chatroomId.startsWith(partner.uid);
@@ -116,8 +118,8 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         // content: const Text('Please confirm'),
         actions: [
           CupertinoDialogAction(
-            onPressed: () {
-              ref.read(chatroomProvider.notifier).reJoinChatroom(
+            onPressed: () async {
+              await ref.read(chatroomProvider.notifier).reJoinChatroom(
                     context: context,
                     chatroom: ChatroomModel(
                       chatroomId: chatroom!.chatroomId,
@@ -128,6 +130,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     isPersonARejoining: isPartnerPersonA,
                     now: now,
                   );
+
+              _setPartnerParticipationInfo(true);
+
               _closeDialog();
               reInvited = true;
             },
@@ -282,8 +287,22 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
+  void _setPartnerParticipationInfo(bool isParticipating) {
+    _chatroomBasic = _chatroomBasic.copyWith(
+      chatPartner: _chatroomBasic.chatPartner.copyWith(
+        isParticipating: isParticipating,
+      ),
+    );
+  }
+
   List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
-    if (widget.chatroom.showMsgFrom == 0) return messages;
+    if (messages.isEmpty || _chatroomBasic.showMsgFrom == 0) return messages;
+
+    if (messages.first.userId == MessageViewModel.systemId) {
+      if (isLeftTypeSystemMessage(messages.first.text)) {
+        _setPartnerParticipationInfo(false);
+      }
+    }
 
     List<MessageModel> allowedMessages = [];
 
@@ -291,7 +310,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
     for (; idx < messages.length; idx++) {
       var msg = messages[idx];
-      if (msg.createdAt < widget.chatroom.showMsgFrom) break;
+      if (msg.createdAt < _chatroomBasic.showMsgFrom) break;
 
       allowedMessages.add(msg);
     }
@@ -331,11 +350,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                         child: CircleAvatar(
                           radius: Sizes.size24,
                           foregroundImage: getProfileImgByUserId(
-                            widget.chatroom.chatPartner.uid,
+                            _chatroomBasic.chatPartner.uid,
                             false,
                           ),
                           child: ClipOval(
-                            child: Text(widget.chatroom.chatPartner.name),
+                            child: Text(_chatroomBasic.chatPartner.name),
                           ),
                         ),
                       ),
@@ -359,7 +378,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     ],
                   ),
                   title: Text(
-                    widget.chatroom.chatPartner.username,
+                    _chatroomBasic.chatPartner.username,
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),

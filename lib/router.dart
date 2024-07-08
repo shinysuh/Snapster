@@ -161,7 +161,7 @@ final routerProvider = Provider((ref) {
               final chatroom = state.extra;
               return ChatDetailScreen(
                 chatroomId: id,
-                chatroom: chatroom as ChatPartnerModel,
+                chatroomBasicInfo: chatroom as ChatPartnerModel,
               );
             },
           ),

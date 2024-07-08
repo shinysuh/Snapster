@@ -18,4 +18,18 @@ class ChatPartnerModel {
         chatPartner = ChatterModel.fromJson(json['chatPartner']),
         updatedAt = json['updatedAt'],
         showMsgFrom = json['showMsgFrom'] ?? 0;
+
+  ChatPartnerModel copyWith({
+    String? chatroomId,
+    ChatterModel? chatPartner,
+    int? updatedAt,
+    int? showMsgFrom,
+  }) {
+    return ChatPartnerModel(
+      chatroomId: chatroomId ?? this.chatroomId,
+      chatPartner: chatPartner ?? this.chatPartner,
+      updatedAt: updatedAt ?? this.updatedAt,
+      showMsgFrom: showMsgFrom ?? this.showMsgFrom,
+    );
+  }
 }
