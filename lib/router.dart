@@ -49,8 +49,8 @@ o
 final routerProvider = Provider((ref) {
   // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
   return GoRouter(
-    initialLocation: ChatsScreen.routeURL, // TODO - 원복
-    // initialLocation: MainNavigationScreen.homeRouteURL,
+    // initialLocation: ChatsScreen.routeURL, // TODO - 원복
+    initialLocation: MainNavigationScreen.homeRouteURL,
     redirect: (context, state) {
       final isLoggedIn = ref.read(authRepository).isLoggedIn;
       return !isLoggedIn &&

@@ -1,4 +1,5 @@
 enum SystemMessageType {
+  deleted,
   left,
   rejoined,
   msgStartsFrom,

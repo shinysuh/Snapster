@@ -70,6 +70,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
         "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
+        "reInvitationConfirmMsg":
+            MessageLookupByLibrary.simpleMessage("상대방을 다시 초대하시겠습니까?"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
         "selectAProfileToStartAConversation":
             MessageLookupByLibrary.simpleMessage("대화를 시작할 상대의 프로필을 선택하세요"),

@@ -269,20 +269,30 @@ export const onChatroomDeleted = functions.firestore
 export const onTextCreated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
     .onCreate(async (snapshot, context) => {
-        const chatroomId = context.params.chatroomId;
+        // const chatroomId = context.params.chatroomId;
         // const textId = context.params.textId;  // snapshot.id
         // const textData = snapshot.data() as MessageInterface;
-        const db = admin.firestore();
+        // const db = admin.firestore();
         
-        // chatroom - updatedAt 업데이트
-        await db.collection(chatroomCollection)
-            .doc(chatroomId)
-            .set({ updatedAt: Timestamp.now().toMillis() });
+        // chatroom - updatedAt 업데이트 => updatedAt 만 남고 다 사라짐
+        // TODO => 그렇다고 매번 vm 단에서 채팅방 업데이트 하기는 비효율적
+        // await db.collection(chatroomCollection)
+        //     .doc(chatroomId)
+        //     .set({ updatedAt: Timestamp.now().toMillis() });
     });
 
 export const onTextUpdated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
     .onUpdate(async (snapshot, context) => {
+        /* TODO
+            1) chatroom - updatedAt 업데이트 하기
+            2) SystemMessage => {systemId}:::deleted (userId 는 유저 본인 거로)
+            3) 출력 시, [삭제된 메세지입니다] / [Deleted message] 로 변경
+        *    */
+        
+        console.log(systemId);
+        
+        
         // const chatroomId = snapshot.before.id;
         // console.log('###################### updated id:', snapshot.before.id);
         // console.log('###################### before:', snapshot.before.data())

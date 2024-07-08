@@ -424,6 +424,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Do you want to invite the person back?`
+  String get reInvitationConfirmMsg {
+    return Intl.message(
+      'Do you want to invite the person back?',
+      name: 'reInvitationConfirmMsg',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

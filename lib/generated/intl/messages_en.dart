@@ -77,6 +77,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
         "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
+        "reInvitationConfirmMsg": MessageLookupByLibrary.simpleMessage(
+            "Do you want to invite the person back?"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
         "selectAProfileToStartAConversation":
             MessageLookupByLibrary.simpleMessage(

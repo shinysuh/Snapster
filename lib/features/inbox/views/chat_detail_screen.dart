@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -6,7 +7,9 @@ import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
+import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
+import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
@@ -34,8 +37,23 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _textEditingController = TextEditingController();
+  late ChatroomModel? _chatroomInfo;
   bool _isWriting = false;
   bool _isDropdownOpen = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _getChatroomInfo();
+  }
+
+  Future<void> _getChatroomInfo() async {
+    _chatroomInfo =
+        await ref.read(chatroomProvider.notifier).fetchChatroomByPartnerId(
+              context,
+              widget.chatroom.chatPartner.uid,
+            );
+  }
 
   @override
   void dispose() {
@@ -52,19 +70,79 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     });
   }
 
-  void _onSendMessage() {
-    final partner = widget.chatroom.chatPartner;
-    print(partner.name);
-    print(partner.isParticipating);
+  Future<void> _onSendMessage() async {
+    final isPartnerParticipating = widget.chatroom.chatPartner.isParticipating;
 
-    ref
-        .read(messageProvider(widget.chatroomId).notifier)
-        .sendMessage(context, _textEditingController.text)
-        .then((_) => _textEditingController.clear());
+    var reInvitationConfirm = true;
 
-    setState(() {
-      _isWriting = false;
-    });
+    if (!isPartnerParticipating) {
+      // 상대 다시 초대 여부
+      reInvitationConfirm = await _getReInvitationConfirm();
+    }
+
+    if (reInvitationConfirm) {
+      ref
+          .read(messageProvider(widget.chatroomId).notifier)
+          .sendMessage(context, _textEditingController.text)
+          .then((_) => _textEditingController.clear());
+
+      setState(() {
+        _isWriting = false;
+      });
+    }
+  }
+
+  Future<bool> _getReInvitationConfirm() async {
+    if (_chatroomInfo == null) return false;
+
+    var chatroom = _chatroomInfo;
+    var partner = widget.chatroom.chatPartner;
+    var now = DateTime.now().millisecondsSinceEpoch;
+
+    var isPartnerPersonA = _chatroomInfo!.chatroomId.startsWith(partner.uid);
+
+    var reInvited = false;
+
+    await showCupertinoDialog(
+      context: context,
+      builder: (context) => CupertinoAlertDialog(
+        title: Text(
+          S.of(context).reInvitationConfirmMsg,
+          style: const TextStyle(
+            fontSize: Sizes.size16,
+            fontWeight: FontWeight.w400,
+          ),
+        ),
+        // content: const Text('Please confirm'),
+        actions: [
+          CupertinoDialogAction(
+            onPressed: () {
+              ref.read(chatroomProvider.notifier).reJoinChatroom(
+                    context: context,
+                    chatroom: ChatroomModel(
+                      chatroomId: chatroom!.chatroomId,
+                      personA: isPartnerPersonA ? partner : chatroom.personA,
+                      personB: isPartnerPersonA ? chatroom.personB : partner,
+                      updatedAt: now,
+                    ),
+                    isPersonARejoining: isPartnerPersonA,
+                    now: now,
+                  );
+              _closeDialog();
+              reInvited = true;
+            },
+            child: const Text("Yes"),
+          ),
+          CupertinoDialogAction(
+            onPressed: _closeDialog,
+            isDestructiveAction: true,
+            child: const Text("No"),
+          ),
+        ],
+      ),
+    );
+
+    return reInvited;
   }
 
   Widget _getMessageField(bool isDark, Color iconColor) {
@@ -113,7 +191,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     // });
   }
 
-  void _closeExitDialog() {
+  void _closeDialog() {
     Navigator.of(context).pop();
   }
 

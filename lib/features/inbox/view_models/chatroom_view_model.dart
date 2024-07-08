@@ -129,13 +129,13 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return users;
   }
 
-  // 채팅방 정보 가져오기
-  FutureOr<ChatroomModel?> fetchChatroom(
-      BuildContext context, UserProfileModel invitee) async {
+  // 채팅방 정보 가져오기 (by partnerId)
+  Future<ChatroomModel?> fetchChatroomByPartnerId(
+      BuildContext context, String partnerId) async {
     final myProfile = await _getMyProfile(context);
     if (myProfile.uid.isEmpty) return null;
 
-    var chatroom = await _getChatroom(myProfile.uid, invitee.uid);
+    var chatroom = await _getChatroom(myProfile.uid, partnerId);
 
     if (chatroom.isNotEmpty) {
       return ChatroomModel.fromJson(chatroom.first.data());
@@ -149,7 +149,9 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
   // 채팅방 나가기
   Future<void> exitChatroom(
-      BuildContext context, ChatPartnerModel chatroomInfo) async {
+    BuildContext context,
+    ChatPartnerModel chatroomInfo,
+  ) async {
     _checkLoginUser(context);
     final profile = await _getMyProfile(context);
     if (profile.uid.isEmpty) return;

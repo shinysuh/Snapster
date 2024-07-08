@@ -104,5 +104,6 @@
   "chooseAProfile": "Choose a profile",
   "exitChatroom": "Exit chatroom",
   "userHasLeftChatroom": "{username} has left the chatroom.",
-  "exit": "Exit"
+  "exit": "Exit",
+  "reInvitationConfirmMsg": "Do you want to invite the person back?"
 }
