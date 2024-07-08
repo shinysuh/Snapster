@@ -12,6 +12,7 @@ const likeCollection = 'likes';
 const chatroomCollection = 'chat_rooms';
 const textCollection = 'texts';
 const commonIdDivider = '%00000%';
+const systemId = 'system_message';
 
 export const onVideoCreated = functions.firestore
     .document(`${ videoCollection }/{videoId}`)
@@ -181,6 +182,7 @@ export const onChatroomUpdated = functions.firestore
         const isPersonAParticipating = newChatroomData.personA.isParticipating;
         const isPersonBParticipating = newChatroomData.personB.isParticipating;
         
+        // 나가기 한 사람 없을 때 (rejoined)
         if(isPersonAParticipating && isPersonBParticipating) {
             await db.collection(userCollection)
                 .doc(updatedOne.uid)
@@ -193,7 +195,7 @@ export const onChatroomUpdated = functions.firestore
                     showMsgFrom: updatedOne.showMsgFrom,
                 });
         } else {
-            // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
+            // 나가기 한 사람(updatedOne) user 하위 컬렉션에서 chatroom 정보 삭제
             await db.collection(userCollection)
                 .doc(updatedOne.uid)
                 .collection(chatroomCollection)
@@ -201,9 +203,7 @@ export const onChatroomUpdated = functions.firestore
                 .delete();
         }
         
-        console.log('################# updatedOne', updatedOne)
-        console.log('################# notUpdatedOne', notUpdatedOne)
-        // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner 정보 업데이트
+        // 상대방 user(notUpdatedOne) 하위 chat_rooms 컬렉션에서 chatPartner 정보 업데이트
         await db.collection(userCollection)
             .doc(notUpdatedOne.uid)
             .collection(chatroomCollection)
@@ -269,13 +269,15 @@ export const onChatroomDeleted = functions.firestore
 export const onTextCreated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
     .onCreate(async (snapshot, context) => {
-        // const chatroomId = context.params.chatroomId;
-        // const textId = context.params.textId;
-        //
-        // console.log('###################### created chatroomId:', chatroomId);
-        // console.log('###################### created textId:', textId);
-        // console.log('###################### created id:', snapshot.id);
-        // console.log('###################### created data:', snapshot.data());
+        const chatroomId = context.params.chatroomId;
+        // const textId = context.params.textId;  // snapshot.id
+        // const textData = snapshot.data() as MessageInterface;
+        const db = admin.firestore();
+        
+        // chatroom - updatedAt 업데이트
+        await db.collection(chatroomCollection)
+            .doc(chatroomId)
+            .set({ updatedAt: Timestamp.now().toMillis() });
     });
 
 export const onTextUpdated = functions.firestore
