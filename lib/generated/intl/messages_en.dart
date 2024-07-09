@@ -70,7 +70,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Enter video title"),
         "exit": MessageLookupByLibrary.simpleMessage("Exit"),
         "exitChatroom": MessageLookupByLibrary.simpleMessage("Exit chatroom"),
-        "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:ma"),
+        "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:mma"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,

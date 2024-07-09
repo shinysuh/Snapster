@@ -113,7 +113,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             ),
           ),
           Text(
-            _getLastUpdatedAt(chatroom.updatedAt),
+            _getLastUpdatedAt(chatroom.updatedAt),  // TODO -> lastMessage 시간 기준으로 필요
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: Sizes.size12,
@@ -121,6 +121,8 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           ),
         ],
       ),
+
+      //TODO - last message 시간으로 desc sorting 가능할지 구상
       subtitle: ref.watch(lastMessageProvider(chatroom.chatroomId)).when(
           loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),

@@ -94,7 +94,7 @@
     "description": "Format for month and day.",
     "placeholders": {}
   },
-  "hourMinuteAPM": "h:ma",
+  "hourMinuteAPM": "h:mma",
   "@hourMinuteAPM": {
     "description": "Format for hour and minute with AM/PM.",
     "placeholders": {}

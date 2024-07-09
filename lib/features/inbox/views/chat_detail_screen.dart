@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
@@ -61,6 +62,12 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  void _onTapScaffold() {
+    onTapOutsideAndDismissKeyboard(context);
+    _isDropdownOpen = false;
+    setState(() {});
   }
 
   void _onChangeMessage(String message) {
@@ -150,46 +157,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     return reInvited;
   }
 
-  Widget _getMessageField(bool isDark, Color iconColor) {
-    return TextField(
-      controller: _textEditingController,
-      onChanged: (message) => _onChangeMessage(message),
-      onSubmitted: (message) => _onSendMessage(),
-      expands: true,
-      minLines: null,
-      maxLines: null,
-      textInputAction: TextInputAction.newline,
-      cursorColor: Theme.of(context).primaryColor,
-      decoration: InputDecoration(
-        filled: true,
-        fillColor: isDark ? Colors.grey.shade800 : Colors.white,
-        hintText: 'Send a message...',
-        hintStyle: TextStyle(
-          color: isDark ? Colors.grey.shade300 : null,
-        ),
-        border: const OutlineInputBorder(
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(Sizes.size20),
-            topRight: Radius.circular(Sizes.size20),
-            bottomLeft: Radius.circular(Sizes.size20),
-          ),
-          borderSide: BorderSide.none,
-        ),
-        contentPadding: const EdgeInsets.symmetric(
-          horizontal: Sizes.size10,
-        ),
-        suffixIcon: Padding(
-          padding: const EdgeInsets.all(Sizes.size12),
-          child: FaIcon(
-            FontAwesomeIcons.faceLaugh,
-            color: iconColor,
-            size: Sizes.size22,
-          ),
-        ),
-      ),
-    );
-  }
-
   void _onTapDots() {
     // setState(() {
     //   _isDropdownOpen = true;
@@ -228,10 +195,54 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     // );
   }
 
-  void _onTapScaffold() {
-    onTapOutsideAndDismissKeyboard(context);
-    _isDropdownOpen = false;
-    setState(() {});
+  void _setPartnerParticipationInfo(bool isParticipating) {
+    _chatroomBasic = _chatroomBasic.copyWith(
+      chatPartner: _chatroomBasic.chatPartner.copyWith(
+        isParticipating: isParticipating,
+      ),
+    );
+  }
+
+  List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
+    if (messages.isEmpty || _chatroomBasic.showMsgFrom == 0) return messages;
+
+    if (messages.first.userId == MessageViewModel.systemId) {
+      if (isLeftTypeSystemMessage(messages.first.text)) {
+        _setPartnerParticipationInfo(false);
+      }
+    }
+
+    List<MessageModel> allowedMessages = [];
+
+    var idx = 0;
+
+    for (; idx < messages.length; idx++) {
+      var msg = messages[idx];
+      if (!(msg.createdAt > _chatroomBasic.showMsgFrom)) break;
+
+      allowedMessages.add(msg);
+    }
+
+    return allowedMessages;
+  }
+
+  void _updateMessageToDeleted() {
+    // TODO - 여기 메세지 삭제 문구로 업데이트 (messageId) 필요
+  }
+
+  Widget _getMsgSentAt(int createdAt, bool isDark) {
+    var sentAt = DateTime.fromMillisecondsSinceEpoch(createdAt);
+    return Text(
+      DateFormat(
+        S.of(context).hourMinuteAPM,
+        'en_US',
+      ).format(sentAt),
+      style: TextStyle(
+        color: isDark
+            ? Colors.white.withOpacity(0.6)
+            : Colors.black.withOpacity(0.4),
+      ),
+    );
   }
 
   Widget _getDropdown(bool isDark) {
@@ -287,35 +298,44 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
-  void _setPartnerParticipationInfo(bool isParticipating) {
-    _chatroomBasic = _chatroomBasic.copyWith(
-      chatPartner: _chatroomBasic.chatPartner.copyWith(
-        isParticipating: isParticipating,
+  Widget _getMessageField(bool isDark, Color iconColor) {
+    return TextField(
+      controller: _textEditingController,
+      onChanged: (message) => _onChangeMessage(message),
+      onSubmitted: (message) => _onSendMessage(),
+      expands: true,
+      minLines: null,
+      maxLines: null,
+      textInputAction: TextInputAction.newline,
+      cursorColor: Theme.of(context).primaryColor,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: isDark ? Colors.grey.shade800 : Colors.white,
+        hintText: 'Send a message...',
+        hintStyle: TextStyle(
+          color: isDark ? Colors.grey.shade300 : null,
+        ),
+        border: const OutlineInputBorder(
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(Sizes.size20),
+            topRight: Radius.circular(Sizes.size20),
+            bottomLeft: Radius.circular(Sizes.size20),
+          ),
+          borderSide: BorderSide.none,
+        ),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: Sizes.size10,
+        ),
+        suffixIcon: Padding(
+          padding: const EdgeInsets.all(Sizes.size12),
+          child: FaIcon(
+            FontAwesomeIcons.faceLaugh,
+            color: iconColor,
+            size: Sizes.size22,
+          ),
+        ),
       ),
     );
-  }
-
-  List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
-    if (messages.isEmpty || _chatroomBasic.showMsgFrom == 0) return messages;
-
-    if (messages.first.userId == MessageViewModel.systemId) {
-      if (isLeftTypeSystemMessage(messages.first.text)) {
-        _setPartnerParticipationInfo(false);
-      }
-    }
-
-    List<MessageModel> allowedMessages = [];
-
-    var idx = 0;
-
-    for (; idx < messages.length; idx++) {
-      var msg = messages[idx];
-      if (!(msg.createdAt > _chatroomBasic.showMsgFrom)) break;
-
-      allowedMessages.add(msg);
-    }
-
-    return allowedMessages;
   }
 
   @override
@@ -438,7 +458,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                               final isPartner =
                                   messageSender == MessageSenderType.partner;
                               final isSystem = !isMine && !isPartner;
-                              final systemColor = Colors.black.withOpacity(0.3);
+                              final systemColor = isDark
+                                  ? Colors.white.withOpacity(0.4)
+                                  : Colors.black.withOpacity(0.3);
                               return Row(
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: isMine
@@ -447,45 +469,75 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                         ? MainAxisAlignment.start
                                         : MainAxisAlignment.center,
                                 children: [
-                                  Container(
-                                    decoration: BoxDecoration(
-                                      color: isMine
-                                          ? const Color(0xFF609EC2)
-                                          : isPartner
-                                              ? Theme.of(context).primaryColor
-                                              : systemColor,
-                                      borderRadius: BorderRadius.only(
-                                        topLeft:
-                                            const Radius.circular(Sizes.size20),
-                                        topRight:
-                                            const Radius.circular(Sizes.size20),
-                                        bottomLeft: Radius.circular(
-                                          isPartner
-                                              ? Sizes.size5
-                                              : Sizes.size20,
-                                        ),
-                                        bottomRight: Radius.circular(
-                                          isMine ? Sizes.size5 : Sizes.size20,
+                                  if (isMine)
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        _getMsgSentAt(
+                                            message.createdAt, isDark),
+                                        Gaps.h10,
+                                      ],
+                                    ),
+                                  GestureDetector(
+                                    onLongPress: _updateMessageToDeleted,
+                                    child: Container(
+                                      constraints: const BoxConstraints(
+                                        maxWidth: Breakpoints.sm / 3,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: isMine
+                                            ? const Color(0xFF609EC2)
+                                            : isPartner
+                                                ? Theme.of(context).primaryColor
+                                                : systemColor,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: const Radius.circular(
+                                              Sizes.size20),
+                                          topRight: const Radius.circular(
+                                              Sizes.size20),
+                                          bottomLeft: Radius.circular(
+                                            isPartner
+                                                ? Sizes.size5
+                                                : Sizes.size20,
+                                          ),
+                                          bottomRight: Radius.circular(
+                                            isMine ? Sizes.size5 : Sizes.size20,
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    padding: EdgeInsets.all(
-                                        isSystem ? Sizes.size8 : Sizes.size14),
-                                    child: Text(
-                                      isSystem
-                                          ? getLeftTypeSystemMessage(
-                                              context,
-                                              message.text,
-                                            )
-                                          : message.text,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: isSystem
-                                            ? Sizes.size12
-                                            : Sizes.size16,
+                                      padding: EdgeInsets.all(isSystem
+                                          ? Sizes.size8
+                                          : Sizes.size14),
+                                      child: Text(
+                                        isSystem
+                                            ? getLeftTypeSystemMessage(
+                                                context,
+                                                message.text,
+                                              )
+                                            : message.text,
+                                        textAlign: isSystem
+                                            ? TextAlign.center
+                                            : TextAlign.left,
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: isSystem
+                                              ? Sizes.size12
+                                              : Sizes.size16,
+                                        ),
                                       ),
                                     ),
                                   ),
+                                  if (isPartner)
+                                    Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.end,
+                                      children: [
+                                        Gaps.h10,
+                                        _getMsgSentAt(
+                                            message.createdAt, isDark),
+                                      ],
+                                    ),
                                 ],
                               );
                             },

@@ -355,10 +355,10 @@ class S {
     );
   }
 
-  /// `h:ma`
+  /// `h:mma`
   String get hourMinuteAPM {
     return Intl.message(
-      'h:ma',
+      'h:mma',
       name: 'hourMinuteAPM',
       desc: 'Format for hour and minute with AM/PM.',
       args: [],

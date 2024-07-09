@@ -27,7 +27,7 @@
   "enterVideoTitle": "비디오 제목을 입력해 주세요.",
   "yearMonthDate": "yyyy년 M월 d일",
   "monthDate": "M월 d일",
-  "hourMinuteAPM": "h:ma",
+  "hourMinuteAPM": "h:mma",
   "conversationNotStarted": "대화가 시작되지 않았습니다",
   "selectAProfileToStartAConversation": "대화를 시작할 상대의 프로필을 선택하세요",
   "chooseAProfile": "프로필 선택",
