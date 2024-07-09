@@ -462,6 +462,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                   ? Colors.white.withOpacity(0.4)
                                   : Colors.black.withOpacity(0.3);
                               return Row(
+                                crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: isMine
                                     ? MainAxisAlignment.end
