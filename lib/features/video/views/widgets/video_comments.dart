@@ -1,22 +1,29 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/video/view_models/comment_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
-class VideoComments extends StatefulWidget {
-  const VideoComments({super.key});
+class VideoComments extends ConsumerStatefulWidget {
+  final String videoId;
+
+  const VideoComments({
+    super.key,
+    required this.videoId,
+  });
 
   @override
-  State<VideoComments> createState() => _VideoCommentsState();
+  ConsumerState<VideoComments> createState() => _VideoCommentsState();
 }
 
-class _VideoCommentsState extends State<VideoComments> {
+class _VideoCommentsState extends ConsumerState<VideoComments> {
   bool _isWriting = false;
 
   final ScrollController _scrollController = ScrollController();
@@ -150,63 +157,72 @@ class _VideoCommentsState extends State<VideoComments> {
               children: [
                 Scrollbar(
                   controller: _scrollController,
-                  child: ListView.separated(
-                    controller: _scrollController,
-                    padding: const EdgeInsets.only(
-                      top: Sizes.size10,
-                      bottom: Sizes.size96 + Sizes.size24,
-                      left: Sizes.size16,
-                      right: Sizes.size16,
-                    ),
-                    itemCount: 10,
-                    separatorBuilder: (context, index) => Gaps.v20,
-                    itemBuilder: (context, index) => Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        CircleAvatar(
-                          radius: Sizes.size18,
-                          backgroundColor: isDark ? Colors.grey.shade500 : null,
-                          child: const ClipOval(child: Text('쩨나')),
+                  child: ref.watch(commentListProvider(widget.videoId)).when(
+                        loading: () => const Center(
+                          child: CircularProgressIndicator.adaptive(),
                         ),
-                        Gaps.h10,
-                        Expanded(
-                          child: Column(
+                        error: (error, stackTrace) => Center(
+                          child: Text(error.toString()),
+                        ),
+                        data: (comments) => ListView.separated(
+                          controller: _scrollController,
+                          padding: const EdgeInsets.only(
+                            top: Sizes.size10,
+                            bottom: Sizes.size96 + Sizes.size24,
+                            left: Sizes.size16,
+                            right: Sizes.size16,
+                          ),
+                          itemCount: 10,
+                          separatorBuilder: (context, index) => Gaps.v20,
+                          itemBuilder: (context, index) => Row(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                'jenna123',
-                                style: TextStyle(
-                                  color: Colors.grey.shade500,
-                                  fontSize: Sizes.size14,
-                                  fontWeight: FontWeight.bold,
+                              CircleAvatar(
+                                radius: Sizes.size18,
+                                backgroundColor:
+                                    isDark ? Colors.grey.shade500 : null,
+                                child: const ClipOval(child: Text('쩨나')),
+                              ),
+                              Gaps.h10,
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'jenna123',
+                                      style: TextStyle(
+                                        color: Colors.grey.shade500,
+                                        fontSize: Sizes.size14,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Gaps.v3,
+                                    const Text(
+                                        'He is such an adorable creature. The prettiest baby I\'ve ever seen XD'),
+                                  ],
                                 ),
                               ),
-                              Gaps.v3,
-                              const Text(
-                                  'He is such an adorable creature. The prettiest baby I\'ve ever seen XD'),
+                              Gaps.v10,
+                              Column(
+                                children: [
+                                  FaIcon(
+                                    FontAwesomeIcons.heart,
+                                    color: Colors.grey.shade500,
+                                    size: Sizes.size20,
+                                  ),
+                                  Gaps.v2,
+                                  Text(
+                                    S.of(context).commentLikeCount(52200),
+                                    style: TextStyle(
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ],
                           ),
                         ),
-                        Gaps.v10,
-                        Column(
-                          children: [
-                            FaIcon(
-                              FontAwesomeIcons.heart,
-                              color: Colors.grey.shade500,
-                              size: Sizes.size20,
-                            ),
-                            Gaps.v2,
-                            Text(
-                              S.of(context).commentLikeCount(52200),
-                              style: TextStyle(
-                                color: Colors.grey.shade500,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
+                      ),
                 ),
                 Positioned(
                   bottom: 0,

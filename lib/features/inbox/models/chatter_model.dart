@@ -28,6 +28,15 @@ class ChatterModel {
     required this.isParticipating,
   });
 
+  ChatterModel.empty()
+      : uid = '',
+        name = '',
+        username = '',
+        hasAvatar = false,
+        recentlyReadAt = 0,
+        showMsgFrom = 0,
+        isParticipating = false;
+
   ChatterModel.fromJson(Map<String, dynamic> json)
       : uid = json['uid'],
         name = json['name'],

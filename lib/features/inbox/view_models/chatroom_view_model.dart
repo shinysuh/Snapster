@@ -39,21 +39,20 @@ class ChatroomViewModel extends AsyncNotifier<void> {
   Future<void> createChatroom(
       BuildContext context, UserProfileModel invitee) async {
     state = const AsyncValue.loading();
+    final myProfile = await _getMyProfile(context);
+    if (myProfile.uid.isEmpty) return;
+
+    final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
+    final inviteeAsChatter = _getChatterByProfile(invitee);
+    final now = DateTime.now().millisecondsSinceEpoch;
+    ChatterModel myChatInfo = ChatterModel.empty();
+
     state = await AsyncValue.guard(() async {
       _checkLoginUser(context);
-
-      final myProfile = await _getMyProfile(context);
-      if (myProfile.uid.isEmpty) return;
-
-      final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
-      final inviteeAsChatter = _getChatterByProfile(invitee);
-      final now = DateTime.now().millisecondsSinceEpoch;
 
       // 이미 채팅룸 있는지 확인
       final checkedChatroom = await _getChatroom(myProfile.uid, invitee.uid);
       final chatroomExist = checkedChatroom.isNotEmpty;
-
-      ChatterModel myChatInfo;
 
       // 이미 있으면 해당 채팅방으로 이동
       if (chatroomExist) {
@@ -97,23 +96,23 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
         await _chatroomRepository.createChatroom(chatroomInfo);
         chatroom = chatroomInfo;
-
-        if (state.hasError) {
-          if (context.mounted) showFirebaseErrorSnack(context, state.error);
-        } else {
-          // 채팅방으로 이동
-          if (context.mounted) {
-            _enterChatroom(
-              context: context,
-              chatroomId: chatroomId,
-              invitee: inviteeAsChatter,
-              now: now,
-              recentlyReadAt: myChatInfo.recentlyReadAt,
-            );
-          }
-        }
       }
     });
+
+    if (state.hasError) {
+      if (context.mounted) showFirebaseErrorSnack(context, state.error);
+    } else {
+      // 채팅방으로 이동
+      if (context.mounted) {
+        _enterChatroom(
+          context: context,
+          chatroomId: chatroomId,
+          invitee: inviteeAsChatter,
+          now: now,
+          recentlyReadAt: myChatInfo.recentlyReadAt,
+        );
+      }
+    }
   }
 
   // 전체 유저 리스트 가져오기 (로그인 유저 제외)
