@@ -41,6 +41,7 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
       await _commentRepository.saveComment(
         CommentModel(
           videoId: _videoId,
+          commentId: '',
           text: comment,
           userId: user.uid,
           username: user.username,

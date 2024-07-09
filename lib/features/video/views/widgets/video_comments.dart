@@ -15,10 +15,14 @@ import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
 
 class VideoComments extends ConsumerStatefulWidget {
   final String videoId;
+  final int commentCount;
+  final void Function(int) onChangeCommentCount;
 
   const VideoComments({
     super.key,
     required this.videoId,
+    required this.commentCount,
+    required this.onChangeCommentCount,
   });
 
   @override
@@ -30,7 +34,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
   final TextEditingController _textEditingController = TextEditingController();
 
   bool _isWriting = false;
-  int _commentCount = 0;
+  late int _commentCount = widget.commentCount;
 
   @override
   void dispose() {
@@ -51,6 +55,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
           comment: _textEditingController.text,
         );
 
+    widget.onChangeCommentCount(widget.commentCount + 1);
     _textEditingController.clear();
     _dismissKeyboard();
   }

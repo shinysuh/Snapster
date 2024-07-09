@@ -391,7 +391,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       child: const Image(
                                         fit: BoxFit.cover,
                                         image:
-                                            AssetImage('assets/images/2.jpeg'),
+                                            AssetImage('assets/images/18.jpeg'),
                                       ),
                                     ),
                                   ],

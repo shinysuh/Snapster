@@ -5,4 +5,4 @@ ImageProvider profileImage = const NetworkImage(
 
 ImageProvider jasonImage = const AssetImage('assets/images/1.jpeg');
 
-ImageProvider junheeImage = const AssetImage('assets/images/2.jpeg');
+ImageProvider caliImage = const AssetImage('assets/images/18.jpeg');

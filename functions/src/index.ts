@@ -9,6 +9,7 @@ admin.initializeApp();
 const userCollection = 'users';
 const videoCollection = 'videos';
 const likeCollection = 'likes';
+const commentCollection = 'comments';
 const chatroomCollection = 'chat_rooms';
 const textCollection = 'texts';
 const commonIdDivider = '%00000%';
@@ -115,6 +116,71 @@ export const onUnliked = functions.firestore
                     .collection(likeCollection)
                     .doc(videoId)
                     .delete();
+        }
+    );
+
+export const onCommentAdded = functions.firestore
+    .document(`${ videoCollection }/{videoId}/${ commentCollection }/{commentId}`)
+    .onCreate(async (snapshot, context) => {
+            const videoId = context.params.videoId;
+            let comment = snapshot.data() as CommentInterface;
+            comment = { ...comment, commentId: snapshot.id };
+            
+            const db = admin.firestore();
+            
+            await db.collection(videoCollection)
+                .doc(videoId)
+                .update({ comments: admin.firestore.FieldValue.increment(1) });
+            
+            await
+                db.collection(userCollection)
+                    .doc(comment.userId)
+                    .collection(commentCollection)
+                    .doc(videoId)
+                    .collection(commentCollection)
+                    .doc(comment.commentId)
+                    .set(comment);
+        }
+    );
+
+export const onCommentUpdated = functions.firestore
+    .document(`${ videoCollection }/{videoId}/${ commentCollection }/{commentId}`)
+    .onUpdate(async (snapshot, context) => {
+            const videoId = context.params.videoId;
+            let comment = snapshot.after.data();
+            
+            const db = admin.firestore();
+            
+            await
+                db.collection(userCollection)
+                    .doc(comment.userId)
+                    .collection(commentCollection)
+                    .doc(videoId)
+                    .collection(commentCollection)
+                    .doc(comment.commentId)
+                    .update(comment);
+        }
+    );
+
+export const onCommentDeleted = functions.firestore
+    .document(`${ videoCollection }/{videoId}/${ commentCollection }/{commentId}`)
+    .onDelete(async (snapshot, context) => {
+            const videoId = context.params.videoId;
+            const comment = snapshot.data() as CommentInterface;
+            
+            const db = admin.firestore();
+            
+            await db.collection(videoCollection)
+                .doc(videoId)
+                .update({ comments: admin.firestore.FieldValue.increment(-1) });
+            
+            await db.collection(userCollection)
+                .doc(comment.userId)
+                .collection(commentCollection)
+                .doc(videoId)
+                .collection(commentCollection)
+                .doc(comment.commentId)
+                .delete();
         }
     );
 

@@ -42,6 +42,7 @@ class VideoPostState extends ConsumerState<VideoPost>
   bool _isPaused = false;
   bool _isLiked = false;
   int _likeCount = 0;
+  int _commentCount = 0;
   bool _isInitialized = false;
 
   /* Riverpod */
@@ -74,6 +75,7 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   Future<void> _initLike() async {
     _likeCount = widget.videoData.likes;
+    _commentCount = widget.videoData.comments;
     _isLiked = await ref.read(videoPostProvider(_videoId).notifier).isLiked();
   }
 
@@ -81,7 +83,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     try {
       // Use the fileUrl directly from videoData
       _videoPlayerController =
-          VideoPlayerController.network(widget.videoData.fileUrl);
+          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
 
       // initialize
       await _videoPlayerController?.initialize();
@@ -166,6 +168,12 @@ class VideoPostState extends ConsumerState<VideoPost>
     });
   }
 
+  void _onChangeCommentCount(int commentCount) {
+    setState(() {
+      _commentCount = commentCount;
+    });
+  }
+
   void _onTapComments(BuildContext context) async {
     if (_videoPlayerController?.value.isPlaying ?? false) _togglePause();
 
@@ -175,6 +183,8 @@ class VideoPostState extends ConsumerState<VideoPost>
       isScrollControlled: true,
       builder: (context) => VideoComments(
         videoId: _videoId,
+        commentCount: _commentCount,
+        onChangeCommentCount: _onChangeCommentCount,
       ),
     );
 
@@ -288,7 +298,7 @@ class VideoPostState extends ConsumerState<VideoPost>
                   child: VideoButton(
                     icon: FontAwesomeIcons.solidCommentDots,
                     iconColor: Colors.white,
-                    text: S.of(context).commentCount(widget.videoData.comments),
+                    text: S.of(context).commentCount(_commentCount),
                   ),
                 ),
                 Gaps.v24,

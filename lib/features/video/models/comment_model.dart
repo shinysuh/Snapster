@@ -1,6 +1,6 @@
 class CommentModel {
   final String videoId;
-  String? commentId;
+  final String commentId;
   final String text;
   final String userId;
   final String username;
@@ -10,7 +10,7 @@ class CommentModel {
 
   CommentModel({
     required this.videoId,
-    this.commentId,
+    required this.commentId,
     required this.text,
     required this.userId,
     required this.username,
@@ -21,7 +21,7 @@ class CommentModel {
 
   CommentModel.fromJson(Map<String, dynamic> json)
       : videoId = json['videoId'],
-        commentId = json['commentId'] ?? '',
+        commentId = json['commentId'],
         userId = json['userId'],
         username = json['username'],
         text = json['text'],
@@ -43,6 +43,7 @@ class CommentModel {
 
   CommentModel copyWith({
     String? videoId,
+    String? commentId,
     String? text,
     String? userId,
     String? username,
@@ -52,6 +53,7 @@ class CommentModel {
   }) {
     return CommentModel(
       videoId: videoId ?? this.videoId,
+      commentId: commentId ?? this.commentId,
       text: text ?? this.text,
       userId: userId ?? this.userId,
       username: username ?? this.username,
