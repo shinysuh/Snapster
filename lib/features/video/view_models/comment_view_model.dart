@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
+import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
 import 'package:tiktok_clone/features/video/models/comment_model.dart';
 import 'package:tiktok_clone/features/video/repositories/comment_repository.dart';
 import 'package:tiktok_clone/features/video/repositories/video_repository.dart';
@@ -13,8 +15,8 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
   late final CommentRepository _commentRepository;
   late final AuthenticationRepository _authRepository;
 
-  late final _user;
-  late final _videoId;
+  late final User? _user;
+  late final String _videoId;
 
   @override
   FutureOr<void> build(String arg) {
@@ -25,17 +27,24 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
   }
 
   // 댓글 업로드
-  Future<void> saveComment(BuildContext context, String comment) async {
+  Future<void> saveComment({
+    required BuildContext context,
+    required UserProfileModel user,
+    required String comment,
+  }) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (!_checkLoginUser(context)) return;
+      if (_user!.uid != user.uid) return;
 
       final now = DateTime.now().millisecondsSinceEpoch;
       await _commentRepository.saveComment(
         CommentModel(
           videoId: _videoId,
           text: comment,
-          userId: _user.uid,
+          userId: user.uid,
+          username: user.username,
+          likes: 0,
           createdAt: now,
           updatedAt: now,
         ),
@@ -83,7 +92,7 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
 
   // 본인이 쓴 댓글인지 확인
   bool _isMyComment(String commenterId) {
-    return _user.uid != commenterId;
+    return _user!.uid != commenterId;
   }
 
   // 로그인 여부 체크
@@ -115,7 +124,9 @@ final commentListProvider = StreamProvider.autoDispose
               'videoId': doc.data()['videoId'],
               'commentId': commentId,
               'userId': doc.data()['userId'],
+              'username': doc.data()['username'],
               'text': doc.data()['text'],
+              'likes': doc.data()['likes'],
               'createdAt': doc.data()['createdAt'],
               'updatedAt': doc.data()['updatedAt']
             });

@@ -3,10 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/features/video/view_models/comment_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 import 'package:tiktok_clone/utils/theme_mode.dart';
 import 'package:tiktok_clone/utils/widgets/regulated_max_width.dart';
@@ -24,9 +26,11 @@ class VideoComments extends ConsumerStatefulWidget {
 }
 
 class _VideoCommentsState extends ConsumerState<VideoComments> {
-  bool _isWriting = false;
-
   final ScrollController _scrollController = ScrollController();
+  final TextEditingController _textEditingController = TextEditingController();
+
+  bool _isWriting = false;
+  int _commentCount = 0;
 
   @override
   void dispose() {
@@ -38,7 +42,16 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
     Navigator.of(context).pop();
   }
 
-  void _onTapSubmitComment() {
+  Future<void> _onTapSubmitComment(UserProfileModel user) async {
+    if (_textEditingController.text.trim().isEmpty) return;
+
+    await ref.read(commentProvider(widget.videoId).notifier).saveComment(
+          context: context,
+          user: user,
+          comment: _textEditingController.text,
+        );
+
+    _textEditingController.clear();
     _dismissKeyboard();
   }
 
@@ -55,9 +68,10 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
     });
   }
 
-  Widget _getCommentField(bool isDark) {
+  Widget _getCommentField(UserProfileModel user, bool isDark) {
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
     return TextField(
+      controller: _textEditingController,
       onTap: _onStartWriting,
       expands: true,
       minLines: null,
@@ -97,7 +111,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
               if (_isWriting) Gaps.h14,
               if (_isWriting)
                 GestureDetector(
-                  onTap: _onTapSubmitComment,
+                  onTap: () => _onTapSubmitComment(user),
                   child: FaIcon(
                     FontAwesomeIcons.circleArrowUp,
                     color: Theme.of(context).primaryColor,
@@ -133,7 +147,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                 : Colors.grey.shade50,
             centerTitle: true,
             title: Text(
-              S.of(context).commentTitle(22796, 22796),
+              S.of(context).commentTitle(_commentCount, _commentCount),
               style: const TextStyle(
                 fontSize: Sizes.size16,
                 fontWeight: FontWeight.w600,
@@ -164,64 +178,77 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                         error: (error, stackTrace) => Center(
                           child: Text(error.toString()),
                         ),
-                        data: (comments) => ListView.separated(
-                          controller: _scrollController,
-                          padding: const EdgeInsets.only(
-                            top: Sizes.size10,
-                            bottom: Sizes.size96 + Sizes.size24,
-                            left: Sizes.size16,
-                            right: Sizes.size16,
-                          ),
-                          itemCount: 10,
-                          separatorBuilder: (context, index) => Gaps.v20,
-                          itemBuilder: (context, index) => Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              CircleAvatar(
-                                radius: Sizes.size18,
-                                backgroundColor:
-                                    isDark ? Colors.grey.shade500 : null,
-                                child: const ClipOval(child: Text('쩨나')),
-                              ),
-                              Gaps.h10,
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'jenna123',
-                                      style: TextStyle(
-                                        color: Colors.grey.shade500,
-                                        fontSize: Sizes.size14,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    Gaps.v3,
-                                    const Text(
-                                        'He is such an adorable creature. The prettiest baby I\'ve ever seen XD'),
-                                  ],
-                                ),
-                              ),
-                              Gaps.v10,
-                              Column(
+                        data: (comments) {
+                          _commentCount = comments.length;
+                          return ListView.separated(
+                            controller: _scrollController,
+                            padding: const EdgeInsets.only(
+                              top: Sizes.size10,
+                              bottom: Sizes.size96 + Sizes.size24,
+                              left: Sizes.size16,
+                              right: Sizes.size16,
+                            ),
+                            itemCount: comments.length,
+                            separatorBuilder: (context, index) => Gaps.v20,
+                            itemBuilder: (context, index) {
+                              var comment = comments[index];
+                              return Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  FaIcon(
-                                    FontAwesomeIcons.heart,
-                                    color: Colors.grey.shade500,
-                                    size: Sizes.size20,
-                                  ),
-                                  Gaps.v2,
-                                  Text(
-                                    S.of(context).commentLikeCount(52200),
-                                    style: TextStyle(
-                                      color: Colors.grey.shade500,
+                                  CircleAvatar(
+                                    radius: Sizes.size20,
+                                    backgroundColor:
+                                        isDark ? Colors.grey.shade500 : null,
+                                    foregroundImage: getProfileImgByUserId(
+                                      comment.userId,
+                                      false,
                                     ),
+                                    child:
+                                        ClipOval(child: Text(comment.username)),
+                                  ),
+                                  Gaps.h10,
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          comment.username,
+                                          style: TextStyle(
+                                            color: Colors.grey.shade500,
+                                            fontSize: Sizes.size14,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        Gaps.v3,
+                                        Text(comment.text),
+                                      ],
+                                    ),
+                                  ),
+                                  Gaps.v10,
+                                  Column(
+                                    children: [
+                                      FaIcon(
+                                        FontAwesomeIcons.heart,
+                                        color: Colors.grey.shade500,
+                                        size: Sizes.size20,
+                                      ),
+                                      Gaps.v2,
+                                      Text(
+                                        S
+                                            .of(context)
+                                            .commentLikeCount(comment.likes),
+                                        style: TextStyle(
+                                          color: Colors.grey.shade500,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
-                              ),
-                            ],
-                          ),
-                        ),
+                              );
+                            },
+                          );
+                        },
                       ),
                 ),
                 Positioned(
@@ -236,40 +263,52 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                         top: Sizes.size10,
                         bottom: Sizes.size32,
                       ),
-                      child: LayoutBuilder(
-                        builder: (context, constraints) {
-                          var isWiderThanSm = constraints.maxWidth >
-                              Breakpoints.sm - Sizes.size32;
-                          return Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              CircleAvatar(
-                                radius: Sizes.size18,
-                                backgroundColor: Colors.grey.shade500,
-                                foregroundColor: Colors.white,
-                                foregroundImage: profileImage,
-                                child: const ClipOval(child: Text('쩨나')),
+                      child: ref.watch(userProvider).when(
+                          loading: () => const Center(
+                                child: CircularProgressIndicator.adaptive(),
                               ),
-                              Gaps.h10,
-                              if (isWiderThanSm)
-                                Container(
-                                  height: Sizes.size44,
-                                  constraints: const BoxConstraints(
-                                    maxWidth: Breakpoints.sm - Sizes.size80,
-                                  ),
-                                  child: _getCommentField(isDark),
-                                ),
-                              if (!isWiderThanSm)
-                                Expanded(
-                                  child: SizedBox(
-                                    height: Sizes.size44,
-                                    child: _getCommentField(isDark),
-                                  ),
-                                ),
-                            ],
-                          );
-                        },
-                      ),
+                          error: (error, stackTrace) => Center(
+                                child: Text(error.toString()),
+                              ),
+                          data: (user) => LayoutBuilder(
+                                builder: (context, constraints) {
+                                  var isWiderThanSm = constraints.maxWidth >
+                                      Breakpoints.sm - Sizes.size32;
+                                  return Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      CircleAvatar(
+                                        radius: Sizes.size18,
+                                        backgroundColor: Colors.grey.shade500,
+                                        foregroundColor: Colors.white,
+                                        foregroundImage: getProfileImgByUserId(
+                                          user.uid,
+                                          false,
+                                        ),
+                                        child: ClipOval(child: Text(user.name)),
+                                      ),
+                                      Gaps.h10,
+                                      if (isWiderThanSm)
+                                        Container(
+                                          height: Sizes.size44,
+                                          constraints: const BoxConstraints(
+                                            maxWidth:
+                                                Breakpoints.sm - Sizes.size80,
+                                          ),
+                                          child: _getCommentField(user, isDark),
+                                        ),
+                                      if (!isWiderThanSm)
+                                        Expanded(
+                                          child: SizedBox(
+                                            height: Sizes.size44,
+                                            child:
+                                                _getCommentField(user, isDark),
+                                          ),
+                                        ),
+                                    ],
+                                  );
+                                },
+                              )),
                     ),
                   ),
                 ),
