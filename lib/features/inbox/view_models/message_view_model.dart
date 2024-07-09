@@ -8,6 +8,7 @@ import 'package:tiktok_clone/features/authentication/repositories/authentication
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/repositories/chatroom_repository.dart';
 import 'package:tiktok_clone/features/inbox/repositories/message_repository.dart';
+import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
 
 enum MessageSenderType { me, partner, system }
@@ -71,6 +72,31 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
     });
   }
 
+  Future<void> updateMessageToDeleted(
+    BuildContext context,
+    MessageModel message,
+  ) async {
+    if (message.textId == null) return;
+    final isMine = _isMine(getMessageSender(context, message.userId));
+
+    // 본인이 보낸 메세지 아니면 삭제 불가
+    if (!isMine) {
+      showCustomErrorSnack(
+        context,
+        S.of(context).youCanOnlyDeleteTheMessagesYouSent,
+      );
+      return;
+    }
+
+    const String deleteMessage = '[Deleted message]';
+    // final deleteMessage = '[삭제 된 메세지입니다]';
+    _messageRepository.updateMessage(
+      chatroomId: _chatroomId,
+      messageId: message.textId!,
+      message: message.copyWith(text: deleteMessage),
+    );
+  }
+
   MessageSenderType getMessageSender(BuildContext context, String senderId) {
     _checkLoginUser(context);
     final user = _authRepository.user;
@@ -81,19 +107,14 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
             : MessageSenderType.partner;
   }
 
-  bool isMine(MessageSenderType senderType) {
+  bool _isMine(MessageSenderType senderType) {
     return senderType == MessageSenderType.me;
   }
 
 /*
        TODO [3] - extra
-        1) (V) 대화 text 중 system 이 보낸 항목 UI 구분하기 ('OOO님이 대화방을 나갔습니다.' 문구) (V)
-        **) (V) 내가 생성한 채팅방 아닐 때, 대화 상대 선택 리스트에서 기존 대화 상대 선택 후 채팅방 이동 시, 메세지들 안 보이는 이슈 fix
-        **) (V) 상대방이 나간 채팅방에서 다시 메세지 보내면, 다시 상대 초대 여부 컨펌 후 재초대
         2) [XX] recentlyReadAt 으로 [여기까지 읽음] 구현 및 recentlyReadAt 업데이트
         3) [XX] 이전 메세지랑 날짜가 다르면 UI에 날짜 구분 말풍선 표시해주기
-        ---
-        4) [*2분 내로 보내진 메세지만] 메세지를 꾹(2-3초) 눌렀을 때, 메세지 지우는 컨펌 dialog 후 메세지를 [deleted message] 로 변경하거나 삭제하는 로직 구현
   */
 
   void _checkLoginUser(BuildContext context) {
@@ -120,9 +141,16 @@ final chatProvider = StreamProvider.autoDispose
       .orderBy('createdAt')
       .snapshots() // snapshot 은 스트림을 리턴함
       .map(
-        (event) => event.docs
+        (snapshot) => snapshot.docs
             .map(
-              (doc) => MessageModel.fromJson(doc.data()),
+              (doc) {
+                return MessageModel.fromJson({
+                  'textId': doc.id,
+                  'text': doc.data()['text'],
+                  'userId': doc.data()['userId'],
+                  'createdAt': doc.data()['createdAt'],
+                });
+              },
             )
             .toList()
             .reversed

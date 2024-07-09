@@ -105,5 +105,7 @@
   "exitChatroom": "Exit chatroom",
   "userHasLeftChatroom": "{username} has left the chatroom.",
   "exit": "Exit",
-  "reInvitationConfirmMsg": "Do you want to invite the person back?"
+  "reInvitationConfirmMsg": "Do you want to invite the person back?",
+  "deleteMessageConfirm": "Do you want to delete the message?",
+  "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent."
 }

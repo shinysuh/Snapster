@@ -34,5 +34,7 @@
   "exitChatroom": "채팅방 나가기",
   "userHasLeftChatroom": "{username} 님이 채팅방을 나갔습니다.",
   "exit": "나가기",
-  "reInvitationConfirmMsg": "상대방을 다시 초대하시겠습니까?"
+  "reInvitationConfirmMsg": "상대방을 다시 초대 하시겠습니까?",
+  "deleteMessageConfirm": "메세지를 삭제 하시겠습니까?",
+  "youCanOnlyDeleteTheMessagesYouSent": "내가 보낸 메세지만 삭제 가능합니다."
 }

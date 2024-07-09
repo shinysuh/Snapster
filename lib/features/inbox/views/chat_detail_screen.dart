@@ -101,6 +101,36 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     }
   }
 
+  Future<void> _getAlert({
+    required String title,
+    required void Function() confirmActionCallback,
+    required void Function() destructiveActionCallback,
+  }) async {
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: Sizes.size16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              // content: const Text('Please confirm'),
+              actions: [
+                CupertinoDialogAction(
+                  onPressed: confirmActionCallback,
+                  child: const Text("Yes"),
+                ),
+                CupertinoDialogAction(
+                  onPressed: destructiveActionCallback,
+                  isDestructiveAction: true,
+                  child: const Text("No"),
+                ),
+              ],
+            ));
+  }
+
   Future<bool> _getReInvitationConfirm() async {
     if (_chatroomInfo == null) return false;
 
@@ -112,46 +142,27 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
     var reInvited = false;
 
-    await showCupertinoDialog(
-      context: context,
-      builder: (context) => CupertinoAlertDialog(
-        title: Text(
-          S.of(context).reInvitationConfirmMsg,
-          style: const TextStyle(
-            fontSize: Sizes.size16,
-            fontWeight: FontWeight.w400,
-          ),
-        ),
-        // content: const Text('Please confirm'),
-        actions: [
-          CupertinoDialogAction(
-            onPressed: () async {
-              await ref.read(chatroomProvider.notifier).reJoinChatroom(
-                    context: context,
-                    chatroom: ChatroomModel(
-                      chatroomId: chatroom!.chatroomId,
-                      personA: isPartnerPersonA ? partner : chatroom.personA,
-                      personB: isPartnerPersonA ? chatroom.personB : partner,
-                      updatedAt: now,
-                    ),
-                    isPersonARejoining: isPartnerPersonA,
-                    now: now,
-                  );
+    await _getAlert(
+      title: S.of(context).reInvitationConfirmMsg,
+      confirmActionCallback: () async {
+        await ref.read(chatroomProvider.notifier).reJoinChatroom(
+              context: context,
+              chatroom: ChatroomModel(
+                chatroomId: chatroom!.chatroomId,
+                personA: isPartnerPersonA ? partner : chatroom.personA,
+                personB: isPartnerPersonA ? chatroom.personB : partner,
+                updatedAt: now,
+              ),
+              isPersonARejoining: isPartnerPersonA,
+              now: now,
+            );
 
-              _setPartnerParticipationInfo(true);
+        _setPartnerParticipationInfo(true);
 
-              _closeDialog();
-              reInvited = true;
-            },
-            child: const Text("Yes"),
-          ),
-          CupertinoDialogAction(
-            onPressed: _closeDialog,
-            isDestructiveAction: true,
-            child: const Text("No"),
-          ),
-        ],
-      ),
+        _closeDialog();
+        reInvited = true;
+      },
+      destructiveActionCallback: _closeDialog,
     );
 
     return reInvited;
@@ -226,8 +237,26 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     return allowedMessages;
   }
 
-  void _updateMessageToDeleted() {
-    // TODO - 여기 메세지 삭제 문구로 업데이트 (messageId) 필요
+  void _updateMessageToDeleted(MessageModel message) {
+    var threeMinutes = 180000;
+    var now = DateTime.now().millisecondsSinceEpoch;
+    bool isDeletable = now - message.createdAt < threeMinutes;
+
+    // 보낸지 3분 이내에 삭제 가능
+    if (!isDeletable) return;
+    _getAlert(
+      title: S.of(context).deleteMessageConfirm,
+      confirmActionCallback: () async {
+        await ref
+            .read(messageProvider(widget.chatroomId).notifier)
+            .updateMessageToDeleted(
+              context,
+              message,
+            );
+        _closeDialog();
+      },
+      destructiveActionCallback: _closeDialog,
+    );
   }
 
   Widget _getMsgSentAt(int createdAt, bool isDark) {
@@ -238,6 +267,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
         'en_US',
       ).format(sentAt),
       style: TextStyle(
+        fontSize: Sizes.size12,
         color: isDark
             ? Colors.white.withOpacity(0.6)
             : Colors.black.withOpacity(0.4),
@@ -476,12 +506,15 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         _getMsgSentAt(
-                                            message.createdAt, isDark),
-                                        Gaps.h10,
+                                          message.createdAt,
+                                          isDark,
+                                        ),
+                                        Gaps.h6,
                                       ],
                                     ),
                                   GestureDetector(
-                                    onLongPress: _updateMessageToDeleted,
+                                    onLongPress: () =>
+                                        _updateMessageToDeleted(message),
                                     child: Container(
                                       constraints: const BoxConstraints(
                                         maxWidth: Breakpoints.sm / 3,
@@ -534,9 +567,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        Gaps.h10,
+                                        Gaps.h6,
                                         _getMsgSentAt(
-                                            message.createdAt, isDark),
+                                          message.createdAt,
+                                          isDark,
+                                        ),
                                       ],
                                     ),
                                 ],

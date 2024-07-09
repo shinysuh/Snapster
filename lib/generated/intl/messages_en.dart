@@ -62,6 +62,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
         "conversationNotStarted":
             MessageLookupByLibrary.simpleMessage("Conversation Not Started"),
+        "deleteMessageConfirm": MessageLookupByLibrary.simpleMessage(
+            "Do you want to delete the message?"),
         "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
@@ -95,6 +97,9 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Use email & password"),
         "userHasLeftChatroom": m9,
         "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
-        "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy")
+        "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy"),
+        "youCanOnlyDeleteTheMessagesYouSent":
+            MessageLookupByLibrary.simpleMessage(
+                "You can only delete the messages you sent.")
       };
 }

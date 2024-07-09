@@ -434,6 +434,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Do you want to delete the message?`
+  String get deleteMessageConfirm {
+    return Intl.message(
+      'Do you want to delete the message?',
+      name: 'deleteMessageConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can only delete the messages you sent.`
+  String get youCanOnlyDeleteTheMessagesYouSent {
+    return Intl.message(
+      'You can only delete the messages you sent.',
+      name: 'youCanOnlyDeleteTheMessagesYouSent',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

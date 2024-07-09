@@ -55,6 +55,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "continueWithGoogle": MessageLookupByLibrary.simpleMessage("구글 계정"),
         "conversationNotStarted":
             MessageLookupByLibrary.simpleMessage("대화가 시작되지 않았습니다"),
+        "deleteMessageConfirm":
+            MessageLookupByLibrary.simpleMessage("메세지를 삭제 하시겠습니까?"),
         "description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),
@@ -71,7 +73,7 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
         "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
         "reInvitationConfirmMsg":
-            MessageLookupByLibrary.simpleMessage("상대방을 다시 초대하시겠습니까?"),
+            MessageLookupByLibrary.simpleMessage("상대방을 다시 초대 하시겠습니까?"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),
         "selectAProfileToStartAConversation":
             MessageLookupByLibrary.simpleMessage("대화를 시작할 상대의 프로필을 선택하세요"),
@@ -86,6 +88,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호"),
         "userHasLeftChatroom": m9,
         "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세"),
-        "yearMonthDate": MessageLookupByLibrary.simpleMessage("yyyy년 M월 d일")
+        "yearMonthDate": MessageLookupByLibrary.simpleMessage("yyyy년 M월 d일"),
+        "youCanOnlyDeleteTheMessagesYouSent":
+            MessageLookupByLibrary.simpleMessage("내가 보낸 메세지만 삭제 가능합니다.")
       };
 }
