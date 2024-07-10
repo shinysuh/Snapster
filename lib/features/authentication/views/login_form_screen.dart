@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/authentication/common/form_button.dart';
@@ -22,6 +23,8 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
   final _initialEmail = 'jenna@qwer.qwer';
   final _initialPassword = 'qwer1234?';
 
+  bool _obscureText = true;
+
   @override
   void initState() {
     super.initState();
@@ -32,6 +35,12 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
   void dispose() {
     _secondFocus.dispose();
     super.dispose();
+  }
+
+  void _onToggleObscureText() {
+    setState(() {
+      _obscureText = !_obscureText;
+    });
   }
 
   void _onTapNext() {
@@ -107,11 +116,28 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                 ),
                 Gaps.v16,
                 TextFormField(
+                  obscureText: _obscureText,
                   initialValue: _initialPassword,
                   focusNode: _secondFocus,
                   textCapitalization: TextCapitalization.none,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     hintText: 'Password',
+                    suffixIcon: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        GestureDetector(
+                          onTap: _onToggleObscureText,
+                          child: FaIcon(
+                            _obscureText
+                                ? FontAwesomeIcons.eye
+                                : FontAwesomeIcons.eyeSlash,
+                            color: Colors.grey.shade500,
+                            size: _obscureText ? Sizes.size24 : Sizes.size22,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                   onEditingComplete: _onSubmit,
                   validator: (value) => value == null || value.trim() == ''

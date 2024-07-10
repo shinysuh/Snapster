@@ -83,15 +83,19 @@ class SettingsScreen extends ConsumerWidget {
               // // SwitchListTile.adaptive => 마찬가지로 플랫폼 별 UI 형태 다름
 
               SwitchListTile.adaptive(
-                value: ref.watch(playbackConfigProvider).muted,
-                // value: context.watch<PlaybackConfigViewModel>().muted,
-                onChanged: (value) =>
-                    ref.read(playbackConfigProvider.notifier).setMuted(value),
-                // onChanged: (value) => context.read<PlaybackConfigViewModel>().setMuted(value),
-                title: const Text('Mute videos'),
-                activeColor: Theme.of(context).primaryColor,
-                // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
-              ),
+                  value: ref.watch(playbackConfigProvider).muted,
+                  // value: context.watch<PlaybackConfigViewModel>().muted,
+                  onChanged: (value) =>
+                      ref.read(playbackConfigProvider.notifier).setMuted(value),
+                  // onChanged: (value) => context.read<PlaybackConfigViewModel>().setMuted(value),
+                  title: const Text('Mute videos'),
+                  activeColor: Theme.of(context).primaryColor,
+                  subtitle: const Text(
+                    'Videos will be muted by default',
+                    style: TextStyle(fontSize: Sizes.size12),
+                  )
+                  // activeThumbImage: const AssetImage('assets/images/1.jpeg'),
+                  ),
               SwitchListTile.adaptive(
                 value: ref.watch(playbackConfigProvider).autoplay,
                 // value: context.watch<PlaybackConfigViewModel>().autoplay,

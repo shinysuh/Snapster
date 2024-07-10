@@ -48,7 +48,7 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
   void _onSubmit() {
     if (_username.isEmpty) return;
 
-    ref.read(signUpForm.notifier).state = {'name': _username};
+    ref.read(signUpForm.notifier).state = {'username': _username};
 
     redirectToScreen(
       context: context,

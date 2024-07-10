@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
@@ -62,77 +63,75 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
         color: isDark ? Colors.white : Colors.black,
       ),
     );
-    // return Row(
-    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    //   children: [
-    //     Expanded(
-    //       child: SizedBox(
-    //         height: Sizes.size44,
-    //         child: TextField(
-    //           controller: _textEditingController,
-    //           maxLines: 1,
-    //           cursorColor: Theme.of(context).primaryColor,
-    //           textInputAction: TextInputAction.send,
-    //           onChanged: _onChangeSearchKeyword,
-    //           onSubmitted: _onSubmitSearchKeyword,
-    //           clipBehavior: Clip.hardEdge,
-    //           style: const TextStyle(
-    //             fontSize: Sizes.size18,
-    //           ),
-    //           decoration: InputDecoration(
-    //             hintText: 'Search',
-    //             border: OutlineInputBorder(
-    //               borderRadius: BorderRadius.circular(Sizes.size8),
-    //               borderSide: BorderSide.none,
-    //             ),
-    //             filled: true,
-    //             fillColor: isDark
-    //                 ? Colors.grey.shade700
-    //                 : Colors.grey.shade200,
-    //             contentPadding: const EdgeInsets.symmetric(
-    //               horizontal: Sizes.size10,
-    //             ),
-    //             prefixIcon: Padding(
-    //               padding: const EdgeInsets.only(
-    //                 top: kIsWeb ? Sizes.size8 : Sizes.size11,
-    //                 left: Sizes.size8,
-    //               ),
-    //               child: FaIcon(
-    //                 FontAwesomeIcons.magnifyingGlass,
-    //                 size: Sizes.size20,
-    //                 color: isDark
-    //                     ? Colors.grey.shade300
-    //                     : Colors.black,
-    //               ),
-    //             ),
-    //             suffixIcon: Padding(
-    //               padding: const EdgeInsets.only(
-    //                 top: kIsWeb ? Sizes.size9 : Sizes.size11,
-    //                 left: kIsWeb ? Sizes.size10 : Sizes.size20,
-    //               ),
-    //               child: GestureDetector(
-    //                 onTap: _onClearSearchKeyword,
-    //                 child: FaIcon(
-    //                   FontAwesomeIcons.solidCircleXmark,
-    //                   size: Sizes.size20,
-    //                   color: isDark
-    //                       ? Colors.grey.shade400
-    //                       : Colors.grey.shade600,
-    //                 ),
-    //               ),
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //     Gaps.h22,
-    //     const FaIcon(
-    //       FontAwesomeIcons.sliders,
-    //       size: Sizes.size28,
-    //     ),
-    //     Gaps.h8,
-    //   ],
-    // );
+  }
+
+  Widget _getCustomizedSearchPanel(bool isDark) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: Sizes.size44,
+            child: TextField(
+              controller: _textEditingController,
+              maxLines: 1,
+              cursorColor: Theme.of(context).primaryColor,
+              textInputAction: TextInputAction.send,
+              onChanged: _onChangeSearchKeyword,
+              onSubmitted: _onSubmitSearchKeyword,
+              clipBehavior: Clip.hardEdge,
+              style: const TextStyle(
+                fontSize: Sizes.size18,
+              ),
+              decoration: InputDecoration(
+                hintText: 'Search',
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(Sizes.size8),
+                  borderSide: BorderSide.none,
+                ),
+                filled: true,
+                fillColor: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
+                contentPadding: const EdgeInsets.symmetric(
+                  horizontal: Sizes.size10,
+                ),
+                prefixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    top: kIsWeb ? Sizes.size8 : Sizes.size11,
+                    left: Sizes.size8,
+                  ),
+                  child: FaIcon(
+                    FontAwesomeIcons.magnifyingGlass,
+                    size: Sizes.size20,
+                    color: isDark ? Colors.grey.shade300 : Colors.black,
+                  ),
+                ),
+                suffixIcon: Padding(
+                  padding: const EdgeInsets.only(
+                    top: kIsWeb ? Sizes.size9 : Sizes.size11,
+                    left: kIsWeb ? Sizes.size10 : Sizes.size20,
+                  ),
+                  child: GestureDetector(
+                    onTap: _onClearSearchKeyword,
+                    child: FaIcon(
+                      FontAwesomeIcons.solidCircleXmark,
+                      size: Sizes.size20,
+                      color:
+                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+        Gaps.h22,
+        const FaIcon(
+          FontAwesomeIcons.sliders,
+          size: Sizes.size28,
+        ),
+        Gaps.h8,
+      ],
+    );
   }
 
   @override
