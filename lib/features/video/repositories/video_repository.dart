@@ -31,7 +31,7 @@ class VideoRepository {
     final query = _database
         .collection(videoCollection)
         .orderBy("createdAt", descending: true)
-        .limit(2);
+        .limit(3);
 
     return lastItemCreatedAt == null
         ? await query.get()

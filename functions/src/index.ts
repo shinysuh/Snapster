@@ -81,7 +81,7 @@ export const onVideoCreated = functions.firestore
 export const onVideoDeleted = functions.firestore
     .document(`${ videoCollection }/{videoId}`)
     .onDelete(async (snapshot, context) => {
-            // TODO - 비디오 삭제 시, comment 관련 데이터 및 컬렉션 삭제 필요
+            // TODO - 비디오 삭제 시, like / comment 관련 데이터 및 컬렉션 삭제 필요
             // const video = snapshot.data();
         }
     );

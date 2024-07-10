@@ -74,6 +74,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
         "noVideosToShow": MessageLookupByLibrary.simpleMessage(
             "표시할 동영상이 없습니다.\n동영상을 업로드 했을 경우\n페이지를 새로고침해 주세요."),
+        "nowLoadingTheVideo":
+            MessageLookupByLibrary.simpleMessage("비디오 로딩 중.."),
         "reInvitationConfirmMsg":
             MessageLookupByLibrary.simpleMessage("상대방을 다시 초대 하시겠습니까?"),
         "save": MessageLookupByLibrary.simpleMessage("저장"),

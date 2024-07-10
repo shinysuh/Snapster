@@ -304,6 +304,15 @@ class VideoPostState extends ConsumerState<VideoPost>
     ];
   }
 
+  TextStyle _getErrorContainerTextStyle() {
+    return const TextStyle(
+      fontSize: Sizes.size20,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      height: 1.8,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -334,6 +343,25 @@ class VideoPostState extends ConsumerState<VideoPost>
                     : Image.network(
                         widget.videoData.thumbnailURL,
                         fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.black,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator.adaptive(
+                                  backgroundColor: Colors.white,
+                                ),
+                                Gaps.v20,
+                                Text(
+                                  S.of(context).nowLoadingTheVideo,
+                                  style: _getErrorContainerTextStyle(),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
           ),
           if (!widget.isEmpty) ..._getPageElements(),
