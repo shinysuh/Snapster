@@ -19,8 +19,8 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
 
   late FocusNode _secondFocus; // 두번째 칸 focus
 
-  final _initialEmail = 'jenna@qwer.qwer';
-  final _initialPassword = 'qwer1234?';
+  final _initialEmail = '';
+  final _initialPassword = '';
 
   @override
   void initState() {
@@ -82,31 +82,16 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                   textCapitalization: TextCapitalization.none,
                   decoration: const InputDecoration(
                     hintText: 'Email',
-                    // hintStyle: TextStyle(
-                    //   color: Colors.grey.shade500,
-                    // ),
-                    // enabledBorder: UnderlineInputBorder(
-                    //   borderSide: BorderSide(
-                    //     color: Colors.grey.shade400,
-                    //   ),
-                    // ),
-                    // focusedBorder: UnderlineInputBorder(
-                    //   borderSide: BorderSide(
-                    //     color: Colors.grey.shade400,
-                    //   ),
-                    // ),
                   ),
                   onEditingComplete: _onTapNext,
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your email'
                       : null,
-                  // : value == 'jenna'
-                  //     ? null
-                  //     : 'User Info Not Exist',
                   onSaved: (newValue) => _setFormData('email', newValue),
                 ),
                 Gaps.v16,
                 TextFormField(
+                  obscureText: true,
                   initialValue: _initialPassword,
                   focusNode: _secondFocus,
                   textCapitalization: TextCapitalization.none,
@@ -117,9 +102,6 @@ class _LoginFormScreenState extends ConsumerState<LoginFormScreen> {
                   validator: (value) => value == null || value.trim() == ''
                       ? 'Enter your password'
                       : null,
-                  // : value == '1234'
-                  //     ? null
-                  //     : 'Password Not Matched',
                   onSaved: (newValue) => _setFormData('password', newValue),
                 ),
                 Gaps.v28,

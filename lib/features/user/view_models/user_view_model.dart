@@ -43,9 +43,8 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
     final profile = UserProfileModel(
       uid: credential.user!.uid,
-      name: form['name'] ?? '',
-      username:
-          credential.user!.displayName ?? form['username'] ?? form['name'],
+      name: form['name'] ?? form['username'] ?? '',
+      username: form['username'] ?? credential.user!.displayName,
       email: credential.user!.email ?? '',
       bio: '',
       link: '',
