@@ -5,10 +5,12 @@ import 'package:tiktok_clone/constants/sizes.dart';
 
 class VideoCaption extends StatefulWidget {
   final String description;
+  final List<String> tags;
 
   const VideoCaption({
     super.key,
     required this.description,
+    required this.tags,
   });
 
   @override
@@ -16,15 +18,15 @@ class VideoCaption extends StatefulWidget {
 }
 
 class _VideoCaptionState extends State<VideoCaption> {
-  final maxOpenedHeight = 250.0;
-  final closedHeight = 30.0;
-
-  bool _isCaptionOpened = false;
-
+  final double maxOpenedHeight = 250.0;
+  final double closedHeight = 30.0;
+  final int _cutLength = 25;
   final ScrollController _scrollController = ScrollController();
-  late final String _caption = widget.description;
 
-  final _tags = [
+  String _caption = '';
+  bool _isCaptionOpened = false;
+  bool _isWithEllipsis = true;
+  List<String> _tags = [
     // 'baby_face',
     // 'lovely',
     // 'adorable',
@@ -39,6 +41,10 @@ class _VideoCaptionState extends State<VideoCaption> {
   @override
   void initState() {
     super.initState();
+    _caption = widget.description;
+    // _caption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * 13;
+    _isWithEllipsis = _caption.length > _cutLength;
+    _tags = widget.tags;
   }
 
   @override
@@ -53,23 +59,30 @@ class _VideoCaptionState extends State<VideoCaption> {
     });
   }
 
+  double _calculateTextHeight(String text, TextStyle style, double maxWidth) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      maxLines: null,
+      textDirection: TextDirection.ltr,
+    )..layout(
+        maxWidth: maxWidth,
+      );
+    return textPainter.size.height + 38;
+  }
+
   Widget _getDisplayCaption() {
     if (_caption.isEmpty) return Container();
-    var cutLength = 25;
     var displayCaption = _caption;
 
-    // var tmpRepeat = 13;
-    // displayCaption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * tmpRepeat;
-
-    var isWithEllipsis = displayCaption.length > cutLength;
-
-    if (!_isCaptionOpened && isWithEllipsis) {
-      displayCaption = displayCaption.substring(0, cutLength);
+    if (!_isCaptionOpened && _isWithEllipsis) {
+      displayCaption = displayCaption.substring(0, _cutLength);
     }
+
+    print(_isWithEllipsis);
 
     return _isCaptionOpened
         ? _getOpenedCaption(displayCaption)
-        : _getClosedCaption(displayCaption, isWithEllipsis);
+        : _getClosedCaption(displayCaption);
   }
 
   Widget _getOpenedCaption(String caption) {
@@ -97,7 +110,7 @@ class _VideoCaptionState extends State<VideoCaption> {
     );
   }
 
-  Widget _getClosedCaption(String caption, bool isWithEllipsis) {
+  Widget _getClosedCaption(String caption) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
@@ -109,7 +122,7 @@ class _VideoCaptionState extends State<VideoCaption> {
             fontSize: Sizes.size16,
           ),
         ),
-        if (isWithEllipsis)
+        if (_isWithEllipsis)
           const Text(
             '... See More',
             softWrap: true,
@@ -147,11 +160,32 @@ class _VideoCaptionState extends State<VideoCaption> {
 
   @override
   Widget build(BuildContext context) {
+    const TextStyle textStyle = TextStyle(
+      color: Colors.white,
+      fontSize: Sizes.size16,
+    );
+
+    final double textHeight = _calculateTextHeight(
+      _caption,
+      textStyle,
+      Breakpoints.sm / 2,
+    );
+
+    final double containerHeight = _isCaptionOpened
+        ? (textHeight +
+                (_tags.isNotEmpty
+                    ? 18.0 +
+                        _calculateTextHeight(
+                            _tags.join(' '), textStyle, Breakpoints.sm / 2)
+                    : 0))
+            .clamp(closedHeight, maxOpenedHeight)
+        : closedHeight;
+
     return GestureDetector(
-      onTap: _toggleCaption,
+      onTap: _isWithEllipsis ? _toggleCaption : null,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 100),
-        height: _isCaptionOpened ? maxOpenedHeight : closedHeight,
+        height: containerHeight,
         child: _getDisplayCaption(),
       ),
     );
