@@ -252,9 +252,10 @@ class VideoPostState extends ConsumerState<VideoPost>
                   ),
                 ),
                 Gaps.v18,
-                VideoCaption(
-                  description: widget.videoData.description,
-                ),
+                if (widget.videoData.description.isNotEmpty)
+                  VideoCaption(
+                    description: widget.videoData.description,
+                  ),
               ],
             ),
           ),

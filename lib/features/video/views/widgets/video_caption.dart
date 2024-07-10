@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
-import 'package:tiktok_clone/features/video/views/widgets/video_tags.dart';
 
 class VideoCaption extends StatefulWidget {
   final String description;
@@ -16,32 +16,35 @@ class VideoCaption extends StatefulWidget {
 }
 
 class _VideoCaptionState extends State<VideoCaption> {
+  final maxOpenedHeight = 250.0;
+  final closedHeight = 30.0;
+
   bool _isCaptionOpened = false;
 
   final ScrollController _scrollController = ScrollController();
-  final _caption =
-      'This is my baby nephew! He was born in Feb 2024 and just turn to 3 weeks old:) So happy to finally have a little nephew whom I can give my love and passion. Soooo adorable!! Let\'s make these sentences longer and longer until they become seven lines.';
+  late final String _caption = widget.description;
+
   final _tags = [
-    'baby_face',
-    'lovely',
-    'adorable',
-    'auntie_crying',
-    'first_nephew',
-    'cannot_imagine_life_without_him',
-    'newborn',
-    'pumpkin',
-    'cutie_pie',
+    // 'baby_face',
+    // 'lovely',
+    // 'adorable',
+    // 'auntie_crying',
+    // 'first_nephew',
+    // 'cannot_imagine_life_without_him',
+    // 'newborn',
+    // 'pumpkin',
+    // 'cutie_pie',
   ];
 
   @override
   void initState() {
     super.initState();
-    _scrollController.addListener(_onScrollCaption);
   }
 
-  void _onScrollCaption() {
-    // print(_scrollController.offset);
-    if (_scrollController.offset > 100) {}
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   void _toggleCaption() {
@@ -50,99 +53,106 @@ class _VideoCaptionState extends State<VideoCaption> {
     });
   }
 
-  String _getCaption() {
-    var displayCaption =
-        widget.description.isNotEmpty ? widget.description : _caption;
-    var length = 27;
-    if (!_isCaptionOpened && displayCaption.length > length) {
-      displayCaption = displayCaption.substring(0, length);
-    } else {}
-    return displayCaption;
+  Widget _getDisplayCaption() {
+    if (_caption.isEmpty) return Container();
+    var cutLength = 25;
+    var displayCaption = _caption;
+
+    // var tmpRepeat = 13;
+    // displayCaption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * tmpRepeat;
+
+    var isWithEllipsis = displayCaption.length > cutLength;
+
+    if (!_isCaptionOpened && isWithEllipsis) {
+      displayCaption = displayCaption.substring(0, cutLength);
+    }
+
+    return _isCaptionOpened
+        ? _getOpenedCaption(displayCaption)
+        : _getClosedCaption(displayCaption, isWithEllipsis);
+  }
+
+  Widget _getOpenedCaption(String caption) {
+    return SingleChildScrollView(
+      controller: _scrollController,
+      child: Container(
+        constraints: const BoxConstraints(
+          maxWidth: Breakpoints.sm / 2,
+        ),
+        child: Column(
+          children: [
+            Text(
+              caption,
+              textAlign: TextAlign.left,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: Sizes.size16,
+              ),
+            ),
+            Gaps.v18,
+            if (_tags.isNotEmpty) _getTags(),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _getClosedCaption(String caption, bool isWithEllipsis) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
+      children: [
+        Text(
+          caption,
+          textAlign: TextAlign.left,
+          style: const TextStyle(
+            color: Colors.white,
+            fontSize: Sizes.size16,
+          ),
+        ),
+        if (isWithEllipsis)
+          const Text(
+            '... See More',
+            softWrap: true,
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: Sizes.size16,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+      ],
+    );
+  }
+
+  Widget _getTags() {
+    return Align(
+      alignment: Alignment.centerLeft,
+      child: Wrap(
+        alignment: WrapAlignment.start,
+        spacing: Sizes.size16,
+        runSpacing: Sizes.size3,
+        children: [
+          for (var tag in _tags)
+            Text(
+              '#$tag',
+              style: TextStyle(
+                color: Colors.grey.shade300,
+                fontSize: Sizes.size16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+        ],
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: _toggleCaption,
-      child: IgnoreBaseline(
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 100),
-          height: _isCaptionOpened ? 250 : 30, // TODO - 스크롤 적용 후 수정
-          width: 320,
-          child: _isCaptionOpened
-              /*
-                 TODO - 캡션 toggle 시에 스크롤 적용 해야 함
-              */
-              ? Column(
-                  children: [
-                    Flexible(
-                      child: SingleChildScrollView(
-                        // controller: _scrollController,
-                        scrollDirection: Axis.vertical,
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              RichText(
-                                overflow: TextOverflow.fade,
-                                maxLines: 7, // TODO - 스크롤 적용 후 수정
-                                strutStyle: const StrutStyle(
-                                  fontSize: Sizes.size16,
-                                ),
-                                text: TextSpan(
-                                  text: _getCaption(),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: Sizes.size16,
-                                  ),
-                                ),
-                              ),
-                              Gaps.v14,
-                              Align(
-                                alignment: Alignment.centerLeft,
-                                child: Wrap(
-                                  runAlignment: WrapAlignment.start,
-                                  spacing: Sizes.size12,
-                                  runSpacing: Sizes.size3,
-                                  children: [
-                                    for (var tag in _tags) VideoTags(tag: tag)
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                )
-              : Column(
-                  children: [
-                    Row(
-                      children: [
-                        Text(
-                          _getCaption(),
-                          // maxLines: 5,
-                          // overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: Sizes.size16,
-                          ),
-                        ),
-                        const Text(
-                          '... See More',
-                          softWrap: true,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: Sizes.size16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-        ),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 100),
+        height: _isCaptionOpened ? maxOpenedHeight : closedHeight,
+        child: _getDisplayCaption(),
       ),
     );
   }
