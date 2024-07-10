@@ -8,6 +8,7 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
+import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
@@ -30,6 +31,7 @@ class ChatsScreen extends ConsumerStatefulWidget {
 
 class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   List<ChatPartnerModel> _chatrooms = [];
+  Map<String, MessageModel?> _lastMessages = {};
 
   void _onClickAddChat() {
     Navigator.push(
@@ -50,6 +52,34 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     final index = _chatrooms.indexOf(chatroom);
     _chatrooms.removeAt(index);
     setState(() {});
+  }
+
+  List<ChatPartnerModel> _getLastMessageInfo(List<ChatPartnerModel> chatrooms) {
+    List<ChatPartnerModel> sortedChatrooms = [];
+    Map<String, MessageModel?> lastMsgs = {};
+
+    for (var i = 0; i < chatrooms.length; i++) {
+      var chatroom = chatrooms[i];
+      var msg = ref.watch(lastMessageProvider(chatroom.chatroomId));
+
+      if (msg.value != null) {
+        final lastMsg = msg.value!;
+        // 채팅방 업데이트 보다 마지막 메세지가 더 최근이면 메세지 생성 시간으로 업데이트 시간 교체
+        if (chatroom.updatedAt < lastMsg.createdAt) {
+          chatroom = chatroom.copyWith(updatedAt: lastMsg.createdAt);
+        }
+      }
+
+      sortedChatrooms.add(chatroom);
+      lastMsgs[chatroom.chatroomId] = msg.value;
+    }
+
+    setState(() {
+      _lastMessages = lastMsgs;
+    });
+
+    sortedChatrooms.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
+    return sortedChatrooms;
   }
 
   void _onExitChatroom(ChatPartnerModel chatroom) {
@@ -90,51 +120,52 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
     final chatPartner = chatroom.chatPartner;
     return ListTile(
-      onLongPress: () => _onExitChatroom(chatroom),
-      onTap: () => _onTapChat(chatroom),
-      leading: CircleAvatar(
-        radius: Sizes.size28,
-        foregroundImage: chatPartner.hasAvatar
-            ? getProfileImgByUserId(chatPartner.uid, false)
-            : null,
-        child: ClipOval(child: Text(chatPartner.name)),
-      ),
-      title: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        crossAxisAlignment: CrossAxisAlignment.end,
-        children: [
-          Text(
-            chatPartner.username,
-            style: const TextStyle(
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Text(
-            _getLastUpdatedAt(chatroom.updatedAt),
-            style: TextStyle(
-              color: Colors.grey.shade500,
-              fontSize: Sizes.size12,
-            ),
-          ),
-        ],
-      ),
-      subtitle: ref.watch(lastMessageProvider(chatroom.chatroomId)).when(
-          loading: () => const Center(
-                child: CircularProgressIndicator.adaptive(),
+        onLongPress: () => _onExitChatroom(chatroom),
+        onTap: () => _onTapChat(chatroom),
+        leading: CircleAvatar(
+          radius: Sizes.size28,
+          foregroundImage: chatPartner.hasAvatar
+              ? getProfileImgByUserId(chatPartner.uid, false)
+              : null,
+          child: ClipOval(child: Text(chatPartner.name)),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              chatPartner.username,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
               ),
-          error: (error, stackTrace) => Center(
-                child: Text(error.toString()),
+            ),
+            Text(
+              _getLastUpdatedAt(chatroom.updatedAt),
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: Sizes.size12,
               ),
-          data: (message) {
-            return Text(
-              message == null
-                  ? S.of(context).conversationNotStarted
-                  : !message.userId.startsWith(MessageViewModel.systemId)
-                      ? message.text
-                      : _getLatestSystemMsg(message.text, chatPartner.uid),
-            );
-          }),
-    );
+            ),
+          ],
+        ),
+        subtitle: _getLatestMessageText(chatroom));
+  }
+
+  Widget _getLatestMessageText(ChatPartnerModel chatroom) {
+    var text = '';
+    if (_lastMessages.isEmpty) return Text(text);
+
+    MessageModel? msg = _lastMessages[chatroom.chatroomId];
+
+    if (msg != null) {
+      text = !msg.userId.startsWith(MessageViewModel.systemId)
+          ? msg.text
+          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.uid);
+    } else {
+      text = S.of(context).conversationNotStarted;
+    }
+
+    return Text(text);
   }
 
   String _getLatestSystemMsg(String text, String partnerId) {
@@ -189,7 +220,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                 child: Text(error.toString()),
               ),
               data: (chatrooms) {
-                _chatrooms = chatrooms;
+                _chatrooms = _getLastMessageInfo(chatrooms);
                 return _chatrooms.isEmpty
                     ? Column(
                         children: [
