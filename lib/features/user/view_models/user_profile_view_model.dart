@@ -45,3 +45,19 @@ final uploadedThumbnailListProvider = StreamProvider.autoDispose
           )
           .toList());
 });
+
+final likedThumbnailListProvider = StreamProvider.autoDispose
+    .family<List<ThumbnailLinkModel>, String>((ref, userId) {
+  return FirebaseFirestore.instance
+      .collection(UserRepository.userCollection)
+      .doc(userId)
+      .collection(VideoRepository.likeCollection)
+      .orderBy('createdAt', descending: true)
+      // .limit(10)   // paging 필요
+      .snapshots()
+      .map((snapshot) => snapshot.docs
+          .map(
+            (doc) => ThumbnailLinkModel.fromJson(doc.data()),
+          )
+          .toList());
+});

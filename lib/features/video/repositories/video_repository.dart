@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/constants/common_divider.dart';
+import 'package:tiktok_clone/features/video/models/thumbnail_link_model.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 
 class VideoRepository {
@@ -46,16 +47,21 @@ class VideoRepository {
 
   // like toggle
   Future<void> toggleLikeVideo({
-    required String videoId,
     required String userId,
+    required String videoId,
+    required String thumbnailUrl,
   }) async {
     final query = await _fetchLike(videoId: videoId, userId: userId);
     final like = await query.get();
 
     if (!like.exists) {
-      await query.set({
-        "createdAt": DateTime.now().millisecondsSinceEpoch,
-      });
+      ThumbnailLinkModel likeInfo = ThumbnailLinkModel(
+        videoId: videoId,
+        thumbnailUrl: thumbnailUrl,
+        createdAt: DateTime.now().millisecondsSinceEpoch,
+      );
+
+      await query.set(likeInfo.toJson());
     } else {
       await query.delete();
     }

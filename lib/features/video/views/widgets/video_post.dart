@@ -144,7 +144,9 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _onTapLike() {
-    ref.read(videoPostProvider(_videoId).notifier).toggleLikeVideo();
+    ref
+        .read(videoPostProvider(_videoId).notifier)
+        .toggleLikeVideo(widget.videoData.thumbnailURL);
 
     setState(() {
       !_isLiked ? _likeCount++ : _likeCount--;
