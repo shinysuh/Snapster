@@ -11,7 +11,7 @@ class VideoTimelineScreen extends ConsumerStatefulWidget {
 }
 
 class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
-  static const basicItemCount = 5;
+  static const basicItemCount = 0;
   int _itemCount = basicItemCount;
 
   final PageController _pageController = PageController();
@@ -26,8 +26,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
     );
 
     if (pageIndex == _itemCount - 1) {
-      _itemCount = _itemCount + basicItemCount;
-      setState(() {});
+      ref.read(timelineProvider.notifier).fetchNextPage();
     }
   }
 
@@ -46,9 +45,9 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
   }
 
   /* RefreshIndicator 의 onRefresh 는 반드시 Future 리턴 */
-  // TODO - 추후 적절한 기능 적용 필요
   Future<void> _onRefresh() {
-    return Future.delayed(const Duration(seconds: 3));
+    // return Future.delayed(const Duration(seconds: 3));
+    return ref.watch(timelineProvider.notifier).refresh();
   }
 
   @override
@@ -73,23 +72,32 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
               ),
             ),
           ),
-          data: (videos) => RefreshIndicator(
-            onRefresh: _onRefresh,
-            displacement: 50,
-            edgeOffset: 20,
-            color: Theme.of(context).primaryColor,
-            child: PageView.builder(
-              controller: _pageController,
-              // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
-              scrollDirection: Axis.vertical,
-              itemCount: videos.length,
-              onPageChanged: _onPageChanged,
-              itemBuilder: (context, index) => VideoPost(
-                onVideoFinished: _onVideoFinished,
-                pageIndex: index,
+          data: (videos) {
+            _itemCount = videos.length;
+            final isEmpty = _itemCount < 2 && videos.first.id.isEmpty;
+            return RefreshIndicator(
+              onRefresh: _onRefresh,
+              displacement: 50,
+              edgeOffset: 20,
+              color: Theme.of(context).primaryColor,
+              child: PageView.builder(
+                controller: _pageController,
+                // pageSnapping: false, // true: 한번에 하나의 페이지 보게 (걸침 X, 멀티 스크롤 X)
+                scrollDirection: Axis.vertical,
+                itemCount: videos.length,
+                onPageChanged: _onPageChanged,
+                itemBuilder: (context, index) {
+                  final videoData = videos[index];
+                  return VideoPost(
+                    isEmpty: isEmpty,
+                    onVideoFinished: _onVideoFinished,
+                    pageIndex: index,
+                    videoData: videoData,
+                  );
+                },
               ),
-            ),
-          ),
+            );
+          },
         );
 
     // return RefreshIndicator(

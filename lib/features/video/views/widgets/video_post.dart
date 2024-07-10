@@ -3,24 +3,30 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
-import 'package:tiktok_clone/constants/profile_images.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/view_models/playback_config_view_model.dart';
+import 'package:tiktok_clone/features/video/view_models/video_post_view_model.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_button.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_caption.dart';
 import 'package:tiktok_clone/features/video/views/widgets/video_comments.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
+import 'package:tiktok_clone/utils/profile_network_img.dart';
 import 'package:video_player/video_player.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoPost extends ConsumerStatefulWidget {
+  final bool isEmpty;
   final Function onVideoFinished;
   final int pageIndex;
+  final VideoModel videoData;
 
   const VideoPost({
     super.key,
+    required this.isEmpty,
     required this.onVideoFinished,
     required this.pageIndex,
+    required this.videoData,
   });
 
   @override
@@ -29,131 +35,94 @@ class VideoPost extends ConsumerStatefulWidget {
 
 class VideoPostState extends ConsumerState<VideoPost>
     with SingleTickerProviderStateMixin {
-  static const List<String> videoUrls = [
-    'assets/videos/answering_pumpkin.mp4',
-    'assets/videos/barfie_pie.mp4',
-    'assets/videos/no_barf_but_yarn.mp4',
-    'assets/videos/face_changer.mp4',
-    'assets/videos/dreaming.mp4',
-  ];
-  late final VideoPlayerController _videoPlayerController;
+  VideoPlayerController? _videoPlayerController;
   late final AnimationController _animationController;
 
   final _animationDuration = const Duration(milliseconds: 200);
 
+  late final String _videoId;
   bool _isPaused = false;
   bool _isLiked = false;
+  int _likeCount = 0;
+  int _commentCount = 0;
+  bool _isInitialized = false;
 
-  // 초기 설정은 initialize 때만 가져오고 이후 local 세팅 변경
   /* Riverpod */
   late bool _isMuted = kIsWeb ? true : ref.watch(playbackConfigProvider).muted;
   late bool _showPlayButton = ref.watch(playbackConfigProvider).autoplay;
 
-  /* Provider */
-  // late bool _isMuted = context.watch<PlaybackConfigViewModel>().muted;
-  // late bool _showPlayButton = context.watch<PlaybackConfigViewModel>().autoplay;
-
-  // ValueNotifier
-  // bool _isMuted = videoConfig.value;
-
-  // ChangeNotifier
-  // bool _isMuted = videoConfig.autoMute;
-
   @override
   void initState() {
     super.initState();
-    // provider
-    // 여기서는 접근 XX => 위젯트리가 구현되기 전이므로. build() 메소드 내부에서의 접근이 바람직
-    // // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
-    // // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    // _isMuted = context.watch<VideoConfig>().isMuted;
-    // if (kIsWeb) context.read<VideoConfig>().muteVideos(); // web -> isMuted=true
-
+    _videoId = widget.videoData.id;
+    _initLike();
     _initVideoPlayer();
 
     _animationController = AnimationController(
       vsync: this,
-      // vsync: offscreen 애니메이션의 불필요한 리소스 사용 방지
       lowerBound: 1.0,
       upperBound: 2.0,
       value: 2.0,
-      // default (설정하지 않으면 lowerBound 로 설정됨)
       duration: _animationDuration,
     );
-
-    // context
-    //     .read<PlaybackConfigViewModel>()
-    //     .addListener(_onChangePlaybackConfig);
-
-    // ** AnimatedBuilder 를 사용하지 않을 때의 방법
-    // _animationController.addListener(() {
-    //   setState(() {});
-    // });
-
-    // videoConfig.addListener(() {
-    //   setState(() {
-    //     // ValueNotifier
-    //     _isMuted = videoConfig.value;
-    //     // ChangeNotifier
-    //     // _isMuted = videoConfig.autoMute;
-    //   });
-    // });
   }
 
   @override
   void dispose() {
     _animationController.dispose();
-    _videoPlayerController.dispose();
+    _videoPlayerController?.dispose();
     super.dispose();
   }
 
-  void _initVideoPlayer() async {
-    _videoPlayerController = VideoPlayerController.asset(
-        videoUrls[widget.pageIndex % videoUrls.length]);
-    // initialize
-    await _videoPlayerController.initialize();
-
-    // 영상 반복 재생
-    await _videoPlayerController.setLooping(true);
-    // 영상 자동 넘김 시 필요
-    // _videoPlayerController.addListener(_onVideoChange);
-
-    _videoPlayerController.addListener(() {
-      _videoPlayerController.setVolume(_isMuted ? 0 : 1);
-    });
-
-    setState(() {
-      _isPaused = !ref.read(playbackConfigProvider).autoplay;
-      // _isPaused = !context.read<PlaybackConfigViewModel>().autoplay;
-    });
+  Future<void> _initLike() async {
+    _likeCount = widget.videoData.likes;
+    _commentCount = widget.videoData.comments;
+    _isLiked = await ref.read(videoPostProvider(_videoId).notifier).isLiked();
   }
 
-  // local change
+  Future<void> _initVideoPlayer() async {
+    try {
+      // Use the fileUrl directly from videoData
+      _videoPlayerController =
+          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
+
+      // initialize
+      await _videoPlayerController?.initialize();
+
+      // 영상 반복 재생
+      await _videoPlayerController?.setLooping(true);
+
+      _videoPlayerController?.addListener(() {
+        _videoPlayerController?.setVolume(_isMuted ? 0 : 1);
+      });
+
+      setState(() {
+        _isPaused = !ref.read(playbackConfigProvider).autoplay;
+        _isInitialized = true;
+      });
+    } catch (e) {
+      // 에러 핸들링: 에러 메시지를 출력하거나, 에러 상태로 전환
+      print('Error initializing video player: $e');
+    }
+  }
+
   void _toggleMuted() {
     setState(() {
       _isMuted = !_isMuted;
     });
-
-    // ValueNotifier
-    // videoConfig.value = !videoConfig.value;
-
-    // ChangeNotifier
-    // videoConfig.toggleMuted();
   }
 
-  // 전역적 change
   void _onChangePlaybackConfig() {
     if (!mounted) return;
 
     _videoPlayerController
-        .setVolume(!ref.read(playbackConfigProvider).muted ? 0 : 1);
-    // _videoPlayerController.setVolume(context.read<PlaybackConfigViewModel>().muted ? 0 : 1);
+        ?.setVolume(!ref.read(playbackConfigProvider).muted ? 0 : 1);
   }
 
   void _onVideoChange() {
-    if (_videoPlayerController.value.isInitialized &&
-        _videoPlayerController.value.duration ==
-            _videoPlayerController.value.position) {
+    if (_videoPlayerController?.value.isInitialized == true &&
+        _videoPlayerController?.value.duration ==
+            _videoPlayerController?.value.position) {
       widget.onVideoFinished();
     }
   }
@@ -163,13 +132,14 @@ class VideoPostState extends ConsumerState<VideoPost>
 
     if (info.visibleFraction == 1 &&
         !_isPaused &&
-        !_videoPlayerController.value.isPlaying) {
+        !(_videoPlayerController?.value.isPlaying ?? false)) {
       if (ref.read(playbackConfigProvider).autoplay) {
-        _videoPlayerController.play();
+        _videoPlayerController?.play();
       }
     }
 
-    if (info.visibleFraction < 1 && _videoPlayerController.value.isPlaying) {
+    if (info.visibleFraction < 1 &&
+        (_videoPlayerController?.value.isPlaying ?? false)) {
       _togglePause();
     }
   }
@@ -177,11 +147,11 @@ class VideoPostState extends ConsumerState<VideoPost>
   void _togglePause() {
     if (!_showPlayButton) _showPlayButton = true;
 
-    if (_videoPlayerController.value.isPlaying) {
-      _videoPlayerController.pause();
+    if (_videoPlayerController?.value.isPlaying ?? false) {
+      _videoPlayerController?.pause();
       _animationController.reverse();
     } else {
-      _videoPlayerController.play();
+      _videoPlayerController?.play();
       _animationController.forward();
     }
 
@@ -191,166 +161,210 @@ class VideoPostState extends ConsumerState<VideoPost>
   }
 
   void _onTapLike() {
+    ref.read(videoPostProvider(_videoId).notifier).toggleLikeVideo();
+
     setState(() {
+      !_isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
       _isLiked = !_isLiked;
     });
   }
 
+  void _onChangeCommentCount(int commentCount) {
+    setState(() {
+      _commentCount = commentCount;
+    });
+  }
+
   void _onTapComments(BuildContext context) async {
-    if (_videoPlayerController.value.isPlaying) _togglePause();
+    if (_videoPlayerController?.value.isPlaying ?? false) _togglePause();
 
     await showModalBottomSheet(
       context: context,
-      // backgroundColor: transparent 설정으로 Scaffold의 설정이 보일 수 있게 됨 (borderRadius 도 마찬가지)
       backgroundColor: Colors.transparent,
       isScrollControlled: true,
-      builder: (context) => VideoComments(),
+      builder: (context) => VideoComments(
+        videoId: _videoId,
+        commentCount: _commentCount,
+        onChangeCommentCount: _onChangeCommentCount,
+      ),
     );
 
     _togglePause();
   }
 
+  List<Widget> _getPageElements() {
+    return [
+      Positioned.fill(
+        child: GestureDetector(
+          onTap: _togglePause,
+        ),
+      ),
+      Positioned.fill(
+        child: IgnorePointer(
+          child: Center(
+            child: AnimatedBuilder(
+              animation: _animationController,
+              builder: (context, child) {
+                return Transform.scale(
+                  scale: _animationController.value,
+                  child: child,
+                );
+              },
+              child: _showPlayButton
+                  ? AnimatedOpacity(
+                      duration: _animationDuration,
+                      opacity: _isPaused ? 1 : 0,
+                      child: const FaIcon(
+                        FontAwesomeIcons.play,
+                        color: Colors.white,
+                        size: Sizes.size72,
+                      ),
+                    )
+                  : null,
+            ),
+          ),
+        ),
+      ),
+      Positioned(
+        bottom: 25,
+        left: 15,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              '@${widget.videoData.uploader}',
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: Sizes.size20,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            Gaps.v18,
+            if (widget.videoData.description.isNotEmpty)
+              VideoCaption(
+                description: widget.videoData.description,
+                tags: widget.videoData.tags,
+              ),
+          ],
+        ),
+      ),
+      Positioned(
+        bottom: 25,
+        right: 15,
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: _toggleMuted,
+              child: FaIcon(
+                _isMuted
+                    ? FontAwesomeIcons.volumeXmark
+                    : FontAwesomeIcons.volumeHigh,
+                color: Colors.white,
+                size: Sizes.size24,
+              ),
+            ),
+            Gaps.v24,
+            CircleAvatar(
+              radius: 25,
+              backgroundColor: Colors.black,
+              foregroundColor: Colors.white,
+              foregroundImage: getProfileImgByUserId(
+                widget.videoData.uploaderUid,
+                false,
+              ),
+            ),
+            Gaps.v12,
+            GestureDetector(
+              onTap: _onTapLike,
+              child: VideoButton(
+                icon: FontAwesomeIcons.solidHeart,
+                iconColor: _isLiked ? Colors.red : Colors.white,
+                text: S.of(context).likeCount(_likeCount),
+              ),
+            ),
+            Gaps.v24,
+            GestureDetector(
+              onTap: () => _onTapComments(context),
+              child: VideoButton(
+                icon: FontAwesomeIcons.solidCommentDots,
+                iconColor: Colors.white,
+                text: S.of(context).commentCount(_commentCount),
+              ),
+            ),
+            Gaps.v24,
+            VideoButton(
+              icon: FontAwesomeIcons.share,
+              iconColor: Colors.white,
+              text: S.of(context).share,
+            ),
+            Gaps.v20,
+          ],
+        ),
+      )
+    ];
+  }
+
+  TextStyle _getErrorContainerTextStyle() {
+    return const TextStyle(
+      fontSize: Sizes.size20,
+      color: Colors.white,
+      fontWeight: FontWeight.bold,
+      height: 1.8,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    // 웹에서는 실행 하자마자 소리가 있는 영상 재생 불가
-    // 기존 광고 회사들의 오/남용으로 인해 웹 자체에서 막혀 있음
-    // _isMuted = context.watch<PlaybackConfigViewModel>().muted;
-    // if (kIsWeb) _isMuted = true;
-    // context
-    //     .read<PlaybackConfigViewModel>()
-    //     .setMuted(true); // web -> isMuted=true
-
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
       onVisibilityChanged: _onVisibilityChanged,
       child: Stack(
         children: [
           Positioned.fill(
-            child: _videoPlayerController.value.isInitialized
-                ? VideoPlayer(_videoPlayerController)
-                : Container(
+            child: widget.isEmpty
+                ? Container(
                     color: Colors.black,
-                    child: const Center(
+                    child: Center(
                       child: Text(
-                        "No more videos to display. \nYou've seen all of 'em.",
-                        style: TextStyle(
+                        S.of(context).noVideosToShow,
+                        // "No more videos to display. \nYou've seen all of 'em.",
+                        style: const TextStyle(
                           fontSize: Sizes.size20,
                           color: Colors.white,
                           fontWeight: FontWeight.bold,
+                          height: 1.8,
                         ),
                         textAlign: TextAlign.center,
                       ),
                     ),
-                  ),
-          ),
-          Positioned.fill(
-            child: GestureDetector(
-              onTap: _togglePause,
-            ),
-          ),
-          Positioned.fill(
-            // IgnorePointer 클릭 이벤트가 해당 위젯을 무시하고 진행됨
-            child: IgnorePointer(
-              child: Center(
-                child: AnimatedBuilder(
-                  animation: _animationController,
-                  builder: (context, child) {
-                    // _animationController 의 값이 변경될 때마다 실행됨
-                    return Transform.scale(
-                      scale: _animationController.value,
-                      child: child,
-                    );
-                  },
-                  // child: Transform.scale(
-                  // scale: _animationController.value,
-                  child: _showPlayButton
-                      ? AnimatedOpacity(
-                          duration: _animationDuration,
-                          opacity: _isPaused ? 1 : 0,
-                          child: const FaIcon(
-                            FontAwesomeIcons.play,
-                            color: Colors.white,
-                            size: Sizes.size72,
+                  )
+                : _isInitialized
+                    ? VideoPlayer(_videoPlayerController!)
+                    : Image.network(
+                        widget.videoData.thumbnailURL,
+                        fit: BoxFit.cover,
+                        errorBuilder: (context, error, stackTrace) => Container(
+                          color: Colors.black,
+                          child: Center(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                const CircularProgressIndicator.adaptive(
+                                  backgroundColor: Colors.white,
+                                ),
+                                Gaps.v20,
+                                Text(
+                                  S.of(context).nowLoadingTheVideo,
+                                  style: _getErrorContainerTextStyle(),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ],
+                            ),
                           ),
-                        )
-                      : null,
-                  // ),
-                ),
-              ),
-            ),
+                        ),
+                      ),
           ),
-          const Positioned(
-            bottom: 25,
-            left: 15,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  '@jen',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: Sizes.size20,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Gaps.v18,
-                VideoCaption(),
-              ],
-            ),
-          ),
-          Positioned(
-            bottom: 25,
-            right: 15,
-            child: Column(
-              children: [
-                GestureDetector(
-                  onTap: _toggleMuted,
-                  child: FaIcon(
-                    _isMuted
-                        ? FontAwesomeIcons.volumeXmark
-                        : FontAwesomeIcons.volumeHigh,
-                    color: Colors.white,
-                    size: Sizes.size24,
-                  ),
-                ),
-                Gaps.v24,
-                CircleAvatar(
-                  radius: 25,
-                  backgroundColor: Colors.black,
-                  foregroundColor: Colors.white,
-                  foregroundImage: profileImage,
-                  child: const Text(
-                    'Jenna',
-                  ),
-                ),
-                Gaps.v24,
-                GestureDetector(
-                  onTap: _onTapLike,
-                  child: VideoButton(
-                    icon: FontAwesomeIcons.solidHeart,
-                    iconColor: _isLiked ? Colors.red : Colors.white,
-                    text: S.of(context).likeCount(3233),
-                  ),
-                ),
-                Gaps.v24,
-                GestureDetector(
-                  onTap: () => _onTapComments(context),
-                  child: VideoButton(
-                    icon: FontAwesomeIcons.solidCommentDots,
-                    iconColor: Colors.white,
-                    text: S.of(context).commentCount(823522),
-                  ),
-                ),
-                Gaps.v24,
-                VideoButton(
-                  icon: FontAwesomeIcons.share,
-                  iconColor: Colors.white,
-                  text: S.of(context).share,
-                ),
-                Gaps.v20,
-              ],
-            ),
-          ),
+          if (!widget.isEmpty) ..._getPageElements(),
         ],
       ),
     );

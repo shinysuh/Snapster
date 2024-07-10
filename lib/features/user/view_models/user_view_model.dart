@@ -44,7 +44,8 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     final profile = UserProfileModel(
       uid: credential.user!.uid,
       name: form['name'] ?? '',
-      username: credential.user!.displayName ?? form['username'] ?? 'Anonymous',
+      username:
+          credential.user!.displayName ?? form['username'] ?? form['name'],
       email: credential.user!.email ?? '',
       bio: '',
       link: '',
@@ -60,7 +61,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
   Future<void> updateProfile(
       BuildContext context, UserProfileModel profile) async {
-    await checkLoginUser(context);
+    await _authRepository.checkLoginUser(context);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
         () async => await _userRepository.updateProfile(profile.uid, profile));

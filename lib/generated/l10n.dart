@@ -334,6 +334,146 @@ class S {
       args: [],
     );
   }
+
+  /// `MMM d yyyy`
+  String get yearMonthDate {
+    return Intl.message(
+      'MMM d yyyy',
+      name: 'yearMonthDate',
+      desc: 'Format for year, month, and day.',
+      args: [],
+    );
+  }
+
+  /// `MMM d`
+  String get monthDate {
+    return Intl.message(
+      'MMM d',
+      name: 'monthDate',
+      desc: 'Format for month and day.',
+      args: [],
+    );
+  }
+
+  /// `h:mma`
+  String get hourMinuteAPM {
+    return Intl.message(
+      'h:mma',
+      name: 'hourMinuteAPM',
+      desc: 'Format for hour and minute with AM/PM.',
+      args: [],
+    );
+  }
+
+  /// `Conversation Not Started`
+  String get conversationNotStarted {
+    return Intl.message(
+      'Conversation Not Started',
+      name: 'conversationNotStarted',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Select a profile to start a conversation`
+  String get selectAProfileToStartAConversation {
+    return Intl.message(
+      'Select a profile to start a conversation',
+      name: 'selectAProfileToStartAConversation',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Choose a profile`
+  String get chooseAProfile {
+    return Intl.message(
+      'Choose a profile',
+      name: 'chooseAProfile',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Exit chatroom`
+  String get exitChatroom {
+    return Intl.message(
+      'Exit chatroom',
+      name: 'exitChatroom',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `{username} has left the chatroom.`
+  String userHasLeftChatroom(Object username) {
+    return Intl.message(
+      '$username has left the chatroom.',
+      name: 'userHasLeftChatroom',
+      desc: '',
+      args: [username],
+    );
+  }
+
+  /// `Exit`
+  String get exit {
+    return Intl.message(
+      'Exit',
+      name: 'exit',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to invite the person back?`
+  String get reInvitationConfirmMsg {
+    return Intl.message(
+      'Do you want to invite the person back?',
+      name: 'reInvitationConfirmMsg',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Do you want to delete the message?`
+  String get deleteMessageConfirm {
+    return Intl.message(
+      'Do you want to delete the message?',
+      name: 'deleteMessageConfirm',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `You can only delete the messages you sent.`
+  String get youCanOnlyDeleteTheMessagesYouSent {
+    return Intl.message(
+      'You can only delete the messages you sent.',
+      name: 'youCanOnlyDeleteTheMessagesYouSent',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `No videos to show.\nIf you've uploaded any,\nplease refresh the page.`
+  String get noVideosToShow {
+    return Intl.message(
+      'No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page.',
+      name: 'noVideosToShow',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Now loading the video..`
+  String get nowLoadingTheVideo {
+    return Intl.message(
+      'Now loading the video..',
+      name: 'nowLoadingTheVideo',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

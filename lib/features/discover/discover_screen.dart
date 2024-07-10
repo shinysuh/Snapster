@@ -18,10 +18,6 @@ class DiscoverScreen extends StatefulWidget {
 class _DiscoverScreenState extends State<DiscoverScreen> {
   final List<String> imageUrls = [
     'assets/images/1.jpeg',
-    'assets/images/2.jpeg',
-    'assets/images/5.jpeg',
-    'assets/images/6.jpeg',
-    'assets/images/13.jpeg',
     'assets/images/18.jpeg',
   ];
 

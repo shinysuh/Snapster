@@ -83,5 +83,31 @@
   "description": "description",
   "chooseYourInterests": "Choose your interests",
   "setTheVideoTitle": "Please set the video title before you upload it.",
-  "enterVideoTitle": "Enter video title"
+  "enterVideoTitle": "Enter video title",
+  "yearMonthDate": "MMM d yyyy",
+  "@yearMonthDate": {
+    "description": "Format for year, month, and day.",
+    "placeholders": {}
+  },
+  "monthDate": "MMM d",
+  "@monthDate": {
+    "description": "Format for month and day.",
+    "placeholders": {}
+  },
+  "hourMinuteAPM": "h:mma",
+  "@hourMinuteAPM": {
+    "description": "Format for hour and minute with AM/PM.",
+    "placeholders": {}
+  },
+  "conversationNotStarted": "Conversation Not Started",
+  "selectAProfileToStartAConversation": "Select a profile to start a conversation",
+  "chooseAProfile": "Choose a profile",
+  "exitChatroom": "Exit chatroom",
+  "userHasLeftChatroom": "{username} has left the chatroom.",
+  "exit": "Exit",
+  "reInvitationConfirmMsg": "Do you want to invite the person back?",
+  "deleteMessageConfirm": "Do you want to delete the message?",
+  "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent.",
+  "noVideosToShow": "No videos to show.\nIf you've uploaded any,\nplease refresh the page.",
+  "nowLoadingTheVideo": "Now loading the video.."
 }

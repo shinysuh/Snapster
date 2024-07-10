@@ -41,10 +41,14 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
 
+  static String m9(username) => "${username} has left the chatroom.";
+
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
         "alreadyHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Already have an account?"),
+        "chooseAProfile":
+            MessageLookupByLibrary.simpleMessage("Choose a profile"),
         "chooseYourInterests":
             MessageLookupByLibrary.simpleMessage("Choose your interests"),
         "commentCount": m0,
@@ -56,18 +60,35 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue with Github"),
         "continueWithGoogle":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "conversationNotStarted":
+            MessageLookupByLibrary.simpleMessage("Conversation Not Started"),
+        "deleteMessageConfirm": MessageLookupByLibrary.simpleMessage(
+            "Do you want to delete the message?"),
         "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),
         "editProfile": MessageLookupByLibrary.simpleMessage("Edit Profile"),
         "enterVideoTitle":
             MessageLookupByLibrary.simpleMessage("Enter video title"),
+        "exit": MessageLookupByLibrary.simpleMessage("Exit"),
+        "exitChatroom": MessageLookupByLibrary.simpleMessage("Exit chatroom"),
+        "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:mma"),
         "likeCount": m3,
         "logIn": m4,
         "logInToTiktok": m5,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
+        "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
+        "noVideosToShow": MessageLookupByLibrary.simpleMessage(
+            "No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page."),
+        "nowLoadingTheVideo":
+            MessageLookupByLibrary.simpleMessage("Now loading the video.."),
+        "reInvitationConfirmMsg": MessageLookupByLibrary.simpleMessage(
+            "Do you want to invite the person back?"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),
+        "selectAProfileToStartAConversation":
+            MessageLookupByLibrary.simpleMessage(
+                "Select a profile to start a conversation"),
         "setTheVideoTitle": MessageLookupByLibrary.simpleMessage(
             "Please set the video title before you upload it."),
         "share": MessageLookupByLibrary.simpleMessage("share"),
@@ -78,6 +99,11 @@ class MessageLookup extends MessageLookupByLibrary {
         "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password"),
-        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail")
+        "userHasLeftChatroom": m9,
+        "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
+        "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy"),
+        "youCanOnlyDeleteTheMessagesYouSent":
+            MessageLookupByLibrary.simpleMessage(
+                "You can only delete the messages you sent.")
       };
 }

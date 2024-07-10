@@ -24,5 +24,19 @@
   "description": "상세 정보",
   "chooseYourInterests": "Choose your interests",
   "setTheVideoTitle": "비디오 제목을 입력한 후 업로드 해 주세요.",
-  "enterVideoTitle": "비디오 제목을 입력해 주세요."
+  "enterVideoTitle": "비디오 제목을 입력해 주세요.",
+  "yearMonthDate": "yyyy년 M월 d일",
+  "monthDate": "M월 d일",
+  "hourMinuteAPM": "h:mma",
+  "conversationNotStarted": "대화가 시작되지 않았습니다",
+  "selectAProfileToStartAConversation": "대화를 시작할 상대의 프로필을 선택하세요",
+  "chooseAProfile": "프로필 선택",
+  "exitChatroom": "채팅방 나가기",
+  "userHasLeftChatroom": "{username} 님이 채팅방을 나갔습니다.",
+  "exit": "나가기",
+  "reInvitationConfirmMsg": "상대방을 다시 초대 하시겠습니까?",
+  "deleteMessageConfirm": "메세지를 삭제 하시겠습니까?",
+  "youCanOnlyDeleteTheMessagesYouSent": "내가 보낸 메세지만 삭제 가능합니다.",
+  "noVideosToShow": "표시할 동영상이 없습니다.\n동영상을 업로드 했을 경우\n페이지를 새로고침해 주세요.",
+  "nowLoadingTheVideo": "비디오 로딩 중.."
 }

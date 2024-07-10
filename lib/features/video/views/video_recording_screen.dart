@@ -84,6 +84,7 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _progressAnimationController.dispose();
     _buttonAnimationController.dispose();
     // iOS 오류 방지

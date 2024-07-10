@@ -20,10 +20,19 @@ class UserRepository {
         .set(profile.toJson());
   }
 
-  // get
+  // get a profile
   Future<Map<String, dynamic>?> findProfile(String uid) async {
     final doc = await _database.collection(userCollection).doc(uid).get();
     return doc.data();
+  }
+
+  // get all user profile
+  Future<QuerySnapshot<Map<String, dynamic>>> fetchAllUsers() async {
+    return await _database
+        .collection(userCollection)
+        .orderBy('uid')
+        // .limit(20)   // pagination
+        .get();
   }
 
   // update profile

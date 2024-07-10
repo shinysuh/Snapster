@@ -1,7 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/features/authentication/sign_up_screen.dart';
+import 'package:tiktok_clone/features/authentication/views/sign_up_screen.dart';
+import 'package:tiktok_clone/utils/base_exception_handler.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class AuthenticationRepository {
@@ -46,6 +47,14 @@ class AuthenticationRepository {
 
   Future<void> googleSingIn() async {
     await _firebaseAuth.signInWithProvider(GoogleAuthProvider());
+  }
+
+  Future<void> checkLoginUser(BuildContext context) async {
+    if (!isLoggedIn) {
+      signOut(context);
+      showSessionErrorSnack(context);
+      throw Exception();
+    }
   }
 }
 

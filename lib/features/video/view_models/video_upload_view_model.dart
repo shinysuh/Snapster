@@ -3,20 +3,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:tiktok_clone/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:go_router/go_router.dart';
 import 'package:tiktok_clone/features/authentication/repositories/authentication_repository.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/repositories/video_repository.dart';
 import 'package:tiktok_clone/utils/base_exception_handler.dart';
-import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class VideoUploadViewModel extends AsyncNotifier<void> {
-  late final VideoRepository _repository;
+  late final VideoRepository _videoRepository;
 
   @override
   FutureOr<void> build() {
-    _repository = ref.read(videoRepository);
+    _videoRepository = ref.read(videoRepository);
   }
 
   Future<void> uploadVideo({
@@ -37,17 +36,19 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       int createdAt = DateTime.now().millisecondsSinceEpoch;
-      final task = await _repository.uploadVideoFile(
+      final task = await _videoRepository.uploadVideoFile(
         video,
         user!.uid,
         createdAt.toString(),
       );
 
       if (task.metadata != null) {
-        await _repository.saveVideo(
+        await _videoRepository.saveVideo(
           VideoModel(
+            id: '',
             title: title,
             description: description,
+            tags: [],
             fileUrl: await task.ref.getDownloadURL(),
             thumbnailURL: '',
             uploader: userProfile!.username,
@@ -59,10 +60,8 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
         );
 
         if (!context.mounted) return;
-        goRouteReplacementRoute(
-          context: context,
-          routeURL: MainNavigationScreen.homeRouteURL,
-        );
+        context.pop();
+        context.pop();
       }
     });
   }
