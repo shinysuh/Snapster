@@ -22,3 +22,8 @@ interface CommentInterface {
     updatedAt: number;
 }
 
+interface ThumbnailLinkInterface {
+    videoId: string;
+    thumbnailUrl: string;
+    createdAt: number;
+}

@@ -7,6 +7,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/features/inbox/views/activity_screen.dart';
 import 'package:tiktok_clone/features/settings/settings_screen.dart';
 import 'package:tiktok_clone/features/user/models/user_profile_model.dart';
+import 'package:tiktok_clone/features/user/view_models/user_profile_view_model.dart';
 import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/features/user/views/user_profile_form_screen.dart';
 import 'package:tiktok_clone/features/user/widgets/avatar.dart';
@@ -313,62 +314,80 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       ],
                       body: TabBarView(
                         children: [
-                          GridView.builder(
-                            // 드래그 시에 keyboard dismiss
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount: 20,
-                            padding: const EdgeInsets.only(top: Sizes.size5),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              // crossAxisCount => grid 의 컬럼 개수
-                              crossAxisCount: colCount,
-                              crossAxisSpacing: Sizes.size2,
-                              mainAxisSpacing: Sizes.size2,
-                              childAspectRatio: _videoRatio,
-                            ),
-                            // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                            // Image.network(url) 로 네트워크 상 이미지 fetch
-                            // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                            itemBuilder: (context, index) => Stack(
-                              children: [
-                                Column(
-                                  children: [
-                                    AspectRatio(
-                                      aspectRatio: _videoRatio,
-                                      child: FadeInImage.assetNetwork(
-                                        fit: BoxFit.cover,
-                                        placeholder: 'assets/images/1.jpeg',
-                                        image:
-                                            "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
-                                      ),
+                          ref
+                              .watch(uploadedThumbnailListProvider(user.uid))
+                              .when(
+                                loading: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
+                                ),
+                                error: (error, stackTrace) => Center(
+                                  child: Text(error.toString()),
+                                ),
+                                data: (thumbnails) {
+                                  return GridView.builder(
+                                    // 드래그 시에 keyboard dismiss
+                                    keyboardDismissBehavior:
+                                        ScrollViewKeyboardDismissBehavior
+                                            .onDrag,
+                                    itemCount: thumbnails.length,
+                                    padding:
+                                        const EdgeInsets.only(top: Sizes.size5),
+                                    gridDelegate:
+                                        SliverGridDelegateWithFixedCrossAxisCount(
+                                      // crossAxisCount => grid 의 컬럼 개수
+                                      crossAxisCount: colCount,
+                                      crossAxisSpacing: Sizes.size2,
+                                      mainAxisSpacing: Sizes.size2,
+                                      childAspectRatio: _videoRatio,
                                     ),
-                                  ],
-                                ),
-                                const Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.play_arrow_outlined,
-                                        color: Colors.white,
-                                        size: Sizes.size26,
-                                      ),
-                                      Text(
-                                        '2.6K',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: Sizes.size14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                                    // Image.asset(url) 로 asset 폴더 내 이미지 fetch
+                                    // Image.network(url) 로 네트워크 상 이미지 fetch
+                                    // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
+                                    itemBuilder: (context, index) {
+                                      var thumbnail = thumbnails[index];
+                                      return Stack(
+                                        children: [
+                                          Column(
+                                            children: [
+                                              AspectRatio(
+                                                aspectRatio: _videoRatio,
+                                                child: FadeInImage.assetNetwork(
+                                                  fit: BoxFit.cover,
+                                                  placeholder:
+                                                      'assets/images/18.jpeg',
+                                                  image: thumbnail.thumbnailUrl,
+                                                  // "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          const Positioned(
+                                            bottom: 0,
+                                            left: 0,
+                                            child: Row(
+                                              children: [
+                                                Icon(
+                                                  Icons.play_arrow_outlined,
+                                                  color: Colors.white,
+                                                  size: Sizes.size26,
+                                                ),
+                                                Text(
+                                                  '2.6K',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: Sizes.size14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                              ),
                           GridView.builder(
                             // 드래그 시에 keyboard dismiss
                             keyboardDismissBehavior:
