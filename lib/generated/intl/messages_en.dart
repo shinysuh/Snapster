@@ -79,6 +79,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
         "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
+        "noVideosToShow": MessageLookupByLibrary.simpleMessage(
+            "No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page."),
         "reInvitationConfirmMsg": MessageLookupByLibrary.simpleMessage(
             "Do you want to invite the person back?"),
         "save": MessageLookupByLibrary.simpleMessage("Save"),

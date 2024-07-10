@@ -29,6 +29,7 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   FutureOr<List<VideoModel>> build() async {
     _repository = ref.read(videoRepository);
     _list = await _fetchVideos(lastItemCreatedAt: null); // 복사본 유지
+    if (_list.isEmpty) return [VideoModel.sample(id: '', title: '')];
     return _list;
   }
 

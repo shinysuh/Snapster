@@ -74,6 +74,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
           ),
           data: (videos) {
             _itemCount = videos.length;
+            final isEmpty = _itemCount < 2 && videos.first.id.isEmpty;
             return RefreshIndicator(
               onRefresh: _onRefresh,
               displacement: 50,
@@ -88,6 +89,7 @@ class VideoTimelineScreenState extends ConsumerState<VideoTimelineScreen> {
                 itemBuilder: (context, index) {
                   final videoData = videos[index];
                   return VideoPost(
+                    isEmpty: isEmpty,
                     onVideoFinished: _onVideoFinished,
                     pageIndex: index,
                     videoData: videoData,

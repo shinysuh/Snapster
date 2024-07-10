@@ -454,6 +454,16 @@ class S {
       args: [],
     );
   }
+
+  /// `No videos to show.\nIf you've uploaded any,\nplease refresh the page.`
+  String get noVideosToShow {
+    return Intl.message(
+      'No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page.',
+      name: 'noVideosToShow',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

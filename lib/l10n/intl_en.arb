@@ -107,5 +107,6 @@
   "exit": "Exit",
   "reInvitationConfirmMsg": "Do you want to invite the person back?",
   "deleteMessageConfirm": "Do you want to delete the message?",
-  "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent."
+  "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent.",
+  "noVideosToShow": "No videos to show.\nIf you've uploaded any,\nplease refresh the page."
 }
