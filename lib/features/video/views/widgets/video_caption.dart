@@ -5,7 +5,7 @@ import 'package:tiktok_clone/constants/sizes.dart';
 
 class VideoCaption extends StatefulWidget {
   final String description;
-  final List<String> tags;
+  final List<dynamic> tags;
 
   const VideoCaption({
     super.key,
@@ -20,13 +20,13 @@ class VideoCaption extends StatefulWidget {
 class _VideoCaptionState extends State<VideoCaption> {
   final double maxOpenedHeight = 250.0;
   final double closedHeight = 30.0;
-  final int _cutLength = 25;
+  final int _cutLength = 20;
   final ScrollController _scrollController = ScrollController();
 
   String _caption = '';
   bool _isCaptionOpened = false;
   bool _isWithEllipsis = true;
-  List<String> _tags = [
+  List<dynamic> _tags = [
     // 'baby_face',
     // 'lovely',
     // 'adorable',
@@ -42,6 +42,7 @@ class _VideoCaptionState extends State<VideoCaption> {
   void initState() {
     super.initState();
     _caption = widget.description;
+    // _caption = 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc';
     // _caption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * 13;
     _isWithEllipsis = _caption.length > _cutLength;
     _tags = widget.tags;
@@ -77,8 +78,6 @@ class _VideoCaptionState extends State<VideoCaption> {
     if (!_isCaptionOpened && _isWithEllipsis) {
       displayCaption = displayCaption.substring(0, _cutLength);
     }
-
-    print(_isWithEllipsis);
 
     return _isCaptionOpened
         ? _getOpenedCaption(displayCaption)
