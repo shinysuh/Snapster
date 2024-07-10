@@ -1,7 +1,5 @@
 import * as functions from "firebase-functions";
 import * as admin from "firebase-admin";
-import { firestore } from "firebase-admin";
-import Timestamp = firestore.Timestamp;
 
 // Firestore 초기화
 admin.initializeApp();
@@ -94,6 +92,8 @@ export const onLiked = functions.firestore
     .document(`${ likeCollection }/{likeId}`)
     .onCreate(async (snapshot, context) => {
             const [ videoId, userId ] = snapshot.id.split(commonIdDivider);
+            const likeData = snapshot.data() as ThumbnailLinkInterface;
+            
             const db = admin.firestore();
             
             await db.collection(videoCollection)
@@ -106,9 +106,10 @@ export const onLiked = functions.firestore
                     .collection(likeCollection)
                     .doc(videoId)
                     .set({
-                        createdAt: Timestamp.now().toMillis(),
+                        videoId: videoId,
+                        thumbnailUrl: likeData.thumbnailUrl,
+                        createdAt: likeData.createdAt,
                     });
-            
         }
     );
 

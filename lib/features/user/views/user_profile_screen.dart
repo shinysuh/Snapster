@@ -14,6 +14,7 @@ import 'package:tiktok_clone/features/user/widgets/avatar.dart';
 import 'package:tiktok_clone/features/user/widgets/follow_info.dart';
 import 'package:tiktok_clone/features/user/widgets/profile_button.dart';
 import 'package:tiktok_clone/features/user/widgets/user_profile_tab_bar.dart';
+import 'package:tiktok_clone/features/video/models/thumbnail_link_model.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {
@@ -225,6 +226,81 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     ];
   }
 
+  Widget _getPlayCount(String count) {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      child: Row(
+        children: [
+          const Icon(
+            Icons.play_arrow_outlined,
+            color: Colors.white,
+            size: Sizes.size26,
+          ),
+          Text(
+            count,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: Sizes.size14,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _getGridViewByTabBar({
+    required int colCount,
+    required String playCount,
+    required List<ThumbnailLinkModel> thumbnailData,
+  }) {
+    return GridView.builder(
+      // 드래그 시에 keyboard dismiss
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: thumbnailData.length,
+      padding: const EdgeInsets.only(top: Sizes.size5),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        // crossAxisCount => grid 의 컬럼 개수
+        crossAxisCount: colCount,
+        crossAxisSpacing: Sizes.size2,
+        mainAxisSpacing: Sizes.size2,
+        childAspectRatio: _videoRatio,
+      ),
+      // Image.asset(url) 로 asset 폴더 내 이미지 fetch
+      // Image.network(url) 로 네트워크 상 이미지 fetch
+      // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
+      itemBuilder: (context, index) {
+        var thumbnail = thumbnailData[index];
+        return Stack(
+          children: [
+            Column(
+              children: [
+                AspectRatio(
+                  aspectRatio: _videoRatio,
+                  child: Image(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      thumbnail.thumbnailUrl,
+                    ),
+                  ),
+                  // child: FadeInImage.assetNetwork(
+                  //   fit: BoxFit.cover,
+                  //   placeholder:
+                  //       'assets/images/18.jpeg',
+                  //   image: thumbnail.thumbnailUrl,
+                  //   // "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
+                  // ),
+                ),
+              ],
+            ),
+            _getPlayCount('2.6K'),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
@@ -323,123 +399,25 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                 error: (error, stackTrace) => Center(
                                   child: Text(error.toString()),
                                 ),
-                                data: (thumbnails) {
-                                  return GridView.builder(
-                                    // 드래그 시에 keyboard dismiss
-                                    keyboardDismissBehavior:
-                                        ScrollViewKeyboardDismissBehavior
-                                            .onDrag,
-                                    itemCount: thumbnails.length,
-                                    padding:
-                                        const EdgeInsets.only(top: Sizes.size5),
-                                    gridDelegate:
-                                        SliverGridDelegateWithFixedCrossAxisCount(
-                                      // crossAxisCount => grid 의 컬럼 개수
-                                      crossAxisCount: colCount,
-                                      crossAxisSpacing: Sizes.size2,
-                                      mainAxisSpacing: Sizes.size2,
-                                      childAspectRatio: _videoRatio,
-                                    ),
-                                    // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                                    // Image.network(url) 로 네트워크 상 이미지 fetch
-                                    // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
-                                    itemBuilder: (context, index) {
-                                      var thumbnail = thumbnails[index];
-                                      return Stack(
-                                        children: [
-                                          Column(
-                                            children: [
-                                              AspectRatio(
-                                                aspectRatio: _videoRatio,
-                                                child: FadeInImage.assetNetwork(
-                                                  fit: BoxFit.cover,
-                                                  placeholder:
-                                                      'assets/images/18.jpeg',
-                                                  image: thumbnail.thumbnailUrl,
-                                                  // "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Positioned(
-                                            bottom: 0,
-                                            left: 0,
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.play_arrow_outlined,
-                                                  color: Colors.white,
-                                                  size: Sizes.size26,
-                                                ),
-                                                Text(
-                                                  '2.6K',
-                                                  style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: Sizes.size14,
-                                                    fontWeight: FontWeight.w600,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      );
-                                    },
-                                  );
-                                },
+                                data: (thumbnails) => _getGridViewByTabBar(
+                                  colCount: colCount,
+                                  playCount: '2.6K',
+                                  thumbnailData: thumbnails,
+                                ),
                               ),
-                          GridView.builder(
-                            // 드래그 시에 keyboard dismiss
-                            keyboardDismissBehavior:
-                                ScrollViewKeyboardDismissBehavior.onDrag,
-                            itemCount: 20,
-                            padding: const EdgeInsets.only(top: Sizes.size5),
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              // crossAxisCount => grid 의 컬럼 개수
-                              crossAxisCount: colCount,
-                              crossAxisSpacing: Sizes.size2,
-                              mainAxisSpacing: Sizes.size2,
-                              childAspectRatio: _videoRatio,
-                            ),
-                            itemBuilder: (context, index) => Stack(
-                              children: [
-                                Column(
-                                  children: [
-                                    AspectRatio(
-                                      aspectRatio: _videoRatio,
-                                      child: const Image(
-                                        fit: BoxFit.cover,
-                                        image:
-                                            AssetImage('assets/images/18.jpeg'),
-                                      ),
-                                    ),
-                                  ],
+                          ref.watch(likedThumbnailListProvider(user.uid)).when(
+                                loading: () => const Center(
+                                  child: CircularProgressIndicator.adaptive(),
                                 ),
-                                const Positioned(
-                                  bottom: 0,
-                                  left: 0,
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.play_arrow_outlined,
-                                        color: Colors.white,
-                                        size: Sizes.size26,
-                                      ),
-                                      Text(
-                                        '36.1K',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: Sizes.size14,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
+                                error: (error, stackTrace) => Center(
+                                  child: Text(error.toString()),
                                 ),
-                              ],
-                            ),
-                          ),
+                                data: (likes) => _getGridViewByTabBar(
+                                  colCount: colCount,
+                                  playCount: '36.1K',
+                                  thumbnailData: likes,
+                                ),
+                              ),
                         ],
                       ),
                     ),

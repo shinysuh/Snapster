@@ -17,8 +17,12 @@ class VideoPostViewModel extends FamilyAsyncNotifier<void, String> {
     _user = ref.read(authRepository).user;
   }
 
-  Future<void> toggleLikeVideo() async {
-    await _repository.toggleLikeVideo(videoId: _videoId, userId: _user!.uid);
+  Future<void> toggleLikeVideo(String thumbnailUrl) async {
+    await _repository.toggleLikeVideo(
+      userId: _user!.uid,
+      videoId: _videoId,
+      thumbnailUrl: thumbnailUrl,
+    );
   }
 
   Future<bool> isLiked() async {
