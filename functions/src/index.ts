@@ -25,8 +25,6 @@ export const onVideoCreated = functions.firestore
                 return;
             }
             
-            // console.log('*************** video:', video.fileUrl, video);
-            
             const id = snapshot.id;
             let videoUrl = video.fileUrl;
             
@@ -81,7 +79,6 @@ export const onVideoCreated = functions.firestore
 export const onVideoDeleted = functions.firestore
     .document(`${ videoCollection }/{videoId}`)
     .onDelete(async (snapshot, context) => {
-            // TODO - 비디오 삭제 시, like / comment 관련 데이터 및 컬렉션 삭제 필요
             // const video = snapshot.data();
         }
     );
@@ -352,70 +349,10 @@ export const onChatroomDeleted = functions.firestore
 export const onTextCreated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
     .onCreate(async (snapshot, context) => {
-        // const chatroomId = context.params.chatroomId;
-        // const textId = context.params.textId;  // snapshot.id
-        // const textData = snapshot.data() as MessageInterface;
-        // const db = admin.firestore();
-        
-        // chatroom - updatedAt 업데이트 => updatedAt 만 남고 다 사라짐
-        // TODO => 그렇다고 매번 vm 단에서 채팅방 업데이트 하기는 비효율적
-        // await db.collection(chatroomCollection)
-        //     .doc(chatroomId)
-        //     .set({ updatedAt: Timestamp.now().toMillis() });
     });
 
 export const onTextUpdated = functions.firestore
     .document(`${ chatroomCollection }/{chatroomId}/${ textCollection }/{textId}`)
     .onUpdate(async (snapshot, context) => {
-        /* TODO
-            1) chatroom - updatedAt 업데이트 하기
-            2) SystemMessage => {systemId}:::deleted (userId 는 유저 본인 거로)
-            3) 출력 시, [삭제된 메세지입니다] / [Deleted message] 로 변경
-        *    */
-        
         console.log(systemId);
-        
-        
-        // const chatroomId = snapshot.before.id;
-        // console.log('###################### updated id:', snapshot.before.id);
-        // console.log('###################### before:', snapshot.before.data())
-        // console.log('###################### after:', snapshot.after.data())
-        const oldText = snapshot.before.data() as ChatroomInterface;
-        const newText = snapshot.after.data() as ChatroomInterface;
-        // const db = admin.firestore();
-        
-        if(!oldText || !newText) return;
-        
-        // const isPersonALeaving = !newChatroomData.personA.isParticipating;
-        //
-        // let leaver: ChatterInterface;
-        // let remainder: ChatterInterface;
-        //
-        // if(isPersonALeaving) {
-        //     leaver = newChatroomData.personA;
-        //     remainder = newChatroomData.personB;
-        // } else {
-        //     leaver = newChatroomData.personB;
-        //     remainder = newChatroomData.personA;
-        // }
-        //
-        // // 나가기 한 사람 user 하위 컬렉션에서 chatroom 정보 삭제
-        // await db.collection(userCollection)
-        //     .doc(leaver.uid)
-        //     .collection(chatroomCollection)
-        //     .doc(chatroomId)
-        //     .delete();
-        //
-        // // 상대방 user 하위 chat_rooms 컬렉션에서 chatPartner - isParticipating=false
-        // await db.collection(userCollection)
-        //     .doc(remainder.uid)
-        //     .collection(chatroomCollection)
-        //     .doc(chatroomId)
-        //     .update(
-        //         {
-        //             chatroomId: chatroomId,
-        //             chatPartner: leaver,
-        //             updatedAt: newChatroomData.updatedAt,
-        //         }
-        //     );
     });

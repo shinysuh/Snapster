@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+// not using
 class VideoConfig extends ChangeNotifier {
   bool isMuted = false;
   bool isAutoplay = false;

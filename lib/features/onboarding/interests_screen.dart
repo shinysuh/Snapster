@@ -135,12 +135,6 @@ class _InterestScreenState extends State<InterestScreen> {
             ],
           ),
         ),
-        // 편한 기능의 버튼 CupertinoButton(custom) / TextButton(google like)
-        // CupertinoButton(
-        //   onPressed: () {},
-        //   color: Theme.of(context).primaryColor,
-        //   child: const Text('Next'),
-        // ),
       ),
     );
   }

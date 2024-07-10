@@ -8,8 +8,7 @@ import 'package:tiktok_clone/features/authentication/view_models/signup_view_mod
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class BirthdayScreen extends ConsumerStatefulWidget {
-  static const String routeURL =
-      'birthday'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeURL = 'birthday';
   static const String routeName = 'birthday';
 
   const BirthdayScreen({super.key});
@@ -29,7 +28,8 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
     super.initState();
     setState(() {
       var now = DateTime.now();
-      initDate = DateTime(now.year - 12, now.month, now.day); // 12세 제한
+      // 12세 제한
+      initDate = DateTime(now.year - 12, now.month, now.day);
       _setTextFieldDate(initDate);
     });
   }
@@ -94,14 +94,8 @@ class _BirthdayScreenState extends ConsumerState<BirthdayScreen> {
                 cursorColor: Theme.of(context).primaryColor,
                 keyboardType: TextInputType.text,
                 enabled: false,
-                // autofocus: true,
-                // autocorrect: false,
                 onEditingComplete: _onSubmit,
                 decoration: InputDecoration(
-                  // hintText: 'Username',
-                  // hintStyle: TextStyle(
-                  //   color: Colors.grey.shade500,
-                  // ),
                   enabledBorder: UnderlineInputBorder(
                     borderSide: BorderSide(
                       color: Colors.grey.shade400,

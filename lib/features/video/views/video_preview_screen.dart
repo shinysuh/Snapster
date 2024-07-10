@@ -58,7 +58,6 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
     await _videoPlayerController.setLooping(true);
     await _videoPlayerController.play();
 
-    // initialization 을 build 메소드가 알도록 하는 역할
     setState(() {});
   }
 

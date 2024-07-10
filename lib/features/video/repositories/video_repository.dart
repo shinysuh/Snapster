@@ -77,14 +77,6 @@ class VideoRepository {
     final key = '$videoId$commonIdDivider$userId';
     return _database.collection(likeCollection).doc(key);
   }
-
-// // get a thumbnailURL
-// Future<String> findThumbnailURL(String videoId) async {
-//   var video = await findVideo(videoId);
-//   return video?['thumbnailURL'] ?? '';
-// }
-
-// delete a video
 }
 
 final videoRepository = Provider((ref) => VideoRepository());

@@ -75,8 +75,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
   }
 
   void _onSubmit() {
-    if (_formKey.currentState != null &&
-        _formKey.currentState!.validate() /*invoke validator*/) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _closeModal(true);
     }
@@ -115,7 +114,6 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
                 TextFormField(
                   initialValue: detail[title],
                   autofocus: true,
-                  // textCapitalization: TextCapitalization.none,
                   textInputAction: TextInputAction.next,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(

@@ -46,15 +46,6 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
   void _onTapPostVideoButton() {
     _onReleasePostVideoButton();
     goToRouteNamed(context: context, routeName: VideoRecordingScreen.routeName);
-    // redirectToScreen(
-    //   context: context,
-    //   targetScreen: Scaffold(
-    //     appBar: AppBar(
-    //       title: const Text('record video'),
-    //     ),
-    //   ),
-    //   isFullScreen: true,
-    // );
   }
 
   void _onTapDownPostVideoButton() {
@@ -82,13 +73,10 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(
-        // resizeToAvoidBottomInset : 키보드가 나타날 때 body 크기를 resize 할지 여부
         resizeToAvoidBottomInset: false,
         backgroundColor: _isScreenDark() ? Colors.black : Colors.white,
         body: Stack(
           children: [
-            // Offstage 사용 시, 다른 화면의 state 초기화 없이도 하나의 화면 출력 가능
-            // BUT, 너무 많은 리소스를 사용하는 화면이 있을 경우, 모든 화면이 느려질 수 있다.(주의)
             Offstage(
               offstage: _isPageHidden(0),
               child: const RegulatedMaxWidth(
@@ -187,123 +175,5 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         ),
       ),
     );
-    /*
-    // CupertinoTabScaffole 사용을 원하면 main.dart에서 MaterialApp 대신 CupertinoApp 사용 필수
-     return CupertinoTabScaffold(
-      // iOS design
-      tabBuilder: (context, index) => screens[index],
-      tabBar: CupertinoTabBar(
-        items: const [
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            label: 'home',
-            tooltip: 'Home page',
-            backgroundColor: Colors.amber,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            label: 'Search',
-            tooltip: 'Search',
-            backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.plus_square),
-            label: '',
-            tooltip: 'Upload your videos',
-            backgroundColor: Colors.blue,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.cube_box),
-            label: 'Inbox',
-            tooltip: 'Check your inbox',
-            backgroundColor: Colors.teal,
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.profile_circled),
-            label: 'Profile',
-            tooltip: 'Check your profile',
-            backgroundColor: Colors.purple,
-          ),
-        ],
-      ),
-    );
-    */
-
-    // material designs 2 & 3
-    /*
-    return Scaffold(
-      body: screens[_selectedIndex],
-      bottomNavigationBar: NavigationBar(
-        // material 3 design
-        selectedIndex: _selectedIndex,
-        onDestinationSelected: _onTapNavigationItem,
-        labelBehavior: NavigationDestinationLabelBehavior.onlyShowSelected,
-        destinations: const [
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.house),
-            label: 'Home',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
-            label: 'Search',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.squarePlus),
-            label: 'Upload',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.inbox),
-            label: 'Inbox',
-          ),
-          NavigationDestination(
-            icon: FaIcon(FontAwesomeIcons.user),
-            label: 'Profile',
-          ),
-        ],
-      ),
-*/
-    /*
-      // material 2 design
-      BottomNavigationBar(
-        // selectedItemColor: Theme.of(context).primaryColor,
-        currentIndex: _selectedIndex,
-        onTap: _onTapNavigationItem,
-        // type: BottomNavigationBarType.fixed,
-        type: BottomNavigationBarType.shifting,
-        items: const [
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.house),
-            label: 'home',
-            tooltip: 'Home page',
-            backgroundColor: Colors.amber,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.magnifyingGlass),
-            label: 'Search',
-            tooltip: 'Search',
-            backgroundColor: Colors.green,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.squarePlus),
-            label: '',
-            tooltip: 'Upload your videos',
-            backgroundColor: Colors.blue,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.inbox),
-            label: 'Inbox',
-            tooltip: 'Check your inbox',
-            backgroundColor: Colors.teal,
-          ),
-          BottomNavigationBarItem(
-            icon: FaIcon(FontAwesomeIcons.user),
-            label: 'Profile',
-            tooltip: 'Check your profile',
-            backgroundColor: Colors.purple,
-          ),
-        ],
-      ),
-      */
-    // );
   }
 }

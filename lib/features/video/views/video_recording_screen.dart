@@ -22,7 +22,6 @@ class VideoRecordingScreen extends StatefulWidget {
   State<VideoRecordingScreen> createState() => _VideoRecordingScreenState();
 }
 
-/* 향후 다양한 카메라 기능 구현 시, CamerAwsome 패키지가 더 좋음 */
 class _VideoRecordingScreenState extends State<VideoRecordingScreen>
     with TickerProviderStateMixin, WidgetsBindingObserver {
   bool _hasPermission = false;
@@ -179,11 +178,6 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
     final file = await _cameraController.stopVideoRecording();
 
-    // 사진
-    // await _cameraController.takePicture();
-    // print('+++++++++++++++++++++++ fileName: ${file.name}');
-    // print('+++++++++++++++++++++++ filePath: ${file.path}');
-
     if (!mounted) return;
 
     redirectToScreen(
@@ -196,11 +190,6 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   }
 
   Future<void> _onPressPickVideo() async {
-    // ImageSource.camera => 기기의 카메라 앱 open
-    // 직접 구현 대신 기기의 카메라를 사용하면 영상의 길이를 제한할 수 없으므로 필요에 따른 고려 필요
-    // final video = await ImagePicker().pickVideo(source: ImageSource.camera);
-
-    // ImageSource.gallery => 기기의 갤러리 open
     final video = await ImagePicker().pickVideo(source: ImageSource.gallery);
 
     // when user picked nothing
@@ -220,8 +209,6 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
   Future<void> _onDragWhileRecording(DragUpdateDetails details) async {
     if (!_cameraController.value.isInitialized) return;
 
-    // 위 offset y -
-    // 아래 offset y +
     var dragDelta = _currentZoom + (-details.delta.dy * 0.05);
     _currentZoom = dragDelta > _maxZoom
         ? _maxZoom

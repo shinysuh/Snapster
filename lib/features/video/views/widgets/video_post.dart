@@ -82,7 +82,6 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   Future<void> _initVideoPlayer() async {
     try {
-      // Use the fileUrl directly from videoData
       _videoPlayerController =
           VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
 
@@ -101,7 +100,6 @@ class VideoPostState extends ConsumerState<VideoPost>
         _isInitialized = true;
       });
     } catch (e) {
-      // 에러 핸들링: 에러 메시지를 출력하거나, 에러 상태로 전환
       print('Error initializing video player: $e');
     }
   }
@@ -110,21 +108,6 @@ class VideoPostState extends ConsumerState<VideoPost>
     setState(() {
       _isMuted = !_isMuted;
     });
-  }
-
-  void _onChangePlaybackConfig() {
-    if (!mounted) return;
-
-    _videoPlayerController
-        ?.setVolume(!ref.read(playbackConfigProvider).muted ? 0 : 1);
-  }
-
-  void _onVideoChange() {
-    if (_videoPlayerController?.value.isInitialized == true &&
-        _videoPlayerController?.value.duration ==
-            _videoPlayerController?.value.position) {
-      widget.onVideoFinished();
-    }
   }
 
   void _onVisibilityChanged(VisibilityInfo info) {
@@ -164,7 +147,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     ref.read(videoPostProvider(_videoId).notifier).toggleLikeVideo();
 
     setState(() {
-      !_isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
+      !_isLiked ? _likeCount++ : _likeCount--;
       _isLiked = !_isLiked;
     });
   }
@@ -327,7 +310,6 @@ class VideoPostState extends ConsumerState<VideoPost>
                     child: Center(
                       child: Text(
                         S.of(context).noVideosToShow,
-                        // "No more videos to display. \nYou've seen all of 'em.",
                         style: const TextStyle(
                           fontSize: Sizes.size20,
                           color: Colors.white,

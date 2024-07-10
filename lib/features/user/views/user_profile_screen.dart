@@ -30,8 +30,6 @@ class UserProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
-  final _username = '쭌희';
-  final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
 
   void _onTapEditProfile(UserProfileModel profile) {
@@ -134,7 +132,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         Container(
-          // Expanded => flex 보다 고정 값이 더 보기 좋을 듯 (화면 회전 시 등등)
           width: Sizes.size96 + Sizes.size80,
           height: Sizes.size44 + Sizes.size2,
           padding: const EdgeInsets.symmetric(
@@ -225,7 +222,6 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // final isDark = isDarkMode(context);
     return ref.watch(userProvider).when(
           loading: () => const Center(
             child: CircularProgressIndicator.adaptive(),
@@ -249,12 +245,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   return DefaultTabController(
                     initialIndex: widget.show == 'likes' ? 1 : 0,
                     length: 2,
-                    /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
                     child: NestedScrollView(
                       headerSliverBuilder: (context, innerBoxIsScrolled) => [
                         SliverAppBar(
                           centerTitle: true,
-                          // backgroundColor: isDark ? Colors.black : Colors.white,
                           title: Text(user.name),
                           actions: [
                             IconButton(
@@ -313,22 +307,17 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                       body: TabBarView(
                         children: [
                           GridView.builder(
-                            // 드래그 시에 keyboard dismiss
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
                             itemCount: 20,
                             padding: const EdgeInsets.only(top: Sizes.size5),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              // crossAxisCount => grid 의 컬럼 개수
                               crossAxisCount: colCount,
                               crossAxisSpacing: Sizes.size2,
                               mainAxisSpacing: Sizes.size2,
                               childAspectRatio: _videoRatio,
                             ),
-                            // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                            // Image.network(url) 로 네트워크 상 이미지 fetch
-                            // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
                             itemBuilder: (context, index) => Stack(
                               children: [
                                 Column(
@@ -337,7 +326,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                                       aspectRatio: _videoRatio,
                                       child: FadeInImage.assetNetwork(
                                         fit: BoxFit.cover,
-                                        placeholder: 'assets/images/1.jpeg',
+                                        placeholder: 'assets/images/18.jpeg',
                                         image:
                                             "https://thumbs.dreamstime.com/b/vertical-photo-clear-night-sky-milky-way-huge-amount-stars-landscape-205856007.jpg",
                                       ),
@@ -369,14 +358,12 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                             ),
                           ),
                           GridView.builder(
-                            // 드래그 시에 keyboard dismiss
                             keyboardDismissBehavior:
                                 ScrollViewKeyboardDismissBehavior.onDrag,
                             itemCount: 20,
                             padding: const EdgeInsets.only(top: Sizes.size5),
                             gridDelegate:
                                 SliverGridDelegateWithFixedCrossAxisCount(
-                              // crossAxisCount => grid 의 컬럼 개수
                               crossAxisCount: colCount,
                               crossAxisSpacing: Sizes.size2,
                               mainAxisSpacing: Sizes.size2,

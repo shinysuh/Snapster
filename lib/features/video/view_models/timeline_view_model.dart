@@ -4,7 +4,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:tiktok_clone/features/video/models/video_model.dart';
 import 'package:tiktok_clone/features/video/repositories/video_repository.dart';
 
-// Async - Because it's fetching values from APIs
 class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
   late final VideoRepository _repository;
 
@@ -24,7 +23,6 @@ class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {
     return videos.toList();
   }
 
-  // FutureOr => Future 또는 Model 반환
   @override
   FutureOr<List<VideoModel>> build() async {
     _repository = ref.read(videoRepository);

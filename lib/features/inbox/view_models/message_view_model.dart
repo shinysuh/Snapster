@@ -111,12 +111,6 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
     return senderType == MessageSenderType.me;
   }
 
-/*
-       TODO [3] - extra
-        2) [XX] recentlyReadAt 으로 [여기까지 읽음] 구현 및 recentlyReadAt 업데이트
-        3) [XX] 이전 메세지랑 날짜가 다르면 UI에 날짜 구분 말풍선 표시해주기
-  */
-
   void _checkLoginUser(BuildContext context) {
     if (!_authRepository.isLoggedIn) {
       showSessionErrorSnack(context);

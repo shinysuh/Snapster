@@ -10,8 +10,7 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class PasswordScreen extends ConsumerStatefulWidget {
-  static const String routeURL =
-      'password'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeURL = 'password';
   static const String routeName = 'password';
 
   const PasswordScreen({super.key});
@@ -89,10 +88,6 @@ class _PasswordScreenState extends ConsumerState<PasswordScreen> {
 
   void _onSubmit() {
     if (!_isPasswordValid) return;
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: BirthdayScreen.routeName,
-    // );
 
     ref.read(signUpForm.notifier).state = {
       ...ref.read(signUpForm.notifier).state,

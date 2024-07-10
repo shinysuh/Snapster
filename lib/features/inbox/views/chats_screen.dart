@@ -29,8 +29,6 @@ class ChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatsScreenState extends ConsumerState<ChatsScreen> {
-  // final GlobalKey<AnimatedListState> _key = GlobalKey<AnimatedListState>();
-  // final Duration _duration = const Duration(milliseconds: 300);
   List<ChatPartnerModel> _chatrooms = [];
 
   void _onClickAddChat() {
@@ -59,7 +57,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
       context: context,
       builder: (context) => CupertinoAlertDialog(
         title: Text(S.of(context).exitChatroom),
-        // content: const Text('Please confirm'),
         actions: [
           CupertinoDialogAction(
             onPressed: _closeExitDialog,
@@ -113,7 +110,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             ),
           ),
           Text(
-            _getLastUpdatedAt(chatroom.updatedAt),  // TODO -> lastMessage 시간 기준으로 필요
+            _getLastUpdatedAt(chatroom.updatedAt),
             style: TextStyle(
               color: Colors.grey.shade500,
               fontSize: Sizes.size12,
@@ -121,8 +118,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           ),
         ],
       ),
-
-      //TODO - last message 시간으로 desc sorting 가능할지 구상
       subtitle: ref.watch(lastMessageProvider(chatroom.chatroomId)).when(
           loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),
@@ -232,24 +227,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
                         itemBuilder: (context, index) =>
                             _getChatroomListTile(_chatrooms[index], index),
                       );
-                // AnimatedList(
-                //         key: _key,
-                //         initialItemCount: _chatrooms.length,
-                //         padding: const EdgeInsets.symmetric(
-                //           vertical: Sizes.size10,
-                //         ),
-                //         itemBuilder: (context, index, animation) {
-                //           return FadeTransition(
-                //             key: UniqueKey(),
-                //             opacity: animation,
-                //             child: SizeTransition(
-                //               sizeFactor: animation,
-                //               child: _getChatroomListTile(
-                //                   _chatrooms[index], index),
-                //             ),
-                //           );
-                //         },
-                //       );
               },
             ),
       ),

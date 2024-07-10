@@ -14,7 +14,6 @@ import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/router.dart';
 
 void main() async {
-  /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
 
   // firebase initialization
@@ -22,7 +21,6 @@ void main() async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 화면 전환 방지 (허락되는 방향만 지정)
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -32,7 +30,7 @@ void main() async {
   final preferences = await SharedPreferences.getInstance();
   final repository = PlaybackConfigRepository(preferences);
 
-  /* Riverpod 사용 */
+  /* Riverpod */
   runApp(
     ProviderScope(
       overrides: [
@@ -81,14 +79,11 @@ class TikTokApp extends ConsumerWidget {
         debugShowCheckedModeBanner: false,
         themeMode: value,
         theme: ThemeData(
-          // useMaterial3: false,
           primaryColor: const Color(0xFFE9435A),
           brightness: Brightness.light,
-          // brightness: Brightness.light,
           scaffoldBackgroundColor: Colors.white,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          // textTheme: lightTextTheme,
           textTheme: Typography.blackMountainView,
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color(0xFFE9435A),
@@ -119,13 +114,11 @@ class TikTokApp extends ConsumerWidget {
           ),
         ),
         darkTheme: ThemeData(
-          // useMaterial3: false,
           primaryColor: const Color(0xFFE9435A),
           brightness: Brightness.dark,
           scaffoldBackgroundColor: Colors.black,
           splashColor: Colors.transparent,
           highlightColor: Colors.transparent,
-          // textTheme: darkTextTheme,
           textTheme: Typography.whiteMountainView,
           textSelectionTheme: const TextSelectionThemeData(
             cursorColor: Color(0xFFE9435A),

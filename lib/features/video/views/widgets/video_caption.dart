@@ -26,24 +26,12 @@ class _VideoCaptionState extends State<VideoCaption> {
   String _caption = '';
   bool _isCaptionOpened = false;
   bool _isWithEllipsis = true;
-  List<dynamic> _tags = [
-    // 'baby_face',
-    // 'lovely',
-    // 'adorable',
-    // 'auntie_crying',
-    // 'first_nephew',
-    // 'cannot_imagine_life_without_him',
-    // 'newborn',
-    // 'pumpkin',
-    // 'cutie_pie',
-  ];
+  List<dynamic> _tags = [];
 
   @override
   void initState() {
     super.initState();
     _caption = widget.description;
-    // _caption = 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc';
-    // _caption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * 13;
     _isWithEllipsis = _caption.length > _cutLength;
     _tags = widget.tags;
   }
