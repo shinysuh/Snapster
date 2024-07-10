@@ -474,6 +474,16 @@ class S {
       args: [],
     );
   }
+
+  /// `Delete profile picture`
+  String get deleteProfilePicture {
+    return Intl.message(
+      'Delete profile picture',
+      name: 'deleteProfilePicture',
+      desc: '',
+      args: [],
+    );
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

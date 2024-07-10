@@ -64,6 +64,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Conversation Not Started"),
         "deleteMessageConfirm": MessageLookupByLibrary.simpleMessage(
             "Do you want to delete the message?"),
+        "deleteProfilePicture":
+            MessageLookupByLibrary.simpleMessage("Delete profile picture"),
         "description": MessageLookupByLibrary.simpleMessage("description"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("Don\'t have an account?"),

@@ -18,7 +18,7 @@ const systemId = 'system_message';
 export const onVideoCreated = functions.firestore
     .document(`${ videoCollection }/{videoId}`)
     .onCreate(async (snapshot, context) => {
-            const video = snapshot.data();
+            const video = snapshot.data() as VideoInterface;
             
             if(!video) {
                 console.error('No video data found');
@@ -56,16 +56,19 @@ export const onVideoCreated = functions.firestore
                 const db = admin.firestore();
                 console.log(`Updating user's video collection for uploaderUid: ${ video.uploaderUid }`);
                 
+                const dataSet: ThumbnailLinkInterface = {
+                    thumbnailUrl: file.publicUrl(),
+                    videoId: id,
+                    createdAt: video.createdAt,
+                };
                 // Firestore operation
                 try {
                     await db.collection(userCollection)
                         .doc(video.uploaderUid)
                         .collection(videoCollection)
                         .doc(id)
-                        .set({
-                            thumbnailUrl: file.publicUrl(),
-                            videoId: id,
-                        });
+                        .set(dataSet);
+                    
                     console.log(`******** User's video document created successfully`);
                 } catch(error) {
                     console.error("Error creating user's video document:", error);

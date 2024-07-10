@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -108,8 +109,51 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
     }
   }
 
-  Future<void> _onTapDeleteAvatar() async {
-    await ref.read(avatarProvider.notifier).deleteAvatar(widget.profile);
+  Future<void> _onTapDeleteAvatar(UserProfileModel profile) async {
+    if (!profile.hasAvatar) return;
+
+    await _getAlert(
+      title: S.of(context).deleteProfilePicture,
+      destructiveActionCallback: _closeDialog,
+      confirmActionCallback: () async {
+        await ref.read(avatarProvider.notifier).deleteAvatar(widget.profile);
+        _closeDialog();
+      },
+    );
+  }
+
+  void _closeDialog() {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> _getAlert({
+    required String title,
+    required void Function() confirmActionCallback,
+    required void Function() destructiveActionCallback,
+  }) async {
+    await showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+              title: Text(
+                title,
+                style: const TextStyle(
+                  fontSize: Sizes.size16,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+              // content: const Text('Please confirm'),
+              actions: [
+                CupertinoDialogAction(
+                  onPressed: confirmActionCallback,
+                  child: const Text("Yes"),
+                ),
+                CupertinoDialogAction(
+                  onPressed: destructiveActionCallback,
+                  isDestructiveAction: true,
+                  child: const Text("No"),
+                ),
+              ],
+            ));
   }
 
   List<Widget> _getUserPic(UserProfileModel profile) {
@@ -118,25 +162,23 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
       Stack(
         children: [
           Avatar(
-            isVertical: false,
             user: profile,
+            isVertical: false,
+            isEditable: true,
           ),
-          if (!ref.watch(avatarProvider).isLoading) ...[
+          if (!ref.watch(avatarProvider).isLoading && profile.hasAvatar) ...[
             Positioned(
               bottom: 0,
               right: 0,
-              child: GestureDetector(
-                onTap: _onTapDeleteAvatar,
-                child: Container(
-                  width: Sizes.size28 + Sizes.size2,
-                  height: Sizes.size28 + Sizes.size2,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
+              child: Container(
+                width: Sizes.size28 + Sizes.size2,
+                height: Sizes.size28 + Sizes.size2,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: Colors.white,
+                  border: Border.all(
                     color: Colors.white,
-                    border: Border.all(
-                      color: Colors.white,
-                      width: Sizes.size5,
-                    ),
+                    width: Sizes.size5,
                   ),
                 ),
               ),
@@ -145,7 +187,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
               bottom: 3,
               right: 3,
               child: GestureDetector(
-                onTap: _onTapDeleteAvatar,
+                onTap: () => _onTapDeleteAvatar(profile),
                 child: FaIcon(
                   FontAwesomeIcons.solidCircleXmark,
                   color: Colors.grey.shade600,
@@ -153,7 +195,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
                 ),
               ),
             ),
-          ]
+          ],
         ],
       ),
       Gaps.v20,

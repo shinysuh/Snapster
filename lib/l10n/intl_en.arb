@@ -109,5 +109,6 @@
   "deleteMessageConfirm": "Do you want to delete the message?",
   "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent.",
   "noVideosToShow": "No videos to show.\nIf you've uploaded any,\nplease refresh the page.",
-  "nowLoadingTheVideo": "Now loading the video.."
+  "nowLoadingTheVideo": "Now loading the video..",
+  "deleteProfilePicture": "Delete profile picture"
 }
