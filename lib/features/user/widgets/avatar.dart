@@ -9,13 +9,15 @@ import 'package:tiktok_clone/features/user/view_models/avatar_view_model.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
 
 class Avatar extends ConsumerWidget {
-  final bool isVertical;
   final UserProfileModel user;
+  final bool isVertical;
+  final bool isEditable;
 
   const Avatar({
     super.key,
-    required this.isVertical,
     required this.user,
+    required this.isVertical,
+    required this.isEditable,
   });
 
   Future<void> _onTapAvatar(WidgetRef ref) async {
@@ -37,7 +39,7 @@ class Avatar extends ConsumerWidget {
     var isLoading = ref.watch(avatarProvider).isLoading;
 
     return GestureDetector(
-      onTap: isLoading ? () {} : () => _onTapAvatar(ref),
+      onTap: isLoading || !isEditable ? null : () => _onTapAvatar(ref),
       child: isLoading
           ? Container(
               width: 50,

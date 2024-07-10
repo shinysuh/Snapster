@@ -57,6 +57,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("대화가 시작되지 않았습니다"),
         "deleteMessageConfirm":
             MessageLookupByLibrary.simpleMessage("메세지를 삭제 하시겠습니까?"),
+        "deleteProfilePicture":
+            MessageLookupByLibrary.simpleMessage("프로필 사진 삭제"),
         "description": MessageLookupByLibrary.simpleMessage("상세 정보"),
         "dontHaveAnAccount":
             MessageLookupByLibrary.simpleMessage("아직 계정이 없으신가요?"),

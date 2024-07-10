@@ -62,8 +62,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       children: [
         Gaps.v10,
         Avatar(
-          isVertical: isVertical,
           user: user,
+          isVertical: isVertical,
+          isEditable: false,
         ),
         Gaps.v20,
         _getUserId(user),
