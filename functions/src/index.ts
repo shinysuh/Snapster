@@ -13,7 +13,9 @@ const textCollection = 'texts';
 const commonIdDivider = '%00000%';
 const systemId = 'system_message';
 
-export const onVideoCreated = functions.firestore
+export const onVideoCreated = functions
+    .runWith({ memory: '512MB' }) // 메모리 한도를 512MB로 증가
+    .firestore
     .document(`${ videoCollection }/{videoId}`)
     .onCreate(async (snapshot, context) => {
             const video = snapshot.data() as VideoInterface;
