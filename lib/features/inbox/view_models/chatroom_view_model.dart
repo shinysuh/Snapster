@@ -42,7 +42,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     final myProfile = await _getMyProfile(context);
     if (myProfile.uid.isEmpty) return;
 
-    final chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
+    var chatroomId = '${myProfile.uid}$commonIdDivider${invitee.uid}';
     final inviteeAsChatter = _getChatterByProfile(invitee);
     final now = DateTime.now().millisecondsSinceEpoch;
     ChatterModel myChatInfo = ChatterModel.empty();
@@ -73,15 +73,9 @@ class ChatroomViewModel extends AsyncNotifier<void> {
           }
         }
 
-        if (context.mounted) {
-          _enterChatroom(
-            context: context,
-            chatroomId: oldChatroom.chatroomId,
-            invitee: inviteeAsChatter,
-            now: now,
-            recentlyReadAt: myChatInfo.recentlyReadAt,
-          );
-        }
+        // chatroomId 기존 정보로 교체
+        chatroomId = oldChatroom.chatroomId;
+
       } else {
         // 없을 경우 생성
         myChatInfo = _getChatterByProfile(myProfile);

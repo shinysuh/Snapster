@@ -7,6 +7,7 @@ import 'package:intl/intl.dart';
 import 'package:tiktok_clone/constants/breakpoints.dart';
 import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
+import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
 import 'package:tiktok_clone/features/inbox/models/chatroom_model.dart';
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
@@ -218,7 +219,12 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     if (messages.isEmpty || _chatroomBasic.showMsgFrom == 0) return messages;
 
     if (messages.first.userId == MessageViewModel.systemId) {
-      if (isLeftTypeSystemMessage(messages.first.text)) {
+      final text = messages.first.text;
+
+      if (isLeftTypeSystemMessage(text) &&
+          text
+              .split(systemMessageDivider)[0]
+              .startsWith(_chatroomBasic.chatPartner.username)) {
         _setPartnerParticipationInfo(false);
       }
     }

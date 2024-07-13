@@ -161,7 +161,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     if (msg != null) {
       text = !msg.userId.startsWith(MessageViewModel.systemId)
           ? msg.text
-          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.uid);
+          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.username);
     } else {
       text = S.of(context).conversationNotStarted;
     }
@@ -169,10 +169,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     return Text(text);
   }
 
-  String _getLatestSystemMsg(String text, String partnerId) {
+  String _getLatestSystemMsg(String text, String partnerUsername) {
     var textElms = text.split(systemMessageDivider);
     var userId = textElms[0];
-    return userId == partnerId
+    return userId == partnerUsername
         ? getLeftTypeSystemMessage(context, text)
         : S.of(context).conversationNotStarted;
   }
