@@ -52,6 +52,9 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     final index = _chatrooms.indexOf(chatroom);
     _chatrooms.removeAt(index);
     setState(() {});
+
+    // 채팅방 제거
+    ref.read(chatroomProvider.notifier).exitChatroom(context, chatroom);
   }
 
   List<ChatPartnerModel> _getLastMessageInfo(List<ChatPartnerModel> chatrooms) {
@@ -96,9 +99,6 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
           CupertinoDialogAction(
             onPressed: () {
               _removeLeftChatroom(chatroom);
-              ref
-                  .read(chatroomProvider.notifier)
-                  .exitChatroom(context, chatroom);
               _closeExitDialog();
             },
             isDestructiveAction: true,
