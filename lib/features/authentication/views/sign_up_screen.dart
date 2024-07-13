@@ -120,7 +120,7 @@ class SignUpScreen extends ConsumerWidget {
                 GestureDetector(
                   onTap: () => _onTapLogin(context),
                   child: Text(
-                    S.of(context).logIn('female'),
+                    S.of(context).logIn,
                     style: TextStyle(
                       color: Theme.of(context).primaryColor,
                       fontSize: Sizes.size18,

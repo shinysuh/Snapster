@@ -29,19 +29,16 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(value) => "${value}";
 
-  static String m4(gender) =>
-      "Log in ${Intl.gender(gender, female: 'Madam', male: 'Sir', other: 'Human')}";
+  static String m4(nameOfTheApp) => "Log in to ${nameOfTheApp}";
 
-  static String m5(nameOfTheApp) => "Log in to ${nameOfTheApp}";
-
-  static String m6(videoCount) =>
+  static String m5(videoCount) =>
       "Create a profile, follow other accounts, make your own ${Intl.plural(videoCount, zero: 'no videos', one: 'video', other: 'videos')}, and more.";
 
-  static String m7(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
+  static String m6(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
 
-  static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
+  static String m7(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
 
-  static String m9(username) => "${username} has left the chatroom.";
+  static String m8(username) => "${username} has left the chatroom.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -76,8 +73,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "exitChatroom": MessageLookupByLibrary.simpleMessage("Exit chatroom"),
         "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:mma"),
         "likeCount": m3,
-        "logIn": m4,
-        "logInToTiktok": m5,
+        "logIn": MessageLookupByLibrary.simpleMessage("Log in"),
+        "logInToTiktok": m4,
         "loginSubTitle": MessageLookupByLibrary.simpleMessage(
             "Manage your account, check notifications, comment on videos, and more."),
         "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
@@ -95,13 +92,13 @@ class MessageLookup extends MessageLookupByLibrary {
             "Please set the video title before you upload it."),
         "share": MessageLookupByLibrary.simpleMessage("share"),
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
-        "signUpSubtitle": m6,
-        "signUpTitle": m7,
-        "signUpTitleWithDateTime": m8,
+        "signUpSubtitle": m5,
+        "signUpTitle": m6,
+        "signUpTitleWithDateTime": m7,
         "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password"),
-        "userHasLeftChatroom": m9,
+        "userHasLeftChatroom": m8,
         "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
         "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy"),
         "youCanOnlyDeleteTheMessagesYouSent":
