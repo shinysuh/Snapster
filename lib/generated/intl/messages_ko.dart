@@ -28,17 +28,15 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m3(value) => "${value}";
 
-  static String m4(gender) => "로그인";
+  static String m4(nameOfTheApp) => "${nameOfTheApp}에 로그인하세요";
 
-  static String m5(nameOfTheApp) => "${nameOfTheApp}에 로그인하세요";
+  static String m5(videoCount) => "프로필 생성, 다른 계정 팔로우, 나만의 비디오 만들기 등.";
 
-  static String m6(videoCount) => "프로필 생성, 다른 계정 팔로우, 나만의 비디오 만들기 등.";
+  static String m6(nameOfTheApp) => "${nameOfTheApp}에 가입하세요";
 
-  static String m7(nameOfTheApp) => "${nameOfTheApp}에 가입하세요";
+  static String m7(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
 
-  static String m8(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
-
-  static String m9(username) => "${username} 님이 채팅방을 나갔습니다.";
+  static String m8(username) => "${username} 님이 채팅방을 나갔습니다.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -69,8 +67,8 @@ class MessageLookup extends MessageLookupByLibrary {
         "exitChatroom": MessageLookupByLibrary.simpleMessage("채팅방 나가기"),
         "hourMinuteAPM": MessageLookupByLibrary.simpleMessage("h:mma"),
         "likeCount": m3,
-        "logIn": m4,
-        "logInToTiktok": m5,
+        "logIn": MessageLookupByLibrary.simpleMessage("로그인"),
+        "logInToTiktok": m4,
         "loginSubTitle":
             MessageLookupByLibrary.simpleMessage("계정 관리, 알림 확인, 동영상에 댓글 달기 등."),
         "monthDate": MessageLookupByLibrary.simpleMessage("M월 d일"),
@@ -87,12 +85,12 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("비디오 제목을 입력한 후 업로드 해 주세요."),
         "share": MessageLookupByLibrary.simpleMessage("공유"),
         "signUp": MessageLookupByLibrary.simpleMessage("회원가입"),
-        "signUpSubtitle": m6,
-        "signUpTitle": m7,
-        "signUpTitleWithDateTime": m8,
+        "signUpSubtitle": m5,
+        "signUpTitle": m6,
+        "signUpTitleWithDateTime": m7,
         "title": MessageLookupByLibrary.simpleMessage("제목"),
         "useEmailPassword": MessageLookupByLibrary.simpleMessage("이메일/비밀번호"),
-        "userHasLeftChatroom": m9,
+        "userHasLeftChatroom": m8,
         "videoDetail": MessageLookupByLibrary.simpleMessage("비디오 상세"),
         "yearMonthDate": MessageLookupByLibrary.simpleMessage("yyyy년 M월 d일"),
         "youCanOnlyDeleteTheMessagesYouSent":

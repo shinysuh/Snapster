@@ -29,7 +29,7 @@
   "continueWithApple": "Continue with apple",
   "continueWithGithub": "Continue with Github",
   "alreadyHaveAnAccount": "Already have an account?",
-  "logIn": "Log in {gender, select, male{Sir} female{Madam} other{Human}}",
+  "logIn": "Log in",
   "logInToTiktok": "Log in to {nameOfTheApp}",
   "dontHaveAnAccount": "Don't have an account?",
   "signUp": "Sign up",
