@@ -66,7 +66,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 
 - **작업 내용:** Firebase 의 signInWithProvider() 함수 사용
     
-![image](https://github.com/user-attachments/assets/f1b5eb75-314d-4a8c-914a-5dcd96986c1a)
+![image](https://github.com/user-attachments/assets/d930cc45-a45b-454a-acba-b91b89f1ec47)
 
 ### 2. Main navigation
 
