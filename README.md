@@ -66,8 +66,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 
 - **작업 내용:** Firebase 의 signInWithProvider() 함수 사용
     
-![image](https://github.com/user-attachments/assets/3657bc9b-6e64-4e4c-8e4a-acff813c7fb1)
-
+![image](https://github.com/user-attachments/assets/f1b5eb75-314d-4a8c-914a-5dcd96986c1a)
 
 ### 2. Main navigation
 
@@ -182,58 +181,60 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
     - 기존 채팅방이 있지만 이미 나온 경우, 재참여
     - 기존 채팅방이 없을 경우 생성 후 채팅방으로 이동
 
-<img width="630" alt="image" src="https://github.com/user-attachments/assets/908697ba-0c8d-4fd2-aed2-51b864186d1b">
+<img width="575" alt="image" src="https://github.com/user-attachments/assets/dad726f6-9944-46e3-928c-120731b47a5e">
 
 - 채팅방 나간 상대방 **재초대** 기능
     - 대화 상대가 나간 후 메시지 전송 시도 시, 상대방 재초대 컨펌 요청
 - 채팅방 재참여 시점부터 메시지 확인 기능
 
-<img width="377" alt="image" src="https://github.com/user-attachments/assets/4be8ec74-d76c-4129-8884-b654b5c355a6">
+<img width="630" alt="image" src="https://github.com/user-attachments/assets/998756ee-9aa9-47c0-acef-9f5e73b1a03f">
 
 - **작업 내용: 채팅방을 나간 상대 재초대**
     - 상대가 나간 상태에서 메시지 전송 시, 상대방 재초대
     - 재초대 후 메시지 전송
 
-<img width="575" alt="image" src="https://github.com/user-attachments/assets/51298613-7317-4d0c-bd00-4f81de7e36e3">
+<img width="376" alt="image" src="https://github.com/user-attachments/assets/599cbc6a-d621-4bca-afe1-13d5bc7fec1e">
 
 - 전송된 **메시지 삭제** 기능  (전송 3분 이내)
     
-<img width="376" alt="image" src="https://github.com/user-attachments/assets/60b908af-c308-4f6c-a992-d8411f2870a5">    
+<img width="377" alt="image" src="https://github.com/user-attachments/assets/096e6baf-58da-43f6-8ce0-95a4efcf5bba">
 
 - **작업 내용: 전송된 메시지 삭제**
     - 삭제 가능한 메시지인지 확인 (전송 3분 이내)
     - 메시지 작성자 본인 확인
     - ‘Deleted message’ 로 구문 업데이트
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/bc5ea825-af7d-4851-9d45-3c66766c9f1b/Untitled.png)
+<img width="639" alt="image" src="https://github.com/user-attachments/assets/657b4320-8c5e-49b9-a801-8a6eea3d4457">
 
 ### 6. 기타 기능
 
 - 동영상 **음소거 및 자동 재생 기본값 설정** 기능 지원
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/967a3d1d-2773-42cd-879c-54cad1f303a9/Untitled.png)
+<img width="802" alt="image" src="https://github.com/user-attachments/assets/1a04b05c-cdfa-4084-ad38-062f7ae547f8">
+
 
 - **작업 내용**
     - Riverpod의 Notifier를 사용하여 재생 설정 상태 관리 구현
     - main.dart 파일에서 runApp() 호출 시, playbackConfigProvider를 override하여
     재생 설정 View Model을 초기화하고, 재생 설정 상태 관리
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/aaa49960-6c8d-460d-8327-54b07e96ff98/Untitled.png)
+<img width="692" alt="image" src="https://github.com/user-attachments/assets/ddae80de-1553-4856-ac6e-e04207594f11">
 
 - **다중 언어(l10n) 및** **다크모드** 지원
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/57fc4afa-784d-452f-9741-a0ed510f48ae/Untitled.png)
+<img width="660" alt="image" src="https://github.com/user-attachments/assets/a9065ec8-750b-4b26-8cad-a8b311974a2a">
 
 - **작업 내용: 다중 언어**
     - flutter_localizations 패키지로 localization 활성화 및 intl 패키지로 국제화 기능을 지원하도록 설정
     - Localization Delegates 설정
     - arb 파일을 생성해 각 언어에 대한 번역 문자열 정의
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/4d0922d7-b4bd-435f-b9b4-0104095b443c/Untitled.png)
+<img width="677" alt="image" src="https://github.com/user-attachments/assets/2d99dde7-2f76-4f12-9b55-fd95dd98cc77">
 
 - **작업 내용:** **테마 모드 제어 - 다크모드**
     - ValueNotifier 로 테마 모드 상태 관리 (초기값 light 모드)
     - ValueListenableBuilder 를 사용하여 테마 모드 변경 사항 구독
     - 환경 설정에서 모드 설정 toggle
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/903c1b12-7c80-4727-9c59-e6e3b05b26c1/Untitled.png)
+<img width="787" alt="image" src="https://github.com/user-attachments/assets/6067f547-e28b-4adc-b06a-bcf6936d7222">
+
