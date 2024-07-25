@@ -4,7 +4,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 
 (강의: 노마드코더 https://nomadcoders.co/tiktok-clone/lobby)
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/fc88830c-74b5-4cc1-8b9d-439e15fd6542/Untitled.png)
+<img width="475" alt="image" src="https://github.com/user-attachments/assets/9b226f9a-b9dc-4473-a125-eb5d299a6b5b">
 
 ### 👩‍🏫 PROJECT 소개
 
