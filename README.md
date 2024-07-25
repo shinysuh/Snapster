@@ -86,41 +86,32 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
     - 미리보기 화면에서 촬영한 동영상 **다운로드 기능** 제공
     - 업로드 버튼을 클릭해 **동영상** **업로드**
         
-        ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/160f9085-adfa-4f6b-beb6-1d8c2f2076e1/Untitled.png)
-        
+<img width="652" alt="image" src="https://github.com/user-attachments/assets/e6344c90-7c83-42ff-aac1-201076039f65">
 
 - 기기 앨범에서 **동영상 선택 후 업로드** 기능 구현
-    
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/66177305-cbd3-40cd-b940-cd5bbde6997d/Untitled.png)
+
+<img width="547" alt="image" src="https://github.com/user-attachments/assets/48fefe95-f3b9-4776-ad58-a71a6fabebef">
     
 
 - **작업 내용:**
     - FirebaseStorage 에 동영상 파일 업로드
     - Firestore Database 에 videos 컬렉션에 동영상 정보 저장
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/35ee6b3f-aa20-4a50-aa79-404bf3bb0ed8/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/0fe31acd-4287-4b99-acde-fdad3d96eac5/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/54c440f5-ef84-4a40-8148-607286e18bd3/Untitled.png)
+    - 
+<img width="645" alt="image" src="https://github.com/user-attachments/assets/061078b6-a718-4115-8ec7-d057de156712">
 
 - **작업 내용: videos 컬렉션에 동영상 정보가 추가되면 index.ts 에서 썸네일 생성**
     - ffmpeg를 사용하여 썸네일 생성 & Firebase Storage 에 저장
     - 업로드된 썸네일 이미지의 공개 URL을 Firestore 문서에 업데이트
     - 비디오 id 와 썸네일 정보를 업로드 한 유저 정보 하위에 저장
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/94cc233c-7fad-4aa2-acbb-48937c8510b1/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/f0f24aba-df88-43a0-8efe-76be47172e09/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/784dbb46-5978-4581-afd3-56dba080f206/Untitled.png)
+<img width="333" alt="image" src="https://github.com/user-attachments/assets/9283fcf0-6139-4f7a-ae32-ee14e6579bf5">
 
 ### 3-2. 동영상 화면
 
 - **좋아요, 댓글** 기능을 통해 다른 유저와 소통하는 기능 구현
 - 동영상 캡션 출력 시, 텍스트 길이에 따라 **최대 높이 조정 및 스크롤** 기능 적용
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/6ebd758b-355f-455b-93b0-3b43e890ed5f/Untitled.png)
+<img width="582" alt="image" src="https://github.com/user-attachments/assets/1c79e2a0-ed75-4a4e-9ef2-02f91e3dadab">
 
 - **작업 내용 (좋아요):**
     - 좋아요 toggle: Firestore Databse의 likes 컬렉션에 동영상 id 및 사용자 id 저장
@@ -129,7 +120,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
         - 동영상 id와 썸네일URL을 좋아요 한 유저 정보 하위에 저장
     - 좋아요 취소 시, 위 정보 일괄 삭제
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/c402a364-8250-4c16-8b9c-e8c4c6346502/Untitled.png)
+<img width="621" alt="image" src="https://github.com/user-attachments/assets/96aa85a7-37e3-471e-9593-ad0d38e204de">
 
 - **작업 내용 (댓글):**
     - 댓글: videos 문서 하위에 comments 컬렉션을 생성해 댓글 정보 저장
@@ -138,7 +129,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
         - 동영상 id와 댓글 정보를 유저 정보 하위에 저장
     - 댓글 삭제 시, 위 정보 일괄 삭제
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/aaf636d1-6d7d-41fe-a13f-dbc0dd6eb149/Untitled.png)
+<img width="649" alt="image" src="https://github.com/user-attachments/assets/36c2de2b-26d1-4bce-be6b-77e59b9621a1">
 
 - **작업 내용 (캡션):**
     - 캡션 출력 시,
@@ -146,24 +137,26 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
         - 계산된 높이에 따른 maxHeight 도출
         - AnimatedContainer 에 높이 적용
             
-            ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/f7b09026-9c95-4dba-a1a3-1fb64ca239dd/Untitled.png)
+<img width="386" alt="image" src="https://github.com/user-attachments/assets/efb5be9c-cf56-49ed-a085-1dac650fee17">
             
 
 ### 4. 사용자 프로필
 
 - 프로필 페이지에 사용자가 **업로드한 게시물**과 **좋아요를 누른 게시물**의 썸네일 출력
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/5008cd0b-937e-4ec9-88a1-b4f6700930b7/Untitled.png)
+<img width="364" alt="image" src="https://github.com/user-attachments/assets/ed082b50-a465-4a64-abe7-3d91ab530564">
+
     
 - **작업 내용:**
     - Riverpod 의 StreamProvider로 실시간 데이터 조회
     - ref.watch()로 데이터를 구독하여 각 데이터별 GridView 렌더링
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/4e4b5e25-a0f3-442f-bea5-5c25faf50675/Untitled.png)
+<img width="562" alt="image" src="https://github.com/user-attachments/assets/c99b5150-23d0-45f8-983c-6de0de6afc84">
+
 
 - 프로필 수정 페이지에서 **기본 정보 및 프로필 사진 삭제, 변경** 기능 구현
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/31e391aa-e286-4226-9e32-846eb87510f7/Untitled.png)
+<img width="868" alt="image" src="https://github.com/user-attachments/assets/48ab6351-990f-45ec-8f2b-91d97b757c57">
 
 - **작업 내용:**
     - FirebaseStorage 에 사용자 id로 프로필 사진(avatar) 저장
@@ -173,9 +166,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
         - 프로필 이미지 파일 삭제
         - 사용자 정보 hasAvatar: false 로 업데이트
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/3ba1af22-eddb-41a2-9f38-f28a607fb19f/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/f628203d-d93e-4068-86e4-ffafefdead62/Untitled.png)
+<img width="392" alt="image" src="https://github.com/user-attachments/assets/0b28eb24-5f84-4bd2-be42-b047dad04405">
 
 ### 5. 다이렉트 메시지(DM)
 
@@ -183,7 +174,7 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 - 목록에서 채팅방 길게 누르면 **나가기 기능** 제공
 - 방을 나간 후, 해당 대화 상대 재선택 시, 대화방 **재참여** 가능
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/8c5f938f-b4de-4a67-a73f-a936d94abc22/Untitled.png)
+<img width="772" alt="image" src="https://github.com/user-attachments/assets/2d92a174-cb50-41a5-b474-a2fa238a4692">
 
 - **작업 내용: 채팅방 정보 생성**
     - 두 대화자의 채팅방 존재 여부 확인
@@ -191,24 +182,23 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
     - 기존 채팅방이 있지만 이미 나온 경우, 재참여
     - 기존 채팅방이 없을 경우 생성 후 채팅방으로 이동
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/34585437-015c-4dd9-90ae-42476da5f0cf/Untitled.png)
+<img width="630" alt="image" src="https://github.com/user-attachments/assets/908697ba-0c8d-4fd2-aed2-51b864186d1b">
 
 - 채팅방 나간 상대방 **재초대** 기능
     - 대화 상대가 나간 후 메시지 전송 시도 시, 상대방 재초대 컨펌 요청
 - 채팅방 재참여 시점부터 메시지 확인 기능
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/59cb6e2d-0822-45d0-a002-7e819d77fe59/Untitled.png)
+<img width="377" alt="image" src="https://github.com/user-attachments/assets/4be8ec74-d76c-4129-8884-b654b5c355a6">
 
 - **작업 내용: 채팅방을 나간 상대 재초대**
     - 상대가 나간 상태에서 메시지 전송 시, 상대방 재초대
     - 재초대 후 메시지 전송
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/9b6ded94-118f-4da4-a6f9-86de0220af6b/Untitled.png)
+<img width="575" alt="image" src="https://github.com/user-attachments/assets/51298613-7317-4d0c-bd00-4f81de7e36e3">
 
 - 전송된 **메시지 삭제** 기능  (전송 3분 이내)
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/fe8ed667-eb74-47af-9706-5957ab24abb7/Untitled.png)
-    
+<img width="376" alt="image" src="https://github.com/user-attachments/assets/60b908af-c308-4f6c-a992-d8411f2870a5">    
 
 - **작업 내용: 전송된 메시지 삭제**
     - 삭제 가능한 메시지인지 확인 (전송 3분 이내)
