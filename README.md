@@ -61,24 +61,23 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 
 - **이메일/비밀번호**를 비롯한 **소셜 로그인** 기능 구현
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/4f714e5e-4ae3-40a2-b7c4-ef4c6bc6696d/Untitled.png)
+<img width="582" alt="image" src="https://github.com/user-attachments/assets/f77d0e5e-bac4-461e-a9bc-ee241fbc7278">
+
 
 - **작업 내용:** Firebase 의 signInWithProvider() 함수 사용
     
-    ![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/f8fd72a5-24d2-4b4a-aff1-0bbd48d69fdc/Untitled.png)
-    
+![image](https://github.com/user-attachments/assets/3657bc9b-6e64-4e4c-8e4a-acff813c7fb1)
+
 
 ### 2. Main navigation
 
 - 하단의 **navigation** 버튼을 통해 홈, Discover, 카메라 및 업로드, Inbox, 프로필 페이지로 이동 기능 구현
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/f113ef98-6275-46a3-ab7f-ecfa0d31a76b/Untitled.png)
+<img width="688" alt="image" src="https://github.com/user-attachments/assets/65cf4f40-d222-45e0-9498-4df4acf30b8c">
 
 - **작업 내용:** Riverpod의 Provider와 GoRouter를 결합하여 상태 기반 라우팅 설정
 
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/6e85ee72-5d34-4260-b381-188a467954d8/Untitled.png)
-
-![Untitled](https://prod-files-secure.s3.us-west-2.amazonaws.com/743a29e1-429d-49df-8978-35948595742a/bfa80107-884f-4607-bf92-8ccebb94cb2d/Untitled.png)
+<img width="729" alt="image" src="https://github.com/user-attachments/assets/28bff702-06dd-49cb-b3e9-52dd95bd2484">
 
 ### 3-1. 동영상 업로드
 
