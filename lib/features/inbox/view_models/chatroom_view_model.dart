@@ -75,7 +75,6 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
         // chatroomId 기존 정보로 교체
         chatroomId = oldChatroom.chatroomId;
-
       } else {
         // 없을 경우 생성
         myChatInfo = _getChatterByProfile(myProfile);
@@ -182,7 +181,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
             .read(messageProvider(chatroomInfo.chatroomId).notifier)
             .sendSystemMessage(
               context: context,
-              text: '${myChatInfo.username}${systemMessageDivider}left',
+              text: '${myChatInfo.uid}${systemMessageDivider}left',
               createdAt: now,
             );
       }
@@ -264,7 +263,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     return myProfile;
   }
 
-// 유저 프로필 ChatterModel 로 형병환
+// 유저 프로필 ChatterModel 로 형변환
   ChatterModel _getChatterByProfile(UserProfileModel profile) {
     return ChatterModel(
       uid: profile.uid,
