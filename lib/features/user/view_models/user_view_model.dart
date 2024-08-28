@@ -59,11 +59,28 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
   }
 
   Future<void> updateProfile(
-      BuildContext context, UserProfileModel profile) async {
+    BuildContext context,
+    UserProfileModel profile,
+    bool isUsernameChanged,
+  ) async {
     await _authRepository.checkLoginUser(context);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
         () async => await _userRepository.updateProfile(profile.uid, profile));
+  }
+
+  Future<String> findUsername(
+    BuildContext context,
+    String uid,
+  ) async {
+    var profile = await _userRepository.findProfile(uid);
+
+    if (profile == null && context.mounted) {
+      showCustomErrorSnack(context, '존재하지 않는 대상입니다.');
+      throw Exception();
+    }
+
+    return profile!['username'] ?? '';
   }
 
   Future<void> onAvatarUploaded(UserProfileModel profile) async {
