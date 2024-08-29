@@ -34,8 +34,9 @@ void main() async {
   runApp(
     ProviderScope(
       overrides: [
-        playbackConfigProvider
-            .overrideWith(() => PlaybackConfigViewModel(repository)),
+        playbackConfigProvider.overrideWith(
+          () => PlaybackConfigViewModel(repository),
+        ),
       ],
       child: TikTokApp(),
     ),

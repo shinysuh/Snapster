@@ -8,11 +8,13 @@ import 'package:tiktok_clone/constants/gaps.dart';
 import 'package:tiktok_clone/constants/sizes.dart';
 import 'package:tiktok_clone/constants/system_message_types.dart';
 import 'package:tiktok_clone/features/inbox/models/chat_partner_model.dart';
+import 'package:tiktok_clone/features/inbox/models/chatter_model.dart';
 import 'package:tiktok_clone/features/inbox/models/message_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:tiktok_clone/features/inbox/view_models/message_view_model.dart';
 import 'package:tiktok_clone/features/inbox/views/chat_detail_screen.dart';
 import 'package:tiktok_clone/features/inbox/views/chatroom_user_list_screen.dart';
+import 'package:tiktok_clone/features/user/view_models/user_view_model.dart';
 import 'package:tiktok_clone/generated/l10n.dart';
 import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/profile_network_img.dart';
@@ -118,37 +120,49 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   }
 
   Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
-    final chatPartner = chatroom.chatPartner;
-    return ListTile(
-        onLongPress: () => _onExitChatroom(chatroom),
-        onTap: () => _onTapChat(chatroom),
-        leading: CircleAvatar(
-          radius: Sizes.size28,
-          foregroundImage: chatPartner.hasAvatar
-              ? getProfileImgByUserId(chatPartner.uid, false)
-              : null,
-          child: ClipOval(child: Text(chatPartner.name)),
-        ),
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          crossAxisAlignment: CrossAxisAlignment.end,
-          children: [
-            Text(
-              chatPartner.username,
-              style: const TextStyle(
-                fontWeight: FontWeight.w600,
-              ),
+    return FutureBuilder(
+      future: _getPartnerUsername(chatroom.chatPartner),
+      builder: (context, snapshot) {
+        final chatPartner = chatroom.chatPartner;
+        // 상대방의 최신 username 가져와서 세팅
+        final chatInfo = chatroom.copyWith(
+          chatPartner: chatPartner.copyWith(
+            username: snapshot.data,
+          ),
+        );
+
+        return ListTile(
+            onLongPress: () => _onExitChatroom(chatInfo),
+            onTap: () => _onTapChat(chatInfo),
+            leading: CircleAvatar(
+              radius: Sizes.size28,
+              foregroundImage: chatPartner.hasAvatar
+                  ? getProfileImgByUserId(chatPartner.uid, false)
+                  : null,
+              child: ClipOval(child: Text(chatPartner.name)),
             ),
-            Text(
-              _getLastUpdatedAt(chatroom.updatedAt),
-              style: TextStyle(
-                color: Colors.grey.shade500,
-                fontSize: Sizes.size12,
-              ),
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(
+                  snapshot.data ?? chatPartner.username,
+                  style: const TextStyle(
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                Text(
+                  _getLastUpdatedAt(chatInfo.updatedAt),
+                  style: TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: Sizes.size12,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-        subtitle: _getLatestMessageText(chatroom));
+            subtitle: _getLatestMessageText(chatInfo));
+      },
+    );
   }
 
   Widget _getLatestMessageText(ChatPartnerModel chatroom) {
@@ -160,7 +174,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     if (msg != null) {
       text = !msg.userId.startsWith(MessageViewModel.systemId)
           ? msg.text
-          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.username);
+          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.uid);
     } else {
       text = S.of(context).conversationNotStarted;
     }
@@ -168,10 +182,10 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
     return Text(text);
   }
 
-  String _getLatestSystemMsg(String text, String partnerUsername) {
+  String _getLatestSystemMsg(String text, String partnerUid) {
     var textElms = text.split(systemMessageDivider);
     var userId = textElms[0];
-    return userId == partnerUsername
+    return userId == partnerUid
         ? getLeftTypeSystemMessage(context, text)
         : S.of(context).conversationNotStarted;
   }
@@ -192,6 +206,12 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             : S.of(context).yearMonthDate;
 
     return DateFormat(format, 'en_US').format(lastUpdate);
+  }
+
+  Future<String> _getPartnerUsername(ChatterModel partner) async {
+    return await ref
+        .read(userProvider.notifier)
+        .findUsername(context, partner.uid);
   }
 
   @override
