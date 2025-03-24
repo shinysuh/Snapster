@@ -1,0 +1,114 @@
+{
+  "signUpTitle": "Sign Up for {nameOfTheApp}",
+  "@signUpTitle": {
+    "description": "The title people see when they open the app for the first time.",
+    "placeholders": {
+      "nameOfTheApp": {
+        "type": "String",
+        "example": "TikTok"
+      }
+    }
+  },
+  "signUpTitleWithDateTime": "Sign Up for {nameOfTheApp} {when}",
+  "@signUpTitleWithDateTime": {
+    "description": "The title people see when they open the app for the first time.",
+    "placeholders": {
+      "nameOfTheApp": {
+        "type": "String",
+        "example": "TikTok"
+      },
+      "when": {
+        "type": "DateTime",
+        "format": "y / QQQ / LLLL \uD83D\uDE06",
+        "isCustomDateFormat": "true"
+      }
+    }
+  },
+  "signUpSubtitle": "Create a profile, follow other accounts, make your own {videoCount, plural, =0{no videos} =1{video} other{videos}}, and more.",
+  "useEmailPassword": "Use email & password",
+  "continueWithApple": "Continue with apple",
+  "continueWithGithub": "Continue with Github",
+  "alreadyHaveAnAccount": "Already have an account?",
+  "logIn": "Log in",
+  "logInToTiktok": "Log in to {nameOfTheApp}",
+  "dontHaveAnAccount": "Don't have an account?",
+  "signUp": "Sign up",
+  "loginSubTitle": "Manage your account, check notifications, comment on videos, and more.",
+  "likeCount": "{value}",
+  "@likeCount": {
+    "description": "like count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "commentCount": "{value}",
+  "@commentCount": {
+    "description": "comment count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "share": "share",
+  "commentTitle": "{value} {value2, plural, =1{comment} other{comments}}",
+  "@commentTitle": {
+    "description": "comment counts on comment dialog",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "commentLikeCount": "{value}",
+  "@commentLikeCount": {
+    "description": "comment like count",
+    "placeholders": {
+      "value": {
+        "type": "int",
+        "format": "compact"
+      }
+    }
+  },
+  "continueWithGoogle": "Continue with Google",
+  "save": "Save",
+  "editProfile": "Edit Profile",
+  "videoDetail": "Video Detail",
+  "title": "title",
+  "description": "description",
+  "chooseYourInterests": "Choose your interests",
+  "setTheVideoTitle": "Please set the video title before you upload it.",
+  "enterVideoTitle": "Enter video title",
+  "yearMonthDate": "MMM d yyyy",
+  "@yearMonthDate": {
+    "description": "Format for year, month, and day.",
+    "placeholders": {}
+  },
+  "monthDate": "MMM d",
+  "@monthDate": {
+    "description": "Format for month and day.",
+    "placeholders": {}
+  },
+  "hourMinuteAPM": "h:mma",
+  "@hourMinuteAPM": {
+    "description": "Format for hour and minute with AM/PM.",
+    "placeholders": {}
+  },
+  "conversationNotStarted": "Conversation Not Started",
+  "selectAProfileToStartAConversation": "Select a profile to start a conversation",
+  "chooseAProfile": "Choose a profile",
+  "exitChatroom": "Exit chatroom",
+  "userHasLeftChatroom": "{username} has left the chatroom.",
+  "exit": "Exit",
+  "reInvitationConfirmMsg": "Do you want to invite the person back?",
+  "deleteMessageConfirm": "Do you want to delete the message?",
+  "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent.",
+  "noVideosToShow": "No videos to show.\nIf you've uploaded any,\nplease refresh the page.",
+  "nowLoadingTheVideo": "Now loading the video..",
+  "deleteProfilePicture": "Delete profile picture"
+}

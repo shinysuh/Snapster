@@ -1,0 +1,5 @@
+spring:
+  pid:
+    file: /home/ec2-user/snapster/application.pid
+server:
+  port: 8080
