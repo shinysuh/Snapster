@@ -1,10 +1,10 @@
-package com.jenna.tiktok_clone;
+package com.jenna.snapster;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class TiktokCloneApplicationTests {
+class SnapsterApplicationTests {
 
 	@Test
 	void contextLoads() {

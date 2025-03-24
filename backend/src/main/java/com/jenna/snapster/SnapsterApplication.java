@@ -1,13 +1,13 @@
-package com.jenna.tiktok_clone;
+package com.jenna.snapster;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class TiktokCloneApplication {
+public class SnapsterApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(TiktokCloneApplication.class, args);
+		SpringApplication.run(SnapsterApplication.class, args);
 	}
 
 }
