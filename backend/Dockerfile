@@ -10,6 +10,6 @@ COPY build/libs/*.jar app.jar
 # 컨테이너에서 실행할 포트 지정 (80번 포트로 변경)
 EXPOSE 80
 
-# JAR 실행 명령어
-CMD ["java", "-jar", "app.jar"]
+# JAR 실행 명령어 (prod)
+CMD ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
 
