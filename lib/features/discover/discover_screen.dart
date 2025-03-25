@@ -18,7 +18,6 @@ class DiscoverScreen extends StatefulWidget {
 
 class _DiscoverScreenState extends State<DiscoverScreen> {
   final List<String> imageUrls = [
-    'assets/images/1.jpeg',
     'assets/images/18.jpeg',
   ];
 
@@ -145,7 +144,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           resizeToAvoidBottomInset: false,
           appBar: AppBar(
             elevation: 1,
-            // ConstrainedBox -> Container 의 경우 그냥 내부에서 constraints 사용 가능
             title: ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: Breakpoints.sm,
@@ -160,9 +158,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
               padding: const EdgeInsets.symmetric(
                 horizontal: Sizes.size16,
               ),
-              // indicatorColor: isDark ? Colors.white : Colors.black,
-              // labelColor: isDark ? Colors.white : Colors.black,
-              // unselectedLabelColor: Colors.grey.shade500,
               labelStyle: const TextStyle(
                 fontSize: Sizes.size16,
                 fontWeight: FontWeight.w600,
@@ -174,7 +169,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
           ),
           body: LayoutBuilder(
             builder: (context, constraints) {
-              // var width = MediaQuery.of(context).size.width;
               var width = constraints.maxWidth;
               var colCount = width < Breakpoints.sm
                   ? 2
@@ -196,9 +190,6 @@ class _DiscoverScreenState extends State<DiscoverScreen> {
                       mainAxisSpacing: Sizes.size20,
                       childAspectRatio: 9 / 21,
                     ),
-                    // Image.asset(url) 로 asset 폴더 내 이미지 fetch
-                    // Image.network(url) 로 네트워크 상 이미지 fetch
-                    // FadeInImage.assetNetwork(placeholder, image) => placeholder 이미지가 assets 폴더에 있음
                     itemBuilder: (context, index) => LayoutBuilder(
                       builder: (context, constraints) => Column(
                         children: [

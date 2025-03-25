@@ -16,7 +16,6 @@ class AuthButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // FractionallySizedBox 부모 사이즈에 따라 사이즈 설정
     return FractionallySizedBox(
       widthFactor: 1, // 1=100%
       child: GestureDetector(

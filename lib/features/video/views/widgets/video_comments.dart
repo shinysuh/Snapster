@@ -158,7 +158,6 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                 fontWeight: FontWeight.w600,
               ),
             ),
-            // automaticallyImplyLeading: 자동으로 back 버튼 생성 여부
             automaticallyImplyLeading: false,
             actions: [
               IconButton(

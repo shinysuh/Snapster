@@ -39,13 +39,6 @@ class AuthButtonsByOrientation extends ConsumerWidget {
             .read(socialAuthProvider.notifier)
             .githubSignIn(context, isNewUser),
       ),
-      // AuthButton(
-      //   icon: FontAwesomeIcons.apple,
-      //   text: S.of(context).continueWithApple,
-      //   onTapButton: () => ref
-      //       .read(socialAuthProvider.notifier)
-      //       .appleSignIn(context, isNewUser),
-      // ),
     ];
   }
 

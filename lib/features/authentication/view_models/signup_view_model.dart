@@ -13,7 +13,6 @@ class SignUpViewModel extends AsyncNotifier<void> {
 
   @override
   FutureOr<void> build() {
-    // 현재 build()는 _authRepository 를 initialize 하는 역할 이외에는 안함
     _authRepository = ref.read(authRepository);
   }
 
@@ -47,7 +46,6 @@ class SignUpViewModel extends AsyncNotifier<void> {
   }
 }
 
-// StateProvider => 외부에서 modify 가능한 값 expose
 final signUpForm = StateProvider((ref) => {});
 
 final signUpProvider = AsyncNotifierProvider<SignUpViewModel, void>(

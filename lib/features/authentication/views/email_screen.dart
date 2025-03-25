@@ -18,8 +18,7 @@ class EmailScreenArgs {
 }
 
 class EmailScreen extends ConsumerStatefulWidget {
-  static const String routeURL =
-      'email'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeURL = 'email';
   static const String routeName = 'email';
   final String username;
 
@@ -57,10 +56,6 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
 
   void _onSubmit() {
     if (_email.isEmpty || !_isEmailValid) return;
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: PasswordScreen.routeName,
-    // );
 
     ref.read(signUpForm.notifier).state = {
       ...ref.read(signUpForm.notifier).state,
@@ -75,8 +70,6 @@ class _EmailScreenState extends ConsumerState<EmailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ModalRoute.of(context) => Navigator 1(pushNamed) 사용 시
-    // final args = ModalRoute.of(context)!.settings.arguments as EmailScreenArgs;
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),
       child: Scaffold(

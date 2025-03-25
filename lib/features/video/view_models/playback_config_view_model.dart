@@ -10,7 +10,6 @@ class PlaybackConfigViewModel extends Notifier<PlaybackConfigModel> {
 
   void setMuted(bool value) {
     _repository.setMuted(value);
-    // state 값은 immutable => 새로 state 생성 필요 (state.muted = value 불가)
     state = PlaybackConfigModel(
       muted: value,
       autoplay: state.autoplay,
@@ -37,36 +36,8 @@ class PlaybackConfigViewModel extends Notifier<PlaybackConfigModel> {
 final playbackConfigProvider =
     NotifierProvider<PlaybackConfigViewModel, PlaybackConfigModel>(
   () =>
-      // main.dart 에서 flutter await 이후 sharedPreferences 를 받기 위해 이렇게 처리
-      // main.dart 에서 override 함
+      // main.dart 에서 flutter await 이후 sharedPreferences 를 받기 위해 아래처럼 처리
+      // main.dart 에서 override
       throw UnimplementedError(),
   // PlaybackConfigViewModel(),
 );
-
-/* Provider */
-// class PlaybackConfigViewModel extends ChangeNotifier {
-//   final PlaybackConfigRepository _repository;
-//
-//   late final PlaybackConfigModel _model = PlaybackConfigModel(
-//     muted: _repository.isMuted(),
-//     autoplay: _repository.isAutoplay(),
-//   );
-//
-//   PlaybackConfigViewModel(this._repository);
-//
-//   bool get muted => _model.muted;
-//
-//   bool get autoplay => _model.autoplay;
-//
-//   void setMuted(bool value) {
-//     _repository.setMuted(value);
-//     _model.muted = value;
-//     notifyListeners();
-//   }
-//
-//   void setAutoplay(bool value) {
-//     _repository.setAutoPlay(value);
-//     _model.autoplay = value;
-//     notifyListeners();
-//   }
-// }

@@ -46,15 +46,6 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
 
     _profile = widget.profile.toJson();
 
-    // _focusList = List.generate(
-    //   EditableFields.values.length,
-    //   (_) => FocusNode(),
-    // );
-    //
-    // for (var focus in _focusList) {
-    //   focus.addListener(_scrollToFocusedNode);
-    // }
-
     // textfield 개수만큼 focusNode 생성
     for (var i = 0; i < EditableFields.values.length; i++) {
       var focus = FocusNode();

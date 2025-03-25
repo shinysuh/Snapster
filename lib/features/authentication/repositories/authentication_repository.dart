@@ -62,7 +62,6 @@ final authRepository = Provider(
   (ref) => AuthenticationRepository(),
 );
 
-// Stream 은 변화가 바로 반영됨 (watch)
 final authState = StreamProvider((ref) {
   final repository = ref.read(authRepository);
   return repository.authStateChanges();

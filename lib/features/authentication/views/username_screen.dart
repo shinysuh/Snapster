@@ -9,8 +9,7 @@ import 'package:tiktok_clone/utils/navigator_redirection.dart';
 import 'package:tiktok_clone/utils/tap_to_unfocus.dart';
 
 class UsernameScreen extends ConsumerStatefulWidget {
-  static const String routeURL =
-      'username'; // '/'(sign up) 안에 nested 돼 있으므로 '/' 필요 X
+  static const String routeURL = 'username';
   static const String routeName = 'username';
 
   const UsernameScreen({super.key});
@@ -26,7 +25,7 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
 
   @override
   void initState() {
-    super.initState(); // at the beginning of everything
+    super.initState();
     _usernameController.addListener(() {
       setState(() {
         _username = _usernameController.text;
@@ -36,13 +35,8 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
 
   @override
   void dispose() {
-    /*
-       위젯이 사라질 때 _usernameController dispose
-       메모리를 위패 필수 => 잊었을 경우 eventually 앱이 crash 됨
-       This removes all the eventListeners
-    */
     _usernameController.dispose();
-    super.dispose(); // better do this at the end => cleaning up
+    super.dispose();
   }
 
   void _onSubmit() {
@@ -54,15 +48,6 @@ class _UsernameScreenState extends ConsumerState<UsernameScreen> {
       context: context,
       targetScreen: EmailScreen(username: _username),
     );
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: EmailScreen.routeName,
-    //   extra: EmailScreenArgs(username: _username),
-    // );
-    // redirectToRoute(
-    //     context: context,
-    //     route: EmailScreen.routeName,
-    //     args: EmailScreenArgs(username: _username));
   }
 
   @override

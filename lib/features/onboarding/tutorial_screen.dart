@@ -8,8 +8,6 @@ import 'package:tiktok_clone/utils/theme_mode.dart';
 
 enum Direction { right, left }
 
-// enum Page { first, second }
-
 class TutorialScreen extends StatefulWidget {
   const TutorialScreen({super.key});
 
@@ -18,26 +16,10 @@ class TutorialScreen extends StatefulWidget {
 }
 
 class _TutorialScreenState extends State<TutorialScreen> {
-  // Tap 이동 애니메이션 구현 TabBarView / AnimatedCrossFade
-  /*
-    TabBarView 와 TabPageSelector 가 둘 다
-    DefaultTabController 안에 있어야
-    원하는 방식 대로 사용 가능
-  */
-
-  /*
-    AnimatedCrossFade
-        => 두 컴포넌트 사이에 fade-in / fade-out 을 매우 잘 표현
-  */
-
   Direction _direction = Direction.right;
-
-  // Page _page = Page.first;
   bool _isFirstPage = true;
 
   void _onPanUpdate(DragUpdateDetails details) {
-    // print(details);
-    // dx => direction to x-axis (x축 방향 - 플러스면 오른쪽으로 드래그(왼쪽으로 swipe))
     setState(() {
       if (details.delta.dx > 0) {
         // to the right
@@ -50,7 +32,6 @@ class _TutorialScreenState extends State<TutorialScreen> {
   }
 
   void _onPanEnd(DragEndDetails details) {
-    // _page = _direction == Direction.right ? Page.second : Page.first;
     setState(() {
       _isFirstPage = _direction == Direction.right;
     });

@@ -117,7 +117,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                   fontWeight: FontWeight.w400,
                 ),
               ),
-              // content: const Text('Please confirm'),
               actions: [
                 CupertinoDialogAction(
                   onPressed: confirmActionCallback,
@@ -181,30 +180,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   void _onExitChatroom() {
     context.pop();
-    // TODO - 방 나가기 로직 (alert 포함)
-    // showCupertinoDialog(
-    //   context: context,
-    //   builder: (context) => CupertinoAlertDialog(
-    //     title: Text(S.of(context).exitChatroom),
-    //     // content: const Text('Please confirm'),
-    //     actions: [
-    //       CupertinoDialogAction(
-    //         onPressed: _closeExitDialog,
-    //         child: const Text("No"),
-    //       ),
-    //       CupertinoDialogAction(
-    //         onPressed: () {
-    //           ref
-    //               .read(chatroomProvider.notifier)
-    //               .exitChatroom(context, chatroom);
-    //           _closeExitDialog();
-    //         },
-    //         isDestructiveAction: true,
-    //         child: const Text("Yes"),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
   void _setPartnerParticipationInfo(bool isParticipating) {

@@ -19,7 +19,6 @@ class ActivityScreen extends StatefulWidget {
 
 class _ActivityScreenState extends State<ActivityScreen>
     with SingleTickerProviderStateMixin {
-  /* 초기화 시 this 를 참조하기 위해서는 반드시 late 으로 선언되어야 한다 */
   late final AnimationController _animationController = AnimationController(
     vsync: this,
     duration: const Duration(milliseconds: 200),
@@ -211,10 +210,7 @@ class _ActivityScreenState extends State<ActivityScreen>
               position: _panelAnimation,
               child: Container(
                 decoration: BoxDecoration(
-                  color: Theme
-                      .of(context)
-                      .appBarTheme
-                      .backgroundColor,
+                  color: Theme.of(context).appBarTheme.backgroundColor,
                   borderRadius: const BorderRadius.only(
                     bottomLeft: Radius.circular(
                       Sizes.size5,

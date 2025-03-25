@@ -42,15 +42,6 @@ class LoginScreen extends ConsumerWidget {
                       fontSize: Sizes.size26,
                       fontWeight: FontWeight.w700,
                     ),
-                    // style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                    //   fontWeight: FontWeight.w700,
-                    // ),
-                    // style: GoogleFonts.abrilFatface(
-                    //   textStyle: const TextStyle(
-                    //     fontSize: Sizes.size26,
-                    //     fontWeight: FontWeight.w700,
-                    //   ),
-                    // ),
                   ),
                   Gaps.v20,
                   Opacity(

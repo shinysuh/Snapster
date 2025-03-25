@@ -58,7 +58,7 @@ class UserRepository {
   Future<void> uploadAvatar(File file, String fileName) async {
     final fileRef = _storage.ref().child('$avatarStoragePath/$fileName');
     await fileRef.putFile(file);
-  }
+  } 
 
   Future<void> deleteAvatar(String fileName) async {
     final fileRef = _storage.ref().child('$avatarStoragePath/$fileName');
