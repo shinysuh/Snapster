@@ -23,8 +23,13 @@ repositories {
 	mavenCentral()
 }
 
+def buildFileName = "snapster-backend-1.0.0.jar"
+jar{
+	archiveFileName = buildFileName
+}
+
 bootJar {
-	archiveFileName = "snapster-backend-1.0.0.jar"
+	archiveFileName = buildFileName
 }
 
 dependencies {
