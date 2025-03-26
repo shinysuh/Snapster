@@ -2,6 +2,7 @@ HELP.md
 .gradle
 build/
 !gradle/wrapper/gradle-wrapper.jar
+!build/libs/*.jar  # 빌드된 JAR 파일만 제외하고 push
 !**/src/main/**/build/
 !**/src/test/**/build/
 
