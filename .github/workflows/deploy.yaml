@@ -106,8 +106,6 @@ jobs:
           
             cp $REPOSITORY/snapster-app.tar.gz $REPOSITORY/tar_backups/snapster-app.tar.gz
             docker ps
-            timeout 10s docker logs -f snapster-container
-          
           EOF
             
 
