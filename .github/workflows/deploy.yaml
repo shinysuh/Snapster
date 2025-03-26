@@ -23,7 +23,7 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /cache/.buildx-cache  # Docker 캐시 경로 벼
+          path: /cache/.buildx-cache  # Docker 캐시 경로
           key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
@@ -40,7 +40,8 @@ jobs:
             --cache-to=type=local,dest=/cache/.buildx-cache \
             --tag snapster-app:latest \
             --file backend/Dockerfile \
-            backend/.
+            backend/. \
+            --load
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
