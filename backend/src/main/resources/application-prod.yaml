@@ -9,4 +9,4 @@ server:
 docker:
   settings:
     cache:
-      path: /tmp/cache
+      path: /home/ec2-user/snapster/docker/cache
