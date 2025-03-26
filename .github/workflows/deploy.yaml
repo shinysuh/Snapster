@@ -1,0 +1,100 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - renewal
+#      - master   # 향후 master 변경 시 배포 설정
+
+jobs:
+  build:
+    runs-on: ubuntu-latest      # Github Activations 실행할 환경
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2     # repository 체크아웃
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
+
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache    # Docker 캐시 경로
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-buildx-${{ github.sha }}
+            ${{ runner.os }}-buildx-
+
+      - name: Build Docker image
+        # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
+        run: |
+          docker build -t snapster-app backend/.
+
+      - name: Log into AWS (EC2)
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets에서 AWS 키를 설정해야 합니다.
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # GitHub Secrets에서 AWS 키를 설정해야 합니다.
+          aws-region: us-east-1  # EC2가 있는 AWS 리전
+
+      - name: Copy Docker image to EC2
+        run: |
+          docker save snapster-app | gzip > snapster-app.tar.gz
+          scp -i /Users/jenna/dev_archive/renewal/keypair/snapster-keypair.pem snapster-app.tar ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+
+      - name: SSH into EC2 and Deploy Docker container
+        run: |
+          REPOSITORY=/home/ec2-user/snapster/docker
+          CONTAINER=snapster-container
+          IMAGE=snapster-app
+          DOCKER_RUN="docker run -d --name \$CONTAINER -p 80:80 \$IMAGE"
+          
+          ssh -i /Users/jenna/dev_archive/renewal/keypair/snapster-keypair.pem ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
+            docker stop \$CONTAINER
+            if [ \$? -ne 0 ]; then
+              echo "Failed to stop container"
+              exit 1
+            fi
+          
+            docker rm \$CONTAINER
+            if [ \$? -ne 0 ]; then
+              echo "Failed to remove container"
+              echo "Attempting to restart existing container"
+              \$DOCKER_RUN
+              if [ \$? -ne 0 ]; then
+                echo "Failed to run container"
+                exit 1
+              fi
+              exit 1
+            fi
+          
+            docker rmi \$IMAGE
+            if [ \$? -ne 0 ]; then
+              echo "Failed to remove image"
+              echo "Attempting to restart existing container"
+              \$DOCKER_RUN
+              if [ \$? -ne 0 ]; then
+                echo "Failed to run container"
+                exit 1
+              fi
+              exit 1
+            fi
+            
+            docker load < \$REPOSITORY/\$IMAGE.tar.gz
+            if [ \$? -ne 0 ]; then
+              echo "Failed to load image"
+              exit 1
+            fi
+          
+            \$DOCKER_RUN
+            if [ \$? -ne 0 ]; then
+              echo "Failed to run container after loading image"
+              exit 1
+            fi
+          EOF
+            
+
+
+
