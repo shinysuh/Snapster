@@ -28,9 +28,6 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
-#            ${{ runner.os }}-buildx-
-#            ${{ runner.os }}-buildx-${{ github.sha }}
-#            ${{ runner.os }}-buildx-
 
       - name: Build Docker image
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
