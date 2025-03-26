@@ -20,7 +20,6 @@ jobs:
       - name: Create /tmp directory with appropriate permissions
         run: |
           sudo mkdir -p /tmp/.buildx-cache
-          sudo chmod -R 777 /tmp      # 캐시 디렉토리 권한 설정
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
@@ -29,7 +28,7 @@ jobs:
         uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache  # Docker 캐시 경로
-          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
+          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ github.sha }}   # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
