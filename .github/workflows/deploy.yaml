@@ -18,10 +18,10 @@ jobs:
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
 
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v1
         with:
-          path: /tmp/.buildx-cache    # Docker 캐시 경로
-          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          path: /tmp/.buildx-cache  # Docker 캐시 경로
+          key: ${{ runner.os }}-buildx-${{ github.sha }}  # 캐시 키
           restore-keys: |
             ${{ runner.os }}-buildx-
             ${{ runner.os }}-buildx-${{ github.sha }}
