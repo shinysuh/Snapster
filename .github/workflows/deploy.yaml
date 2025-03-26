@@ -17,27 +17,32 @@ jobs:
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
+      - name: Create /tmp directory with appropriate permissions
+        run: |
+          sudo mkdir -p /tmp/.buildx-cache
+          sudo chmod -R 777 /tmp      # 캐시 디렉토리 권한 설정
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
 
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /cache/.buildx-cache  # Docker 캐시 경로
+          path: /tmp/.buildx-cache  # Docker 캐시 경로
           key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
       - name: Check if cache directory exists
-        run: ls -lah /cache/.buildx-cache || echo "No cache directory found"
+        run: ls -lah /tmp/.buildx-cache || echo "No cache directory found"
 
       - name: Build Docker image with caching
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
         run: |
           docker buildx build \
-            --cache-from=type=local,src=/cache/.buildx-cache \
-            --cache-to=type=local,dest=/cache/.buildx-cache \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache \
             --tag snapster-app:latest \
             --file backend/Dockerfile \
             backend/. \
