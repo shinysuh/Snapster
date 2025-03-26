@@ -60,7 +60,7 @@ jobs:
             --tag snapster-app:latest \
             --file backend/Dockerfile \
             backend/. \
-            --load
+            --load \
             --progress=plain
 
       - name: Log into AWS (EC2)
