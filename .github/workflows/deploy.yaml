@@ -61,7 +61,7 @@ jobs:
             --file backend/Dockerfile \
             backend/. \
             --load \
-            --progress=tty
+            --progress=plain
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
