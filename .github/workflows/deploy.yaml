@@ -29,7 +29,7 @@ jobs:
       - name: Read cache path from docker-settings.yml
         id: cache-path
         run: |
-          CACHE_PATH=$(yq eval '.docker.settings.cache.path' backend/src/main/resources/application.yaml)   # 파일 경로에 맞게 수정
+          CACHE_PATH=$(yq eval '.docker.settings.cache.path' backend/src/main/resources/application-prod.yaml)   # 파일 경로에 맞게 수정
           echo "CACHE_PATH=$CACHE_PATH" >> $GITHUB_ENV
 
       - name: Create cache directory
