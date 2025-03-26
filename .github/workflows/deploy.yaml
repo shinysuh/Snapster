@@ -23,22 +23,22 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache  # Docker 캐시 경로 벼
+          path: /cache/.buildx-cache  # Docker 캐시 경로 벼
           key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
       - name: Check if cache directory exists
-        run: ls -lah /tmp/.buildx-cache || echo "No cache directory found"
+        run: ls -lah /cache/.buildx-cache || echo "No cache directory found"
 
       - name: Build Docker image with caching
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
         run: |
           docker buildx build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
-            --tag snapster-app \
+            --cache-from=type=local,src=/cache/.buildx-cache \
+            --cache-to=type=local,dest=/cache/.buildx-cache \
+            --tag snapster-app:latest \
             --file backend/Dockerfile \
             backend/.
 
@@ -66,7 +66,7 @@ jobs:
           REPOSITORY=/home/ec2-user/snapster/docker
           CONTAINER=snapster-container
           IMAGE=snapster-app
-          DOCKER_RUN="docker run -d --name $CONTAINER -p 80:80 $IMAGE"
+          DOCKER_RUN="docker run -d --name $CONTAINER -p 80:80 $IMAGE:latest"
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
             docker stop $CONTAINER
