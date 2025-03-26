@@ -41,7 +41,6 @@ jobs:
             --tag snapster-app:latest \
             --file backend/Dockerfile \
             backend/.
-#          docker build -t snapster-app backend/.
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
