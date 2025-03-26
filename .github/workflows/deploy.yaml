@@ -14,19 +14,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2     # repository 체크아웃
 
-      - name: Setup Docker Buildx
-        uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
-
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
+
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: /tmp/.buildx-cache  # Docker 캐시 경로
-          key: ${{ runner.os }}-buildx-${{ github.sha }}  # 캐시 키
+          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
           restore-keys: |
-            ${{ runner.os }}-buildx-
+            ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
+            ${{ runner.os }}-docker-
+#            ${{ runner.os }}-buildx-
 #            ${{ runner.os }}-buildx-${{ github.sha }}
 #            ${{ runner.os }}-buildx-
 
