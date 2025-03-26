@@ -38,7 +38,7 @@ jobs:
           docker buildx build \
             --cache-from=type=local,src=/tmp/.buildx-cache \
             --cache-to=type=local,dest=/tmp/.buildx-cache \
-            --tag snapster-app:latest \
+            --tag snapster-app \
             --file backend/Dockerfile \
             backend/.
 
