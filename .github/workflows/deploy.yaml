@@ -23,16 +23,25 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: .buildx-cache  # Docker 캐시 경로 벼
+          path: /tmp/.buildx-cache  # Docker 캐시 경로 벼
           key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}  # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
-      - name: Build Docker image
+      - name: Check if cache directory exists
+        run: ls -lah /tmp/.buildx-cache || echo "No cache directory found"
+
+      - name: Build Docker image with caching
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
         run: |
-          docker build -t snapster-app backend/.
+          docker buildx build \
+            --cache-from=type=local,src=/tmp/.buildx-cache \
+            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            --tag snapster-app:latest \
+            --file backend/Dockerfile \
+            backend/.
+#          docker build -t snapster-app backend/.
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
