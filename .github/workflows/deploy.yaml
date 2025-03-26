@@ -20,15 +20,15 @@ jobs:
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
-      - name: Cache Docker layers
-        uses: actions/cache@v2
-        with:
-          path: /tmp/.buildx-cache  # Docker 캐시 경로
-          key: ${{ runner.os }}-buildx-${{ github.sha }}  # 캐시 키
-          restore-keys: |
-            ${{ runner.os }}-buildx-
-            ${{ runner.os }}-buildx-${{ github.sha }}
-            ${{ runner.os }}-buildx-
+#      - name: Cache Docker layers
+#        uses: actions/cache@v2
+#        with:
+#          path: /tmp/.buildx-cache  # Docker 캐시 경로
+#          key: ${{ runner.os }}-buildx-${{ github.sha }}  # 캐시 키
+#          restore-keys: |
+#            ${{ runner.os }}-buildx-
+#            ${{ runner.os }}-buildx-${{ github.sha }}
+#            ${{ runner.os }}-buildx-
 
       - name: Build Docker image
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
