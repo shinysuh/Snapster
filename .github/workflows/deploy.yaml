@@ -17,9 +17,24 @@ jobs:
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
-      - name: Create /tmp directory with appropriate permissions
+      # Install yq to parse YAML
+      - name: Install yq
         run: |
-          sudo mkdir -p /tmp/.buildx-cache
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.14.1/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      # Parse cache path from docker-settings.yml
+      - name: Read cache path from docker-settings.yml
+        id: cache-path
+        run: |
+          CACHE_PATH=$(yq eval '.docker.settings.cache.path' backend/src/main/resources/application.yaml)   # 파일 경로에 맞게 수정
+          echo "CACHE_PATH=$CACHE_PATH" >> $GITHUB_ENV
+
+      - name: Create cache directory
+        run: |
+          mkdir -p ${{ env.CACHE_PATH }}/.buildx-cache
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
@@ -27,21 +42,21 @@ jobs:
       - name: Cache Docker layers
         uses: actions/cache@v3
         with:
-          path: /tmp/.buildx-cache  # Docker 캐시 경로
+          path: ${{ env.CACHE_PATH }}/.buildx-cache  # Docker 캐시 경로
           key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ github.sha }}   # 캐시 키
           restore-keys: |
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
       - name: Check if cache directory exists
-        run: ls -lah /tmp/.buildx-cache || echo "No cache directory found"
+        run: ls -lah ${{ env.CACHE_PATH }}/.buildx-cache || echo "No cache directory found"
 
       - name: Build Docker image with caching
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
         run: |
           docker buildx build \
-            --cache-from=type=local,src=/tmp/.buildx-cache \
-            --cache-to=type=local,dest=/tmp/.buildx-cache \
+            --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache \
+            --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache \
             --tag snapster-app:latest \
             --file backend/Dockerfile \
             backend/. \
