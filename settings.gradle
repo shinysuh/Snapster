@@ -1,0 +1,7 @@
+rootProject.name = 'snapster'
+
+// Flutter 프로젝트와 관련된 모듈
+include ':frontend'
+
+// Spring Boot 백엔드 프로젝트 추가
+include ':backend:snapster'
