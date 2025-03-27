@@ -1,0 +1,49 @@
+Configutation:
+  name: Prod
+  status: warn
+
+  Properties:
+    Property:
+      name: log-path
+      value: "/home/ec2-user/snapster/logs"
+
+  Appenders:
+    Console:
+      name: console
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+#    File:
+#      name: File_Appender
+#      fileName: ${log-path}/snapster.log
+#      PatternLayout:
+#        pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+
+    RollingFile:
+      - name: RollingFile_Appender
+        fileName: ${log-path}/snapster.log
+        filePattern: ${log-path}/snapster-%d{yyyy-MM-dd}.log
+        PatternLayout:
+          pattern: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+#        Policies:
+#          SizeBasedTriggeringPolicy:
+#            size: 10MB  # 10MB를 넘으면 롤링
+        DefaultRollOverStrategy:
+          max: 30
+
+  Loggers:
+    Root:
+      level: INFO
+      AppenderRef:
+        - ref: console
+        - ref: RollingFile_Appender
+#        - ref: File_Appender
+    Logger:
+      - name: com.jenna.snapster
+        additivity: false
+        level: debug
+        AppenderRef:
+          - ref: console
+          - ref: RollingFile_Appender
+#          - ref: File_Appender
