@@ -12,5 +12,3 @@ EXPOSE 80
 
 # JAR 실행 명령어 (prod)
 CMD ["java", "-Dspring.profiles.active=prod", "-jar", "app.jar"]
-
-# test
