@@ -25,8 +25,8 @@ jobs:
           sudo wget https://github.com/mikefarah/yq/releases/download/v4.14.1/yq_linux_amd64 -O /usr/local/bin/yq
           sudo chmod +x /usr/local/bin/yq
 
-      # Parse cache path from docker-settings.yml
-      - name: Read cache path from docker-settings.yml
+      # Parse cache path from application-prod.yaml
+      - name: Read cache path from application-prod.yaml
         id: cache-path
         run: |
           CACHE_PATH=$(yq eval '.docker.settings.cache.path' backend/src/main/resources/application-prod.yaml)   # 파일 경로에 맞게 수정
