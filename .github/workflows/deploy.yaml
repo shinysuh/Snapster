@@ -32,11 +32,6 @@ jobs:
           CACHE_PATH=$(yq eval '.cache.path' docker-settings.yaml)   # 파일 경로에 맞게 수정
           echo "CACHE_PATH=$CACHE_PATH" >> $GITHUB_ENV
 
-#      - name: Create cache directory
-#        run: |
-#          sudo mkdir -p ${{ env.CACHE_PATH }}/.buildx-cache
-#          sudo chmod -R 777 ${{ env.CACHE_PATH }}/.buildx-cache
-
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
 
@@ -49,19 +44,6 @@ jobs:
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
-#      - name: Build and Push Docker image
-#        uses: docker/build-push-action@v3
-#        with:
-#          context: backend/
-#          file: backend/Dockerfile
-#          push: true
-#          tags: ec2-user/snapster-app:latest
-#          cache-from: type=local,src=${{ env.CACHE_PATH }}/.buildx-cache
-#          cache-to: type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache,mode=max
-
-#      - name: Check if cache directory exists
-#        run: ls -lah ${{ env.CACHE_PATH }}/.buildx-cache || echo "No cache directory found"
-## 캐시 테스트 주석
       - name: Build Docker image with caching
         # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
         run: |
