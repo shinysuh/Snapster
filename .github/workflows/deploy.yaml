@@ -78,12 +78,12 @@ jobs:
 
       - name: SSH into EC2 and Deploy Docker container
         run: |
+          REPOSITORY=/home/ec2-user/snapster/docker
+          CONTAINER=snapster-container
+          IMAGE=snapster-app
+          DOCKER_RUN="docker run -d --rm --name $CONTAINER -p 80:80 $IMAGE:latest"
+          
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
-            REPOSITORY=/home/ec2-user/snapster/docker
-            CONTAINER=snapster-container
-            IMAGE=snapster-app
-            DOCKER_RUN="docker run -d --rm --name $CONTAINER -p 80:80 $IMAGE:latest"
-            
             run_docker() {
               local error_message=$1
               $DOCKER_RUN
@@ -92,11 +92,6 @@ jobs:
                 exit 1
               fi
             }
-          
-            echo "Container:"
-            echo $CONTAINER
-            echo "IMAGE:"
-            echo $IMAGE
           
             # 실행중인 snapster-container 중지 (존재하면)
             if docker ps | grep -q $CONTAINER; then
