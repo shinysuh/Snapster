@@ -93,22 +93,20 @@ jobs:
               fi
             }
           
-            echo "docker ps output:"
-            docker ps -q --filter "name=$CONTAINER"
-            
-            echo "docker images output:"
-            docker images -q $IMAGE
+            echo "Container:"
+            echo $CONTAINER
+            echo "IMAGE:"
+            echo $IMAGE
           
             # 실행중인 snapster-container 중지 (존재하면)
-            docker ps -q --filter "name=$CONTAINER" | grep -q .; then
+            if docker ps | grep -q $CONTAINER; then
               docker stop $CONTAINER
             else
-              echo $CONTAINER
               echo "No running container"
             fi
           
             # 기존 이미지 삭제 (존재하면)
-            if docker images -q $IMAGE | grep -q .; then
+            if docker images | grep -q $IMAGE; then
               docker rmi $IMAGE
               if [ $? -ne 0 ]; then
               echo "Failed to remove image"
