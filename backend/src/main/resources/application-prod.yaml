@@ -6,7 +6,3 @@ server:
   error:
     whitelabel:
       enabled: true
-docker:
-  settings:
-    cache:
-      path: /home/ec2-user/snapster/docker/cache

@@ -1,0 +1,3 @@
+cache:
+  path: /tmp
+#  path: /home/ec2-user/snapster/docker/cache
