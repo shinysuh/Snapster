@@ -95,53 +95,52 @@ jobs:
 
       - name: SSH into EC2 and Deploy Docker container
         run: |
-          REPOSITORY=/home/ec2-user/snapster/docker
-          CONTAINER=snapster-container
-          IMAGE=snapster-app
-          DOCKER_RUN="docker run -d --name $CONTAINER -p 80:80 $IMAGE:latest"
-          
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
-            docker stop $CONTAINER
-            if [ $? -ne 0 ]; then
-              echo "Failed to stop container"
-              exit 1
-            fi
-          
-            docker rm $CONTAINER
-            if [ $? -ne 0 ]; then
-              echo "Failed to remove container"
-              echo "Attempting to restart existing container"
-              $DOCKER_RUN
-              if [ $? -ne 0 ]; then
-                echo "Failed to run container"
-                exit 1
-              fi
-              exit 1
-            fi
-          
-            docker rmi $IMAGE
-            if [ $? -ne 0 ]; then
-              echo "Failed to remove image"
-              echo "Attempting to restart existing container"
-              $DOCKER_RUN
-              if [ $? -ne 0 ]; then
-                echo "Failed to run container"
-                exit 1
-              fi
-              exit 1
-            fi
+            REPOSITORY=/home/ec2-user/snapster/docker
+            CONTAINER=snapster-container
+            IMAGE=snapster-app
+            DOCKER_RUN="docker run -d --rm --name $CONTAINER -p 80:80 $IMAGE:latest"
             
+            run_docker() {
+              local error_message=$1
+              $DOCKER_RUN
+              if [ $? -ne 0 ]; then
+                echo "$error_message"
+                exit 1
+              fi
+            }
+          
+            # 실행중인 snapster-container 중지 (존재하면)
+            if docker ps | grep -q $CONTAINER; then
+              docker stop $CONTAINER
+            else
+              echo "No running container"
+            fi
+          
+            # 기존 이미지 삭제 (존재하면)
+            if docker images | grep -q $IMAGE; then
+              docker rmi $IMAGE
+              if [ $? -ne 0 ]; then
+              echo "Failed to remove image"
+              run_docker "Failed to restart previous container"
+              exit 1
+              fi
+            else
+              echo "No existing image"
+            fi
+          
+            # 실행되지 않는 컨테이너 전부 정리
+            docker container prune -f
+          
             docker load < $REPOSITORY/$IMAGE.tar.gz
             if [ $? -ne 0 ]; then
               echo "Failed to load image"
+              run_docker "Failed to restart previous container"
               exit 1
             fi
           
-            $DOCKER_RUN
-            if [ $? -ne 0 ]; then
-              echo "Failed to run container after loading image"
-              exit 1
-            fi
+            # 새로운 컨테이너 실행
+            run_docker "Failed to run container after loading image"
           
             cp $REPOSITORY/snapster-app.tar.gz $REPOSITORY/tar_backups/snapster-app.tar.gz
             docker ps
