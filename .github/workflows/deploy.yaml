@@ -39,8 +39,9 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ env.CACHE_PATH }}/.buildx-cache  # Docker 캐시 경로
-          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ github.sha }}   # 캐시 키
+          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}-${{ github.sha }}   # 캐시 키
           restore-keys: |
+            key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 #
