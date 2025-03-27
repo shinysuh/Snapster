@@ -93,10 +93,17 @@ jobs:
               fi
             }
           
+            echo "docker ps output:"
+            docker ps
+  
+            echo "docker images output:"
+            docker images
+          
             # 실행중인 snapster-container 중지 (존재하면)
-            if [ "$(docker ps  | grep -q $CONTAINER)" ]; then
+            if docker ps | grep -q $CONTAINER; then
               docker stop $CONTAINER
             else
+              echo $CONTAINER
               echo "No running container"
             fi
           
