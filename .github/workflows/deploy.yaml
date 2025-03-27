@@ -93,14 +93,14 @@ jobs:
               fi
             }
           
-            # 실행중인 snapster-container 중지 (존재하면)
+            # 실행 중인 snapster-container 중지 (존재 시)
             if docker ps | grep -q $CONTAINER; then
               docker stop $CONTAINER
             else
               echo "No running container"
             fi
           
-            # 기존 이미지 삭제 (존재하면)
+            # 기존 이미지 삭제 (존재 시)
             if docker images | grep -q $IMAGE; then
               docker rmi $IMAGE
               if [ $? -ne 0 ]; then
