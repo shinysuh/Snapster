@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - renewal
-#      - master   # 향후 master 변경 시 배포 설정 123
+#      - master   # 향후 master 변경 시 배포 설정
 
 jobs:
   build:
@@ -32,13 +32,13 @@ jobs:
           CACHE_PATH=$(yq eval '.cache.path' docker-settings.yaml)   # 파일 경로에 맞게 수정
           echo "CACHE_PATH=$CACHE_PATH" >> $GITHUB_ENV
 
-      - name: Read cache path from docker-settings.yaml
+      - name: Read docker container name from docker-settings.yaml
         id: docker-container
         run: |
           DOCKER_CONTAINER=$(yq eval '.docker.container' docker-settings.yaml)   # 파일 경로에 맞게 수정
           echo "DOCKER_CONTAINER=$DOCKER_CONTAINER" >> $GITHUB_ENV
 
-      - name: Read cache path from docker-settings.yaml
+      - name: Read docker image name from docker-settings.yaml
         id: docker-image
         run: |
           DOCKER_IMAGE=$(yq eval '.docker.image' docker-settings.yaml)   # 파일 경로에 맞게 수정
