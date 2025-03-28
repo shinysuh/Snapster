@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - renewal
-#      - master   # 향후 master 변경 시 배포 설정
+#      - master   # 향후 master 변경 시 설정
 
 jobs:
   build:
