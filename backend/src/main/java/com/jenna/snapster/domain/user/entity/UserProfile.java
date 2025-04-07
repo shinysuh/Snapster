@@ -1,6 +1,5 @@
-package com.jenna.snapster.domain.userprofile.entity;
+package com.jenna.snapster.domain.user.entity;
 
-import com.jenna.snapster.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
