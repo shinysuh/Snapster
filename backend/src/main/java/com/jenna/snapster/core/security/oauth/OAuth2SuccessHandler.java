@@ -32,7 +32,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         User user = userService.processOAuthUser(provider, oAuth2User);
 
-        String accessToken = jwtProvider.generateAccessToken(user);
+        String accessToken = jwtProvider.createToken(user);
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(ContentType.APPLICATION_JSON.getType());
