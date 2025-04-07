@@ -15,10 +15,11 @@ import java.util.Date;
 @Component
 public class JwtProvider {
 
-    private final long EXPIRATION = 1000L * 60 * 30;        // 30분
-
-    @Value(value = "${jwt.secret}")
+    @Value("${jwt.secret}")
     private String secret;
+
+    @Value("${jwt.expiration}")
+    private Long expiration;
 
     private final Key secretKey = new SecretKeySpec(
         secret.getBytes(StandardCharsets.UTF_8),
@@ -31,7 +32,7 @@ public class JwtProvider {
             .claim("username", user.getUsername())
             .claim("email", user.getEmail())
             .setIssuedAt(new Date())
-            .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
+            .setExpiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(secretKey)
             .compact();
     }
@@ -44,6 +45,5 @@ public class JwtProvider {
             .getBody();
 
         return Long.valueOf(claims.getSubject());
-
     }
 }
