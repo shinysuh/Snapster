@@ -1,8 +1,8 @@
 package com.jenna.snapster.core.security.oauth;
 
 import com.jenna.snapster.core.security.jwt.JwtProvider;
+import com.jenna.snapster.domain.oauth.service.OAuthService;
 import com.jenna.snapster.domain.user.entity.User;
-import com.jenna.snapster.domain.user.service.UserService;
 import com.nimbusds.common.contenttype.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -19,7 +19,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-    private final UserService userService;
+    private final OAuthService oAuthService;
     private final JwtProvider jwtProvider;
 
     @Override
@@ -30,7 +30,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         OAuth2User oAuth2User = token.getPrincipal();
         String provider = token.getAuthorizedClientRegistrationId();    // "kakao"
 
-        User user = userService.processOAuthUser(provider, oAuth2User);
+        User user = oAuthService.processOAuthUser(provider, oAuth2User);
 
         String accessToken = jwtProvider.createToken(user);
 

@@ -1,9 +1,10 @@
-package com.jenna.snapster.domain.user.service;
+package com.jenna.snapster.domain.oauth.service.impl;
 
+import com.jenna.snapster.domain.oauth.service.OAuthService;
 import com.jenna.snapster.domain.user.entity.User;
+import com.jenna.snapster.domain.user.entity.UserProfile;
+import com.jenna.snapster.domain.user.repository.UserProfileRepository;
 import com.jenna.snapster.domain.user.repository.UserRepository;
-import com.jenna.snapster.domain.userprofile.entity.UserProfile;
-import com.jenna.snapster.domain.userprofile.repository.UserProfileRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -13,7 +14,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class UserServiceImpl implements UserService {
+public class KakaoOAuthServiceImpl implements OAuthService {
 
     private UserRepository userRepository;
     private UserProfileRepository userProfileRepository;
