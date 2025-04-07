@@ -23,6 +23,9 @@ public class TokenManager {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.issuer}")
+    private String issuer;
+
     private final Key secretKey = new SecretKeySpec(
         secret.getBytes(StandardCharsets.UTF_8),
         SignatureAlgorithm.HS256.getJcaName()
@@ -33,6 +36,7 @@ public class TokenManager {
             .setSubject(String.valueOf(user.getId()))
             .claim("username", user.getUsername())
             .claim("email", user.getEmail())
+            .setIssuer(issuer)
             .setIssuedAt(new Date())
             .setExpiration(new Date(System.currentTimeMillis() + expiration))
             .signWith(secretKey)
