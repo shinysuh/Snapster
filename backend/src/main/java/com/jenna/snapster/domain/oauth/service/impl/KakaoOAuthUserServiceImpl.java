@@ -1,6 +1,6 @@
 package com.jenna.snapster.domain.oauth.service.impl;
 
-import com.jenna.snapster.domain.oauth.service.OAuthService;
+import com.jenna.snapster.domain.oauth.service.OAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
@@ -12,16 +12,18 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Optional;
 
-@Service
+@Service("KakaoOAuthUserService")
 @RequiredArgsConstructor
-public class KakaoOAuthServiceImpl implements OAuthService {
+public class KakaoOAuthUserServiceImpl implements OAuthUserService {
 
-    private UserRepository userRepository;
-    private UserProfileRepository userProfileRepository;
+    private final UserRepository userRepository;
+    private final UserProfileRepository userProfileRepository;
 
     @Override
     public User processOAuthUser(String provider, OAuth2User oAuth2User) {
-        String oauthId = String.valueOf(oAuth2User.getAttribute("id"));
+        System.out.println("************ KAKAO SERVICE CALLED ************");
+
+        String oauthId = String.valueOf(((Number) oAuth2User.getAttribute("id")).longValue());
         Map<String, Object> kakaoAccount = (Map<String, Object>) oAuth2User.getAttributes().get("kakao_account");
         Map<String, Object> profile = (Map<String, Object>) kakaoAccount.get("profile");
 
