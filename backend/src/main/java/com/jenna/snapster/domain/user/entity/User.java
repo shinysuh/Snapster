@@ -1,0 +1,32 @@
+package com.jenna.snapster.domain.user.entity;
+
+import com.jenna.snapster.domain.userprofile.entity.UserProfile;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "users")
+public class User {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String oauthProvider;       // kakao, google, apple
+    private String oauthId;
+
+    private String email;
+    private String username;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private UserProfile profile;
+
+
+}
