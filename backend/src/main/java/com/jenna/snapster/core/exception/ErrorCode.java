@@ -13,12 +13,15 @@ public enum ErrorCode {
 
     ERROR_UNKNOWN("UNKNOWN001", "알 수 없는 에러가 발생했습니다. \n관리자에게 문의해주세요", INTERNAL_SERVER_ERROR),
 
+    // oauth2
+    INVALID_PROVIDER("PRV001", "허용되지 않는 provider 입니다.", UNAUTHORIZED),
+
     // token
     TOKEN_EXPIRED("JWT001", "토큰이 만료되었습니다.", UNAUTHORIZED),
     INVALID_TOKEN("JWT002", "토큰이 비어있거나 잘못되었습니다.", UNAUTHORIZED),
     TOKEN_MALFORMED("JWT003", "잘못된 JWT 토큰 구조입니다.", UNAUTHORIZED),
     INVALID_SIGNATURE("JWT004", "서명이 유효하지 않은 토큰입니다.", UNAUTHORIZED),
-    INVALID_ISSUER("JWT005", "허용되지 않은 issuer입니다.", UNAUTHORIZED),
+    INVALID_ISSUER("JWT005", "허용되지 않는 issuer입니다.", UNAUTHORIZED),
 
     // session
     NOT_LOGGED_IN("SECURITY001", "로그인이 필요한 작업입니다. 먼저 로그인 해주세요.", UNAUTHORIZED),
