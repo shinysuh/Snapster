@@ -1,10 +1,13 @@
+server:
+  error:
+    whitelabel:
+      enabled: true
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/snapster
     username: snapster_app
     password: qwer1234
-
   jpa:
     hibernate:
       ddl-auto: update
@@ -13,7 +16,6 @@ spring:
     properties:
       hibernate:
         format_sql: true
-
   security:
     oauth2:
       client:
@@ -35,8 +37,5 @@ spring:
             token-uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user-name-attribute: id
-
-server:
-  error:
-    whitelabel:
-      enabled: true
+jwt:
+  secret: ZPXyrrx23kvJTSeBoIlM1MgtlWvj8uwCAxqsnpz+Vx6unxdiWVUsHZoJIECH4+3i1cdBQcDhv8jr8825J1LkRg==
