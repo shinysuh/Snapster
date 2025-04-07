@@ -42,10 +42,7 @@ public class KakaoOAuthUserServiceImpl implements OAuthUserService {
             .username(nickname)
             .build();
 
-        // 유저 저장
-        user = userRepository.save(user);
-
-        // profile 연결 및 저장
+        // profile 연결
         UserProfile userProfile = UserProfile.builder()
             .user(user)
             .name(user.getUsername())
@@ -55,9 +52,10 @@ public class KakaoOAuthUserServiceImpl implements OAuthUserService {
             .hasAvatar(false)
             .build();
 
-        userProfile = userProfileRepository.save(userProfile);
-
         user.setProfile(userProfile);
+
+        // 유저 저장 (profile 같이 저장됨)
+        user = userRepository.save(user);
         return user;
     }
 }
