@@ -1,6 +1,6 @@
 docker:
   container: snapster-container
-  image: snapster_app
+  image: snapster-app
 
 cache:
   path: /tmp
