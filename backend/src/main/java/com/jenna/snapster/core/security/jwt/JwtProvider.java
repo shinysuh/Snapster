@@ -1,6 +1,7 @@
 package com.jenna.snapster.core.security.jwt;
 
 import com.jenna.snapster.domain.user.entity.User;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
@@ -11,8 +12,20 @@ public class JwtProvider {
     private final TokenManager tokenManager;
     private final JwtValidator jwtValidator;
 
-    public String createToken(User user) {
+    public String createAccessToken(User user) {
         return tokenManager.generateAccessToken(user);
+    }
+
+    public String createRefreshToken(User user) {
+        return tokenManager.generateRefreshToken(user);
+    }
+
+    public String resolveToken(HttpServletRequest request) {
+        String bearer = request.getHeader("Authorization");
+        if(bearer != null && bearer.startsWith("Bearer ")) {
+            return bearer.substring(7);
+        }
+        return null;
     }
 
     public boolean isValid(String token) {

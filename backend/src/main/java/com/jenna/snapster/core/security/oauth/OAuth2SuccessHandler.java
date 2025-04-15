@@ -1,13 +1,16 @@
 package com.jenna.snapster.core.security.oauth;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jenna.snapster.core.security.jwt.JwtProvider;
 import com.jenna.snapster.domain.oauth.constant.OAuthProvider;
+import com.jenna.snapster.domain.oauth.repository.RefreshTokenRepository;
 import com.jenna.snapster.domain.oauth.service.OAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
 import com.nimbusds.common.contenttype.ContentType;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -23,6 +26,10 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
     private final Map<String, OAuthUserService> oAuthUserServices;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenRepository repository;
+
+    @Value("${oauth2.kakao.app-redirect-uri}")
+    private String redirectUri;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -41,10 +48,20 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         }
 
         User user = oAuthUserService.processOAuthUser(provider.getProvider(), oAuth2User);
-        String accessToken = jwtProvider.createToken(user);
+        String accessToken = jwtProvider.createAccessToken(user);
+        String refreshToken = jwtProvider.createRefreshToken(user);
 
         response.setStatus(HttpServletResponse.SC_OK);
         response.setContentType(ContentType.APPLICATION_JSON.getType());
-        response.getWriter().write("{\"accessToken\":\"" + accessToken + "\"}");
+//        response.getWriter().write("{\"accessToken\":\"" + accessToken + "\"}");
+        response.getWriter().write(
+            new ObjectMapper().writeValueAsString(
+                Map.of("accessToken", accessToken,
+                    "refreshToken", refreshToken)
+            )
+        );
+
+//        response.sendRedirect(redirectUri + accessToken);
+        System.out.println("redirectUri: " + redirectUri + accessToken);
     }
 }

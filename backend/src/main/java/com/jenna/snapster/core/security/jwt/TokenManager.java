@@ -1,6 +1,9 @@
 package com.jenna.snapster.core.security.jwt;
 
+import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
+import com.jenna.snapster.domain.oauth.entity.RefreshToken;
+import com.jenna.snapster.domain.oauth.repository.RefreshTokenRepository;
 import com.jenna.snapster.domain.user.entity.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SignatureException;
@@ -12,7 +15,9 @@ import org.springframework.stereotype.Component;
 import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.security.Key;
+import java.time.Instant;
 import java.util.Date;
+import java.util.UUID;
 
 import static com.jenna.snapster.core.exception.ErrorCode.*;
 
@@ -26,10 +31,15 @@ public class TokenManager {
     @Value("${jwt.expiration}")
     private Long expiration;
 
+    @Value("${jwt.refresh-expiration}")
+    private Long refreshExpiration;
+
     @Value("${jwt.issuer}")
     private String issuer;
 
     private Key secretKey;
+
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @PostConstruct
     public void init() {
@@ -79,6 +89,36 @@ public class TokenManager {
 
     public String extractEmail(String token) {
         return this.extractAllClaims(token).get("email", String.class);
+    }
+
+    public String generateRefreshToken(User user) {
+        // 리프레시 토큰 정보 있을 경우 삭제 후 새로 발급
+        this.deleteUserIfAlreadyHasRefreshToken(user);
+
+        String refreshToken = UUID.randomUUID().toString();
+        RefreshToken entity = RefreshToken.builder()
+            .user(user)
+            .token(refreshToken)
+            .expiryDate(Instant.now().plusMillis(refreshExpiration))
+            .build();
+        refreshTokenRepository.save(entity);
+        return refreshToken;
+    }
+
+    public boolean validateRefreshToken(String token) {
+        return refreshTokenRepository.findByToken(token)
+            .filter(rt -> rt.getExpiryDate().isAfter(Instant.now()))
+            .isPresent();
+    }
+
+    public User getUserFromRefreshToken(String token) {
+        return refreshTokenRepository.findByToken(token)
+            .map(RefreshToken::getUser)
+            .orElseThrow(() -> new GlobalException(ErrorCode.INVALID_REFRESH_TOKEN));
+    }
+
+    public void deleteUserIfAlreadyHasRefreshToken(User user) {
+        refreshTokenRepository.findByUser(user).ifPresent(refreshTokenRepository::delete);
     }
 
 }
