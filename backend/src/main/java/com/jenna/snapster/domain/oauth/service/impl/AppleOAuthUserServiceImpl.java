@@ -1,18 +1,48 @@
 package com.jenna.snapster.domain.oauth.service.impl;
 
-import com.jenna.snapster.domain.oauth.service.OAuthUserService;
+import com.jenna.snapster.domain.oauth.dto.AccessTokenResponseDto;
+import com.jenna.snapster.domain.oauth.service.AbstractOAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
-import lombok.RequiredArgsConstructor;
+import com.jenna.snapster.domain.user.repository.UserProfileRepository;
+import com.jenna.snapster.domain.user.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
+import java.util.Map;
+
+@Slf4j
 @Service("AppleOAuthUserService")
-@RequiredArgsConstructor
-public class AppleOAuthUserServiceImpl implements OAuthUserService {
+public class AppleOAuthUserServiceImpl extends AbstractOAuthUserService {
+
+    public AppleOAuthUserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository) {
+        super(userRepository, userProfileRepository);
+    }
 
     @Override
     public User processOAuthUser(String provider, OAuth2User oAuth2User) {
-        System.out.println("************ APPLE SERVICE CALLED ************");
-        return null;
+        log.info("************ APPLE SERVICE CALLED ************");
+        Map<String, Object> attributes = oAuth2User.getAttributes();
+        AccessTokenResponseDto tokenResponse = this.getTokenResponse(provider, attributes);
+        return findOrCreateUser(tokenResponse);
+    }
+
+    private AccessTokenResponseDto getTokenResponse(String provider, Map<String, Object> attributes) {
+        String oauthId = (String) attributes.get("sub");
+        String email = this.extractEmail(attributes);
+        String name = (String) attributes.get("name");
+
+        return AccessTokenResponseDto.builder()
+            .provider(provider)
+            .oauthId(oauthId)
+            .email(email)
+            .username(name)
+            .build();
+    }
+
+    private String extractEmail(Map<String, Object> attributes) {
+        String email = (String) attributes.get("email");
+        if (email == null) email = "hidden@apple.com";
+        return email;
     }
 }

@@ -1,65 +1,43 @@
 package com.jenna.snapster.domain.oauth.service.impl;
 
-import com.jenna.snapster.domain.oauth.service.OAuthUserService;
+import com.jenna.snapster.domain.oauth.dto.AccessTokenResponseDto;
+import com.jenna.snapster.domain.oauth.service.AbstractOAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
-import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
 import com.jenna.snapster.domain.user.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
-import java.util.Optional;
 
 
 @Slf4j
 @Service("GoogleOAuthUserService")
-@RequiredArgsConstructor
-public class GoogleOAuthUserServiceImpl implements OAuthUserService {
+public class GoogleOAuthUserServiceImpl extends AbstractOAuthUserService {
 
-    private final UserRepository userRepository;
-    private final UserProfileRepository userProfileRepository;
+    public GoogleOAuthUserServiceImpl(UserRepository userRepository, UserProfileRepository userProfileRepository) {
+        super(userRepository, userProfileRepository);
+    }
 
     @Override
     public User processOAuthUser(String provider, OAuth2User oAuth2User) {
         log.info("************ GOOGLE SERVICE CALLED ************");
-
         Map<String, Object> attributes = oAuth2User.getAttributes();
+        AccessTokenResponseDto tokenResponse = this.getTokenResponse(provider, attributes);
+        return findOrCreateUser(tokenResponse);
+    }
 
+    private AccessTokenResponseDto getTokenResponse(String provider, Map<String, Object> attributes) {
         String oauthId = (String) attributes.get("sub");
         String email = (String) attributes.get("email");
         String name = (String) attributes.get("name");
 
-        // 기존 유저 정보 확인
-        Optional<User> userOpt = userRepository.findByOauthProviderAndOauthId(provider, oauthId);
-        log.info("************ User {} ************", userOpt.isPresent() ? "Exists" : "Does Not Exist");
-        if (userOpt.isPresent()) return userOpt.get();
-
-
-// 새 유저 등록
-        User user = User.builder()
-            .oauthProvider(provider)
+        return AccessTokenResponseDto.builder()
+            .provider(provider)
             .oauthId(oauthId)
             .email(email)
             .username(name)
             .build();
-
-        // profile 연결
-        UserProfile userProfile = UserProfile.builder()
-            .user(user)
-            .name(user.getUsername())
-            .bio("")
-            .link("")
-            .birthday(null)
-            .hasAvatar(false)
-            .build();
-
-        user.setProfile(userProfile);
-
-        // 유저 저장 (profile 같이 저장됨)
-        user = userRepository.save(user);
-        return user;
     }
 }
