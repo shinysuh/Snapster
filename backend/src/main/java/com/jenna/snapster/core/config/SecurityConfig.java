@@ -24,6 +24,11 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
 
     @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() {
+        return new JwtAuthenticationFilter(jwtProvider, userService);
+    }
+
+    @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
@@ -38,9 +43,9 @@ public class SecurityConfig {
                     .authenticated()
             ).oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler))
             .addFilterBefore(
-                new JwtAuthenticationFilter(jwtProvider, userService),
+                jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class
-            );
+            ).formLogin(AbstractHttpConfigurer::disable);
 
         return http.build();
     }
