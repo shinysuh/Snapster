@@ -5,14 +5,11 @@ import com.jenna.snapster.domain.oauth.service.AbstractOAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
 import com.jenna.snapster.domain.user.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-
-@Slf4j
 @Service("GoogleOAuthUserService")
 public class GoogleOAuthUserServiceImpl extends AbstractOAuthUserService {
 
@@ -22,10 +19,10 @@ public class GoogleOAuthUserServiceImpl extends AbstractOAuthUserService {
 
     @Override
     public User processOAuthUser(String provider, OAuth2User oAuth2User) {
-        log.info("************ GOOGLE SERVICE CALLED ************");
+        super.printServiceInfo(provider);
         Map<String, Object> attributes = oAuth2User.getAttributes();
         AccessTokenResponseDto tokenResponse = this.getTokenResponse(provider, attributes);
-        return findOrCreateUser(tokenResponse);
+        return super.findOrCreateUser(tokenResponse);
     }
 
     private AccessTokenResponseDto getTokenResponse(String provider, Map<String, Object> attributes) {

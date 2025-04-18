@@ -22,7 +22,6 @@ spring:
         registration:
           kakao:
             client-id: af8073596be18f5dbfbb2515fe0ba6b0
-            client-secret: t7hK1xIidAzKPLIpp03Oy5STa8uP9U0y
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
@@ -32,19 +31,18 @@ spring:
             client-name: Kakao
           google:
             client-id: 245849604605-jrf3orgldpeccmb2i9m0elehc8s0gnkl.apps.googleusercontent.com
-            client-secret: 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
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - email
               - profile
-#          apple:
-#            client-id:  # 작성 필요
-#            client-secret:  # 작성 필요 - JWT로 직접 생성?
-#            redirect-uri: http://localhost:8080/login/oauth2/code/apple
-#            authorization-grant-type: authorization_code
-#            scope:
-#              - name
-#              - email
+        #          apple:
+        #            client-id:  # 작성 필요
+        #            client-secret:  # 작성 필요 - JWT로 직접 생성?
+        #            redirect-uri: http://localhost:8080/login/oauth2/code/apple
+        #            authorization-grant-type: authorization_code
+        #            scope:
+        #              - name
+        #              - email
         provider:
           kakao:
             authorization-uri: https://kauth.kakao.com/oauth/authorize

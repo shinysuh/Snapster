@@ -5,13 +5,11 @@ import com.jenna.snapster.domain.oauth.service.AbstractOAuthUserService;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
 import com.jenna.snapster.domain.user.repository.UserRepository;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
 
-@Slf4j
 @Service("KakaoOAuthUserService")
 public class KakaoOAuthUserServiceImpl extends AbstractOAuthUserService {
 
@@ -21,7 +19,7 @@ public class KakaoOAuthUserServiceImpl extends AbstractOAuthUserService {
 
     @Override
     public User processOAuthUser(String provider, OAuth2User oAuth2User) {
-        log.info("************ KAKAO SERVICE CALLED ************");
+        super.printServiceInfo(provider);
 
         String oauthId = this.extractOauthId(oAuth2User);
         String email = this.extractEmail(oAuth2User);
@@ -34,7 +32,7 @@ public class KakaoOAuthUserServiceImpl extends AbstractOAuthUserService {
             .username(nickname)
             .build();
 
-        return findOrCreateUser(tokenResponse);
+        return super.findOrCreateUser(tokenResponse);
     }
 
     private String extractOauthId(OAuth2User oAuth2User) {
