@@ -6,7 +6,9 @@ import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
 import com.jenna.snapster.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RequiredArgsConstructor
 public abstract class AbstractOAuthUserService implements OAuthUserService {
 
@@ -36,5 +38,9 @@ public abstract class AbstractOAuthUserService implements OAuthUserService {
                 user.setProfile(profile);
                 return userRepository.save(user);
             });
+    }
+
+    protected void printServiceInfo(String provider) {
+        log.info("************ {} SERVICE CALLED ************", provider.toUpperCase());
     }
 }
