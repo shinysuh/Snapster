@@ -1,20 +1,20 @@
 import 'dart:async';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/video/repositories/video_repository.dart';
 
 class VideoPostViewModel extends FamilyAsyncNotifier<void, String> {
   late final VideoRepository _repository;
   late final String _videoId;
-  late final User? _user;
+  late final AppUser? _user;
 
   @override
   FutureOr<void> build(String arg) {
     _videoId = arg;
     _repository = ref.read(videoRepository);
-    _user = ref.read(authRepository).user;
+    _user = ref.read(firebaseAuthServiceProvider).currentUser;
   }
 
   Future<void> toggleLikeVideo(String thumbnailUrl) async {

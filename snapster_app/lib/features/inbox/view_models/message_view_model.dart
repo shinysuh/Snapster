@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/inbox/models/message_model.dart';
 import 'package:snapster_app/features/inbox/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/inbox/repositories/message_repository.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
 
@@ -17,17 +18,17 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
   static const String systemId = 'system_message';
 
   late final MessageRepository _messageRepository;
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authProvider;
 
-  late final User? _user;
+  late final AppUser? _user;
   late final String _chatroomId;
 
   @override
   FutureOr<void> build(String arg) {
     _chatroomId = arg;
     _messageRepository = ref.read(messageRepository);
-    _authRepository = ref.read(authRepository);
-    _user = _authRepository.user;
+    _authProvider = ref.read(firebaseAuthServiceProvider);
+    _user = _authProvider.currentUser;
   }
 
   Future<void> sendMessage(BuildContext context, String text) async {
@@ -99,7 +100,7 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
 
   MessageSenderType getMessageSender(BuildContext context, String senderId) {
     _checkLoginUser(context);
-    final user = _authRepository.user;
+    final user = _authProvider.currentUser;
     return senderId == systemId
         ? MessageSenderType.system
         : user!.uid == senderId
@@ -118,7 +119,7 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
   */
 
   void _checkLoginUser(BuildContext context) {
-    if (!_authRepository.isLoggedIn) {
+    if (!_authProvider.isLoggedIn) {
       showSessionErrorSnack(context);
     }
   }

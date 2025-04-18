@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -5,17 +7,23 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/video/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/router.dart';
+import 'package:uni_links/uni_links.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
+
+  print('🔥 앱 시작됨');
 
   // firebase initialization
   await Firebase.initializeApp(
@@ -56,8 +64,47 @@ void main() async {
   // );
 }
 
-class SnapsterApp extends ConsumerWidget {
+class SnapsterApp extends ConsumerStatefulWidget {
   SnapsterApp({super.key});
+
+  @override
+  ConsumerState<SnapsterApp> createState() => _SnapsterAppState();
+}
+
+class _SnapsterAppState extends ConsumerState<SnapsterApp> {
+  late final StreamSubscription _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _initDeepLinkListener();
+  }
+
+  @override
+  void dispose() {
+    _sub.cancel();
+    super.dispose();
+  }
+
+  void _initDeepLinkListener() {
+    _sub = uriLinkStream.listen((uri) async {
+      if (uri == null) return;
+
+      final repo = ref.read(authRepositoryProvider);
+      final success = await repo.storeTokenFromUriAndRestoreAuth(uri);
+      debugPrint("💡로그인 유저 갱신: $success");
+      // ref.invalidate(authStateProvider); // 혹시 모를 싱크 밀림 대비 강제 invalidate
+
+      // 화면 이동
+      if (mounted) {
+        final location =
+            success ? MainNavigationScreen.homeRouteURL : SignUpScreen.routeURL;
+        ref.read(routerProvider).go(location);
+      }
+    }, onError: (e) {
+      debugPrint('❌ uriLinkStream error: $e');
+    });
+  }
 
   final lightTextTheme = GoogleFonts.itimTextTheme(
     const TextTheme(
@@ -74,7 +121,7 @@ class SnapsterApp extends ConsumerWidget {
 
   // This widget is the root of your application.
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  Widget build(BuildContext context) {
     // locale 강제 지정
     // S.load(const Locale('en'));
     return ValueListenableBuilder(

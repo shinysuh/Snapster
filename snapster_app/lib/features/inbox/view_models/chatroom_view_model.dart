@@ -1,19 +1,20 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snapster_app/constants/common_divider.dart';
 import 'package:snapster_app/constants/system_message_types.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
 import 'package:snapster_app/features/inbox/models/chatroom_model.dart';
 import 'package:snapster_app/features/inbox/models/chatter_model.dart';
 import 'package:snapster_app/features/inbox/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/inbox/view_models/message_view_model.dart';
 import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
@@ -21,9 +22,9 @@ import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class ChatroomViewModel extends AsyncNotifier<void> {
   late final ChatroomRepository _chatroomRepository;
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authProvider;
   late final UserRepository _userRepository;
-  late final User? _user;
+  late final AppUser? _user;
 
   late final ChatroomModel chatroom;
 
@@ -31,8 +32,8 @@ class ChatroomViewModel extends AsyncNotifier<void> {
   FutureOr<void> build() {
     _chatroomRepository = ref.read(chatroomRepository);
     _userRepository = ref.read(userRepository);
-    _authRepository = ref.read(authRepository);
-    _user = _authRepository.user;
+    _authProvider = ref.read(firebaseAuthServiceProvider);
+    _user = _authProvider.currentUser;
   }
 
   // 채팅방 생성
@@ -278,7 +279,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
 // 로그인 여부 체크
   void _checkLoginUser(BuildContext context) {
-    if (!_authRepository.isLoggedIn) {
+    if (!_authProvider.isLoggedIn) {
       showSessionErrorSnack(context);
     }
   }
@@ -291,7 +292,7 @@ final chatroomProvider = AsyncNotifierProvider<ChatroomViewModel, void>(
 // Stream 은 변화가 바로 반영됨 (watch)
 final chatroomListProvider =
     StreamProvider.autoDispose<List<ChatPartnerModel>>((ref) {
-  final user = ref.read(authRepository).user;
+  final user = ref.read(firebaseAuthServiceProvider).currentUser;
   final database = FirebaseFirestore.instance;
   return database
       .collection('users')

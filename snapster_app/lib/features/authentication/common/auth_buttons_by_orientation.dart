@@ -40,11 +40,11 @@ class AuthButtonsByOrientation extends ConsumerWidget {
             .githubSignIn(context, isNewUser),
       ),
       AuthButton(
-        icon: FontAwesomeIcons.message,
+        icon: FontAwesomeIcons.solidMessage,
         text: S.of(context).continueWithKakao,
         onTapButton: () => ref
             .read(socialAuthProvider.notifier)
-            .appleSignIn(context, isNewUser),
+            .launchKakaoSignIn(),
       ),
       // AuthButton(
       //   icon: FontAwesomeIcons.apple,

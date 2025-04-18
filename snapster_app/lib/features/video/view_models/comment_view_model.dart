@@ -1,10 +1,11 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/video/models/comment_model.dart';
 import 'package:snapster_app/features/video/repositories/comment_repository.dart';
@@ -13,17 +14,17 @@ import 'package:snapster_app/utils/base_exception_handler.dart';
 
 class CommentViewModel extends FamilyAsyncNotifier<void, String> {
   late final CommentRepository _commentRepository;
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authRepository;
 
-  late final User? _user;
+  late final AppUser? _user;
   late final String _videoId;
 
   @override
   FutureOr<void> build(String arg) {
     _videoId = arg;
     _commentRepository = ref.read(commentRepository);
-    _authRepository = ref.read(authRepository);
-    _user = _authRepository.user;
+    _authRepository = ref.read(firebaseAuthServiceProvider);
+    _user = _authRepository.currentUser;
   }
 
   // 댓글 업로드

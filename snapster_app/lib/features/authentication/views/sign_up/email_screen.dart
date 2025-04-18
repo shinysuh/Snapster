@@ -4,7 +4,7 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
 import 'package:snapster_app/features/authentication/view_models/signup_view_model.dart';
-import 'package:snapster_app/features/authentication/views/password_screen.dart';
+import 'package:snapster_app/features/authentication/views/sign_up/password_screen.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';
 import 'package:snapster_app/utils/validation.dart';

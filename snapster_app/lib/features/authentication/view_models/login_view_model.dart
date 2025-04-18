@@ -3,16 +3,18 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class LoginViewModel extends AsyncNotifier<void> {
-  late final AuthenticationRepository _repository;
+  late final IAuthService _authProvider;
 
   @override
   FutureOr<void> build() {
-    _repository = ref.read(authRepository);
+    _authProvider = ref.read(firebaseAuthServiceProvider);
   }
 
   Future<void> login(
@@ -22,7 +24,7 @@ class LoginViewModel extends AsyncNotifier<void> {
   ) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
-      () async => await _repository.signIn(email, password),
+      () async => await _authProvider.signIn(email, password),
     );
 
     if (!context.mounted) return;

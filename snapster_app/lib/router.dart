@@ -3,9 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
-import 'package:snapster_app/features/authentication/views/login_screen.dart';
-import 'package:snapster_app/features/authentication/views/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
+import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
@@ -49,21 +50,32 @@ o
 final routerProvider = Provider((ref) {
   // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
   return GoRouter(
-    // initialLocation: ChatsScreen.routeURL, // TODO - 원복
-    initialLocation: MainNavigationScreen.homeRouteURL,
+    initialLocation: Splashscreen.routeURL,
+    // initialLocation: MainNavigationScreen.homeRouteURL,
     redirect: (context, state) {
-      final isLoggedIn = ref.read(authRepository).isLoggedIn;
-      return !isLoggedIn &&
-              state.subloc != SignUpScreen.routeURL &&
-              state.subloc != LoginScreen.routeURL
+      // final isLoggedIn = ref.read(firebaseAuthServiceProvider).isLoggedIn;
+
+      final user = ref.read(authRepositoryProvider).currentUser;
+
+      final isLoggedIn = ref.read(isLoggedInProvider);
+
+      final loc = state.subloc;
+
+      // 예외 페이지들
+      final isSplash = loc == Splashscreen.routeURL;
+      final isAuthPage =
+          loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
+
+      return !isLoggedIn && !isSplash && !isAuthPage
           ? SignUpScreen.routeURL
           : null;
     },
     routes: [
-      // GoRoute(
-      //   path: '/',
-      //   builder: (context, state) => const VideoRecordingScreen(),
-      // ),
+      GoRoute(
+        name: Splashscreen.routeName,
+        path: Splashscreen.routeURL,
+        builder: (context, state) => const Splashscreen(),
+      ),
       GoRoute(
         name: UserProfileFormScreen.routeName,
         path: UserProfileFormScreen.routeURL,
@@ -204,30 +216,6 @@ final routerProvider = Provider((ref) {
         path: ChatroomUserListScreen.routeURL,
         builder: (context, state) => const ChatroomUserListScreen(),
       ),
-      // GoRoute(
-      //   name: UsernameScreen.routeName,
-      //   path: UsernameScreen.routeURL,
-      //   pageBuilder: (context, state) => CustomTransitionPage(
-      //       transitionsBuilder: (context, animation, secondaryAnimation, child) =>
-      //           FadeTransition(
-      //             opacity: animation,
-      //             child: ScaleTransition(
-      //               scale: animation,
-      //               child: child,
-      //             ),
-      //           ),
-      //       child: const UsernameScreen()),
-      // ),
-      // GoRoute(
-      //   path: '/user/:username',
-      //   builder: (context, state) {
-      //     // 쿼리파라미터로 데이터 넘기기
-      //     final username = state.params['username'] ?? '';
-      //     // e.g. '/user/:username?show=likes'
-      //     final param = state.queryParams['show'] ?? '';
-      //     return UserProfileScreen(username: username, show: param);
-      //   },
-      // ),
     ],
   );
 });
