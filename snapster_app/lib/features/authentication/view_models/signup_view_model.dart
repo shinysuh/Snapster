@@ -2,19 +2,20 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class SignUpViewModel extends AsyncNotifier<void> {
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authProvider;
 
   @override
   FutureOr<void> build() {
     // 현재 build()는 _authRepository 를 initialize 하는 역할 이외에는 안함
-    _authRepository = ref.read(authRepository);
+    _authProvider = ref.read(firebaseAuthServiceProvider);
   }
 
   Future<void> signUp(BuildContext context) async {
@@ -25,7 +26,7 @@ class SignUpViewModel extends AsyncNotifier<void> {
 
     state = await AsyncValue.guard(
       () async {
-        final credential = await _authRepository.emailSignUp(
+        final credential = await _authProvider.firebaseSignUp(
           form['email'],
           form['password'],
         );

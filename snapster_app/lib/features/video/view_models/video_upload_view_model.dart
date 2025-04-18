@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/video/models/video_model.dart';
 import 'package:snapster_app/features/video/repositories/video_repository.dart';
@@ -24,8 +24,8 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
     required String title,
     required String description,
   }) async {
-    final authRepo = ref.read(authRepository);
-    final user = authRepo.user;
+    final authRepo = ref.read(firebaseAuthServiceProvider);
+    final user = authRepo.currentUser;
     final userProfile = ref.read(userProvider).value;
 
     if (!authRepo.isLoggedIn || userProfile == null) {

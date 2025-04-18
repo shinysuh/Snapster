@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/view_models/signup_view_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
@@ -11,7 +12,7 @@ import 'package:snapster_app/utils/base_exception_handler.dart';
 
 class UserViewModel extends AsyncNotifier<UserProfileModel> {
   late final UserRepository _userRepository;
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authProvider;
 
   late final UserProfileModel loginUser;
 
@@ -20,11 +21,11 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     // await Future.delayed(const Duration(seconds: 2));
 
     _userRepository = ref.read(userRepository);
-    _authRepository = ref.read(authRepository);
+    _authProvider = ref.read(firebaseAuthServiceProvider);
 
-    if (_authRepository.isLoggedIn) {
+    if (_authProvider.isLoggedIn) {
       final profile =
-          await _userRepository.findProfile(_authRepository.user!.uid);
+          await _userRepository.findProfile(_authProvider.currentUser!.uid);
       if (profile != null) {
         return UserProfileModel.fromJson(profile);
       }
@@ -62,7 +63,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
     BuildContext context,
     UserProfileModel profile,
   ) async {
-    await _authRepository.checkLoginUser(context);
+    await _authProvider.checkLoginUser(context);
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(
         () async => await _userRepository.updateProfile(profile.uid, profile));
@@ -95,9 +96,9 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
   }
 
   Future<void> checkLoginUser(BuildContext context) async {
-    var isLoggedIn = ref.read(authRepository).isLoggedIn;
+    var isLoggedIn = ref.read(firebaseAuthServiceProvider).isLoggedIn;
     if (!isLoggedIn) {
-      _authRepository.signOut(context);
+      _authProvider.signOut(context);
       showSessionErrorSnack(context);
       throw Exception();
     }

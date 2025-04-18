@@ -4,7 +4,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/auth_buttons_by_orientation.dart';
-import 'package:snapster_app/features/authentication/views/login_form_screen.dart';
+import 'package:snapster_app/features/authentication/views/login/login_form_screen.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/theme_mode.dart';

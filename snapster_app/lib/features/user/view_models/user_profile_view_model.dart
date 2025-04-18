@@ -1,27 +1,28 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/authentication_repository.dart';
+import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
 import 'package:snapster_app/features/video/models/thumbnail_link_model.dart';
 import 'package:snapster_app/features/video/repositories/video_repository.dart';
 
 class UserProfileViewModel extends FamilyAsyncNotifier<void, UserProfileModel> {
-  late final AuthenticationRepository _authRepository;
+  late final IAuthService _authProvider;
   late final VideoRepository _videoRepository;
 
   late final UserProfileModel _profile;
-  late final User? _user;
+  late final AppUser? _user;
 
   @override
   FutureOr<void> build(UserProfileModel arg) {
     _profile = arg;
     _videoRepository = ref.read(videoRepository);
-    _authRepository = ref.read(authRepository);
-    _user = _authRepository.user;
+    _authProvider = ref.read(firebaseAuthServiceProvider);
+    _user = _authProvider.currentUser;
   }
 }
 
