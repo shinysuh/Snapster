@@ -93,7 +93,11 @@ jobs:
           REPOSITORY=/home/ec2-user/snapster/docker
           CONTAINER=${{ env.DOCKER_CONTAINER }}
           IMAGE=${{ env.DOCKER_IMAGE }}
-          DOCKER_RUN="docker run -d --rm --name $CONTAINER -p 80:80 $IMAGE:latest"
+          DOCKER_RUN="docker run -d --rm --name $CONTAINER \
+            -p 80:80 \
+            -e KAKAO_CLIENT_SECRET='${{ secrets.KAKAO_CLIENT_SECRET }}' \
+            -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
+            $IMAGE:latest"
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
             run_docker() {

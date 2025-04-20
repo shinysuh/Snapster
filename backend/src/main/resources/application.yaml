@@ -22,6 +22,7 @@ spring:
         registration:
           kakao:
             client-id: af8073596be18f5dbfbb2515fe0ba6b0
+            client-secret: ${KAKAO_CLIENT_SECRET}
             client-authentication-method: client_secret_post
             authorization-grant-type: authorization_code
             scope:
@@ -31,6 +32,7 @@ spring:
             client-name: Kakao
           google:
             client-id: 245849604605-jrf3orgldpeccmb2i9m0elehc8s0gnkl.apps.googleusercontent.com
+            client-secret: ${GOOGLE_CLIENT_SECRET}
             redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - email
