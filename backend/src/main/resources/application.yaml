@@ -68,3 +68,10 @@ jwt:
 oauth2:
   kakao:
     app-redirect-uri: snapster://auth?accessToken=
+aws:
+  s3:
+    bucket-name: snapster-bucket
+    expiration: 600000  # 1000 * 60 * 10   # 10분
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_ACCESS_KEY}
+    region: ap-northeast-2   # 서울
