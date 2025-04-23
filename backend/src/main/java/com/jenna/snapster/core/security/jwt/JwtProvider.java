@@ -1,5 +1,6 @@
 package com.jenna.snapster.core.security.jwt;
 
+import com.jenna.snapster.core.security.constant.JwtKeywords;
 import com.jenna.snapster.domain.user.entity.User;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +22,8 @@ public class JwtProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String bearer = request.getHeader("Authorization");
-        if(bearer != null && bearer.startsWith("Bearer ")) {
+        String bearer = request.getHeader(JwtKeywords.AUTHORIZATION.getKeyword());
+        if (bearer != null && bearer.startsWith(JwtKeywords.BEARER.getKeyword())) {
             return bearer.substring(7);
         }
         return null;
