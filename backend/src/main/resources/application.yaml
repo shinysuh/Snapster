@@ -62,7 +62,8 @@ spring:
 
 jwt:
   secret: ZPXyrrx23kvJTSeBoIlM1MgtlWvj8uwCAxqsnpz+Vx6unxdiWVUsHZoJIECH4+3i1cdBQcDhv8jr8825J1LkRg==
-  expiration: 1800000 # 1000 * 60 * 30    # 30분
+  expiration: 10800000   # 개발용 3시간
+  #  expiration: 1800000 # 1000 * 60 * 30    # 30분
   issuer: snapster-app
   refresh-expiration: 180000000
 oauth2:
