@@ -44,6 +44,10 @@ public enum ErrorCode {
     // profile
     USER_NAME_REQUIRED("PRF001", "사용자명을 입력해주세요.", BAD_REQUEST),
 
+    // file
+    NO_SUCH_FILE("FILE001", "존재하지 않는 파일입니다.", BAD_REQUEST),
+
+
     ;
 
     private final String code;
