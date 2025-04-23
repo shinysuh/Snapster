@@ -4,6 +4,7 @@ import com.jenna.snapster.core.security.jwt.JwtAuthenticationFilter;
 import com.jenna.snapster.core.security.jwt.JwtProvider;
 import com.jenna.snapster.core.security.oauth.OAuth2SuccessHandler;
 import com.jenna.snapster.domain.user.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -37,15 +38,23 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         "/",
                         "/api/oauth2/**",
+                        "/api/login",
                         "/api/user/login/**"
                     ).permitAll()
                     .anyRequest()
                     .authenticated()
             ).oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler))
+            .formLogin(AbstractHttpConfigurer::disable)     // 로그인 관련 리다이렉트/폼 로그인 비활성화
             .addFilterBefore(
                 jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class
-            ).formLogin(AbstractHttpConfigurer::disable);
+            );
+
+        // 향후 로그인 페이지 리다이렉트를 원할 경우 제거
+        // 인증되지 않은 사용자는 로그인 페이지로 리다이렉트하지 않고 401 응답을 반환하도록 설정
+        http.exceptionHandling(configurer -> configurer.authenticationEntryPoint((request, response, authException) -> {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Unauthorized");
+        }));
 
         return http.build();
     }
