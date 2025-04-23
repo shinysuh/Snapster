@@ -3,15 +3,17 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
-import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class SocialAuthViewModel extends AsyncNotifier<void> {
-  late final IAuthService _authProvider;
+  // late final IAuthService _authProvider;
+  late final FirebaseAuthenticationRepository _authProvider;
 
   @override
   FutureOr<void> build() {
@@ -28,17 +30,6 @@ class SocialAuthViewModel extends AsyncNotifier<void> {
 
   Future<void> googleSignIn(BuildContext context, bool isNewUser) async {
     signInBySocial(context, isNewUser, _authProvider.signInWithGoogle);
-  }
-
-  void launchKakaoSignIn() async {
-    final Uri url =
-        Uri.parse('http://localhost:8080/oauth2/authorization/kakao');
-
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url, mode: LaunchMode.externalApplication);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   void signInBySocial(
@@ -59,6 +50,18 @@ class SocialAuthViewModel extends AsyncNotifier<void> {
             ? InterestScreen.routeURL
             : MainNavigationScreen.homeRouteURL,
       );
+    }
+  }
+
+  // OAuth 2.0
+  void launchOAuthSignIn(String provider) async {
+    final Uri url =
+        Uri.parse('${ApiInfo.baseUrl}/oauth2/authorization/$provider');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
     }
   }
 }

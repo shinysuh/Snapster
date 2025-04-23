@@ -25,7 +25,6 @@ class FirebaseAuthenticationRepository implements IAuthService {
         );
   }
 
-  @override
   Future<UserCredential> firebaseSignUp(String email, String password) async {
     return await _firebaseAuth.createUserWithEmailAndPassword(
       email: email,
@@ -56,17 +55,14 @@ class FirebaseAuthenticationRepository implements IAuthService {
         );
   }
 
-  @override
   Future<void> signInWithGithub() async {
     await _firebaseAuth.signInWithProvider(GithubAuthProvider());
   }
 
-  @override
   Future<void> signInWithApple() async {
     await _firebaseAuth.signInWithProvider(AppleAuthProvider());
   }
 
-  @override
   Future<void> signInWithGoogle() async {
     await _firebaseAuth.signInWithProvider(GoogleAuthProvider());
   }
@@ -83,12 +79,6 @@ class FirebaseAuthenticationRepository implements IAuthService {
   @override
   Future<AppUser> getUserFromToken(String token) {
     // TODO: implement getUserFromToken
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<String> signInWithKakao(String accessToken) {
-    // TODO: implement signInWithKakao
     throw UnimplementedError();
   }
 }

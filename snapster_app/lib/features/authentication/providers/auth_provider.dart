@@ -7,17 +7,14 @@ import 'package:snapster_app/features/authentication/services/http_auth_service.
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
-final firebaseAuthServiceProvider = Provider<IAuthService>(
-  (ref) => FirebaseAuthenticationRepository(),
-);
-
 // IAuthService 구현체 (HTTP 호출 담당)
-final authServiceProvider =
-    Provider<IAuthService>((ref) => HttpAuthService(client: http.Client()));
+final httpAuthServiceProvider = Provider<IAuthService>(
+  (ref) => HttpAuthService(client: http.Client()),
+);
 
 // AuthRepository (토큰 저장/복원/스트림 관리)
 final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository(
-      authService: ref.read(authServiceProvider),
+      authService: ref.read(httpAuthServiceProvider),
       storage: const FlutterSecureStorage(),
     ));
 
@@ -32,6 +29,12 @@ final isLoggedInProvider = Provider<bool>((ref) {
   return user != null;
 });
 
+// TODO - 제거 예정
+final firebaseAuthServiceProvider = Provider(
+  (ref) => FirebaseAuthenticationRepository(),
+);
+
+// TODO - 제거 예정
 // final authState = StreamProvider((ref) {
 //   final repository = ref.read(firebaseAuthServiceProvider);
 //   return repository.authStateChanges();

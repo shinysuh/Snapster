@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class HttpAuthService implements IAuthService {
-  static const _baseUrl = 'http://localhost:8080/api/auth'; // TODO => 운영은 80
+  static const _baseUrl = '${ApiInfo.baseUrl}/api/auth';
   final _basicHeaders = {'Content-Type': 'application/json'};
 
   final http.Client _client;
@@ -47,24 +48,6 @@ class HttpAuthService implements IAuthService {
   }
 
   @override
-  Future<void> signInWithApple() {
-    // TODO: implement signInWithApple
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signInWithGithub() {
-    // TODO: implement signInWithGithub
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> signInWithGoogle() {
-    // TODO: implement signInWithGoogle
-    throw UnimplementedError();
-  }
-
-  @override
   Future<void> signOut(BuildContext context) {
     // TODO: implement signOut
     throw UnimplementedError();
@@ -83,25 +66,11 @@ class HttpAuthService implements IAuthService {
   }
 
   @override
-  Future<String> signInWithKakao(String accessToken) async {
-    final res = await _client.post(
-      Uri.parse('$_baseUrl/signup'),
-      headers: _basicHeaders,
-      body: jsonEncode({'accessToken': accessToken}),
-    );
-    if (res.statusCode == 200) {
-      return jsonDecode(res.body)['token'] as String;
-    }
-    throw Exception('Kakao Login failed: ${res.body}');
-  }
-
-  @override
   Future<AppUser> getUserFromToken(String token) async {
     final res = await _client.post(
       Uri.parse('$_baseUrl/me'),
       headers: {
-        Authorizations.headerKey:
-            '${Authorizations.headerValuePrefix} $token'
+        Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token'
       },
     );
     if (res.statusCode == 200) {

@@ -25,26 +25,24 @@ class AuthButtonsByOrientation extends ConsumerWidget {
         text: S.of(context).useEmailPassword,
         onTapButton: () => onTapEmailAndPassword(context),
       ),
+      // AuthButton(
+      //   icon: FontAwesomeIcons.github,
+      //   text: S.of(context).continueWithGithub,
+      //   onTapButton: () => ref
+      //       .read(socialAuthProvider.notifier)
+      //       .githubSignIn(context, isNewUser),
+      // ),
       AuthButton(
         icon: FontAwesomeIcons.google,
         text: S.of(context).continueWithGoogle,
-        onTapButton: () => ref
-            .read(socialAuthProvider.notifier)
-            .googleSignIn(context, isNewUser),
-      ),
-      AuthButton(
-        icon: FontAwesomeIcons.github,
-        text: S.of(context).continueWithGithub,
-        onTapButton: () => ref
-            .read(socialAuthProvider.notifier)
-            .githubSignIn(context, isNewUser),
+        onTapButton: () =>
+            ref.read(socialAuthProvider.notifier).launchOAuthSignIn('google'),
       ),
       AuthButton(
         icon: FontAwesomeIcons.solidMessage,
         text: S.of(context).continueWithKakao,
-        onTapButton: () => ref
-            .read(socialAuthProvider.notifier)
-            .launchKakaoSignIn(),
+        onTapButton: () =>
+            ref.read(socialAuthProvider.notifier).launchOAuthSignIn('kakao'),
       ),
       // AuthButton(
       //   icon: FontAwesomeIcons.apple,
