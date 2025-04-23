@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:snapster_app/features/authentication/initializers/token_auth_initializer.dart';
+import 'package:snapster_app/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class AuthRepository {
-  static const _tokenKey = TokenAuthInitializer.authTokenKey;
+  static const _tokenKey = Authorizations.tokenKey;
 
   final IAuthService _authService;
   final FlutterSecureStorage _storage;
@@ -18,7 +18,8 @@ class AuthRepository {
   AuthRepository({
     required IAuthService authService,
     FlutterSecureStorage? storage,
-  })  : _authService = authService,
+  })
+      : _authService = authService,
         _storage = storage ?? const FlutterSecureStorage() {
     _restoreFromToken();
   }

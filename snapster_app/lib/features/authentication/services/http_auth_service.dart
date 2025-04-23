@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
+import 'package:snapster_app/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
@@ -98,8 +99,10 @@ class HttpAuthService implements IAuthService {
   Future<AppUser> getUserFromToken(String token) async {
     final res = await _client.post(
       Uri.parse('$_baseUrl/me'),
-      headers: {'Authorization': 'Bearer $token'},
-      // body: jsonEncode({'jwtToken': token}),
+      headers: {
+        Authorizations.headerKey:
+            '${Authorizations.headerValuePrefix} $token'
+      },
     );
     if (res.statusCode == 200) {
       return AppUser.fromJson(jsonDecode(res.body));
