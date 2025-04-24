@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
@@ -49,26 +50,38 @@ o
  */
 final routerProvider = Provider((ref) {
   // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
+  final authStatus = ref.watch(authStatusProvider);
+
   return GoRouter(
     initialLocation: Splashscreen.routeURL,
-    // initialLocation: MainNavigationScreen.homeRouteURL,
     redirect: (context, state) {
-      // final isLoggedIn = ref.read(firebaseAuthServiceProvider).isLoggedIn;
-
-      final user = ref.read(authRepositoryProvider).currentUser;
-
-      final isLoggedIn = ref.read(isLoggedInProvider);
-
       final loc = state.subloc;
-
       // 예외 페이지들
       final isSplash = loc == Splashscreen.routeURL;
       final isAuthPage =
           loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
 
-      return !isLoggedIn && !isSplash && !isAuthPage
-          ? SignUpScreen.routeURL
-          : null;
+      // 로딩 중에는 리디렉션 액션 X
+      if(authStatus == AuthStatus.loading) return null;
+
+      final isLoggedIn = authStatus == AuthStatus.authenticated;
+
+      final user = ref.read(authRepositoryProvider).currentUser;
+
+      debugPrint('📌 user: ${user?.displayName}');
+      debugPrint('📌 isLoggedIn: $isLoggedIn');
+
+      // 토큰이 없으면 로그인/회원가입 페이지로 리다이렉션
+      if (!isLoggedIn && !isSplash && !isAuthPage) {
+        return SignUpScreen.routeURL; // 로그인 페이지로 이동
+      }
+
+      // 토큰이 있으면 홈 화면으로 리다이렉션
+      if (isLoggedIn && (isSplash || isAuthPage)) {
+        return MainNavigationScreen.homeRouteURL; // 홈 화면으로 이동
+      }
+
+      return null; // 다른 경우에는 이동하지 않음
     },
     routes: [
       GoRoute(

@@ -1,26 +1,24 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:snapster_app/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class AuthRepository {
-  static const _tokenKey = Authorizations.tokenKey;
-
   final IAuthService _authService;
-  final FlutterSecureStorage _storage;
   final _controller = StreamController<AppUser?>.broadcast();
+  final TokenStorageService _tokenStorageService;
 
   AppUser? _currentUser;
 
   AuthRepository({
     required IAuthService authService,
-    FlutterSecureStorage? storage,
+    TokenStorageService? tokenStorageService,
   })  : _authService = authService,
-        _storage = storage ?? const FlutterSecureStorage() {
-    _restoreFromToken();
+        _tokenStorageService = tokenStorageService ?? TokenStorageService() {
+    restoreFromToken();
   }
 
   Stream<AppUser?> get authStateChanges => _controller.stream;
@@ -36,17 +34,22 @@ class AuthRepository {
   }
 
   // 앱 시작 시, 토큰이 있으면 사용자 정보 복구
-  Future<void> _restoreFromToken() async {
-    final token = await _storage.read(key: _tokenKey);
+  Future<bool> restoreFromToken() async {
+    final token = await _tokenStorageService.readToken();
+    debugPrint('📌 token: $token');
+
     if (token != null) {
       try {
         final user = await _authService.getUserFromToken(token);
+        debugPrint('📌 user111: ${user.displayName}');
         _setUser(user);
+        return true;
       } catch (e) {
-        await _storage.delete(key: _tokenKey);
+        await _tokenStorageService.deleteToken();
         _setUser(null);
       }
     }
+    return false;
   }
 
   // 토큰을 사용해 사용자 정보 복구
@@ -68,7 +71,7 @@ class AuthRepository {
     final token = uri.queryParameters[Authorizations.accessTokenKey];
     if (token == null) return false;
 
-    await _storage.write(key: _tokenKey, value: token);
+    await _tokenStorageService.saveToken(token);
     debugPrint('✅ 토큰 저장 완료: $token');
 
     final user = await verifyAndSetUserFromToken(token);
@@ -77,7 +80,7 @@ class AuthRepository {
 
   // 로그인 시, 토큰 저장 -> 사용자 정보 복구
   Future<void> storeToken(String token) async {
-    await _storage.write(key: _tokenKey, value: token);
+    await _tokenStorageService.saveToken(token);
     debugPrint('✅ 로그인 완료: $token');
 
     final user = await verifyAndSetUserFromToken(token);
@@ -90,7 +93,7 @@ class AuthRepository {
 
   // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null)
   Future<void> clearToken() async {
-    await _storage.delete(key: _tokenKey);
+    await _tokenStorageService.deleteToken();
     debugPrint('✅ 로그 아웃 완료');
     _setUser(null);
   }

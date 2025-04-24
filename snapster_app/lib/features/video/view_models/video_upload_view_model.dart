@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/video/models/video_model.dart';
 import 'package:snapster_app/features/video/repositories/video_repository.dart';

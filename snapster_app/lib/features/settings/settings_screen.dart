@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/providers/auth_provider.dart';
+import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
 import 'package:snapster_app/features/video/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
