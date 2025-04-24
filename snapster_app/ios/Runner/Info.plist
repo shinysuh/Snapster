@@ -23,9 +23,9 @@
 	<key>CFBundleVersion</key>
 	<string>$(FLUTTER_BUILD_NUMBER)</string>
 
-	<!-- ✅ Firebase / Google 로그인 등에서 필요 -->
 	<key>CFBundleURLTypes</key>
 	<array>
+	    <!-- ✅ Firebase / Google 로그인 등에서 필요 -->
 		<dict>
 			<key>CFBundleTypeRole</key>
 			<string>Editor</string>
@@ -36,7 +36,19 @@
 				<string>com.googleusercontent.apps.755329000239-0991avs4v28bbvhgeb8e4krje32o3b3n</string>
 			</array>
 		</dict>
+	    <!-- ✅ 앱 스킴 (딥링크 처리용) -->
+       <dict>
+         <key>CFBundleTypeRole</key>
+         <string>Editor</string>
+         <key>CFBundleURLName</key>
+         <string>snapster</string>
+         <key>CFBundleURLSchemes</key>
+         <array>
+           <string>snapster</string>
+         </array>
+       </dict>
 	</array>
+
 
 	<!-- ✅ 권한 관련 -->
 	<key>NSCameraUsageDescription</key>
