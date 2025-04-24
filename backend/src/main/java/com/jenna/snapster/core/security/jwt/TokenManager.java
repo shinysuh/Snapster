@@ -91,7 +91,7 @@ public class TokenManager {
         return this.extractAllClaims(token).get("email", String.class);
     }
 
-    public String generateRefreshToken(User user) {
+    public void generateAndSaveRefreshToken(User user) {
         // 리프레시 토큰 정보 있을 경우 삭제 후 새로 발급
         this.deleteUserIfAlreadyHasRefreshToken(user);
 
@@ -102,7 +102,6 @@ public class TokenManager {
             .expiryDate(Instant.now().plusMillis(refreshExpiration))
             .build();
         refreshTokenRepository.save(entity);
-        return refreshToken;
     }
 
     public boolean validateRefreshToken(String token) {

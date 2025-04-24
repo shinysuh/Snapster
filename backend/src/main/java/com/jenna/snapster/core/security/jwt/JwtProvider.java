@@ -14,11 +14,16 @@ public class JwtProvider {
     private final JwtValidator jwtValidator;
 
     public String createAccessToken(User user) {
-        return tokenManager.generateAccessToken(user);
+        String accessToken = tokenManager.generateAccessToken(user);
+
+        // 사용자에게 새로운 리프레시 토큰을 발급하고 저장
+        this.createAndSaveRefreshToken(user);
+
+        return accessToken;
     }
 
-    public String createRefreshToken(User user) {
-        return tokenManager.generateRefreshToken(user);
+    public void createAndSaveRefreshToken(User user) {
+        tokenManager.generateAndSaveRefreshToken(user);
     }
 
     public String resolveToken(HttpServletRequest request) {
