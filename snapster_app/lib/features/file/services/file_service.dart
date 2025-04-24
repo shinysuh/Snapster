@@ -12,27 +12,34 @@ class FileService {
   FileService({TokenStorageService? tokenStorageService})
       : _tokenStorageService = tokenStorageService ?? TokenStorageService();
 
+  // Pre-signed URL 발급
   Future<String?> fetchPresignedUrl(String fileName) async {
-    final token = await _tokenStorageService.readToken();
+    try {
+      final token = await _tokenStorageService.readToken();
 
-    final uri =
-        Uri.parse('${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
-    final response = await http.get(
-      uri,
-      headers: {
-        Authorizations.headerKey: '$Authorizations.headerValuePrefix $token',
-      },
-    );
+      final uri = Uri.parse(
+          '${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
+      final response = await http.get(
+        uri,
+        headers: {
+          Authorizations.headerKey: '$Authorizations.headerValuePrefix $token',
+        },
+      );
 
-    if (response.statusCode == 200) {
-      return response.body; // prep-signed url
-    } else {
-      debugPrint(
-          'Pre-signed URL 요청 실패: ${response.statusCode} ${response.body}');
+      if (response.statusCode == 200) {
+        return response.body; // prep-signed url
+      } else {
+        debugPrint(
+            'Pre-signed URL 요청 실패: ${response.statusCode} ${response.body}');
+        return null;
+      }
+    } catch (e) {
+      debugPrint('Presigned URL 요청 중 오류 발생: $e');
       return null;
     }
   }
 
+  // S3에 파일 업로드
   Future<bool> uploadFileToS3(String presignedUrl, String filePath) async {
     try {
       // 파일을 바이트로 읽어서 업로드
@@ -40,7 +47,7 @@ class FileService {
 
       final response = await http.put(
         Uri.parse(presignedUrl),
-        headers: {'Content-Type': 'application/octet-stream'},
+        headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
         body: fileBytes,
       );
 
@@ -55,5 +62,19 @@ class FileService {
       debugPrint('파일 업로드 중 오류 발생: $e');
       return false;
     }
+  }
+
+  String _getContentTypeByFileExtension(String filePath) {
+    final fileExtension = filePath.split('.').last.toLowerCase();
+    String contentType;
+
+    if (fileExtension == 'mp4') {
+      contentType = 'video/mp4';
+    } else if (fileExtension == 'avi') {
+      contentType = 'video/x-msvideo';
+    } else {
+      contentType = 'application/octet-stream'; // 기본 값
+    }
+    return contentType;
   }
 }
