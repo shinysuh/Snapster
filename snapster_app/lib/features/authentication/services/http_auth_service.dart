@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
@@ -21,12 +20,6 @@ class HttpAuthService implements IAuthService {
 
   @override
   bool get isLoggedIn => throw UnimplementedError();
-
-  @override
-  Future<UserCredential> firebaseSignUp(String email, String password) {
-    // TODO: firebase 제거 시 삭제
-    throw UnimplementedError();
-  }
 
   @override
   Future<String> signUp(String email, String password) async {
