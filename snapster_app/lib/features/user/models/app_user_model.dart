@@ -14,9 +14,9 @@ class AppUser {
   });
 
   AppUser.fromJson(Map<String, dynamic> json)
-      : uid = json['uid'],
-        email = json['email'],
-        displayName = json['displayName'],
+      : uid = json['userId'].toString(),
+        email = json['email'] ?? '',
+        displayName = json['displayName'] ?? json['username'],
         photoUrl = json['photoUrl'];
 
   factory AppUser.fromFirebaseUser(User firebaseUser) {

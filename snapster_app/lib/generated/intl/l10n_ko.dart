@@ -36,7 +36,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get continueWithGithub => '깃허브 계정';
 
   @override
-  String get continueWithKakao => '카카오톡 계정';
+  String get continueWithKakao => '카카오 계정';
 
   @override
   String get alreadyHaveAnAccount => '이미 계정이 있으신가요?';

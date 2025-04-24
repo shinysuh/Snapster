@@ -60,7 +60,7 @@ class HttpAuthService implements IAuthService {
 
   @override
   Future<AppUser> getUserFromToken(String token) async {
-    final res = await _client.post(
+    final res = await _client.get(
       Uri.parse('$_baseUrl/me'),
       headers: {
         Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token'
@@ -68,7 +68,8 @@ class HttpAuthService implements IAuthService {
     );
     if (res.statusCode == 200) {
       return AppUser.fromJson(jsonDecode(res.body));
+    } else {
+      throw Exception('Fetch user failed: ${res.body}');
     }
-    throw Exception('Fetch user failed: ${res.body}');
   }
 }
