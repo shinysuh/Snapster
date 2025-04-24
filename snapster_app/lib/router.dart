@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
@@ -62,14 +61,9 @@ final routerProvider = Provider((ref) {
           loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
 
       // 로딩 중에는 리디렉션 액션 X
-      if(authStatus == AuthStatus.loading) return null;
+      if (authStatus == AuthStatus.loading) return null;
 
       final isLoggedIn = authStatus == AuthStatus.authenticated;
-
-      final user = ref.read(authRepositoryProvider).currentUser;
-
-      debugPrint('📌 user: ${user?.displayName}');
-      debugPrint('📌 isLoggedIn: $isLoggedIn');
 
       // 토큰이 없으면 로그인/회원가입 페이지로 리다이렉션
       if (!isLoggedIn && !isSplash && !isAuthPage) {

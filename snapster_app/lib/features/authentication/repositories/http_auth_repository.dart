@@ -36,12 +36,9 @@ class AuthRepository {
   // 앱 시작 시, 토큰이 있으면 사용자 정보 복구
   Future<bool> restoreFromToken() async {
     final token = await _tokenStorageService.readToken();
-    debugPrint('📌 token: $token');
-
     if (token != null) {
       try {
         final user = await _authService.getUserFromToken(token);
-        debugPrint('📌 user111: ${user.displayName}');
         _setUser(user);
         return true;
       } catch (e) {
@@ -72,7 +69,6 @@ class AuthRepository {
     if (token == null) return false;
 
     await _tokenStorageService.saveToken(token);
-    debugPrint('✅ 토큰 저장 완료: $token');
 
     final user = await verifyAndSetUserFromToken(token);
     return user != null;
@@ -81,11 +77,9 @@ class AuthRepository {
   // 로그인 시, 토큰 저장 -> 사용자 정보 복구
   Future<void> storeToken(String token) async {
     await _tokenStorageService.saveToken(token);
-    debugPrint('✅ 로그인 완료: $token');
-
     final user = await verifyAndSetUserFromToken(token);
     if (user != null) {
-      debugPrint('로그인 성공: ${user.email}');
+      debugPrint('로그인 성공: ${user.displayName}');
     } else {
       debugPrint('로그인 실패');
     }
