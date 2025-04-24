@@ -20,7 +20,7 @@ class AvatarViewModel extends AsyncNotifier<void> {
   Future<void> uploadAvatar(File file, UserProfileModel profile) async {
     state = const AsyncValue.loading();
 
-    final fileName = ref.read(firebaseAuthServiceProvider).currentUser!.uid;
+    final fileName = ref.read(firebaseAuthServiceProvider).currentUser!.userId;
     state = await AsyncValue.guard(() async {
       await _repository.uploadAvatar(file, fileName);
       await ref.read(userProvider.notifier).onAvatarUploaded(profile);
@@ -30,7 +30,7 @@ class AvatarViewModel extends AsyncNotifier<void> {
   Future<void> deleteAvatar(UserProfileModel profile) async {
     state = const AsyncValue.loading();
 
-    final fileName = ref.read(firebaseAuthServiceProvider).currentUser!.uid;
+    final fileName = ref.read(firebaseAuthServiceProvider).currentUser!.userId;
     state = await AsyncValue.guard(() async {
       await _repository.deleteAvatar(fileName);
       await ref.read(userProvider.notifier).onAvatarDeleted(profile);

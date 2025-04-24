@@ -40,7 +40,7 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
 
       final message = MessageModel(
         text: text,
-        userId: _user!.uid,
+        userId: _user!.userId,
         createdAt: DateTime.now().millisecondsSinceEpoch,
       );
 
@@ -103,7 +103,7 @@ class MessageViewModel extends FamilyAsyncNotifier<void, String> {
     final user = _authProvider.currentUser;
     return senderId == systemId
         ? MessageSenderType.system
-        : user!.uid == senderId
+        : user!.userId == senderId
             ? MessageSenderType.me
             : MessageSenderType.partner;
   }

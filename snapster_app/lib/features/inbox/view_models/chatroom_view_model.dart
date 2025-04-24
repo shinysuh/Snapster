@@ -116,7 +116,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
 
     for (var doc in result.docs) {
       final user = UserProfileModel.fromJson(doc.data());
-      if (user.uid != _user!.uid) users.add(user);
+      if (user.uid != _user!.userId) users.add(user);
     }
 
     return users;
@@ -252,7 +252,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
   Future<UserProfileModel> _getMyProfile(BuildContext context) async {
     var myProfile = UserProfileModel.empty();
 
-    final json = await _userRepository.findProfile(_user!.uid);
+    final json = await _userRepository.findProfile(_user!.userId);
     if (json == null) {
       if (context.mounted) {
         showCustomErrorSnack(context, 'Error: User Does Not Exist');
@@ -296,7 +296,7 @@ final chatroomListProvider =
   final database = FirebaseFirestore.instance;
   return database
       .collection('users')
-      .doc(user!.uid)
+      .doc(user!.userId)
       .collection('chat_rooms')
       .orderBy('updatedAt')
       .snapshots()

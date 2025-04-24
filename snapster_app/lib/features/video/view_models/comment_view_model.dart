@@ -36,7 +36,7 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       if (!_checkLoginUser(context)) return;
-      if (_user!.uid != user.uid) return;
+      if (_user!.userId != user.uid) return;
 
       final now = DateTime.now().millisecondsSinceEpoch;
       await _commentRepository.saveComment(
@@ -94,7 +94,7 @@ class CommentViewModel extends FamilyAsyncNotifier<void, String> {
 
   // 본인이 쓴 댓글인지 확인
   bool _isMyComment(String commenterId) {
-    return _user!.uid != commenterId;
+    return _user!.userId != commenterId;
   }
 
   // 로그인 여부 체크

@@ -16,13 +16,12 @@ class FileService {
   Future<String?> fetchPresignedUrl(String fileName) async {
     try {
       final token = await _tokenStorageService.readToken();
-
       final uri = Uri.parse(
           '${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
       final response = await http.get(
         uri,
         headers: {
-          Authorizations.headerKey: '$Authorizations.headerValuePrefix $token',
+          Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',
         },
       );
 
@@ -40,8 +39,9 @@ class FileService {
   }
 
   // S3에 파일 업로드
-  Future<bool> uploadFileToS3(String presignedUrl, String filePath) async {
+  Future<bool> uploadFileToS3(String presignedUrl, File file) async {
     try {
+      final filePath = file.path;
       // 파일을 바이트로 읽어서 업로드
       final fileBytes = await File(filePath).readAsBytes();
 

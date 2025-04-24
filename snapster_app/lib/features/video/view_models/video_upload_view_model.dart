@@ -38,7 +38,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
       int createdAt = DateTime.now().millisecondsSinceEpoch;
       final task = await _videoRepository.uploadVideoFile(
         video,
-        user!.uid,
+        user!.userId,
         createdAt.toString(),
       );
 
@@ -52,7 +52,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
             fileUrl: await task.ref.getDownloadURL(),
             thumbnailURL: '',
             uploader: userProfile!.username,
-            uploaderUid: user.uid,
+            uploaderUid: user.userId,
             likes: 0,
             comments: 0,
             createdAt: createdAt,

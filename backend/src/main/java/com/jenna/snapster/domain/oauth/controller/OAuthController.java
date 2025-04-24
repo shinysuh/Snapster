@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/auth")
 public class OAuthController {
 
-
     @GetMapping("/me")
     public ResponseEntity<?> getLoginUserInfo() {
         User user = SecurityUtil.getCurentUser();

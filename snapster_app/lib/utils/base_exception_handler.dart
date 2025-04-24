@@ -43,3 +43,18 @@ void showCustomErrorSnack(BuildContext context, String message) {
     ),
   );
 }
+
+void showCustomErrorSnackWithObject(BuildContext context, Object? error) {
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      // action: SnackBarAction(
+      //   label: 'Got it',
+      //   onPressed: () {},
+      // ),
+      showCloseIcon: true,
+      content: Text(
+        (error as Exception).toString() ?? 'Oooops! Something went wrong',
+      ),
+    ),
+  );
+}

@@ -25,7 +25,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
     if (_authProvider.isLoggedIn) {
       final profile =
-          await _userRepository.findProfile(_authProvider.currentUser!.uid);
+          await _userRepository.findProfile(_authProvider.currentUser!.userId);
       if (profile != null) {
         return UserProfileModel.fromJson(profile);
       }

@@ -79,7 +79,7 @@ class AuthRepository {
     await _tokenStorageService.saveToken(token);
     final user = await verifyAndSetUserFromToken(token);
     if (user != null) {
-      debugPrint('로그인 성공: ${user.displayName}');
+      debugPrint('로그인 성공: ${user.username}');
     } else {
       debugPrint('로그인 실패');
     }

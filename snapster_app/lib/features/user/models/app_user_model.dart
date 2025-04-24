@@ -1,29 +1,44 @@
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AppUser {
-  final String uid;
+  final String userId;
   final String email;
-  final String? displayName;
+  final String? username;
   final String? photoUrl;
 
-  const AppUser({
-    required this.uid,
-    required this.email,
-    this.displayName,
-    this.photoUrl,
-  });
+  final String? name;
+  final String? bio;
+  final String? link;
+  final String? birthday;
+  final bool? hasAvatar;
+
+  const AppUser(
+      {required this.userId,
+      required this.email,
+      this.username,
+      this.photoUrl,
+      this.name,
+      this.bio,
+      this.link,
+      this.birthday,
+      this.hasAvatar});
 
   AppUser.fromJson(Map<String, dynamic> json)
-      : uid = json['userId'].toString(),
+      : userId = json['userId'].toString(),
         email = json['email'] ?? '',
-        displayName = json['displayName'] ?? json['username'],
-        photoUrl = json['photoUrl'];
+        username = json['username'],
+        photoUrl = json['photoUrl'],
+        name = json['name'],
+        bio = json['bio'],
+        link = json['link'],
+        birthday = json['birthday'],
+        hasAvatar = json['hasAvatar'];
 
   factory AppUser.fromFirebaseUser(User firebaseUser) {
     return AppUser(
-      uid: firebaseUser.uid,
+      userId: firebaseUser.uid,
       email: firebaseUser.email ?? '',
-      displayName: firebaseUser.displayName,
+      username: firebaseUser.displayName,
       photoUrl: firebaseUser.photoURL,
     );
   }
