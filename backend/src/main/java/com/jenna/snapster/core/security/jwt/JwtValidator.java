@@ -16,7 +16,7 @@ import static com.jenna.snapster.core.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class JwtValidator {
 
-    @Value("${jwt.issuer}")
+    @Value("${authorization.jwt.issuer}")
     private String issuer;
 
     private final TokenManager tokenManager;

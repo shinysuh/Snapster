@@ -25,16 +25,16 @@ import static com.jenna.snapster.core.exception.ErrorCode.*;
 @RequiredArgsConstructor
 public class TokenManager {
 
-    @Value("${jwt.secret}")
+    @Value("${authorization.jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
+    @Value("${authorization.jwt.expiration}")
     private Long expiration;
 
-    @Value("${jwt.refresh-expiration}")
+    @Value("${authorization.jwt.refresh-expiration}")
     private Long refreshExpiration;
 
-    @Value("${jwt.issuer}")
+    @Value("${authorization.jwt.issuer}")
     private String issuer;
 
     private Key secretKey;

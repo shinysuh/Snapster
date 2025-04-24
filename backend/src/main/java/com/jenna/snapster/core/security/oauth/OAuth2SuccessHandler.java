@@ -28,7 +28,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository repository;
 
-    @Value("${oauth2.kakao.app-redirect-uri}")
+    @Value("${authorization.app-redirect-uri}")
     private String redirectUri;
 
     @Override

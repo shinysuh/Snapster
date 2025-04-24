@@ -60,15 +60,14 @@ spring:
 #            token-uri: https://appleid.apple.com/auth/token
 #            user-info-uri: https://appleid.apple.com/auth/token  # Apple은 userInfo URI가 없음 (처음 로그인 시 전달됨)
 
-jwt:
-  secret: ZPXyrrx23kvJTSeBoIlM1MgtlWvj8uwCAxqsnpz+Vx6unxdiWVUsHZoJIECH4+3i1cdBQcDhv8jr8825J1LkRg==
-  expiration: 10800000   # 개발용 3시간
-  #  expiration: 1800000 # 1000 * 60 * 30    # 30분
-  issuer: snapster-app
-  refresh-expiration: 180000000
-oauth2:
-  kakao:
-    app-redirect-uri: snapster://auth?accessToken=
+authorization:
+  app-redirect-uri: snapster://auth?accessToken=
+  jwt:
+    secret: ZPXyrrx23kvJTSeBoIlM1MgtlWvj8uwCAxqsnpz+Vx6unxdiWVUsHZoJIECH4+3i1cdBQcDhv8jr8825J1LkRg==
+    expiration: 10800000   # 개발용 3시간
+    #  expiration: 1800000 # 1000 * 60 * 30    # 30분
+    issuer: snapster-app
+    refresh-expiration: 180000000
 aws:
   s3:
     bucket-name: snapster-s3-bucket
