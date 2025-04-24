@@ -1,19 +1,19 @@
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 
 class FileService {
-  final FlutterSecureStorage _storage;
+  final TokenStorageService _tokenStorageService;
 
-  FileService({FlutterSecureStorage? storage})
-      : _storage = storage ?? const FlutterSecureStorage();
+  FileService({TokenStorageService? tokenStorageService})
+      : _tokenStorageService = tokenStorageService ?? TokenStorageService();
 
   Future<String?> fetchPresignedUrl(String fileName) async {
-    final token = await _storage.read(key: Authorizations.tokenKey);
+    final token = await _tokenStorageService.readToken();
 
     final uri =
         Uri.parse('${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
