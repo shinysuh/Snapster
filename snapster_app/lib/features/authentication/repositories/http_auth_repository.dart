@@ -1,7 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -85,10 +87,11 @@ class AuthRepository {
     }
   }
 
-  // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null)
-  Future<void> clearToken() async {
+  // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null) => 초기 페이지로 이동
+  Future<void> clearToken(WidgetRef ref) async {
     await _tokenStorageService.deleteToken();
     debugPrint('✅ 로그 아웃 완료');
     _setUser(null);
+    ref.invalidate(authStatusProvider);
   }
 }

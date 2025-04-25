@@ -65,12 +65,12 @@ final routerProvider = Provider((ref) {
 
       final isLoggedIn = authStatus == AuthStatus.authenticated;
 
-      // 토큰이 없으면 로그인/회원가입 페이지로 리다이렉션
+      // 토큰이 없으면 로그인/회원가입 페이지로 리디렉션
       if (!isLoggedIn && !isSplash && !isAuthPage) {
         return SignUpScreen.routeURL; // 로그인 페이지로 이동
       }
 
-      // 토큰이 있으면 홈 화면으로 리다이렉션
+      // 토큰이 있으면 홈 화면으로 리디렉션
       if (isLoggedIn && (isSplash || isAuthPage)) {
         return MainNavigationScreen.homeRouteURL; // 홈 화면으로 이동
       }
