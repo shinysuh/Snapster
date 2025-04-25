@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/constants/authorization.dart';
-import 'package:snapster_app/constants/file_content_type.dart';
+import 'package:snapster_app/features/authentication/constants/authorization.dart';
+import 'package:snapster_app/features/file/constants/file_content_type.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 
 class FileService {

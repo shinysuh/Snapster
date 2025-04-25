@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 

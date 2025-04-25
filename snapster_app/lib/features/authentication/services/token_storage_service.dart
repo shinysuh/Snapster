@@ -1,5 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/constants/authorization.dart';
 
 class TokenStorageService {
   final _tokenKey = Authorizations.authTokenKey;
