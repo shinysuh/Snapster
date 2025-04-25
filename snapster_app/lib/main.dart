@@ -10,6 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/video/repositories/playback_config_repository.dart';
@@ -92,8 +93,8 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
 
       final repo = ref.read(authRepositoryProvider);
       final success = await repo.storeTokenFromUriAndRestoreAuth(uri);
-      debugPrint("💡로그인 유저 갱신: $success");
-      // ref.invalidate(authStateProvider); // 혹시 모를 싱크 밀림 대비 강제 invalidate
+      // provider 강제 리셋 & sync => 로그인 사용자 정보 갱신
+      if (success) ref.invalidate(authStatusProvider);
 
       // 화면 이동
       if (mounted) {
