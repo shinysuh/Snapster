@@ -30,4 +30,5 @@ public class UserProfile {
     private String link;
     private LocalDate birthday;
     private boolean hasProfileImage;
+    private String profileImageUrl;
 }

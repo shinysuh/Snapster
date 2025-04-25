@@ -4,7 +4,7 @@ class AppUser {
   final String userId;
   final String email;
   final String? username;
-  final String? photoUrl;
+  final String? profileImageUrl;
 
   final String? name;
   final String? bio;
@@ -12,22 +12,23 @@ class AppUser {
   final String? birthday;
   final bool? hasProfileImage;
 
-  const AppUser(
-      {required this.userId,
-      required this.email,
-      this.username,
-      this.photoUrl,
-      this.name,
-      this.bio,
-      this.link,
-      this.birthday,
-      this.hasProfileImage});
+  const AppUser({
+    required this.userId,
+    required this.email,
+    this.username,
+    this.profileImageUrl,
+    this.name,
+    this.bio,
+    this.link,
+    this.birthday,
+    this.hasProfileImage,
+  });
 
   AppUser.fromJson(Map<String, dynamic> json)
       : userId = json['userId'].toString(),
         email = json['email'] ?? '',
         username = json['username'],
-        photoUrl = json['photoUrl'],
+        profileImageUrl = json['profileImageUrl'],
         name = json['name'],
         bio = json['bio'],
         link = json['link'],
@@ -39,7 +40,7 @@ class AppUser {
       userId: firebaseUser.uid,
       email: firebaseUser.email ?? '',
       username: firebaseUser.displayName,
-      photoUrl: firebaseUser.photoURL,
+      profileImageUrl: firebaseUser.photoURL,
     );
   }
 }
