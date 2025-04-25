@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/file/constants/upload_folder.dart';
 import 'package:snapster_app/features/file/services/file_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
@@ -16,12 +17,11 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
     _fileService = FileService();
   }
 
-  String _getFileName() {
+  String _getFileName(File file) {
     final currentUser = ref.read(currentUserProvider);
-    debugPrint(
-        '######## Request URI: avatars/${currentUser?.userId}.jpg'); // 실제로 보내는 URL 출력
-
-    return 'avatars/${currentUser?.userId}.jpg';
+    final fileExtension = file.path.split('.').last;
+    return UploadFolder.generateProfileFileName(
+        '${currentUser?.userId}.$fileExtension');
   }
 
   Future<AppUser?> getCurrentUser() async {
@@ -35,7 +35,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
     try {
       state = const AsyncValue.loading();
 
-      final fileName = _getFileName();
+      final fileName = _getFileName(file);
       state = await AsyncValue.guard(() async {
         final presignedUrl = await _fileService.fetchPresignedUrl(fileName);
         if (presignedUrl == null) throw Exception('Failed to get URL');
@@ -55,8 +55,6 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
 
   Future<void> deleteAvatar() async {
     state = const AsyncValue.loading();
-
-    final fileName = _getFileName();
     state = await AsyncValue.guard(() async {
       // TODO - 삭제 API 구현 후 요청
     });

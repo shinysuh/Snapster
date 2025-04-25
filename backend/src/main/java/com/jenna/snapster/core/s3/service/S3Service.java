@@ -4,13 +4,11 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import lombok.RequiredArgsConstructor;
-import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.net.URL;
 import java.util.Date;
-import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -47,15 +45,32 @@ public class S3Service {
 
     private String generateUniqueFileName(Long userId, String fileName) {
         StringBuilder sb = new StringBuilder();
+
         sb.append("user-")
             .append(userId)
-            .append("/")
-            .append(UUID.randomUUID())
-            .append("-")
-            .append(DateTime.now().getMillis())
-            .append("-")
-            .append(fileName);
+            .append("/");
 
+        this.setFolderPathAndFileName(sb, fileName);
         return sb.toString();
+    }
+
+    private void setFolderPathAndFileName(StringBuilder sb, String fileName) {
+        String folderPath;
+        String originalFileName = fileName;
+
+        int lastFileSeparatorIndex = fileName.lastIndexOf("/");
+
+        // fileName에 폴더명이 있으면, 사용자 폴더 생성 다음에 넣어주기
+        if (lastFileSeparatorIndex >= 0) {
+            folderPath = fileName.substring(0, lastFileSeparatorIndex);
+            originalFileName = fileName.substring(lastFileSeparatorIndex + 1);
+
+            sb.append(folderPath)
+                .append("/");
+        }
+
+        sb.append(System.currentTimeMillis())
+            .append("-")
+            .append(originalFileName);
     }
 }
