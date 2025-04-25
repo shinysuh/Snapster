@@ -28,7 +28,7 @@ public abstract class AbstractOAuthUserService implements OAuthUserService {
 
                 UserProfile profile = UserProfile.builder()
                     .user(user)
-                    .name(tokenResponse.getUsername())
+                    .displayName(tokenResponse.getUsername())
                     .bio("")
                     .link("")
                     .birthday(null)

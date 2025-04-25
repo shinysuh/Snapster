@@ -5,12 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/file/view_models/avatar_upload_view_model.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 
 class ProfileAvatar extends ConsumerWidget {
-  final UserProfileModel user;
+  final AppUser user;
   final bool isVertical;
   final bool isEditable;
 
@@ -31,7 +31,6 @@ class ProfileAvatar extends ConsumerWidget {
 
     if (xFile != null && context.mounted) {
       final file = File(xFile.path);
-      // await ref.read(avatarProvider.notifier).uploadAvatar(file, user);
       await ref.read(avatarUploadProvider.notifier).uploadAvatar(context, file);
     }
   }
@@ -56,8 +55,11 @@ class ProfileAvatar extends ConsumerWidget {
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
               foregroundImage:
-                  user.hasProfileImage ? getProfileImgByUserId(user.uid, true) : null,
-              child: ClipOval(child: Text(user.name)),
+                  (user.hasProfileImage && user.profileImageUrl.isNotEmpty)
+                      ? getProfileImgByUserProfileImageUrl(
+                          user.profileImageUrl, true)
+                      : null,
+              child: ClipOval(child: Text(user.displayName)),
             ),
     );
   }

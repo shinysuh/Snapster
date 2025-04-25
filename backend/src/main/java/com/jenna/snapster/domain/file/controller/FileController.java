@@ -1,5 +1,7 @@
 package com.jenna.snapster.domain.file.controller;
 
+import com.jenna.snapster.core.security.annotation.CurrentUser;
+import com.jenna.snapster.core.security.util.CustomUserDetails;
 import com.jenna.snapster.domain.file.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +19,8 @@ public class FileController {
     private final UploadedFileService uploadedFileService;
 
     @PostMapping("")
-    public ResponseEntity<?> saveUploadedFileInfo(@RequestBody UploadedFileDto uploadedFileDto) {
-        return ResponseEntity.ok(uploadedFileService.saveFile(uploadedFileDto));
+    public ResponseEntity<?> saveUploadedFileInfo(@CurrentUser CustomUserDetails user,
+                                                  @RequestBody UploadedFileDto uploadedFileDto) {
+        return ResponseEntity.ok(uploadedFileService.saveFile(user.getUser(), uploadedFileDto));
     }
 }

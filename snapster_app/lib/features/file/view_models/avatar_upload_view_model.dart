@@ -17,7 +17,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {
     _fileRepository = ref.read(fileRepositoryProvider);
-    _currentUser = ref.read(currentUserProvider);
+    _currentUser = ref.watch(currentUserProvider).asData?.value;
   }
 
   String _getFileName(AppUser currentUser, File file) {
@@ -37,23 +37,23 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
 
       final fileName = _getFileName(_currentUser, file);
       state = await AsyncValue.guard(() async {
+        // presigned-url 발급
         final presignedUrl = await _fileRepository.getPresignedUrl(fileName);
         if (presignedUrl == null) throw Exception('Failed to get URL');
 
+        // 파일 업로드
         final success =
             await _fileRepository.uploadFile(presignedUrl.presignedUrl, file);
         if (!success) throw Exception('Upload to Storage Failed');
 
-        /*
-            TODO
-             1) 사용자 hasProfileImage = true 로 수정 필요
-         */
-        debugPrint('####### 파일 업로드 success: $success');
-
+        // 업로드 파일 정보 저장
         final saveSuccess = await _fileRepository
             .saveUploadedFileInfo(presignedUrl.uploadedFileInfo);
-        debugPrint('####### 파일 정보 저장 success: $saveSuccess');
         if (!saveSuccess) throw Exception('Couldn\'t save uploaded file info');
+
+        // currentUser의 프로필 url 업데이트
+        final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
+        ref.read(authRepositoryProvider).updateUserProfileImage(uploadedFileUrl);
       });
     } catch (e) {
       final errMessage = '업로드에 실패했어요😢: $e';

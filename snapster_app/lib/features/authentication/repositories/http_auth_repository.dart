@@ -93,4 +93,13 @@ class AuthRepository {
     _setUser(null);
     ref.invalidate(authStatusProvider);
   }
+
+  void updateUserProfileImage(String profileImageLink) {
+    if (_currentUser != null) {
+      _currentUser = _currentUser!.copyWith(
+        profileImageUrl: profileImageLink,
+        hasProfileImage: profileImageLink != "",
+      );
+    }
+  }
 }

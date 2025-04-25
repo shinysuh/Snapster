@@ -10,3 +10,9 @@ NetworkImage getProfileImgByUserId(String userId, bool fetchRealTime) {
   if (fetchRealTime) imageURL += '&haha=${DateTime.now().toString()}';
   return NetworkImage(imageURL);
 }
+
+NetworkImage getProfileImgByUserProfileImageUrl(
+    String profileImageUrl, bool fetchRealTime) {
+  if (fetchRealTime) profileImageUrl += '&haha=${DateTime.now().toString()}';
+  return NetworkImage(profileImageUrl);
+}

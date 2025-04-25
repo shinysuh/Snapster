@@ -25,7 +25,7 @@ public class UserProfile {
     @JoinColumn(name = "user_id")
     private User user;
 
-    private String name;
+    private String displayName;
     private String bio;
     private String link;
     private LocalDate birthday;

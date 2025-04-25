@@ -28,7 +28,7 @@ public class UserResponseDto {
             .userId(user.getId())
             .email(user.getEmail())
             .username(user.getUsername())
-            .name(user.getProfile().getName())
+            .name(user.getProfile().getDisplayName())
             .bio(user.getProfile().getBio())
             .link(user.getProfile().getLink())
             .birthday(user.getProfile().getBirthday())

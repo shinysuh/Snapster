@@ -38,4 +38,15 @@ public class UserServiceImpl implements UserService {
         return profileUpdateDto;
     }
 
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateUserProfileImage(UserProfile profile, boolean hasProfileImage, String profileImageUrl) {
+        if (hasProfileImage) {
+            profile.setHasProfileImage(true);
+            profile.setProfileImageUrl(profileImageUrl);
+        }
+
+        userProfileRepository.save(profile);
+    }
+
 }

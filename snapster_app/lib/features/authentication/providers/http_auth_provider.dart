@@ -25,8 +25,8 @@ final isLoggedInProvider = Provider<bool>((ref) {
 });
 
 // 현재 로그인 사용자
-final currentUserProvider = Provider<AppUser?>((ref) {
-  return ref.watch(authRepositoryProvider).currentUser;
+final currentUserProvider = StreamProvider<AppUser?>((ref) {
+  return ref.watch(authRepositoryProvider).authStateChanges;
 });
 
 // final isLoggedInProvider = Provider<bool>((ref) {

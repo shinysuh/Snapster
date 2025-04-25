@@ -13,7 +13,7 @@ import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/inbox/views/chatroom_user_list_screen.dart';
 import 'package:snapster_app/features/inbox/views/chats_screen.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
 import 'package:snapster_app/features/video/views/video_recording_screen.dart';
 
@@ -87,9 +87,8 @@ final routerProvider = Provider((ref) {
         name: UserProfileFormScreen.routeName,
         path: UserProfileFormScreen.routeURL,
         builder: (context, state) {
-          var profile = state.extra != null
-              ? state.extra as UserProfileModel
-              : UserProfileModel.empty();
+          var profile =
+              state.extra != null ? state.extra as AppUser : AppUser.empty();
           return UserProfileFormScreen(profile: profile);
         },
       ),

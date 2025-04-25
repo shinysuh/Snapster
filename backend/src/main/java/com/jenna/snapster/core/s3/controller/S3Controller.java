@@ -25,8 +25,8 @@ public class S3Controller {
      * @return pre-signed URL
      */
     @GetMapping("/presigned-url")
-    public ResponseEntity<?> getPresignedUrl(@CurrentUser CustomUserDetails customUserDetails,
+    public ResponseEntity<?> getPresignedUrl(@CurrentUser CustomUserDetails user,
                                              @RequestParam String fileName) {
-        return ResponseEntity.ok(s3Service.generatePresignedUrl(customUserDetails.getUser().getId(), fileName));
+        return ResponseEntity.ok(s3Service.generatePresignedUrl(user.getUser().getId(), fileName));
     }
 }

@@ -4,14 +4,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/settings/settings_screen.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/user_profile_view_model.dart';
-import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
-import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/follow_info.dart';
+import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/profile_button.dart';
 import 'package:snapster_app/features/user/widgets/user_profile_tab_bar.dart';
 import 'package:snapster_app/features/video/models/thumbnail_link_model.dart';
@@ -36,7 +36,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
 
-  void _onTapEditProfile(UserProfileModel profile) {
+  void _onTapEditProfile(AppUser profile) {
     goToRouteNamed(
       context: context,
       routeName: UserProfileFormScreen.routeName,
@@ -59,7 +59,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  Widget _getUserPic(UserProfileModel user, bool isVertical) {
+  Widget _getUserPic(AppUser user, bool isVertical) {
     return Column(
       children: [
         Gaps.v10,
@@ -74,7 +74,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  Widget _getUserId(UserProfileModel user) {
+  Widget _getUserId(AppUser user) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
@@ -95,7 +95,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  Widget _getFollowInfo(UserProfileModel user) {
+  Widget _getFollowInfo(AppUser user) {
     return SizedBox(
       height: Sizes.size52,
       child: Row(
@@ -176,7 +176,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  Widget _getBio(UserProfileModel user) {
+  Widget _getBio(AppUser user) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: Sizes.size32),
       child: Column(
@@ -216,7 +216,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
-  List<Widget> _getUserInfo(UserProfileModel user) {
+  List<Widget> _getUserInfo(AppUser user) {
     return [
       _getFollowInfo(user),
       Gaps.v14,
@@ -304,7 +304,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
-    return ref.watch(userProvider).when(
+    return ref.watch(currentUserProvider).when(
           loading: () => const Center(
             child: CircularProgressIndicator.adaptive(),
           ),
@@ -314,116 +314,128 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
           data: (user) => Scaffold(
             backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
             body: SafeArea(
-              child: LayoutBuilder(
-                builder: (context, constraints) {
-                  // var width = MediaQuery.of(context).size.width;
-                  var width = constraints.maxWidth;
-                  var isVertical = width < Breakpoints.md;
-                  var colCount = isVertical
-                      ? 3
-                      : width < Breakpoints.lg
-                          ? 4
-                          : 5;
-                  return DefaultTabController(
-                    initialIndex: widget.show == 'likes' ? 1 : 0,
-                    length: 2,
-                    /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-                    child: NestedScrollView(
-                      headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                        SliverAppBar(
-                          centerTitle: true,
-                          // backgroundColor: isDark ? Colors.black : Colors.white,
-                          title: Text(user.name),
-                          actions: [
-                            IconButton(
-                              onPressed: () => _onTapEditProfile(user),
-                              icon: const FaIcon(
-                                FontAwesomeIcons.pen,
-                                size: Sizes.size18,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: _onTapBell,
-                              icon: const FaIcon(
-                                FontAwesomeIcons.bell,
-                                size: Sizes.size20,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: _onTapGear,
-                              icon: const FaIcon(
-                                FontAwesomeIcons.gear,
-                                size: Sizes.size20,
-                              ),
-                            ),
-                          ],
-                        ),
-                        SliverToBoxAdapter(
-                          child: isVertical
-                              ? Column(
-                                  children: [
-                                    _getUserPic(user, isVertical),
-                                    Gaps.v24,
-                                    ..._getUserInfo(user),
-                                    Gaps.v20,
-                                  ],
-                                )
-                              : Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    _getUserPic(user, isVertical),
-                                    Column(
-                                      children: [
-                                        ..._getUserInfo(user),
-                                        Gaps.v20,
-                                      ],
+              child: user == null
+                  ? Container()
+                  : LayoutBuilder(
+                      builder: (context, constraints) {
+                        // var width = MediaQuery.of(context).size.width;
+                        var width = constraints.maxWidth;
+                        var isVertical = width < Breakpoints.md;
+                        var colCount = isVertical
+                            ? 3
+                            : width < Breakpoints.lg
+                                ? 4
+                                : 5;
+                        return DefaultTabController(
+                          initialIndex: widget.show == 'likes' ? 1 : 0,
+                          length: 2,
+                          /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+                          child: NestedScrollView(
+                            headerSliverBuilder:
+                                (context, innerBoxIsScrolled) => [
+                              SliverAppBar(
+                                centerTitle: true,
+                                // backgroundColor: isDark ? Colors.black : Colors.white,
+                                title: Text(user!.displayName ?? user.username),
+                                actions: [
+                                  IconButton(
+                                    onPressed: () => _onTapEditProfile(user),
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.pen,
+                                      size: Sizes.size18,
                                     ),
-                                  ],
-                                ),
-                        ),
-                        SliverPersistentHeader(
-                          pinned: true,
-                          floating: true,
-                          delegate: UserProfileTabBar(),
-                        ),
-                      ],
-                      body: TabBarView(
-                        children: [
-                          ref
-                              .watch(uploadedThumbnailListProvider(user.uid))
-                              .when(
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                ),
-                                error: (error, stackTrace) => Center(
-                                  child: Text(error.toString()),
-                                ),
-                                data: (thumbnails) => _getGridViewByTabBar(
-                                  colCount: colCount,
-                                  playCount: '2.6K',
-                                  thumbnailData: thumbnails,
-                                ),
+                                  ),
+                                  IconButton(
+                                    onPressed: _onTapBell,
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.bell,
+                                      size: Sizes.size20,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: _onTapGear,
+                                    icon: const FaIcon(
+                                      FontAwesomeIcons.gear,
+                                      size: Sizes.size20,
+                                    ),
+                                  ),
+                                ],
                               ),
-                          ref.watch(likedThumbnailListProvider(user.uid)).when(
-                                loading: () => const Center(
-                                  child: CircularProgressIndicator.adaptive(),
-                                ),
-                                error: (error, stackTrace) => Center(
-                                  child: Text(error.toString()),
-                                ),
-                                data: (likes) => _getGridViewByTabBar(
-                                  colCount: colCount,
-                                  playCount: '36.1K',
-                                  thumbnailData: likes,
-                                ),
+                              SliverToBoxAdapter(
+                                child: isVertical
+                                    ? Column(
+                                        children: [
+                                          _getUserPic(user, isVertical),
+                                          Gaps.v24,
+                                          ..._getUserInfo(user),
+                                          Gaps.v20,
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          _getUserPic(user, isVertical),
+                                          Column(
+                                            children: [
+                                              ..._getUserInfo(user),
+                                              Gaps.v20,
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                               ),
-                        ],
-                      ),
+                              SliverPersistentHeader(
+                                pinned: true,
+                                floating: true,
+                                delegate: UserProfileTabBar(),
+                              ),
+                            ],
+                            body: TabBarView(
+                              children: [
+                                ref
+                                    .watch(uploadedThumbnailListProvider(
+                                        user.userId))
+                                    .when(
+                                      loading: () => const Center(
+                                        child: CircularProgressIndicator
+                                            .adaptive(),
+                                      ),
+                                      error: (error, stackTrace) => Center(
+                                        child: Text(error.toString()),
+                                      ),
+                                      data: (thumbnails) =>
+                                          _getGridViewByTabBar(
+                                        colCount: colCount,
+                                        playCount: '2.6K',
+                                        thumbnailData: thumbnails,
+                                      ),
+                                    ),
+                                ref
+                                    .watch(
+                                        likedThumbnailListProvider(user.userId))
+                                    .when(
+                                      loading: () => const Center(
+                                        child: CircularProgressIndicator
+                                            .adaptive(),
+                                      ),
+                                      error: (error, stackTrace) => Center(
+                                        child: Text(error.toString()),
+                                      ),
+                                      data: (likes) => _getGridViewByTabBar(
+                                        colCount: colCount,
+                                        playCount: '36.1K',
+                                        thumbnailData: likes,
+                                      ),
+                                    ),
+                              ],
+                            ),
+                          ),
+                        );
+                      },
                     ),
-                  );
-                },
-              ),
             ),
           ),
         );

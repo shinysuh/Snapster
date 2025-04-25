@@ -8,21 +8,21 @@ import java.time.LocalDate;
 @Data
 public class UserProfileUpdateDto {
 
-    private String name;
+    private String displayName;
     private String bio;
     private String link;
     private LocalDate birthday;
     private boolean hasProfileImage;
 
     public void trimFields() {
-        this.name = this.name.trim();
+        this.displayName = this.displayName.trim();
         this.bio = this.bio.trim();
         this.link = this.link.trim();
     }
 
     public void setUpdatedFields(UserProfile profile) {
-        if (!this.name.equals(profile.getName())) {
-            profile.setName(this.name);
+        if (!this.displayName.equals(profile.getDisplayName())) {
+            profile.setDisplayName(this.displayName);
         }
         if (!this.bio.equals(profile.getBio())) {
             profile.setBio(this.bio);
