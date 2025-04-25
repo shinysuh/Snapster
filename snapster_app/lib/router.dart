@@ -49,7 +49,7 @@ o
  */
 final routerProvider = Provider((ref) {
   // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
-  final authStatus = ref.watch(authStatusProvider);
+  final authState = ref.watch(authStateProvider);
 
   return GoRouter(
     initialLocation: Splashscreen.routeURL,
@@ -61,9 +61,9 @@ final routerProvider = Provider((ref) {
           loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
 
       // 로딩 중에는 리디렉션 액션 X
-      if (authStatus == AuthStatus.loading) return null;
+      if (authState.status == AuthStatus.loading) return null;
 
-      final isLoggedIn = authStatus == AuthStatus.authenticated;
+      final isLoggedIn = authState.status == AuthStatus.authenticated;
 
       // 토큰이 없으면 로그인/회원가입 페이지로 리디렉션
       if (!isLoggedIn && !isSplash && !isAuthPage) {

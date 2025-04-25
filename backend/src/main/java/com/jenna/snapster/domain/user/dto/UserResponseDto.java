@@ -14,10 +14,11 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class UserResponseDto {
     private Long userId;
-    private String email;
     private String username;
+    private String profileImageUrl;
 
-    private String name;
+    private String email;
+    private String displayName;
     private String bio;
     private String link;
     private LocalDate birthday;
@@ -28,7 +29,7 @@ public class UserResponseDto {
             .userId(user.getId())
             .email(user.getEmail())
             .username(user.getUsername())
-            .name(user.getProfile().getDisplayName())
+            .displayName(user.getProfile().getDisplayName())
             .bio(user.getProfile().getBio())
             .link(user.getProfile().getLink())
             .birthday(user.getProfile().getBirthday())

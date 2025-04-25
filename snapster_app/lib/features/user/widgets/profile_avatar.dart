@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/file/view_models/avatar_upload_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
@@ -31,13 +33,17 @@ class ProfileAvatar extends ConsumerWidget {
 
     if (xFile != null && context.mounted) {
       final file = File(xFile.path);
-      await ref.read(avatarUploadProvider.notifier).uploadAvatar(context, file);
+      await ref.read(avatarUploadProvider.notifier).uploadProfileImage(context, file);
     }
   }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     var isLoading = ref.watch(avatarProvider).isLoading;
+
+    final appUser = ref.watch(localEditableUserProvider);
+    debugPrint('####### appUser.profileImageUrl: ${appUser.profileImageUrl}');
+    debugPrint('####### user.profileImageUrl: ${user.profileImageUrl}');
 
     return GestureDetector(
       onTap: isLoading || !isEditable ? null : () => _onTapAvatar(context, ref),
@@ -54,12 +60,12 @@ class ProfileAvatar extends ConsumerWidget {
           : CircleAvatar(
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
-              foregroundImage:
-                  (user.hasProfileImage && user.profileImageUrl.isNotEmpty)
-                      ? getProfileImgByUserProfileImageUrl(
-                          user.profileImageUrl, true)
-                      : null,
-              child: ClipOval(child: Text(user.displayName)),
+              foregroundImage: (appUser.hasProfileImage &&
+                      appUser.profileImageUrl.isNotEmpty)
+                  ? getProfileImgByUserProfileImageUrl(
+                      appUser.profileImageUrl, true)
+                  : null,
+              child: ClipOval(child: Text(appUser.displayName)),
             ),
     );
   }

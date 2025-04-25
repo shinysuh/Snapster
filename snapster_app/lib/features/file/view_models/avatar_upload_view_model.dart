@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_folder.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
@@ -17,7 +18,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
   @override
   FutureOr<void> build() {
     _fileRepository = ref.read(fileRepositoryProvider);
-    _currentUser = ref.watch(currentUserProvider).asData?.value;
+    _currentUser = ref.watch(authStateProvider).user;
   }
 
   String _getFileName(AppUser currentUser, File file) {
@@ -26,7 +27,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
         '${currentUser.userId}.$fileExtension');
   }
 
-  Future<void> uploadAvatar(
+  Future<void> uploadProfileImage(
     BuildContext context,
     File file,
   ) async {
@@ -53,10 +54,25 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
 
         // currentUser의 프로필 url 업데이트
         final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
-        ref.read(authRepositoryProvider).updateUserProfileImage(uploadedFileUrl);
+        ref.read(localEditableUserProvider.notifier).update(
+              (user) => user.copyWith(
+                profileImageUrl: uploadedFileUrl,
+                hasProfileImage: uploadedFileUrl.isNotEmpty,
+              ),
+            );
+
+        // ref
+        //     .read(authRepositoryProvider)
+        //     .updateUserProfileImage(uploadedFileUrl);
+
+        // await ref
+        //     .read(authStateProvider.notifier)
+        //     .updateProfileImage(presignedUrl.uploadedFileInfo.url);
       });
+
+      debugPrint('####### 프로필 사진 업로드 성공');
     } catch (e) {
-      final errMessage = '업로드에 실패했어요😢: $e';
+      final errMessage = '프로필 사진 업로드 실패: $e';
       if (context.mounted) {
         showCustomErrorSnack(context, errMessage);
       } else {

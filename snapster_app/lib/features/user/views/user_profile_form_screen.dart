@@ -218,134 +218,250 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
 
   @override
   Widget build(BuildContext context) {
-    final authStatus = ref.watch(authStatusProvider);
-    if (authStatus == AuthStatus.loading) {
-      return const Center(child: CircularProgressIndicator.adaptive());
+    // final isDark = isDarkMode(context);
+    final authState = ref.watch(authStateProvider);
+
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
     }
 
-    if (authStatus == AuthStatus.unauthenticated) {
+    if (authState.status == AuthStatus.unauthenticated) {
       return const Center(child: Text("로그인이 필요합니다."));
     }
 
-    final userAsync = ref.watch(currentUserProvider);
+    // authenticated일 때만 currentUserProvider 구독
+    // final userAsync = ref.watch(currentUserProvider);
 
-    return userAsync.when(
-      loading: () => const Center(
-        child: CircularProgressIndicator.adaptive(),
-      ),
-      error: (error, stackTrace) => Center(
-        child: Text(error.toString()),
-      ),
-      data: (user) => GestureDetector(
-        onTap: () => onTapOutsideAndDismissKeyboard(context),
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(S.of(context).editProfile),
-          ),
-          body: user == null
-              ? Container()
-              : SingleChildScrollView(
-                  controller: _scrollController,
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: Sizes.size36),
-                    child: Column(
-                      children: [
-                        ..._getUserPic(user),
-                        Form(
-                          key: _formKey,
-                          child: Column(
-                            children: [
-                              Gaps.v28,
-                              TextFormField(
-                                initialValue: _profile['name'],
-                                autofocus: true,
-                                textCapitalization: TextCapitalization.none,
-                                decoration: InputDecoration(
-                                  hintText: 'Name',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade500,
-                                  ),
+    // final user = authState.user;
+    final user = widget.profile;
+
+    return GestureDetector(
+      onTap: () => onTapOutsideAndDismissKeyboard(context),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(S.of(context).editProfile),
+        ),
+        body: user == null
+            ? Container()
+            : SingleChildScrollView(
+                controller: _scrollController,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
+                  child: Column(
+                    children: [
+                      ..._getUserPic(user),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            Gaps.v28,
+                            TextFormField(
+                              initialValue: _profile['name'],
+                              autofocus: true,
+                              textCapitalization: TextCapitalization.none,
+                              decoration: InputDecoration(
+                                hintText: 'Name',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey.shade500,
                                 ),
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () =>
-                                    _onTapNext(EditableFields.name),
-                                onSaved: (newValue) =>
-                                    _setNewProfile('name', newValue),
                               ),
-                              Gaps.v16,
-                              TextFormField(
-                                initialValue: _profile['username'],
-                                focusNode:
-                                    _getFocusNode(EditableFields.username),
-                                textCapitalization: TextCapitalization.none,
-                                decoration: InputDecoration(
-                                  hintText: 'Username',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade500,
-                                  ),
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.name),
+                              onSaved: (newValue) =>
+                                  _setNewProfile('name', newValue),
+                            ),
+                            Gaps.v16,
+                            TextFormField(
+                              initialValue: _profile['username'],
+                              focusNode: _getFocusNode(EditableFields.username),
+                              textCapitalization: TextCapitalization.none,
+                              decoration: InputDecoration(
+                                hintText: 'Username',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey.shade500,
                                 ),
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () =>
-                                    _onTapNext(EditableFields.username),
-                                onSaved: (newValue) =>
-                                    _setNewProfile('username', newValue),
                               ),
-                              Gaps.v16,
-                              TextFormField(
-                                initialValue: _profile['bio'],
-                                focusNode: _getFocusNode(EditableFields.bio),
-                                textCapitalization: TextCapitalization.none,
-                                decoration: InputDecoration(
-                                  hintText: 'Bio',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade500,
-                                  ),
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.username),
+                              onSaved: (newValue) =>
+                                  _setNewProfile('username', newValue),
+                            ),
+                            Gaps.v16,
+                            TextFormField(
+                              initialValue: _profile['bio'],
+                              focusNode: _getFocusNode(EditableFields.bio),
+                              textCapitalization: TextCapitalization.none,
+                              decoration: InputDecoration(
+                                hintText: 'Bio',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey.shade500,
                                 ),
-                                textInputAction: TextInputAction.next,
-                                onEditingComplete: () =>
-                                    _onTapNext(EditableFields.bio),
-                                onSaved: (newValue) =>
-                                    _setNewProfile('bio', newValue),
                               ),
-                              Gaps.v16,
-                              TextFormField(
-                                initialValue: _profile['link'],
-                                focusNode: _getFocusNode(EditableFields.link),
-                                textCapitalization: TextCapitalization.none,
-                                decoration: InputDecoration(
-                                  hintText: 'Link',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey.shade500,
-                                  ),
+                              textInputAction: TextInputAction.next,
+                              onEditingComplete: () =>
+                                  _onTapNext(EditableFields.bio),
+                              onSaved: (newValue) =>
+                                  _setNewProfile('bio', newValue),
+                            ),
+                            Gaps.v16,
+                            TextFormField(
+                              initialValue: _profile['link'],
+                              focusNode: _getFocusNode(EditableFields.link),
+                              textCapitalization: TextCapitalization.none,
+                              decoration: InputDecoration(
+                                hintText: 'Link',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey.shade500,
                                 ),
-                                onFieldSubmitted: (_) =>
-                                    _onTapNext(EditableFields.link),
-                                onSaved: (newValue) =>
-                                    _setNewProfile('link', newValue),
                               ),
-                              Gaps.v28,
-                              FormButton(
-                                disabled: ref.watch(userProvider).isLoading,
-                                onTapButton: _onTapSave,
-                                buttonText: S.of(context).save,
-                              ),
-                              SizedBox(
-                                height:
-                                    MediaQuery.of(context).viewInsets.bottom +
-                                        Sizes.size32,
-                              ),
-                            ],
-                          ),
+                              onFieldSubmitted: (_) =>
+                                  _onTapNext(EditableFields.link),
+                              onSaved: (newValue) =>
+                                  _setNewProfile('link', newValue),
+                            ),
+                            Gaps.v28,
+                            FormButton(
+                              disabled: ref.watch(userProvider).isLoading,
+                              onTapButton: _onTapSave,
+                              buttonText: S.of(context).save,
+                            ),
+                            SizedBox(
+                              height: MediaQuery.of(context).viewInsets.bottom +
+                                  Sizes.size32,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
-        ),
+              ),
       ),
     );
+
+    // final userAsync = ref.watch(currentUserProvider);
+    //
+    // return userAsync.when(
+    //   loading: () => const Center(
+    //     child: CircularProgressIndicator.adaptive(),
+    //   ),
+    //   error: (error, stackTrace) => Center(
+    //     child: Text(error.toString()),
+    //   ),
+    //   data: (user) => GestureDetector(
+    //     onTap: () => onTapOutsideAndDismissKeyboard(context),
+    //     child: Scaffold(
+    //       resizeToAvoidBottomInset: false,
+    //       appBar: AppBar(
+    //         centerTitle: true,
+    //         title: Text(S.of(context).editProfile),
+    //       ),
+    //       body: user == null
+    //           ? Container()
+    //           : SingleChildScrollView(
+    //               controller: _scrollController,
+    //               child: Padding(
+    //                 padding:
+    //                     const EdgeInsets.symmetric(horizontal: Sizes.size36),
+    //                 child: Column(
+    //                   children: [
+    //                     ..._getUserPic(user),
+    //                     Form(
+    //                       key: _formKey,
+    //                       child: Column(
+    //                         children: [
+    //                           Gaps.v28,
+    //                           TextFormField(
+    //                             initialValue: _profile['name'],
+    //                             autofocus: true,
+    //                             textCapitalization: TextCapitalization.none,
+    //                             decoration: InputDecoration(
+    //                               hintText: 'Name',
+    //                               hintStyle: TextStyle(
+    //                                 color: Colors.grey.shade500,
+    //                               ),
+    //                             ),
+    //                             textInputAction: TextInputAction.next,
+    //                             onEditingComplete: () =>
+    //                                 _onTapNext(EditableFields.name),
+    //                             onSaved: (newValue) =>
+    //                                 _setNewProfile('name', newValue),
+    //                           ),
+    //                           Gaps.v16,
+    //                           TextFormField(
+    //                             initialValue: _profile['username'],
+    //                             focusNode:
+    //                                 _getFocusNode(EditableFields.username),
+    //                             textCapitalization: TextCapitalization.none,
+    //                             decoration: InputDecoration(
+    //                               hintText: 'Username',
+    //                               hintStyle: TextStyle(
+    //                                 color: Colors.grey.shade500,
+    //                               ),
+    //                             ),
+    //                             textInputAction: TextInputAction.next,
+    //                             onEditingComplete: () =>
+    //                                 _onTapNext(EditableFields.username),
+    //                             onSaved: (newValue) =>
+    //                                 _setNewProfile('username', newValue),
+    //                           ),
+    //                           Gaps.v16,
+    //                           TextFormField(
+    //                             initialValue: _profile['bio'],
+    //                             focusNode: _getFocusNode(EditableFields.bio),
+    //                             textCapitalization: TextCapitalization.none,
+    //                             decoration: InputDecoration(
+    //                               hintText: 'Bio',
+    //                               hintStyle: TextStyle(
+    //                                 color: Colors.grey.shade500,
+    //                               ),
+    //                             ),
+    //                             textInputAction: TextInputAction.next,
+    //                             onEditingComplete: () =>
+    //                                 _onTapNext(EditableFields.bio),
+    //                             onSaved: (newValue) =>
+    //                                 _setNewProfile('bio', newValue),
+    //                           ),
+    //                           Gaps.v16,
+    //                           TextFormField(
+    //                             initialValue: _profile['link'],
+    //                             focusNode: _getFocusNode(EditableFields.link),
+    //                             textCapitalization: TextCapitalization.none,
+    //                             decoration: InputDecoration(
+    //                               hintText: 'Link',
+    //                               hintStyle: TextStyle(
+    //                                 color: Colors.grey.shade500,
+    //                               ),
+    //                             ),
+    //                             onFieldSubmitted: (_) =>
+    //                                 _onTapNext(EditableFields.link),
+    //                             onSaved: (newValue) =>
+    //                                 _setNewProfile('link', newValue),
+    //                           ),
+    //                           Gaps.v28,
+    //                           FormButton(
+    //                             disabled: ref.watch(userProvider).isLoading,
+    //                             onTapButton: _onTapSave,
+    //                             buttonText: S.of(context).save,
+    //                           ),
+    //                           SizedBox(
+    //                             height:
+    //                                 MediaQuery.of(context).viewInsets.bottom +
+    //                                     Sizes.size32,
+    //                           ),
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             ),
+    //     ),
+    //   ),
+    // );
   }
 }

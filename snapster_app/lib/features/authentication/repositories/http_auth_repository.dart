@@ -30,7 +30,7 @@ class AuthRepository {
   bool get isLoggedIn => _currentUser != null;
 
   // 사용자 상태 업데이트
-  void _setUser(AppUser? user) {
+  void setUser(AppUser? user) {
     _currentUser = user;
     _controller.add(user);
     debugPrint('######### user set: $user, ${user?.userId}');
@@ -42,11 +42,11 @@ class AuthRepository {
     if (token != null) {
       try {
         final user = await _authService.getUserFromToken(token);
-        _setUser(user);
+        setUser(user);
         return true;
       } catch (e) {
         await _tokenStorageService.deleteToken();
-        _setUser(null);
+        setUser(null);
       }
     }
     return false;
@@ -57,11 +57,11 @@ class AuthRepository {
     try {
       // 서버에 토큰 유효성 검증 요청
       final user = await _authService.getUserFromToken(token);
-      _setUser(user);
+      setUser(user);
       return user;
     } catch (e) {
       debugPrint('토큰 유효성 검증 실패: $e');
-      _setUser(null);
+      setUser(null);
       return null;
     }
   }
@@ -76,7 +76,7 @@ class AuthRepository {
     final user = await verifyAndSetUserFromToken(token);
 
     final success = user != null;
-    if (success) ref.invalidate(authStatusProvider);
+    if (success) ref.invalidate(authStateProvider);
     return success;
   }
 
@@ -94,16 +94,16 @@ class AuthRepository {
   // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null) => 초기 페이지로 이동
   Future<void> clearToken(WidgetRef ref) async {
     await _tokenStorageService.deleteToken();
-    _setUser(null);
-    ref.invalidate(authStatusProvider);
+    setUser(null);
+    ref.invalidate(authStateProvider);
   }
 
-  void updateUserProfileImage(String profileImageLink) {
-    if (_currentUser != null) {
-      _currentUser = _currentUser!.copyWith(
-        profileImageUrl: profileImageLink,
-        hasProfileImage: profileImageLink != "",
-      );
-    }
-  }
+  // void updateUserProfileImage(String profileImageLink) {
+  //   if (_currentUser != null) {
+  //     _currentUser = _currentUser!.copyWith(
+  //       profileImageUrl: profileImageLink,
+  //       hasProfileImage: profileImageLink != "",
+  //     );
+  //   }
+  // }
 }

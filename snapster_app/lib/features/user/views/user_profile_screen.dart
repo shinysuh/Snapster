@@ -305,150 +305,274 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
-    final authStatus = ref.watch(authStatusProvider);
+    final authState = ref.watch(authStateProvider);
 
-    if (authStatus == AuthStatus.loading) {
-      return const Center(child: CircularProgressIndicator.adaptive());
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
     }
 
-    if (authStatus == AuthStatus.unauthenticated) {
+    if (authState.status == AuthStatus.unauthenticated) {
       return const Center(child: Text("로그인이 필요합니다."));
     }
 
     // authenticated일 때만 currentUserProvider 구독
-    final userAsync = ref.watch(currentUserProvider);
-    return userAsync.when(
-      loading: () {
-        debugPrint("########## loading");
-        return const Center(
-          child: CircularProgressIndicator.adaptive(),
-        );
-      },
-      error: (error, stackTrace) => Center(
-        child: Text(error.toString()),
-      ),
-      data: (user) {
-        debugPrint("########## user data: $user"); // 데이터 상태 확인
-        if (user == null) {
-          debugPrint("########## user null");
-          return const Center(child: Text('No user data available'));
-        }
-        return Scaffold(
-          backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-          body: SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-                // var width = MediaQuery.of(context).size.width;
-                var width = constraints.maxWidth;
-                var isVertical = width < Breakpoints.md;
-                var colCount = isVertical
-                    ? 3
-                    : width < Breakpoints.lg
-                        ? 4
-                        : 5;
-                return DefaultTabController(
-                  initialIndex: widget.show == 'likes' ? 1 : 0,
-                  length: 2,
-                  /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-                  child: NestedScrollView(
-                    headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                      SliverAppBar(
-                        centerTitle: true,
-                        // backgroundColor: isDark ? Colors.black : Colors.white,
-                        title: Text(user.displayName),
-                        actions: [
-                          IconButton(
-                            onPressed: () => _onTapEditProfile(user),
-                            icon: const FaIcon(
-                              FontAwesomeIcons.pen,
-                              size: Sizes.size18,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: _onTapBell,
-                            icon: const FaIcon(
-                              FontAwesomeIcons.bell,
-                              size: Sizes.size20,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: _onTapGear,
-                            icon: const FaIcon(
-                              FontAwesomeIcons.gear,
-                              size: Sizes.size20,
-                            ),
-                          ),
-                        ],
+    // final userAsync = ref.watch(currentUserProvider);
+
+    final user = authState.user;
+
+    if (user == null) {
+      debugPrint("########## user null");
+      return const Center(child: Text('유저 정보가 없습니다.'));
+    }
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+      body: SafeArea(
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            // var width = MediaQuery.of(context).size.width;
+            var width = constraints.maxWidth;
+            var isVertical = width < Breakpoints.md;
+            var colCount = isVertical
+                ? 3
+                : width < Breakpoints.lg
+                ? 4
+                : 5;
+            return DefaultTabController(
+              initialIndex: widget.show == 'likes' ? 1 : 0,
+              length: 2,
+              /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+              child: NestedScrollView(
+                headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                  SliverAppBar(
+                    centerTitle: true,
+                    // backgroundColor: isDark ? Colors.black : Colors.white,
+                    title: Text(user.displayName),
+                    actions: [
+                      IconButton(
+                        onPressed: () => _onTapEditProfile(user),
+                        icon: const FaIcon(
+                          FontAwesomeIcons.pen,
+                          size: Sizes.size18,
+                        ),
                       ),
-                      SliverToBoxAdapter(
-                        child: isVertical
-                            ? Column(
-                                children: [
-                                  _getUserPic(user, isVertical),
-                                  Gaps.v24,
-                                  ..._getUserInfo(user),
-                                  Gaps.v20,
-                                ],
-                              )
-                            : Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  _getUserPic(user, isVertical),
-                                  Column(
-                                    children: [
-                                      ..._getUserInfo(user),
-                                      Gaps.v20,
-                                    ],
-                                  ),
-                                ],
-                              ),
+                      IconButton(
+                        onPressed: _onTapBell,
+                        icon: const FaIcon(
+                          FontAwesomeIcons.bell,
+                          size: Sizes.size20,
+                        ),
                       ),
-                      SliverPersistentHeader(
-                        pinned: true,
-                        floating: true,
-                        delegate: UserProfileTabBar(),
+                      IconButton(
+                        onPressed: _onTapGear,
+                        icon: const FaIcon(
+                          FontAwesomeIcons.gear,
+                          size: Sizes.size20,
+                        ),
                       ),
                     ],
-                    body: TabBarView(
+                  ),
+                  SliverToBoxAdapter(
+                    child: isVertical
+                        ? Column(
                       children: [
-                        ref
-                            .watch(uploadedThumbnailListProvider(user.userId))
-                            .when(
-                              loading: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
-                              error: (error, stackTrace) => Center(
-                                child: Text(error.toString()),
-                              ),
-                              data: (thumbnails) => _getGridViewByTabBar(
-                                colCount: colCount,
-                                playCount: '2.6K',
-                                thumbnailData: thumbnails,
-                              ),
-                            ),
-                        ref.watch(likedThumbnailListProvider(user.userId)).when(
-                              loading: () => const Center(
-                                child: CircularProgressIndicator.adaptive(),
-                              ),
-                              error: (error, stackTrace) => Center(
-                                child: Text(error.toString()),
-                              ),
-                              data: (likes) => _getGridViewByTabBar(
-                                colCount: colCount,
-                                playCount: '36.1K',
-                                thumbnailData: likes,
-                              ),
-                            ),
+                        _getUserPic(user, isVertical),
+                        Gaps.v24,
+                        ..._getUserInfo(user),
+                        Gaps.v20,
+                      ],
+                    )
+                        : Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _getUserPic(user, isVertical),
+                        Column(
+                          children: [
+                            ..._getUserInfo(user),
+                            Gaps.v20,
+                          ],
+                        ),
                       ],
                     ),
                   ),
-                );
-              },
-            ),
-          ),
-        );
-      },
+                  SliverPersistentHeader(
+                    pinned: true,
+                    floating: true,
+                    delegate: UserProfileTabBar(),
+                  ),
+                ],
+                body: TabBarView(
+                  children: [
+                    ref
+                        .watch(uploadedThumbnailListProvider(user.userId))
+                        .when(
+                      loading: () => const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
+                      error: (error, stackTrace) => Center(
+                        child: Text(error.toString()),
+                      ),
+                      data: (thumbnails) => _getGridViewByTabBar(
+                        colCount: colCount,
+                        playCount: '2.6K',
+                        thumbnailData: thumbnails,
+                      ),
+                    ),
+                    ref.watch(likedThumbnailListProvider(user.userId)).when(
+                      loading: () => const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
+                      error: (error, stackTrace) => Center(
+                        child: Text(error.toString()),
+                      ),
+                      data: (likes) => _getGridViewByTabBar(
+                        colCount: colCount,
+                        playCount: '36.1K',
+                        thumbnailData: likes,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ),
     );
+
+    // return userAsync.when(
+    //   loading: () {
+    //     debugPrint("########## loading");
+    //     return const Center(
+    //       child: CircularProgressIndicator.adaptive(),
+    //     );
+    //   },
+    //   error: (error, stackTrace) => Center(
+    //     child: Text(error.toString()),
+    //   ),
+    //   data: (user) {
+    //     debugPrint("########## user data: $user"); // 데이터 상태 확인
+    //     if (user == null) {
+    //       debugPrint("########## user null");
+    //       return const Center(child: Text('No user data available'));
+    //     }
+    //     return Scaffold(
+    //       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+    //       body: SafeArea(
+    //         child: LayoutBuilder(
+    //           builder: (context, constraints) {
+    //             // var width = MediaQuery.of(context).size.width;
+    //             var width = constraints.maxWidth;
+    //             var isVertical = width < Breakpoints.md;
+    //             var colCount = isVertical
+    //                 ? 3
+    //                 : width < Breakpoints.lg
+    //                     ? 4
+    //                     : 5;
+    //             return DefaultTabController(
+    //               initialIndex: widget.show == 'likes' ? 1 : 0,
+    //               length: 2,
+    //               /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+    //               child: NestedScrollView(
+    //                 headerSliverBuilder: (context, innerBoxIsScrolled) => [
+    //                   SliverAppBar(
+    //                     centerTitle: true,
+    //                     // backgroundColor: isDark ? Colors.black : Colors.white,
+    //                     title: Text(user.displayName),
+    //                     actions: [
+    //                       IconButton(
+    //                         onPressed: () => _onTapEditProfile(user),
+    //                         icon: const FaIcon(
+    //                           FontAwesomeIcons.pen,
+    //                           size: Sizes.size18,
+    //                         ),
+    //                       ),
+    //                       IconButton(
+    //                         onPressed: _onTapBell,
+    //                         icon: const FaIcon(
+    //                           FontAwesomeIcons.bell,
+    //                           size: Sizes.size20,
+    //                         ),
+    //                       ),
+    //                       IconButton(
+    //                         onPressed: _onTapGear,
+    //                         icon: const FaIcon(
+    //                           FontAwesomeIcons.gear,
+    //                           size: Sizes.size20,
+    //                         ),
+    //                       ),
+    //                     ],
+    //                   ),
+    //                   SliverToBoxAdapter(
+    //                     child: isVertical
+    //                         ? Column(
+    //                             children: [
+    //                               _getUserPic(user, isVertical),
+    //                               Gaps.v24,
+    //                               ..._getUserInfo(user),
+    //                               Gaps.v20,
+    //                             ],
+    //                           )
+    //                         : Row(
+    //                             mainAxisAlignment: MainAxisAlignment.center,
+    //                             crossAxisAlignment: CrossAxisAlignment.start,
+    //                             children: [
+    //                               _getUserPic(user, isVertical),
+    //                               Column(
+    //                                 children: [
+    //                                   ..._getUserInfo(user),
+    //                                   Gaps.v20,
+    //                                 ],
+    //                               ),
+    //                             ],
+    //                           ),
+    //                   ),
+    //                   SliverPersistentHeader(
+    //                     pinned: true,
+    //                     floating: true,
+    //                     delegate: UserProfileTabBar(),
+    //                   ),
+    //                 ],
+    //                 body: TabBarView(
+    //                   children: [
+    //                     ref
+    //                         .watch(uploadedThumbnailListProvider(user.userId))
+    //                         .when(
+    //                           loading: () => const Center(
+    //                             child: CircularProgressIndicator.adaptive(),
+    //                           ),
+    //                           error: (error, stackTrace) => Center(
+    //                             child: Text(error.toString()),
+    //                           ),
+    //                           data: (thumbnails) => _getGridViewByTabBar(
+    //                             colCount: colCount,
+    //                             playCount: '2.6K',
+    //                             thumbnailData: thumbnails,
+    //                           ),
+    //                         ),
+    //                     ref.watch(likedThumbnailListProvider(user.userId)).when(
+    //                           loading: () => const Center(
+    //                             child: CircularProgressIndicator.adaptive(),
+    //                           ),
+    //                           error: (error, stackTrace) => Center(
+    //                             child: Text(error.toString()),
+    //                           ),
+    //                           data: (likes) => _getGridViewByTabBar(
+    //                             colCount: colCount,
+    //                             playCount: '36.1K',
+    //                             thumbnailData: likes,
+    //                           ),
+    //                         ),
+    //                   ],
+    //                 ),
+    //               ),
+    //             );
+    //           },
+    //         ),
+    //       ),
+    //     );
+    //   },
+    // );
   }
 }

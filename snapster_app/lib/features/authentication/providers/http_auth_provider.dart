@@ -20,14 +20,19 @@ final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository(
 
 // boolean 로그인 여부
 final isLoggedInProvider = Provider<bool>((ref) {
-  final status = ref.watch(authStatusProvider);
-  return status == AuthStatus.authenticated;
+  final status = ref.watch(authStateProvider);
+  return status.status == AuthStatus.authenticated;
+});
+
+final localEditableUserProvider = StateProvider<AppUser>((ref) {
+  final user = ref.read(authStateProvider).user!;
+  return user;
 });
 
 // 현재 로그인 사용자
-final currentUserProvider = StreamProvider<AppUser?>((ref) {
-  return ref.watch(authRepositoryProvider).authStateChanges;
-});
+// final currentUserProvider = StreamProvider<AppUser?>((ref) {
+//   return ref.watch(authRepositoryProvider).authStateChanges;
+// });
 
 // final isLoggedInProvider = Provider<bool>((ref) {
 //   final user = ref.watch(authStateProvider).asData?.value;
