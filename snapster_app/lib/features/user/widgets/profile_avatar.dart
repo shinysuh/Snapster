@@ -42,8 +42,6 @@ class ProfileAvatar extends ConsumerWidget {
     var isLoading = ref.watch(avatarProvider).isLoading;
 
     final appUser = ref.watch(localEditableUserProvider);
-    debugPrint('####### appUser.profileImageUrl: ${appUser.profileImageUrl}');
-    debugPrint('####### user.profileImageUrl: ${user.profileImageUrl}');
 
     return GestureDetector(
       onTap: isLoading || !isEditable ? null : () => _onTapAvatar(context, ref),

@@ -34,6 +34,7 @@ public class UserResponseDto {
             .link(user.getProfile().getLink())
             .birthday(user.getProfile().getBirthday())
             .hasProfileImage(user.getProfile().isHasProfileImage())
+            .profileImageUrl(user.getProfile().getProfileImageUrl())
             .build();
     }
 }

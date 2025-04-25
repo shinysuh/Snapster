@@ -33,7 +33,8 @@ class AuthRepository {
   void setUser(AppUser? user) {
     _currentUser = user;
     _controller.add(user);
-    debugPrint('######### user set: $user, ${user?.userId}');
+    debugPrint(
+        '######### user set: $user, ${user?.userId}, ${user?.profileImageUrl}');
   }
 
   // 앱 시작 시, 토큰이 있으면 사용자 정보 복구
@@ -98,12 +99,12 @@ class AuthRepository {
     ref.invalidate(authStateProvider);
   }
 
-  // void updateUserProfileImage(String profileImageLink) {
-  //   if (_currentUser != null) {
-  //     _currentUser = _currentUser!.copyWith(
-  //       profileImageUrl: profileImageLink,
-  //       hasProfileImage: profileImageLink != "",
-  //     );
-  //   }
-  // }
+// void updateUserProfileImage(String profileImageLink) {
+//   if (_currentUser != null) {
+//     _currentUser = _currentUser!.copyWith(
+//       profileImageUrl: profileImageLink,
+//       hasProfileImage: profileImageLink != "",
+//     );
+//   }
+// }
 }
