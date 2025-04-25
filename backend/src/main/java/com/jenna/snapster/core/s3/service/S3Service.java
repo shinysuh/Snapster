@@ -39,6 +39,7 @@ public class S3Service {
             .withMethod(HttpMethod.PUT)     // PUT 사용해서 업로드
             .withExpiration(urlExpiration);
 
+        // 이미지 링크 클릭 시, 브라우저에서 보여주기 -> 다운로드 링크 X
         generatePresignedUrlRequest.addRequestParameter("response-content-disposition", "inline");
 
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);

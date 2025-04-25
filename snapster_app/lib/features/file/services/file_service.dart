@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/constants/authorization.dart';
+import 'package:snapster_app/constants/file_content_type.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 
 class FileService {
@@ -21,7 +22,8 @@ class FileService {
       final response = await http.get(
         uri,
         headers: {
-          Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',
+          Authorizations.headerKey:
+              '${Authorizations.headerValuePrefix} $token',
         },
       );
 
@@ -65,16 +67,7 @@ class FileService {
   }
 
   String _getContentTypeByFileExtension(String filePath) {
-    final fileExtension = filePath.split('.').last.toLowerCase();
-    String contentType;
-
-    if (fileExtension == 'mp4') {
-      contentType = 'video/mp4';
-    } else if (fileExtension == 'avi') {
-      contentType = 'video/x-msvideo';
-    } else {
-      contentType = 'application/octet-stream'; // 기본 값
-    }
-    return contentType;
+    final extension = filePath.split('.').last.toLowerCase();
+    return FileContentType.fromExtension(extension);
   }
 }
