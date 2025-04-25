@@ -39,6 +39,8 @@ public class S3Service {
             .withMethod(HttpMethod.PUT)     // PUT 사용해서 업로드
             .withExpiration(urlExpiration);
 
+        generatePresignedUrlRequest.addRequestParameter("response-content-disposition", "inline");
+
         return amazonS3.generatePresignedUrl(generatePresignedUrlRequest);
     }
 
