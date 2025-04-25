@@ -59,18 +59,18 @@ class AppUser {
     };
   }
 
-  factory AppUser.fromFirebaseUser(User firebaseUser) {
-    return AppUser(
-        userId: firebaseUser.uid,
-        email: firebaseUser.email ?? '',
-        username: firebaseUser.displayName ?? '',
-        profileImageUrl: firebaseUser.photoURL ?? '',
-        displayName: firebaseUser.displayName ?? '',
-        hasProfileImage: false,
-        link: '',
-        bio: '',
-        birthday: '');
-  }
+  // factory AppUser.fromFirebaseUser(User firebaseUser) {
+  //   return AppUser(
+  //       userId: firebaseUser.uid,
+  //       email: firebaseUser.email ?? '',
+  //       username: firebaseUser.displayName ?? '',
+  //       profileImageUrl: firebaseUser.photoURL ?? '',
+  //       displayName: firebaseUser.displayName ?? '',
+  //       hasProfileImage: false,
+  //       link: '',
+  //       bio: '',
+  //       birthday: '');
+  // }
 
   AppUser copyWith({
     String? email,

@@ -33,6 +33,7 @@ class AuthRepository {
   void _setUser(AppUser? user) {
     _currentUser = user;
     _controller.add(user);
+    debugPrint('######### user set: $user, ${user?.userId}');
   }
 
   // 앱 시작 시, 토큰이 있으면 사용자 정보 복구
@@ -66,14 +67,17 @@ class AuthRepository {
   }
 
   // 딥링크로부터 토큰을 받아 와서 저장 -> 사용자 정보 복구
-  Future<bool> storeTokenFromUriAndRestoreAuth(Uri uri) async {
+  Future<bool> storeTokenFromUriAndRestoreAuth(Uri uri, WidgetRef ref) async {
     final token = uri.queryParameters[Authorizations.accessTokenKey];
     if (token == null) return false;
 
     await _tokenStorageService.saveToken(token);
 
     final user = await verifyAndSetUserFromToken(token);
-    return user != null;
+
+    final success = user != null;
+    if (success) ref.invalidate(authStatusProvider);
+    return success;
   }
 
   // 로그인 시, 토큰 저장 -> 사용자 정보 복구

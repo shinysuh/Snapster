@@ -77,7 +77,8 @@ class VideoPostState extends ConsumerState<VideoPost>
   Future<void> _initLike() async {
     _likeCount = widget.videoData.likes;
     _commentCount = widget.videoData.comments;
-    _isLiked = await ref.read(videoPostProvider(_videoId).notifier).isLiked();
+    // todo - 나중에 새로 적용
+    // _isLiked = await ref.read(videoPostProvider(_videoId).notifier).isLiked();
   }
 
   Future<void> _initVideoPlayer() async {

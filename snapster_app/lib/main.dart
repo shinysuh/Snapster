@@ -90,9 +90,7 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
       if (uri == null) return;
 
       final repo = ref.read(authRepositoryProvider);
-      final success = await repo.storeTokenFromUriAndRestoreAuth(uri);
-      // provider 강제 리셋 & sync => 로그인 사용자 정보 갱신
-      if (success) ref.invalidate(authStatusProvider);
+      final success = await repo.storeTokenFromUriAndRestoreAuth(uri, ref);
 
       // 화면 이동
       if (mounted) {

@@ -12,7 +12,8 @@ class FirebaseAuthenticationRepository implements IAuthService {
   @override
   AppUser? get currentUser {
     final user = _firebaseAuth.currentUser;
-    return user == null ? null : AppUser.fromFirebaseUser(user);
+    // return user == null ? null : AppUser.fromFirebaseUser(user);
+    return user == null ? null : AppUser.empty();
   }
 
   @override
@@ -21,8 +22,9 @@ class FirebaseAuthenticationRepository implements IAuthService {
   @override
   Stream<AppUser?> authStateChanges() {
     return _firebaseAuth.authStateChanges().map(
-          (user) => user == null ? null : AppUser.fromFirebaseUser(user),
-        );
+          (user) => user == null ? null : AppUser.empty(),
+      // (user) => user == null ? null : AppUser.fromFirebaseUser(user),
+    );
   }
 
   Future<UserCredential> firebaseSignUp(String email, String password) async {
@@ -48,11 +50,12 @@ class FirebaseAuthenticationRepository implements IAuthService {
   @override
   Future<void> signOut(BuildContext context) async {
     await _firebaseAuth.signOut().then(
-          (value) => goToRouteNamedWithoutStack(
+          (value) =>
+          goToRouteNamedWithoutStack(
             context: context,
             routeName: SignUpScreen.routeName,
           ),
-        );
+    );
   }
 
   Future<void> signInWithGithub() async {
