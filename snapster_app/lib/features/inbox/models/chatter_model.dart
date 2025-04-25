@@ -2,7 +2,7 @@ class ChatterModel {
   final String uid;
   final String name;
   final String username;
-  final bool hasAvatar;
+  final bool hasProfileImage;
 
   // 방을 나가기 여부(둘 다 나가기면 채팅방 삭제 && 한명만 나가면 해당 유저 isParticipating=false
   // true일 경우, 유저 나갔다는 문구 표시 (userId: system 으로 저장 후, system 문구는 다르게 표시)
@@ -22,7 +22,7 @@ class ChatterModel {
     required this.uid,
     required this.name,
     required this.username,
-    required this.hasAvatar,
+    required this.hasProfileImage,
     required this.recentlyReadAt,
     required this.showMsgFrom,
     required this.isParticipating,
@@ -32,7 +32,7 @@ class ChatterModel {
       : uid = '',
         name = '',
         username = '',
-        hasAvatar = false,
+        hasProfileImage = false,
         recentlyReadAt = 0,
         showMsgFrom = 0,
         isParticipating = false;
@@ -41,7 +41,7 @@ class ChatterModel {
       : uid = json['uid'],
         name = json['name'],
         username = json['username'],
-        hasAvatar = json['hasAvatar'],
+        hasProfileImage = json['hasProfileImage'],
         isParticipating = json['isParticipating'],
         recentlyReadAt = json['recentlyReadAt'],
         showMsgFrom = json['showMsgFrom'];
@@ -51,7 +51,7 @@ class ChatterModel {
       'uid': uid,
       'name': name,
       'username': username,
-      'hasAvatar': hasAvatar,
+      'hasProfileImage': hasProfileImage,
       'isParticipating': isParticipating,
       'recentlyReadAt': recentlyReadAt,
       'showMsgFrom': showMsgFrom,
@@ -62,7 +62,7 @@ class ChatterModel {
     String? uid,
     String? name,
     String? username,
-    bool? hasAvatar,
+    bool? hasProfileImage,
     bool? isParticipating,
     int? recentlyReadAt,
     int? showMsgFrom,
@@ -71,7 +71,7 @@ class ChatterModel {
       uid: uid ?? this.uid,
       name: name ?? this.name,
       username: username ?? this.username,
-      hasAvatar: hasAvatar ?? this.hasAvatar,
+      hasProfileImage: hasProfileImage ?? this.hasProfileImage,
       isParticipating: isParticipating ?? this.isParticipating,
       recentlyReadAt: recentlyReadAt ?? this.recentlyReadAt,
       showMsgFrom: showMsgFrom ?? this.showMsgFrom,

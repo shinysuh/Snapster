@@ -270,7 +270,7 @@ class ChatroomViewModel extends AsyncNotifier<void> {
       uid: profile.uid,
       name: profile.name,
       username: profile.username,
-      hasAvatar: profile.hasAvatar,
+      hasProfileImage: profile.hasProfileImage,
       recentlyReadAt: 0,
       showMsgFrom: 0,
       isParticipating: true,

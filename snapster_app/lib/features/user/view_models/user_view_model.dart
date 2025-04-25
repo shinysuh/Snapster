@@ -50,7 +50,7 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
       bio: '',
       link: '',
       birthday: form['birthday'] ?? '1900-01-01',
-      hasAvatar: false,
+      hasProfileImage: false,
     );
 
     // firestore
@@ -85,14 +85,14 @@ class UserViewModel extends AsyncNotifier<UserProfileModel> {
 
   Future<void> onAvatarUploaded(UserProfileModel profile) async {
     if (state.value == null) return;
-    state = AsyncValue.data(state.value!.copyWith(hasAvatar: true));
-    await _userRepository.patchProfile(state.value!.uid, {'hasAvatar': true});
+    state = AsyncValue.data(state.value!.copyWith(hasProfileImage: true));
+    await _userRepository.patchProfile(state.value!.uid, {'hasProfileImage': true});
   }
 
   Future<void> onAvatarDeleted(UserProfileModel profile) async {
     if (state.value == null) return;
-    state = AsyncValue.data(state.value!.copyWith(hasAvatar: false));
-    await _userRepository.patchProfile(state.value!.uid, {'hasAvatar': false});
+    state = AsyncValue.data(state.value!.copyWith(hasProfileImage: false));
+    await _userRepository.patchProfile(state.value!.uid, {'hasProfileImage': false});
   }
 
   Future<void> checkLoginUser(BuildContext context) async {

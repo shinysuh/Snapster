@@ -10,7 +10,7 @@ import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/view_models/user_profile_view_model.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
-import 'package:snapster_app/features/user/widgets/avatar.dart';
+import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/follow_info.dart';
 import 'package:snapster_app/features/user/widgets/profile_button.dart';
 import 'package:snapster_app/features/user/widgets/user_profile_tab_bar.dart';
@@ -63,7 +63,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     return Column(
       children: [
         Gaps.v10,
-        Avatar(
+        ProfileAvatar(
           user: user,
           isVertical: isVertical,
           isEditable: false,

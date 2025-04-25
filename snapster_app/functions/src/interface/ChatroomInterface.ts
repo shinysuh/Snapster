@@ -10,7 +10,7 @@ interface ChatterInterface {
     uid: string;
     name: string;
     username: string;
-    hasAvatar: boolean;
+    hasProfileImage: boolean;
     isParticipating: boolean;
     recentlyReadAt: number;
     showMsgFrom: number;

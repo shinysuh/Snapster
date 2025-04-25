@@ -29,5 +29,5 @@ public class UserProfile {
     private String bio;
     private String link;
     private LocalDate birthday;
-    private boolean hasAvatar;
+    private boolean hasProfileImage;
 }

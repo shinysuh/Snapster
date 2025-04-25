@@ -10,7 +10,7 @@ class AppUser {
   final String? bio;
   final String? link;
   final String? birthday;
-  final bool? hasAvatar;
+  final bool? hasProfileImage;
 
   const AppUser(
       {required this.userId,
@@ -21,7 +21,7 @@ class AppUser {
       this.bio,
       this.link,
       this.birthday,
-      this.hasAvatar});
+      this.hasProfileImage});
 
   AppUser.fromJson(Map<String, dynamic> json)
       : userId = json['userId'].toString(),
@@ -32,7 +32,7 @@ class AppUser {
         bio = json['bio'],
         link = json['link'],
         birthday = json['birthday'],
-        hasAvatar = json['hasAvatar'];
+        hasProfileImage = json['hasProfileImage'];
 
   factory AppUser.fromFirebaseUser(User firebaseUser) {
     return AppUser(

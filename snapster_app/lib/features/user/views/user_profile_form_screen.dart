@@ -8,7 +8,7 @@ import 'package:snapster_app/features/authentication/common/form_button.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
-import 'package:snapster_app/features/user/widgets/avatar.dart';
+import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';
@@ -119,7 +119,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
   }
 
   Future<void> _onTapDeleteAvatar(UserProfileModel profile) async {
-    if (!profile.hasAvatar) return;
+    if (!profile.hasProfileImage) return;
 
     await _getAlert(
       title: S.of(context).deleteProfilePicture,
@@ -170,12 +170,12 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
       Gaps.v10,
       Stack(
         children: [
-          Avatar(
+          ProfileAvatar(
             user: profile,
             isVertical: false,
             isEditable: true,
           ),
-          if (!ref.watch(avatarProvider).isLoading && profile.hasAvatar) ...[
+          if (!ref.watch(avatarProvider).isLoading && profile.hasProfileImage) ...[
             Positioned(
               bottom: 0,
               right: 0,

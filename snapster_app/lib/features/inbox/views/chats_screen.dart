@@ -136,7 +136,7 @@ class _ChatsScreenState extends ConsumerState<ChatsScreen> {
             onTap: () => _onTapChat(chatInfo),
             leading: CircleAvatar(
               radius: Sizes.size28,
-              foregroundImage: chatPartner.hasAvatar
+              foregroundImage: chatPartner.hasProfileImage
                   ? getProfileImgByUserId(chatPartner.uid, false)
                   : null,
               child: ClipOval(child: Text(chatPartner.name)),

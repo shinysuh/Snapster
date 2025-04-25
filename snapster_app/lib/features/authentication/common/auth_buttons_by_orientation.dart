@@ -20,11 +20,11 @@ class AuthButtonsByOrientation extends ConsumerWidget {
 
   List<AuthButton> getAuthButtons(BuildContext context, WidgetRef ref) {
     return [
-      AuthButton(
-        icon: FontAwesomeIcons.user,
-        text: S.of(context).useEmailPassword,
-        onTapButton: () => onTapEmailAndPassword(context),
-      ),
+      // AuthButton(
+      //   icon: FontAwesomeIcons.user,
+      //   text: S.of(context).useEmailPassword,
+      //   onTapButton: () => onTapEmailAndPassword(context),
+      // ),
       // AuthButton(
       //   icon: FontAwesomeIcons.github,
       //   text: S.of(context).continueWithGithub,

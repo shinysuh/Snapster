@@ -9,12 +9,12 @@ import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 
-class Avatar extends ConsumerWidget {
+class ProfileAvatar extends ConsumerWidget {
   final UserProfileModel user;
   final bool isVertical;
   final bool isEditable;
 
-  const Avatar({
+  const ProfileAvatar({
     super.key,
     required this.user,
     required this.isVertical,
@@ -56,7 +56,7 @@ class Avatar extends ConsumerWidget {
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
               foregroundImage:
-                  user.hasAvatar ? getProfileImgByUserId(user.uid, true) : null,
+                  user.hasProfileImage ? getProfileImgByUserId(user.uid, true) : null,
               child: ClipOval(child: Text(user.name)),
             ),
     );

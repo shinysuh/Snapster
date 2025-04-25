@@ -62,7 +62,7 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
                   onTap: () => _onClickUser(user),
                   leading: CircleAvatar(
                     radius: Sizes.size28,
-                    foregroundImage: user.hasAvatar
+                    foregroundImage: user.hasProfileImage
                         ? getProfileImgByUserId(user.uid, false)
                         : null,
                     child: ClipOval(child: Text(user.name)),

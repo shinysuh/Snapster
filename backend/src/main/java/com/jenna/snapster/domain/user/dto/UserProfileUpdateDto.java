@@ -12,7 +12,7 @@ public class UserProfileUpdateDto {
     private String bio;
     private String link;
     private LocalDate birthday;
-    private boolean hasAvatar;
+    private boolean hasProfileImage;
 
     public void trimFields() {
         this.name = this.name.trim();
@@ -33,8 +33,8 @@ public class UserProfileUpdateDto {
         if (this.birthday != profile.getBirthday()) {
             profile.setBirthday(this.birthday);
         }
-        if (this.hasAvatar != profile.isHasAvatar()) {
-            profile.setHasAvatar(this.hasAvatar);
+        if (this.hasProfileImage != profile.isHasProfileImage()) {
+            profile.setHasProfileImage(this.hasProfileImage);
         }
     }
 

@@ -42,6 +42,8 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
 
         final success = await _fileService.uploadFileToS3(presignedUrl, file);
         if (!success) throw Exception('Upload to Storage Failed');
+
+        // TODO - UPLOADED_FILE 테이블에 업로드 파일 정보 저장 api 호출 필요
       });
     } catch (e) {
       final errMessage = '업로드에 실패했어요😢: $e';
@@ -53,7 +55,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
     }
   }
 
-  Future<void> deleteAvatar() async {
+  Future<void> deleteAvatar(String fileName) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       // TODO - 삭제 API 구현 후 요청

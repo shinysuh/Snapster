@@ -21,7 +21,7 @@ public class UserResponseDto {
     private String bio;
     private String link;
     private LocalDate birthday;
-    private boolean hasAvatar;
+    private boolean hasProfileImage;
 
     public static UserResponseDto from(User user) {
         return UserResponseDto.builder()
@@ -32,7 +32,7 @@ public class UserResponseDto {
             .bio(user.getProfile().getBio())
             .link(user.getProfile().getLink())
             .birthday(user.getProfile().getBirthday())
-            .hasAvatar(user.getProfile().isHasAvatar())
+            .hasProfileImage(user.getProfile().isHasProfileImage())
             .build();
     }
 }
