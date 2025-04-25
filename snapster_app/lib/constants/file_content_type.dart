@@ -1,21 +1,31 @@
-enum FileContentType {
-  jpg('image/jpeg'),
-  jpeg('image/jpeg'),
-  png('image/png'),
-  webp('image/webp'),
-  gif('image/gif'),
-  mp4('video/mp4'),
-  avi('video/x-msvideo'),
-  basic('application/octet-stream');
+class FileContentType {
+  static const String jpeg = 'image/jpeg';
+  static const String png = 'image/png';
+  static const String gif = 'image/gif';
+  static const String webp = 'image/webp';
 
-  final String extension;
+  static const String mp4 = 'video/mp4';
+  static const String avi = 'video/x-msvideo';
 
-  const FileContentType(this.extension);
+  static const String defaultType = 'application/octet-stream';
 
   static String fromExtension(String ext) {
-    return FileContentType.values
-        .firstWhere((e) => e.name == ext.toLowerCase(),
-            orElse: () => FileContentType.basic)
-        .extension;
+    switch (ext.toLowerCase()) {
+      case 'jpg':
+      case 'jpeg':
+        return jpeg;
+      case 'png':
+        return png;
+      case 'gif':
+        return gif;
+      case 'webp':
+        return webp;
+      case 'mp4':
+        return mp4;
+      case 'avi':
+        return avi;
+      default:
+        return defaultType;
+    }
   }
 }
