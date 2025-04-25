@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:snapster_app/features/file/models/presigned_url_model.dart';
+import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/services/file_service.dart';
 
 class FileRepository {
@@ -7,11 +9,15 @@ class FileRepository {
 
   FileRepository(this._fileService);
 
-  Future<String?> getPresignedUrl(String fileName) async {
+  Future<PresignedUrlModel?> getPresignedUrl(String fileName) async {
     return await _fileService.fetchPresignedUrl(fileName);
   }
 
   Future<bool> uploadFile(String presignedUrl, File file) async {
     return await _fileService.uploadFileToS3(presignedUrl, file);
+  }
+
+  Future<bool> saveUploadedFileInfo(UploadedFileModel uploadedFileInfo) async {
+    return await _fileService.saveUploadedFileInfo(uploadedFileInfo);
   }
 }

@@ -24,8 +24,6 @@ void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
 
-  print('🔥 앱 시작됨');
-
   // firebase initialization
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,

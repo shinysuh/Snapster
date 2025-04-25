@@ -2,6 +2,7 @@ package com.jenna.snapster.domain.file.service.impl;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
+import com.jenna.snapster.domain.file.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.entity.UploadedFile;
 import com.jenna.snapster.domain.file.repository.UploadedFileRepository;
 import com.jenna.snapster.domain.file.service.UploadedFileService;
@@ -17,8 +18,8 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     private final UploadedFileRepository uploadedFileRepository;
 
     @Override
-    public UploadedFile saveFile(UploadedFile file) {
-        return uploadedFileRepository.save(file);
+    public UploadedFile saveFile(UploadedFileDto uploadedFile) {
+        return uploadedFileRepository.save(new UploadedFile(uploadedFile));
     }
 
     @Override

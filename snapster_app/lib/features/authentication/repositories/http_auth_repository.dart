@@ -90,7 +90,6 @@ class AuthRepository {
   // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null) => 초기 페이지로 이동
   Future<void> clearToken(WidgetRef ref) async {
     await _tokenStorageService.deleteToken();
-    debugPrint('✅ 로그 아웃 완료');
     _setUser(null);
     ref.invalidate(authStatusProvider);
   }

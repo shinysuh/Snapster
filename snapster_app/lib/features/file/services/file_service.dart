@@ -1,11 +1,14 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
-import 'package:snapster_app/features/file/constants/file_content_type.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
+import 'package:snapster_app/features/file/constants/file_content_type.dart';
+import 'package:snapster_app/features/file/models/presigned_url_model.dart';
+import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 
 class FileService {
   final TokenStorageService _tokenStorageService;
@@ -14,7 +17,7 @@ class FileService {
       : _tokenStorageService = tokenStorageService ?? TokenStorageService();
 
   // Pre-signed URL 발급
-  Future<String?> fetchPresignedUrl(String fileName) async {
+  Future<PresignedUrlModel?> fetchPresignedUrl(String fileName) async {
     try {
       final token = await _tokenStorageService.readToken();
       // debugPrint('##########token: $token');
@@ -29,7 +32,7 @@ class FileService {
       );
 
       if (response.statusCode == 200) {
-        return response.body; // prep-signed url
+        return PresignedUrlModel.fromJson(jsonDecode(response.body));
       } else {
         debugPrint(
             'Pre-signed URL 요청 실패: ${response.statusCode} ${response.body}');
@@ -55,7 +58,6 @@ class FileService {
       );
 
       if (response.statusCode == 200) {
-        debugPrint('파일 업로드 성공');
         return true;
       } else {
         debugPrint('파일 업로드 실패: ${response.statusCode} ${response.body}');
@@ -63,6 +65,26 @@ class FileService {
       }
     } catch (e) {
       debugPrint('파일 업로드 중 오류 발생: $e');
+      return false;
+    }
+  }
+
+  Future<bool> saveUploadedFileInfo(UploadedFileModel uploadedFileInfo) async {
+    final token = await _tokenStorageService.readToken();
+    final uri = Uri.parse('${ApiInfo.baseUrl}/api/file');
+    final response = await http.post(
+      uri,
+      headers: {
+        Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',
+        HttpHeaders.contentTypeHeader: 'application/json',
+      },
+      body: jsonEncode(uploadedFileInfo.toJson()),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.body}');
       return false;
     }
   }

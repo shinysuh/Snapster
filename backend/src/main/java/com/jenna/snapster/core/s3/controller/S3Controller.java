@@ -4,6 +4,7 @@ import com.jenna.snapster.core.s3.service.S3Service;
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -24,8 +25,8 @@ public class S3Controller {
      * @return pre-signed URL
      */
     @GetMapping("/presigned-url")
-    public String getPresignedUrl(@CurrentUser CustomUserDetails customUserDetails,
-                                  @RequestParam String fileName) {
-        return s3Service.generatePresignedUrl(customUserDetails.getUser().getId(), fileName).toString();
+    public ResponseEntity<?> getPresignedUrl(@CurrentUser CustomUserDetails customUserDetails,
+                                             @RequestParam String fileName) {
+        return ResponseEntity.ok(s3Service.generatePresignedUrl(customUserDetails.getUser().getId(), fileName));
     }
 }

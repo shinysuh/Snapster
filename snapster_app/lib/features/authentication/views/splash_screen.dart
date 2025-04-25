@@ -34,7 +34,6 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
   }
 
   Future<void> initApp() async {
-    debugPrint('✅[initApp] 진입');
     await Future.delayed(const Duration(milliseconds: 100)); // ⏳ 렌더링 시간 확보
 
     final user = ref.read(authRepositoryProvider).currentUser;
@@ -44,7 +43,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
         ? MainNavigationScreen.homeRouteURL
         : SignUpScreen.routeURL;
 
-    debugPrint('🎯 Splash에서 $route 로 이동');
+    debugPrint('##### Splash에서 $route 로 이동');
 
     goRouteReplacementRoute(
       context: context,
