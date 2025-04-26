@@ -37,11 +37,11 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
 
-  void _onTapEditProfile(AppUser profile) {
+  void _onTapEditProfile(AppUser user) {
     goToRouteNamed(
       context: context,
       routeName: UserProfileFormScreen.routeName,
-      extra: profile,
+      extra: user,
     );
   }
 

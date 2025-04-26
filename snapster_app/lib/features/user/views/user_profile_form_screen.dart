@@ -21,11 +21,11 @@ class UserProfileFormScreen extends ConsumerStatefulWidget {
   static const String routeName = 'edit_user';
   static const String routeURL = '/edit_user';
 
-  final AppUser profile;
+  final AppUser user;
 
   const UserProfileFormScreen({
     super.key,
-    required this.profile,
+    required this.user,
   });
 
   @override
@@ -46,7 +46,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
     super.initState();
     WidgetsBinding.instance.addObserver(this);
 
-    _profile = widget.profile.toJson();
+    _profile = widget.user.toJson();
 
     // _focusList = List.generate(
     //   EditableFields.values.length,
@@ -240,17 +240,17 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
-    final authState = ref.watch(authStateProvider);
+    // final authState = ref.watch(authStateProvider);
+    //
+    // if (authState.status == AuthStatus.loading) {
+    //   return const CircularProgressIndicator();
+    // }
+    //
+    // if (authState.status == AuthStatus.unauthenticated) {
+    //   return const Center(child: Text("로그인이 필요합니다."));
+    // }
 
-    if (authState.status == AuthStatus.loading) {
-      return const CircularProgressIndicator();
-    }
-
-    if (authState.status == AuthStatus.unauthenticated) {
-      return const Center(child: Text("로그인이 필요합니다."));
-    }
-
-    final user = widget.profile;
+    final user = widget.user;
 
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),

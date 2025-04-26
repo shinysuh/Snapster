@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/file/view_models/profile_avatar_upload_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
@@ -42,8 +41,6 @@ class ProfileAvatar extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     var isLoading = ref.watch(avatarProvider).isLoading;
 
-    final appUser = ref.watch(localEditableUserProvider);
-
     return GestureDetector(
       onTap: isLoading || !isEditable ? null : () => _onTapAvatar(context, ref),
       child: isLoading
@@ -59,12 +56,12 @@ class ProfileAvatar extends ConsumerWidget {
           : CircleAvatar(
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
-              foregroundImage: (appUser.hasProfileImage &&
-                      appUser.profileImageUrl.isNotEmpty)
-                  ? getProfileImgByUserProfileImageUrl(
-                      appUser.profileImageUrl, true)
-                  : null,
-              child: ClipOval(child: Text(appUser.displayName)),
+              foregroundImage:
+                  (user.hasProfileImage && user.profileImageUrl.isNotEmpty)
+                      ? getProfileImgByUserProfileImageUrl(
+                          user.profileImageUrl, true)
+                      : null,
+              child: ClipOval(child: Text(user.displayName)),
             ),
     );
   }

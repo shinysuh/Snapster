@@ -87,9 +87,9 @@ final routerProvider = Provider((ref) {
         name: UserProfileFormScreen.routeName,
         path: UserProfileFormScreen.routeURL,
         builder: (context, state) {
-          var profile =
+          var user =
               state.extra != null ? state.extra as AppUser : AppUser.empty();
-          return UserProfileFormScreen(profile: profile);
+          return UserProfileFormScreen(user: user);
         },
       ),
       GoRoute(
