@@ -1,6 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:snapster_app/common/widgets/navigation/go_router_refresh_stream.dart';
+import 'package:snapster_app/common/widgets/navigation/router_redirect_rules.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
@@ -17,7 +19,6 @@ import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
 import 'package:snapster_app/features/video/views/video_recording_screen.dart';
-import 'package:snapster_app/common/widgets/navigation/go_router_refresh_stream.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authRepo = ref.read(authRepositoryProvider);
@@ -25,35 +26,10 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Splashscreen.routeURL,
     refreshListenable: GoRouterRefreshStream(authRepo.authStateChanges),
     redirect: (context, state) {
-      final status = ref.read(authStateProvider).status;
-      final loc = state.subloc;
-      // 예외 페이지들
-      final isSplash = loc == Splashscreen.routeURL;
-      final isAuthPage =
-          loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
-      // 사용자 정보 업데이트 페이지
-      final isUpdatePage = loc == UserProfileFormScreen.routeURL;
-
-      // 로딩 중에는 리디렉션 액션 X
-      if (status == AuthStatus.loading) return null;
-      final isLoggedIn = status == AuthStatus.authenticated;
-
-      // 로그아웃 상태(토큰 X) → 인증(로그인) 페이지로
-      if (!isLoggedIn && !isSplash && !isAuthPage) {
-        return SignUpScreen.routeURL; // 로그인 페이지로 이동
-      }
-
-      // 프로필 편집은 홈 리디렉션 예외
-      if (isLoggedIn && isUpdatePage) {
-        return null;
-      }
-
-      // 로그인 상태(토큰 O) → 홈으로
-      if (isLoggedIn && (isSplash || isAuthPage)) {
-        return MainNavigationScreen.homeRouteURL; // 홈 화면으로 이동
-      }
-
-      return null; // 다른 경우에는 이동하지 않음
+      return getRedirectionLocation(
+        ref.read(authStateProvider).status,
+        state.subloc,
+      );
     },
     routes: [
       GoRoute(
