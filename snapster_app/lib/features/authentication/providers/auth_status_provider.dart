@@ -12,15 +12,23 @@ enum AuthStatus {
 
 class AuthNotifier extends StateNotifier<AuthState> {
   final Ref ref;
+  bool _disposed = false;
 
   AuthNotifier(this.ref) : super(AuthState.loading()) {
     _init();
+  }
+
+  @override
+  void dispose() {
+    _disposed = true;
+    super.dispose();
   }
 
   Future<void> _init() async {
     final authRepo = ref.read(authRepositoryProvider);
     final restored = await authRepo.restoreFromToken();
 
+    if (_disposed) return;
     // state = restored ? AuthStatus.authenticated : AuthStatus.unauthenticated;
 
     if (restored && authRepo.currentUser != null) {
@@ -31,6 +39,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     // 이후에도 유저 정보가 바뀌면 반영
     authRepo.authStateChanges.listen((user) {
+      if (_disposed) return;
       if (user != null) {
         state = AuthState.authenticated(user);
       } else {
@@ -38,20 +47,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
       }
     });
   }
-
-  // Future<void> updateProfileImage(String newUrl) async {
-  //   final repo = ref.read(authRepositoryProvider);
-  //   final user = repo.currentUser;
-  //
-  //   if (user != null) {
-  //     final updatedUser = user.copyWith(
-  //       profileImageUrl: newUrl,
-  //       hasProfileImage: newUrl.isNotEmpty,
-  //     );
-  //     repo.setUser(updatedUser); // 내부 스트림도 업데이트
-  //     state = AuthState.authenticated(updatedUser);
-  //   }
-  // }
 }
 
 // 로그인 상태 (StateNotifier)
