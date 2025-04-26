@@ -11,6 +11,8 @@ import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 
 class FileService {
+  static const _baseUrl = '${ApiInfo.baseUrl}/api/file';
+
   final TokenStorageService _tokenStorageService;
 
   FileService({TokenStorageService? tokenStorageService})
@@ -70,13 +72,9 @@ class FileService {
 
   Future<bool> saveUploadedFileInfo(UploadedFileModel uploadedFileInfo) async {
     final token = await _tokenStorageService.readToken();
-    final uri = Uri.parse('${ApiInfo.baseUrl}/api/file');
     final response = await http.post(
-      uri,
-      headers: {
-        Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',
-        HttpHeaders.contentTypeHeader: 'application/json',
-      },
+      Uri.parse(_baseUrl),
+      headers: ApiInfo.getBasicHeaderWithToken(token),
       body: jsonEncode(uploadedFileInfo.toJson()),
     );
 

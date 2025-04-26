@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/providers/token_storage_provider.dart';
 import 'package:snapster_app/features/authentication/repositories/http_auth_repository.dart';
 import 'package:snapster_app/features/authentication/services/http_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
-import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 // IAuthService 서비스 구현체 주입 (HTTP 호출 담당)
@@ -15,7 +15,7 @@ final httpAuthServiceProvider = Provider<IAuthService>(
 // 저장소 - AuthRepository (토큰 저장/복원/스트림 관리)
 final authRepositoryProvider = Provider<AuthRepository>((ref) => AuthRepository(
       authService: ref.read(httpAuthServiceProvider),
-      tokenStorageService: TokenStorageService(),
+      tokenStorageService: ref.read(tokenStorageServiceProvider),
     ));
 
 // boolean 로그인 여부
