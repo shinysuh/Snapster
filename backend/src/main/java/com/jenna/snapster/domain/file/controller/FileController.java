@@ -6,10 +6,7 @@ import com.jenna.snapster.domain.file.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.service.UploadedFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -19,8 +16,15 @@ public class FileController {
     private final UploadedFileService uploadedFileService;
 
     @PostMapping("")
-    public ResponseEntity<?> saveUploadedFileInfo(@CurrentUser CustomUserDetails user,
+    public ResponseEntity<?> saveUploadedFileInfo(@CurrentUser CustomUserDetails currentUser,
                                                   @RequestBody UploadedFileDto uploadedFileDto) {
-        return ResponseEntity.ok(uploadedFileService.saveFile(user.getUser(), uploadedFileDto));
+        return ResponseEntity.ok(uploadedFileService.saveFile(currentUser.getUser(), uploadedFileDto));
+    }
+
+    @PutMapping("/delete")
+    public ResponseEntity<?> updateFileAsDeleted(@CurrentUser CustomUserDetails currentUser,
+                                                @RequestBody UploadedFileDto uploadedFileDto) {
+        uploadedFileService.updateFileAsDeletedByUrl(currentUser.getUser(), uploadedFileDto);
+        return ResponseEntity.ok().build();
     }
 }

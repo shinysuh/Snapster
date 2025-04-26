@@ -17,7 +17,11 @@ class FileRepository {
     return await _fileService.uploadFileToS3(presignedUrl, file);
   }
 
-  Future<bool> saveUploadedFileInfo(UploadedFileModel uploadedFileInfo) async {
-    return await _fileService.saveUploadedFileInfo(uploadedFileInfo);
+  Future<bool> saveUploadedFileInfo(UploadedFileModel fileInfo) async {
+    return await _fileService.saveUploadedFileInfo(fileInfo);
+  }
+
+  Future<bool> updateFileAsDeleted(UploadedFileModel fileInfo) async {
+    return await _fileService.updateFileAsDeleted(fileInfo);
   }
 }

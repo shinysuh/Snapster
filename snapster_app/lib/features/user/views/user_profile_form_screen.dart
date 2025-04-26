@@ -6,8 +6,8 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/file/view_models/profile_avatar_upload_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
-import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
 import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
@@ -120,15 +120,16 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
     }
   }
 
-  Future<void> _onTapDeleteAvatar(AppUser profile) async {
-    if (profile.hasProfileImage) return;
+  Future<void> _onTapDeleteAvatar(AppUser user) async {
+    if (!user.hasProfileImage) return;
 
     await _getAlert(
       title: S.of(context).deleteProfilePicture,
       destructiveActionCallback: _closeDialog,
       confirmActionCallback: () async {
-        // await ref.read(avatarProvider.notifier).deleteAvatar(widget.profile);
-        // TODO - delete profile image 기능 붙이기
+        await ref
+            .read(profileAvatarProvider.notifier)
+            .deleteAvatar(context);
         _closeDialog();
       },
     );
@@ -168,18 +169,18 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
             ));
   }
 
-  List<Widget> _getUserPic(AppUser profile) {
+  List<Widget> _getUserPic(AppUser user) {
     return [
       Gaps.v10,
       Stack(
         children: [
           ProfileAvatar(
-            user: profile,
+            user: user,
             isVertical: false,
             isEditable: true,
           ),
-          if (!ref.watch(avatarProvider).isLoading &&
-              profile.hasProfileImage) ...[
+          if (!ref.watch(profileAvatarProvider).isLoading &&
+              user.hasProfileImage) ...[
             Positioned(
               bottom: 0,
               right: 0,
@@ -200,7 +201,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
               bottom: 3,
               right: 3,
               child: GestureDetector(
-                onTap: () => _onTapDeleteAvatar(profile),
+                onTap: () => _onTapDeleteAvatar(user),
                 child: FaIcon(
                   FontAwesomeIcons.solidCircleXmark,
                   color: Colors.grey.shade600,

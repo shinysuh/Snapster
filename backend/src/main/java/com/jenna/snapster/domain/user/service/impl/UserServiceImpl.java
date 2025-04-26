@@ -41,10 +41,9 @@ public class UserServiceImpl implements UserService {
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateUserProfileImage(UserProfile profile, boolean hasProfileImage, String profileImageUrl) {
-        if (hasProfileImage) {
-            profile.setHasProfileImage(true);
-            profile.setProfileImageUrl(profileImageUrl);
-        }
+        profile.setUser(null);
+        profile.setHasProfileImage(hasProfileImage);
+        profile.setProfileImageUrl(profileImageUrl);
 
         userProfileRepository.save(profile);
     }

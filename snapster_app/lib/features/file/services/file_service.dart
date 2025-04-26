@@ -22,13 +22,12 @@ class FileService {
   Future<PresignedUrlModel?> fetchPresignedUrl(String fileName) async {
     try {
       final token = await _tokenStorageService.readToken();
-      final uri = Uri.parse(
-          '${ApiInfo.presignedBaseUrl}$fileName');
+      final uri = Uri.parse('${ApiInfo.presignedBaseUrl}$fileName');
       final response = await http.get(
         uri,
         headers: {
           Authorizations.headerKey:
-          '${Authorizations.headerValuePrefix} $token',
+              '${Authorizations.headerValuePrefix} $token',
         },
       );
 
@@ -70,18 +69,34 @@ class FileService {
     }
   }
 
-  Future<bool> saveUploadedFileInfo(UploadedFileModel uploadedFileInfo) async {
+  Future<bool> saveUploadedFileInfo(UploadedFileModel fileInfo) async {
     final token = await _tokenStorageService.readToken();
     final response = await http.post(
       Uri.parse(_baseUrl),
       headers: ApiInfo.getBasicHeaderWithToken(token),
-      body: jsonEncode(uploadedFileInfo.toJson()),
+      body: jsonEncode(fileInfo.toJson()),
     );
 
     if (response.statusCode == 200) {
       return true;
     } else {
       debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.body}');
+      return false;
+    }
+  }
+
+  Future<bool> updateFileAsDeleted(UploadedFileModel fileInfo) async {
+    final token = await _tokenStorageService.readToken();
+    final response = await http.put(
+      Uri.parse('$_baseUrl/delete'),
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+      body: jsonEncode(fileInfo),
+    );
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      debugPrint('파일 정보 삭제 실패: ${response.statusCode} ${response.body}');
       return false;
     }
   }

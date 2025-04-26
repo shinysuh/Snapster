@@ -5,6 +5,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_folder.dart';
+import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -24,6 +25,19 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
     final fileExtension = file.path.split('.').last;
     return UploadFolder.generateProfileFileName(
         '${currentUser.userId}.$fileExtension');
+  }
+
+  void _updateCurrentUser({
+    required AppUser currentUser,
+    required bool hasProfileImage,
+    required String profileImageUrl,
+  }) {
+    ref.read(authStateProvider.notifier).updateCurrentUser(
+          currentUser.copyWith(
+            hasProfileImage: hasProfileImage,
+            profileImageUrl: profileImageUrl,
+          ),
+        );
   }
 
   Future<void> uploadProfileImage(
@@ -53,12 +67,13 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
 
         // currentUser의 프로필 url 업데이트
         final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
-        ref.read(authStateProvider.notifier).updateCurrentUser(
-              _currentUser.copyWith(
-                profileImageUrl: uploadedFileUrl,
-                hasProfileImage: uploadedFileUrl.isNotEmpty,
-              ),
-            );
+
+        // 사용자 정보 업데이트
+        _updateCurrentUser(
+          currentUser: _currentUser,
+          hasProfileImage: uploadedFileUrl.isNotEmpty,
+          profileImageUrl: uploadedFileUrl,
+        );
       });
     } catch (e) {
       final errMessage = '####### 프로필 사진 업로드 실패: $e';
@@ -70,19 +85,39 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
     }
   }
 
-  Future<void> deleteAvatar(String fileName) async {
-    state = const AsyncValue.loading();
-    state = await AsyncValue.guard(() async {
-      /*
-            TODO
-             1) 삭제 API 구현 후 요청
-             2) 사용자 hasProfileImage = false 로 수정
-         */
-    });
+  Future<void> deleteAvatar(BuildContext context) async {
+    try {
+      state = const AsyncValue.loading();
+
+      if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+
+      state = await AsyncValue.guard(() async {
+        _fileRepository.updateFileAsDeleted(UploadedFileModel(
+          userId: _currentUser.userId,
+          fileName: '',
+          s3FilePath: '',
+          url: _currentUser.profileImageUrl,
+        ));
+      });
+
+      // 사용자 정보 업데이트
+      _updateCurrentUser(
+        currentUser: _currentUser,
+        hasProfileImage: false,
+        profileImageUrl: '',
+      );
+    } catch (e) {
+      final errMessage = '####### 프로필 사진 삭제 실패: $e';
+      if (context.mounted) {
+        showCustomErrorSnack(context, errMessage);
+      } else {
+        debugPrint(errMessage);
+      }
+    }
   }
 }
 
-final profileAvatarUploadProvider =
+final profileAvatarProvider =
     AsyncNotifierProvider<ProfileAvatarUploadViewModel, void>(
   () => ProfileAvatarUploadViewModel(),
 );

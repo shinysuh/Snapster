@@ -1,5 +1,3 @@
-
-
 class UploadedFileModel {
   final String? fileId;
   final String userId;
@@ -21,10 +19,6 @@ class UploadedFileModel {
     this.uploadedAt,
   });
 
-  // String toEncodedBody() {
-  //   return jsonEncode(toJson());
-  // }
-
   Map<String, dynamic> toJson() {
     return {
       'userId': int.parse(userId), // userId가 String이므로 변환
@@ -44,4 +38,18 @@ class UploadedFileModel {
         isPrivate = json['isPrivate'],
         isDeleted = json['isDeleted'],
         uploadedAt = json['uploadedAt'];
+
+  UploadedFileModel copyWith({
+    String? userId,
+    String? fileName,
+    String? s3FilePath,
+    String? url,
+  }) {
+    return UploadedFileModel(
+      userId: userId ?? this.userId,
+      fileName: fileName ?? this.fileName,
+      s3FilePath: s3FilePath ?? this.s3FilePath,
+      url: url ?? this.url,
+    );
+  }
 }

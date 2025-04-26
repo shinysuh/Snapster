@@ -78,18 +78,4 @@ class AppUser {
       hasProfileImage: hasProfileImage ?? this.hasProfileImage,
     );
   }
-
-  AppUser updateProfile(AppUser updateUser) {
-    return AppUser(
-      username: updateUser.username,
-      displayName: updateUser.displayName,
-      bio: updateUser.bio,
-      link: updateUser.link,
-      userId: userId,
-      email: email,
-      profileImageUrl: profileImageUrl,
-      birthday: birthday,
-      hasProfileImage: hasProfileImage,
-    );
-  }
 }

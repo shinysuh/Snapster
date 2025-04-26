@@ -32,7 +32,7 @@ class ProfileAvatar extends ConsumerWidget {
     if (xFile != null && context.mounted) {
       final file = File(xFile.path);
       await ref
-          .read(profileAvatarUploadProvider.notifier)
+          .read(profileAvatarProvider.notifier)
           .uploadProfileImage(context, file);
     }
   }

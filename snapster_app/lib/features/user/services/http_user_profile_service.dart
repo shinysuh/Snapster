@@ -31,7 +31,7 @@ class HttpUserProfileService {
     );
 
     if (res.statusCode == 200) {
-      debugPrint('사용자 정보 업데이트 성공: ${res.statusCode} ${res.body}');
+      debugPrint('사용자 정보 업데이트 성공');
     } else {
       debugPrint('사용자 정보 업데이트 실패: ${res.statusCode} ${res.body}');
     }

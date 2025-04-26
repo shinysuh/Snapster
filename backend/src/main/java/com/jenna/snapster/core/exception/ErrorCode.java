@@ -47,6 +47,7 @@ public enum ErrorCode {
 
     // file
     NO_SUCH_FILE("FILE001", "존재하지 않는 파일입니다.", BAD_REQUEST),
+    FILE_DELETE_ACTION_UNAUTHORIZED("FILE002", "해당 파일을 삭제할 권한이 없습니다.", UNAUTHORIZED),
 
 
     ;

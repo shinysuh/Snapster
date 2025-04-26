@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
 
@@ -31,4 +32,8 @@ public class UserProfile {
     private LocalDate birthday;
     private boolean hasProfileImage;
     private String profileImageUrl;
+
+    public boolean hasProfile() {
+        return hasProfileImage && StringUtils.isNotEmpty(profileImageUrl);
+    }
 }

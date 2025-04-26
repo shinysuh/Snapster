@@ -20,13 +20,13 @@ public class S3Controller {
     /**
      * Pre-signed URL 발급 API
      *
-     * @param customUserDetails 업로드 사용자
+     * @param currentUser 업로드 사용자
      * @param fileName          업로드 파일명
      * @return pre-signed URL
      */
     @GetMapping("/presigned-url")
-    public ResponseEntity<?> getPresignedUrl(@CurrentUser CustomUserDetails user,
+    public ResponseEntity<?> getPresignedUrl(@CurrentUser CustomUserDetails currentUser,
                                              @RequestParam String fileName) {
-        return ResponseEntity.ok(s3Service.generatePresignedUrl(user.getUser().getId(), fileName));
+        return ResponseEntity.ok(s3Service.generatePresignedUrl(currentUser.getUser().getId(), fileName));
     }
 }
