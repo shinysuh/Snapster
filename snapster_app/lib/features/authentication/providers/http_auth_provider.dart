@@ -5,7 +5,6 @@ import 'package:snapster_app/features/authentication/providers/token_storage_pro
 import 'package:snapster_app/features/authentication/repositories/http_auth_repository.dart';
 import 'package:snapster_app/features/authentication/services/http_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
-import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 // IAuthService 서비스 구현체 주입 (HTTP 호출 담당)
 final httpAuthServiceProvider = Provider<IAuthService>(
@@ -23,16 +22,6 @@ final isLoggedInProvider = Provider<bool>((ref) {
   final status = ref.watch(authStateProvider);
   return status.status == AuthStatus.authenticated;
 });
-
-final localEditableUserProvider = StateProvider<AppUser>((ref) {
-  final user = ref.read(authStateProvider).user!;
-  return user;
-});
-
-// 현재 로그인 사용자
-// final currentUserProvider = StreamProvider<AppUser?>((ref) {
-//   return ref.watch(authRepositoryProvider).authStateChanges;
-// });
 
 // final isLoggedInProvider = Provider<bool>((ref) {
 //   final user = ref.watch(authStateProvider).asData?.value;

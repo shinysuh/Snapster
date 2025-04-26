@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_folder.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
@@ -54,25 +53,13 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
 
         // currentUser의 프로필 url 업데이트
         final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
-        ref
-            .read(authStateProvider.notifier)
-            .updateCurrentUser(_currentUser.copyWith(
-              profileImageUrl: uploadedFileUrl,
-              hasProfileImage: uploadedFileUrl.isNotEmpty,
-            ),);
-
-        debugPrint(
-            '####### 새로운 프로필 정보  ${_currentUser.profileImageUrl}, $uploadedFileUrl, ');
-
-        // ref.read(localEditableUserProvider.notifier).update(
-        //       (user) => user.copyWith(
-        //         profileImageUrl: uploadedFileUrl,
-        //         hasProfileImage: uploadedFileUrl.isNotEmpty,
-        //       ),
-        //     );
+        ref.read(authStateProvider.notifier).updateCurrentUser(
+              _currentUser.copyWith(
+                profileImageUrl: uploadedFileUrl,
+                hasProfileImage: uploadedFileUrl.isNotEmpty,
+              ),
+            );
       });
-
-      debugPrint('####### 프로필 사진 업로드 성공');
     } catch (e) {
       final errMessage = '####### 프로필 사진 업로드 실패: $e';
       if (context.mounted) {

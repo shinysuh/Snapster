@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/providers/user_profile_provider.dart';
 import 'package:snapster_app/features/user/repository/http_user_profile_repository.dart';
@@ -23,8 +22,6 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
       BuildContext context, AppUser updateUser) async {
     try {
       _userProfileRepository.updateUserProfile(updateUser);
-
-      debugPrint('####### 사용자 정보 업데이트 성공');
       // authStateProvider 업데이트
       ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
     } catch (e) {

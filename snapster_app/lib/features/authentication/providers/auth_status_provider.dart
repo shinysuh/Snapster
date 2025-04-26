@@ -63,7 +63,6 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // 프로필 정보만 업데이트 (status는 건드리지 않음)
   void updateCurrentUser(AppUser newUser) {
     if (_disposed) return;
-    debugPrint('######### 사용자 업데이트 로직 접근');
     state = state.copyWithUser(newUser);
   }
 }
