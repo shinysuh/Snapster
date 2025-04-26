@@ -11,7 +11,7 @@ import 'package:snapster_app/features/file/repositories/file_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/base_exception_handler.dart';
 
-class AvatarUploadViewModel extends AsyncNotifier<void> {
+class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
   late final FileRepository _fileRepository;
   late final AppUser? _currentUser;
 
@@ -60,14 +60,6 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
                 hasProfileImage: uploadedFileUrl.isNotEmpty,
               ),
             );
-
-        // ref
-        //     .read(authRepositoryProvider)
-        //     .updateUserProfileImage(uploadedFileUrl);
-
-        // await ref
-        //     .read(authStateProvider.notifier)
-        //     .updateProfileImage(presignedUrl.uploadedFileInfo.url);
       });
 
       debugPrint('####### 프로필 사진 업로드 성공');
@@ -93,6 +85,7 @@ class AvatarUploadViewModel extends AsyncNotifier<void> {
   }
 }
 
-final avatarUploadProvider = AsyncNotifierProvider<AvatarUploadViewModel, void>(
-  () => AvatarUploadViewModel(),
+final profileAvatarUploadProvider =
+    AsyncNotifierProvider<ProfileAvatarUploadViewModel, void>(
+  () => ProfileAvatarUploadViewModel(),
 );

@@ -20,7 +20,6 @@ class FileService {
   Future<PresignedUrlModel?> fetchPresignedUrl(String fileName) async {
     try {
       final token = await _tokenStorageService.readToken();
-      // debugPrint('##########token: $token');
       final uri = Uri.parse(
           '${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
       final response = await http.get(

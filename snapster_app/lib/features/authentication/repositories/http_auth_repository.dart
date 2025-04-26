@@ -33,13 +33,14 @@ class AuthRepository {
   void setUser(AppUser? user) {
     _currentUser = user;
     _controller.add(user);
-    debugPrint(
-        '######### user set: $user, ${user?.userId}, ${user?.profileImageUrl}');
+    // debugPrint(
+    //     '######### user set: $user, ${user?.userId}, ${user?.profileImageUrl}');
   }
 
   // 앱 시작 시, 토큰이 있으면 사용자 정보 복구
   Future<bool> restoreFromToken() async {
     final token = await _tokenStorageService.readToken();
+    // debugPrint('######### ✅token: $token}');
     if (token != null) {
       try {
         final user = await _authService.getUserFromToken(token);

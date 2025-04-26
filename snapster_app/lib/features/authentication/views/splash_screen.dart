@@ -43,8 +43,6 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
         ? MainNavigationScreen.homeRouteURL
         : SignUpScreen.routeURL;
 
-    debugPrint('##### Splash에서 $route 로 이동');
-
     goRouteReplacementRoute(
       context: context,
       routeURL: route,

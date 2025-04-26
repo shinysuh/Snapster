@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
-import 'package:snapster_app/features/file/view_models/avatar_upload_view_model.dart';
+import 'package:snapster_app/features/file/view_models/profile_avatar_upload_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
@@ -33,7 +32,9 @@ class ProfileAvatar extends ConsumerWidget {
 
     if (xFile != null && context.mounted) {
       final file = File(xFile.path);
-      await ref.read(avatarUploadProvider.notifier).uploadProfileImage(context, file);
+      await ref
+          .read(profileAvatarUploadProvider.notifier)
+          .uploadProfileImage(context, file);
     }
   }
 
