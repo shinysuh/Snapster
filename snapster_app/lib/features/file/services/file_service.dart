@@ -11,7 +11,7 @@ import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 
 class FileService {
-  static const _baseUrl = '${ApiInfo.baseUrl}/api/file';
+  static const _baseUrl = ApiInfo.fileBaseUrl;
 
   final TokenStorageService _tokenStorageService;
 
@@ -23,12 +23,12 @@ class FileService {
     try {
       final token = await _tokenStorageService.readToken();
       final uri = Uri.parse(
-          '${ApiInfo.baseUrl}/api/s3/presigned-url?fileName=$fileName');
+          '${ApiInfo.presignedBaseUrl}$fileName');
       final response = await http.get(
         uri,
         headers: {
           Authorizations.headerKey:
-              '${Authorizations.headerValuePrefix} $token',
+          '${Authorizations.headerValuePrefix} $token',
         },
       );
 

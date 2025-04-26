@@ -8,7 +8,7 @@ import 'package:snapster_app/features/authentication/services/i_auth_service.dar
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class HttpAuthService implements IAuthService {
-  static const _baseUrl = '${ApiInfo.baseUrl}/api/auth';
+  static const _baseUrl = ApiInfo.authBaseUrl;
   final _basicHeaders = {'Content-Type': 'application/json'};
 
   final http.Client _client;

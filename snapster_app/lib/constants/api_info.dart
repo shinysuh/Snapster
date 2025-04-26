@@ -5,6 +5,13 @@ import 'package:snapster_app/features/authentication/constants/authorization.dar
 class ApiInfo {
   static const baseUrl = 'http://localhost:8080'; // TODO => 운영은 80
 
+  static const oauthBaseUrl = '$baseUrl/oauth2/authorization';
+  static const presignedBaseUrl = '$baseUrl/api/s3/presigned-url?fileName=';
+
+  static const authBaseUrl = '$baseUrl/api/auth';
+  static const fileBaseUrl = '$baseUrl/api/file';
+  static const userBaseUrl = '$baseUrl/api/user';
+
   static Map<String, String> getBasicHeaderWithToken(String? token) {
     return {
       Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',

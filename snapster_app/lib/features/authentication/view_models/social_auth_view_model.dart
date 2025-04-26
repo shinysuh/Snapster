@@ -55,8 +55,7 @@ class SocialAuthViewModel extends AsyncNotifier<void> {
 
   // OAuth 2.0
   void launchOAuthSignIn(String provider) async {
-    final Uri url =
-        Uri.parse('${ApiInfo.baseUrl}/oauth2/authorization/$provider');
+    final Uri url = Uri.parse('${ApiInfo.oauthBaseUrl}/$provider');
 
     if (await canLaunchUrl(url)) {
       await launchUrl(url, mode: LaunchMode.externalApplication);

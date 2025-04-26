@@ -7,7 +7,7 @@ import 'package:snapster_app/features/authentication/services/token_storage_serv
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class HttpUserProfileService {
-  static const _baseUrl = '${ApiInfo.baseUrl}/api/user';
+  static const _baseUrl = ApiInfo.userBaseUrl;
 
   final TokenStorageService _tokenStorageService;
 
