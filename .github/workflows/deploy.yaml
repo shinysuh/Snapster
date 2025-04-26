@@ -99,6 +99,7 @@ jobs:
             -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
             -e S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}' \
             -e S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}' \
+            -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
             $IMAGE:latest"
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
