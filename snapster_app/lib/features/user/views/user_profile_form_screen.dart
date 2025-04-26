@@ -240,17 +240,17 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
-    // final authState = ref.watch(authStateProvider);
-    //
-    // if (authState.status == AuthStatus.loading) {
-    //   return const CircularProgressIndicator();
-    // }
-    //
-    // if (authState.status == AuthStatus.unauthenticated) {
-    //   return const Center(child: Text("로그인이 필요합니다."));
-    // }
+    final authState = ref.watch(authStateProvider);
 
-    final user = widget.user;
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
+    }
+
+    if (authState.status == AuthStatus.unauthenticated) {
+      return const Center(child: Text("로그인이 필요합니다."));
+    }
+
+    final user = authState.user ?? widget.user;
 
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),
