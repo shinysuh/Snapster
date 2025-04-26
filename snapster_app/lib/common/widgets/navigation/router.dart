@@ -1,9 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
@@ -16,61 +17,38 @@ import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
 import 'package:snapster_app/features/video/views/video_recording_screen.dart';
+import 'package:snapster_app/common/widgets/navigation/go_router_refresh_stream.dart';
 
-/*
-      Snapster route description
-          ** GoRouter(url 미변경) && Navigator 1(url 변경) 동시 사용
-o
-      /  Sign Up    (GoRouter)
-          (Navigator)
-        /
-        /
-        /
-        /
-
-      /login  Log In    (GoRouter)
-          (Navigator)
-        /login  Form
-
-      /onboarding    (GoRouter)
-          (Navigator)
-        /onboarding  Interest
-        /onboarding  Tutorial
-
-      /home -> home    (GoRouter)
-      /discover -> discover
-      /inbox -> inbox
-        /activity
-        /chats
-          /:chatroomId
-
-      /profile -> profile
-
- */
-final routerProvider = Provider((ref) {
-  // ref.watch(authState);   // 변화가 생기변 provider 가 rebuild 됨
-  final authState = ref.watch(authStateProvider);
-
+final routerProvider = Provider<GoRouter>((ref) {
+  final authRepo = ref.read(authRepositoryProvider);
   return GoRouter(
     initialLocation: Splashscreen.routeURL,
+    refreshListenable: GoRouterRefreshStream(authRepo.authStateChanges),
     redirect: (context, state) {
+      final status = ref.read(authStateProvider).status;
       final loc = state.subloc;
       // 예외 페이지들
       final isSplash = loc == Splashscreen.routeURL;
       final isAuthPage =
           loc == SignUpScreen.routeURL || loc == LoginScreen.routeURL;
+      // 사용자 정보 업데이트 페이지
+      final isUpdatePage = loc == UserProfileFormScreen.routeURL;
 
       // 로딩 중에는 리디렉션 액션 X
-      if (authState.status == AuthStatus.loading) return null;
+      if (status == AuthStatus.loading) return null;
+      final isLoggedIn = status == AuthStatus.authenticated;
 
-      final isLoggedIn = authState.status == AuthStatus.authenticated;
-
-      // 토큰이 없으면 로그인/회원가입 페이지로 리디렉션
+      // 로그아웃 상태(토큰 X) → 인증(로그인) 페이지로
       if (!isLoggedIn && !isSplash && !isAuthPage) {
         return SignUpScreen.routeURL; // 로그인 페이지로 이동
       }
 
-      // 토큰이 있으면 홈 화면으로 리디렉션
+      // 프로필 편집은 홈 리디렉션 예외
+      if (isLoggedIn && isUpdatePage) {
+        return null;
+      }
+
+      // 로그인 상태(토큰 O) → 홈으로
       if (isLoggedIn && (isSplash || isAuthPage)) {
         return MainNavigationScreen.homeRouteURL; // 홈 화면으로 이동
       }
@@ -96,47 +74,6 @@ final routerProvider = Provider((ref) {
         name: SignUpScreen.routeName,
         path: SignUpScreen.routeURL,
         builder: (context, state) => const SignUpScreen(),
-        // nested routes
-        // routes: [
-        //   GoRoute(
-        //     name: UsernameScreen.routeName,
-        //     path: UsernameScreen.routeURL,
-        //     builder: (context, state) => const UsernameScreen(),
-        //     routes: [
-        //       GoRoute(
-        //         name: EmailScreen.routeName,
-        //         path: EmailScreen.routeURL,
-        //         builder: (context, state) {
-        //           // extra 로 데이터 넘기기
-        //           final args = state.extra as EmailScreenArgs;
-        //           return EmailScreen(
-        //             username: args.username,
-        //           );
-        //         },
-        //         routes: [
-        //           GoRoute(
-        //             name: PasswordScreen.routeName,
-        //             path: PasswordScreen.routeURL,
-        //             builder: (context, state) {
-        //               // extra 로 데이터 넘기기
-        //               return const PasswordScreen();
-        //             },
-        //             routes: [
-        //               GoRoute(
-        //                 name: BirthdayScreen.routeName,
-        //                 path: BirthdayScreen.routeURL,
-        //                 builder: (context, state) {
-        //                   // extra 로 데이터 넘기기
-        //                   return const BirthdayScreen();
-        //                 },
-        //               ),
-        //             ],
-        //           ),
-        //         ],
-        //       ),
-        //     ],
-        //   ),
-        // ],
       ),
       GoRoute(
         name: LoginScreen.routeName,
@@ -202,20 +139,6 @@ final routerProvider = Provider((ref) {
             );
           },
         ),
-
-        //     CustomTransitionPage(
-        //   child: VideoRecordingScreen(),
-        //   transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        //     final position = Tween(
-        //       begin: const Offset(0, 1),
-        //       end: Offset.zero,
-        //     ).animate(animation);
-        //     return SlideTransition(
-        //       position: position,
-        //       child: child,
-        //     );
-        //   },
-        // ),
       ),
       GoRoute(
         name: ChatroomUserListScreen.routeName,

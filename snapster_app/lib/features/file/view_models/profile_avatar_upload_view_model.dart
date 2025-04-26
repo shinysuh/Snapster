@@ -54,12 +54,22 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
 
         // currentUser의 프로필 url 업데이트
         final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
-        ref.read(localEditableUserProvider.notifier).update(
-              (user) => user.copyWith(
-                profileImageUrl: uploadedFileUrl,
-                hasProfileImage: uploadedFileUrl.isNotEmpty,
-              ),
-            );
+        ref
+            .read(authStateProvider.notifier)
+            .updateCurrentUser(_currentUser.copyWith(
+              profileImageUrl: uploadedFileUrl,
+              hasProfileImage: uploadedFileUrl.isNotEmpty,
+            ),);
+
+        debugPrint(
+            '####### 새로운 프로필 정보  ${_currentUser.profileImageUrl}, $uploadedFileUrl, ');
+
+        // ref.read(localEditableUserProvider.notifier).update(
+        //       (user) => user.copyWith(
+        //         profileImageUrl: uploadedFileUrl,
+        //         hasProfileImage: uploadedFileUrl.isNotEmpty,
+        //       ),
+        //     );
       });
 
       debugPrint('####### 프로필 사진 업로드 성공');

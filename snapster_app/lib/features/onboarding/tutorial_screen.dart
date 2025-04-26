@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/onboarding/widgets/tutorial_page.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';

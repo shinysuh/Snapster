@@ -25,12 +25,8 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
       _userProfileRepository.updateUserProfile(updateUser);
 
       debugPrint('####### 사용자 정보 업데이트 성공');
-      // currentUser의 프로필 업데이트
-      ref.read(localEditableUserProvider.notifier).update(
-            (user) => user.updateProfile(updateUser),
-          );
-      debugPrint(
-          '####### 새로운 사용자 정보 : ${updateUser.username}, ${updateUser.displayName}, ${updateUser.bio}, ${updateUser.link}');
+      // authStateProvider 업데이트
+      ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
     } catch (e) {
       final errMessage = '####### 사용자 정보 업데이트 실패: $e';
       if (context.mounted) {

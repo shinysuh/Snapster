@@ -7,7 +7,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:snapster_app/common/widgets/navigation/main_navigation_screen.dart';
+import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
@@ -17,7 +17,7 @@ import 'package:snapster_app/features/video/repositories/playback_config_reposit
 import 'package:snapster_app/features/video/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
 import 'package:snapster_app/generated/l10n.dart';
-import 'package:snapster_app/router.dart';
+import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:uni_links/uni_links.dart';
 
 void main() async {
