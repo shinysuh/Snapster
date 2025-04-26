@@ -19,8 +19,8 @@ public class UserController {
     private final UserService userService;
 
     @PutMapping("/profile")
-    public ResponseEntity<?> updateUserProfile(@CurrentUser CustomUserDetails user,
+    public ResponseEntity<?> updateUserProfile(@CurrentUser CustomUserDetails currentUser,
                                                @RequestBody UserProfileUpdateDto profileUpdateDto) {
-        return ResponseEntity.ok(userService.updateUserProfile(user.getUser().getId(), profileUpdateDto));
+        return ResponseEntity.ok(userService.updateUserProfile(currentUser.getUser(), profileUpdateDto));
     }
 }

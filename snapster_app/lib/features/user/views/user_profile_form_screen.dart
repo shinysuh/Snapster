@@ -7,8 +7,8 @@ import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
+import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/generated/l10n.dart';
@@ -111,10 +111,10 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
         _formKey.currentState!.validate() /*invoke validator*/) {
       _formKey.currentState!.save(); // invoke onSaved
 
-      // update firebase
+      final updateUser = AppUser.fromJson(_profile);
       ref
-          .read(userProvider.notifier)
-          .updateProfile(context, UserProfileModel.fromJson(_profile));
+          .read(httpUserProfileProvider.notifier)
+          .updateUserProfile(context, updateUser);
 
       goBackToPreviousRoute(context);
     }

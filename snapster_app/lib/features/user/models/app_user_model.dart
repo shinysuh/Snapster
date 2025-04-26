@@ -1,5 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
-
 class AppUser {
   final String userId;
   final String username;
@@ -59,19 +57,6 @@ class AppUser {
     };
   }
 
-  // factory AppUser.fromFirebaseUser(User firebaseUser) {
-  //   return AppUser(
-  //       userId: firebaseUser.uid,
-  //       email: firebaseUser.email ?? '',
-  //       username: firebaseUser.displayName ?? '',
-  //       profileImageUrl: firebaseUser.photoURL ?? '',
-  //       displayName: firebaseUser.displayName ?? '',
-  //       hasProfileImage: false,
-  //       link: '',
-  //       bio: '',
-  //       birthday: '');
-  // }
-
   AppUser copyWith({
     String? email,
     String? profileImageUrl,
@@ -91,6 +76,20 @@ class AppUser {
       link: link ?? this.link,
       birthday: birthday ?? this.birthday,
       hasProfileImage: hasProfileImage ?? this.hasProfileImage,
+    );
+  }
+
+  AppUser updateProfile(AppUser updateUser) {
+    return AppUser(
+      username: updateUser.username,
+      displayName: updateUser.displayName,
+      bio: updateUser.bio,
+      link: updateUser.link,
+      userId: userId,
+      email: email,
+      profileImageUrl: profileImageUrl,
+      birthday: birthday,
+      hasProfileImage: hasProfileImage,
     );
   }
 }

@@ -7,7 +7,7 @@ import com.jenna.snapster.domain.user.entity.UserProfile;
 public interface UserService {
     User findById(Long id);
 
-    UserProfileUpdateDto updateUserProfile(Long userId, UserProfileUpdateDto profileUpdateDto);
+    UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto);
 
     void updateUserProfileImage(UserProfile profile, boolean hasProfileImage, String profileImageUrl);
 }

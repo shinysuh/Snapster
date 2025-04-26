@@ -64,7 +64,7 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
 
       debugPrint('####### 프로필 사진 업로드 성공');
     } catch (e) {
-      final errMessage = '프로필 사진 업로드 실패: $e';
+      final errMessage = '####### 프로필 사진 업로드 실패: $e';
       if (context.mounted) {
         showCustomErrorSnack(context, errMessage);
       } else {

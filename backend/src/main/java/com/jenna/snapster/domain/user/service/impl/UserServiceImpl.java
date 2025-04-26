@@ -27,13 +27,13 @@ public class UserServiceImpl implements UserService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public UserProfileUpdateDto updateUserProfile(Long userId, UserProfileUpdateDto profileUpdateDto) {
-        User user = this.findById(userId);  // 최신 정보 조회
+    public UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto) {
+        User user = this.findById(currentUser.getId());  // 최신 정보 조회
 
         profileUpdateDto.trimFields();
 
         UserProfile profile = user.getProfile();
-        profileUpdateDto.setUpdatedFields(profile);  // entity에 수정값 반영
+        profileUpdateDto.setUpdatedFields(user, profile);  // entity에 수정값 반영
 
         return profileUpdateDto;
     }
