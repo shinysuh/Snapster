@@ -85,7 +85,7 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
     }
   }
 
-  Future<void> deleteAvatar(BuildContext context) async {
+  Future<void> deleteProfileImage(BuildContext context) async {
     try {
       state = const AsyncValue.loading();
 

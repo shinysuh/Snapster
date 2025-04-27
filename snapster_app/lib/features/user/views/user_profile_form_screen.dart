@@ -129,7 +129,7 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
       confirmActionCallback: () async {
         await ref
             .read(profileAvatarProvider.notifier)
-            .deleteAvatar(context);
+            .deleteProfileImage(context);
         _closeDialog();
       },
     );
