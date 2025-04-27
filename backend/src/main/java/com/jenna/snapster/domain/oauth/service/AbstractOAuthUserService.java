@@ -33,6 +33,7 @@ public abstract class AbstractOAuthUserService implements OAuthUserService {
                     .link("")
                     .birthday(null)
                     .hasProfileImage(false)
+                    .profileImageUrl("")
                     .build();
 
                 user.setProfile(profile);
