@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
@@ -41,7 +40,7 @@ class FileService {
       // );
 
       if (response.statusCode == 200) {
-        return PresignedUrlModel.fromJson(jsonDecode(response.data));
+        return PresignedUrlModel.fromJson(response.data);
       } else {
         debugPrint(
             'Pre-signed URL 요청 실패: ${response.statusCode} ${response.data}');
@@ -60,7 +59,7 @@ class FileService {
       // 파일을 바이트로 읽어서 업로드
       final fileBytes = await File(filePath).readAsBytes();
 
-      final response = await _dioService.put(
+      final response = await _dioService.filePut(
         uri: presignedUrl,
         headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
         body: fileBytes,

@@ -1,9 +1,7 @@
 import 'dart:convert';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 class DioService {
   late Dio _dio;
@@ -65,5 +63,15 @@ class DioService {
     );
   }
 
-
+  Future<Response> filePut({
+    required String uri,
+    Map<String, dynamic>? headers,
+    Object? body,
+  }) async {
+    return await _dio.put(
+      uri,
+      options: Options(headers: headers),
+      data: body,
+    );
+  }
 }
