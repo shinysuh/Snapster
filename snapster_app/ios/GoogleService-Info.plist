@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CLIENT_ID</key>
-	<string>755329000239-m8e41mivn656hd9nhmo6shp2liiegpo5.apps.googleusercontent.com</string>
+	<string>755329000239-0991avs4v28bbvhgeb8e4krje32o3b3n.apps.googleusercontent.com</string>
 	<key>REVERSED_CLIENT_ID</key>
-	<string>com.googleusercontent.apps.755329000239-m8e41mivn656hd9nhmo6shp2liiegpo5</string>
+	<string>com.googleusercontent.apps.755329000239-0991avs4v28bbvhgeb8e4krje32o3b3n</string>
 	<key>ANDROID_CLIENT_ID</key>
 	<string>755329000239-pgg5gimthm2gl59hv6tebf747atjepdt.apps.googleusercontent.com</string>
 	<key>API_KEY</key>
@@ -15,7 +15,7 @@
 	<key>PLIST_VERSION</key>
 	<string>1</string>
 	<key>BUNDLE_ID</key>
-	<string>com.example.snapsterApp</string>
+	<string>com.example.tiktokClone</string>
 	<key>PROJECT_ID</key>
 	<string>tiktok-clone-jenn</string>
 	<key>STORAGE_BUCKET</key>
@@ -31,6 +31,6 @@
 	<key>IS_SIGNIN_ENABLED</key>
 	<true></true>
 	<key>GOOGLE_APP_ID</key>
-	<string>1:755329000239:ios:639282d61e5bf9f5e1f7da</string>
+	<string>1:755329000239:ios:f9ebb5598df1dc68e1f7da</string>
 </dict>
 </plist>

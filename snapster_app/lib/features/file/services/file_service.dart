@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
@@ -14,28 +14,37 @@ class FileService {
   static const _baseUrl = ApiInfo.fileBaseUrl;
 
   final TokenStorageService _tokenStorageService;
+  final DioService _dioService;
 
-  FileService({TokenStorageService? tokenStorageService})
-      : _tokenStorageService = tokenStorageService ?? TokenStorageService();
+  FileService(this._tokenStorageService, this._dioService);
 
   // Pre-signed URL 발급
   Future<PresignedUrlModel?> fetchPresignedUrl(String fileName) async {
     try {
       final token = await _tokenStorageService.readToken();
-      final uri = Uri.parse('${ApiInfo.presignedBaseUrl}$fileName');
-      final response = await http.get(
-        uri,
+      final uri = '${ApiInfo.presignedBaseUrl}$fileName';
+
+      final response = await _dioService.get(
+        uri: uri,
         headers: {
           Authorizations.headerKey:
               '${Authorizations.headerValuePrefix} $token',
         },
       );
 
+      // final response = await http.get(
+      //   Uri.parse(uri),
+      //   headers: {
+      //     Authorizations.headerKey:
+      //         '${Authorizations.headerValuePrefix} $token',
+      //   },
+      // );
+
       if (response.statusCode == 200) {
-        return PresignedUrlModel.fromJson(jsonDecode(response.body));
+        return PresignedUrlModel.fromJson(jsonDecode(response.data));
       } else {
         debugPrint(
-            'Pre-signed URL 요청 실패: ${response.statusCode} ${response.body}');
+            'Pre-signed URL 요청 실패: ${response.statusCode} ${response.data}');
         return null;
       }
     } catch (e) {
@@ -51,16 +60,22 @@ class FileService {
       // 파일을 바이트로 읽어서 업로드
       final fileBytes = await File(filePath).readAsBytes();
 
-      final response = await http.put(
-        Uri.parse(presignedUrl),
+      final response = await _dioService.put(
+        uri: presignedUrl,
         headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
         body: fileBytes,
       );
 
+      // final response = await http.put(
+      //   Uri.parse(presignedUrl),
+      //   headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
+      //   body: fileBytes,
+      // );
+
       if (response.statusCode == 200) {
         return true;
       } else {
-        debugPrint('파일 업로드 실패: ${response.statusCode} ${response.body}');
+        debugPrint('파일 업로드 실패: ${response.statusCode} ${response.data}');
         return false;
       }
     } catch (e) {
@@ -71,32 +86,46 @@ class FileService {
 
   Future<bool> saveUploadedFileInfo(UploadedFileModel fileInfo) async {
     final token = await _tokenStorageService.readToken();
-    final response = await http.post(
-      Uri.parse(_baseUrl),
+
+    final response = await _dioService.post(
+      uri: _baseUrl,
       headers: ApiInfo.getBasicHeaderWithToken(token),
-      body: jsonEncode(fileInfo.toJson()),
+      body: fileInfo,
     );
+
+    // final response = await http.post(
+    //   Uri.parse(_baseUrl),
+    //   headers: ApiInfo.getBasicHeaderWithToken(token),
+    //   body: jsonEncode(fileInfo.toJson()),
+    // );
 
     if (response.statusCode == 200) {
       return true;
     } else {
-      debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.body}');
+      debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.data}');
       return false;
     }
   }
 
   Future<bool> updateFileAsDeleted(UploadedFileModel fileInfo) async {
     final token = await _tokenStorageService.readToken();
-    final response = await http.put(
-      Uri.parse('$_baseUrl/delete'),
+
+    final response = await _dioService.put(
+      uri: '$_baseUrl/delete',
       headers: ApiInfo.getBasicHeaderWithToken(token),
-      body: jsonEncode(fileInfo),
+      body: fileInfo.toJson(),
     );
+
+    // final response = await http.put(
+    //   Uri.parse('$_baseUrl/delete'),
+    //   headers: ApiInfo.getBasicHeaderWithToken(token),
+    //   body: jsonEncode(fileInfo),
+    // );
 
     if (response.statusCode == 200) {
       return true;
     } else {
-      debugPrint('파일 정보 삭제 실패: ${response.statusCode} ${response.body}');
+      debugPrint('파일 정보 삭제 실패: ${response.statusCode} ${response.data}');
       return false;
     }
   }

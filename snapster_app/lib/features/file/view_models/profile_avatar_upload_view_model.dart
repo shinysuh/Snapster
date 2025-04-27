@@ -9,7 +9,7 @@ import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
 
 class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
   late final FileRepository _fileRepository;
@@ -44,76 +44,138 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
     BuildContext context,
     File file,
   ) async {
-    try {
-      state = const AsyncValue.loading();
+    String errMsgPrefix = '프로필 사진 업로드 실패';
 
-      if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+    await runFutureWithExceptionHandler(
+        context: context,
+        errMsgPrefix: errMsgPrefix,
+        callBackFunction: () async {
+          state = const AsyncValue.loading();
 
-      final fileName = _getFileName(_currentUser, file);
-      state = await AsyncValue.guard(() async {
-        // presigned-url 발급
-        final presignedUrl = await _fileRepository.getPresignedUrl(fileName);
-        if (presignedUrl == null) throw Exception('Failed to get URL');
+          if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
 
-        // 파일 업로드
-        final success =
-            await _fileRepository.uploadFile(presignedUrl.presignedUrl, file);
-        if (!success) throw Exception('Upload to Storage Failed');
+          final fileName = _getFileName(_currentUser, file);
+          state = await AsyncValue.guard(() async {
+            // presigned-url 발급
+            final presignedUrl =
+                await _fileRepository.getPresignedUrl(fileName);
+            if (presignedUrl == null) throw Exception('Failed to get URL');
 
-        // 업로드 파일 정보 저장
-        final saveSuccess = await _fileRepository
-            .saveUploadedFileInfo(presignedUrl.uploadedFileInfo);
-        if (!saveSuccess) throw Exception('Couldn\'t save uploaded file info');
+            // 파일 업로드
+            final success = await _fileRepository.uploadFile(
+                presignedUrl.presignedUrl, file);
+            if (!success) throw Exception('Upload to Storage Failed');
 
-        // currentUser의 프로필 url 업데이트
-        final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
+            // 업로드 파일 정보 저장
+            final saveSuccess = await _fileRepository
+                .saveUploadedFileInfo(presignedUrl.uploadedFileInfo);
+            if (!saveSuccess) {
+              throw Exception('Couldn\'t save uploaded file info');
+            }
 
-        // 사용자 정보 업데이트
-        _updateCurrentUser(
-          currentUser: _currentUser,
-          hasProfileImage: uploadedFileUrl.isNotEmpty,
-          profileImageUrl: uploadedFileUrl,
-        );
-      });
-    } catch (e) {
-      final errMessage = '####### 프로필 사진 업로드 실패: $e';
-      if (context.mounted) {
-        showCustomErrorSnack(context, errMessage);
-      } else {
-        debugPrint(errMessage);
-      }
-    }
+            // currentUser의 프로필 url 업데이트
+            final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
+
+            // 사용자 정보 업데이트
+            _updateCurrentUser(
+              currentUser: _currentUser,
+              hasProfileImage: uploadedFileUrl.isNotEmpty,
+              profileImageUrl: uploadedFileUrl,
+            );
+          });
+        });
+
+    // try {
+    //   state = const AsyncValue.loading();
+    //
+    //   if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+    //
+    //   final fileName = _getFileName(_currentUser, file);
+    //   state = await AsyncValue.guard(() async {
+    //     // presigned-url 발급
+    //     final presignedUrl = await _fileRepository.getPresignedUrl(fileName);
+    //     if (presignedUrl == null) throw Exception('Failed to get URL');
+    //
+    //     // 파일 업로드
+    //     final success =
+    //         await _fileRepository.uploadFile(presignedUrl.presignedUrl, file);
+    //     if (!success) throw Exception('Upload to Storage Failed');
+    //
+    //     // 업로드 파일 정보 저장
+    //     final saveSuccess = await _fileRepository
+    //         .saveUploadedFileInfo(presignedUrl.uploadedFileInfo);
+    //     if (!saveSuccess) throw Exception('Couldn\'t save uploaded file info');
+    //
+    //     // currentUser의 프로필 url 업데이트
+    //     final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
+    //
+    //     // 사용자 정보 업데이트
+    //     _updateCurrentUser(
+    //       currentUser: _currentUser,
+    //       hasProfileImage: uploadedFileUrl.isNotEmpty,
+    //       profileImageUrl: uploadedFileUrl,
+    //     );
+    //   });
+    // } on DioException catch (e) {
+    //   if (context.mounted) handleDioException(context, e, errMsgPrefix);
+    // } catch (e) {
+    //   if (context.mounted) basicExceptions(context, e, errMsgPrefix);
+    // }
   }
 
   Future<void> deleteProfileImage(BuildContext context) async {
-    try {
-      state = const AsyncValue.loading();
+    String errMsgPrefix = '프로필 사진 삭제 실패';
 
-      if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+    await runFutureWithExceptionHandler(
+        context: context,
+        errMsgPrefix: errMsgPrefix,
+        callBackFunction: () async {
+          state = const AsyncValue.loading();
 
-      state = await AsyncValue.guard(() async {
-        _fileRepository.updateFileAsDeleted(UploadedFileModel(
-          userId: _currentUser.userId,
-          fileName: '',
-          s3FilePath: '',
-          url: _currentUser.profileImageUrl,
-        ));
-      });
+          if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
 
-      // 사용자 정보 업데이트
-      _updateCurrentUser(
-        currentUser: _currentUser,
-        hasProfileImage: false,
-        profileImageUrl: '',
-      );
-    } catch (e) {
-      final errMessage = '####### 프로필 사진 삭제 실패: $e';
-      if (context.mounted) {
-        showCustomErrorSnack(context, errMessage);
-      } else {
-        debugPrint(errMessage);
-      }
-    }
+          state = await AsyncValue.guard(() async {
+            _fileRepository.updateFileAsDeleted(UploadedFileModel(
+              userId: _currentUser.userId,
+              fileName: '',
+              s3FilePath: '',
+              url: _currentUser.profileImageUrl,
+            ));
+          });
+
+          // 사용자 정보 업데이트
+          _updateCurrentUser(
+            currentUser: _currentUser,
+            hasProfileImage: false,
+            profileImageUrl: '',
+          );
+        });
+
+    // try {
+    //   state = const AsyncValue.loading();
+    //
+    //   if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+    //
+    //   state = await AsyncValue.guard(() async {
+    //     _fileRepository.updateFileAsDeleted(UploadedFileModel(
+    //       userId: _currentUser.userId,
+    //       fileName: '',
+    //       s3FilePath: '',
+    //       url: _currentUser.profileImageUrl,
+    //     ));
+    //   });
+    //
+    //   // 사용자 정보 업데이트
+    //   _updateCurrentUser(
+    //     currentUser: _currentUser,
+    //     hasProfileImage: false,
+    //     profileImageUrl: '',
+    //   );
+    // } on DioException catch (e) {
+    //   if (context.mounted) handleDioException(context, e, errMsgPrefix);
+    // } catch (e) {
+    //   if (context.mounted) basicExceptions(context, e, errMsgPrefix);
+    // }
   }
 }
 

@@ -10,7 +10,7 @@ import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/video/models/comment_model.dart';
 import 'package:snapster_app/features/video/repositories/comment_repository.dart';
 import 'package:snapster_app/features/video/repositories/video_repository.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 class CommentViewModel extends FamilyAsyncNotifier<void, String> {
   late final CommentRepository _commentRepository;

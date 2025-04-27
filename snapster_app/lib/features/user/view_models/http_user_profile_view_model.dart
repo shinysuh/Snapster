@@ -6,7 +6,7 @@ import 'package:snapster_app/features/authentication/providers/auth_status_provi
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/providers/user_profile_provider.dart';
 import 'package:snapster_app/features/user/repository/http_user_profile_repository.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
 
 class HttpUserProfileViewModel extends AsyncNotifier<void> {
   late final HttpUserProfileRepository _userProfileRepository;
@@ -20,18 +20,26 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
 
   Future<void> updateUserProfile(
       BuildContext context, AppUser updateUser) async {
-    try {
-      _userProfileRepository.updateUserProfile(updateUser);
-      // authStateProvider 업데이트
-      ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
-    } catch (e) {
-      final errMessage = '####### 사용자 정보 업데이트 실패: $e';
-      if (context.mounted) {
-        showCustomErrorSnack(context, errMessage);
-      } else {
-        debugPrint(errMessage);
-      }
-    }
+    String errMsgPrefix = '사용자 정보 업데이트 실패';
+
+    await runFutureWithExceptionHandler(
+        context: context,
+        errMsgPrefix: errMsgPrefix,
+        callBackFunction: () async {
+          _userProfileRepository.updateUserProfile(updateUser);
+          // authStateProvider 업데이트
+          ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
+        });
+
+    // try {
+    //   _userProfileRepository.updateUserProfile(updateUser);
+    //   // authStateProvider 업데이트
+    //   ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
+    // } on DioException catch (e) {
+    //   if (context.mounted) handleDioException(context, e, errMsgPrefix);
+    // } catch (e) {
+    //   if (context.mounted) basicExceptions(context, e, errMsgPrefix);
+    // }
   }
 }
 

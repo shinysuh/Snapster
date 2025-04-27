@@ -33,11 +33,11 @@ void showSessionErrorSnack(BuildContext context) {
 void showCustomErrorSnack(BuildContext context, String message) {
   ScaffoldMessenger.of(context).showSnackBar(
     SnackBar(
-      // action: SnackBarAction(
-      //   label: 'Got it',
-      //   onPressed: () {},
-      // ),
-      // showCloseIcon: true,
+      action: SnackBarAction(
+        label: 'Got it',
+        onPressed: () {},
+      ),
+      showCloseIcon: true,
       backgroundColor: const Color(0xFFCC726B),
       content: Text(message),
     ),

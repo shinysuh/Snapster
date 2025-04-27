@@ -10,7 +10,7 @@ import 'package:snapster_app/features/inbox/repositories/chatroom_repository.dar
 import 'package:snapster_app/features/inbox/repositories/message_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 enum MessageSenderType { me, partner, system }
 

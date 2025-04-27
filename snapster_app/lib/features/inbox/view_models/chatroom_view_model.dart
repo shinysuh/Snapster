@@ -17,7 +17,7 @@ import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class ChatroomViewModel extends AsyncNotifier<void> {

@@ -8,7 +8,7 @@ import 'package:snapster_app/features/authentication/services/i_auth_service.dar
 import 'package:snapster_app/features/authentication/view_models/signup_view_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 class UserViewModel extends AsyncNotifier<UserProfileModel> {
   late final UserRepository _userRepository;

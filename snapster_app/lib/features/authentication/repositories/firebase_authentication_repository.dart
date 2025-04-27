@@ -3,7 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class FirebaseAuthenticationRepository implements IAuthService {

@@ -4,9 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
-import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class LoginViewModel extends AsyncNotifier<void> {

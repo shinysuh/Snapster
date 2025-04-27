@@ -1,7 +1,5 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
-import 'package:http/http.dart' as http;
+import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -10,9 +8,9 @@ class HttpUserProfileService {
   static const _baseUrl = ApiInfo.userBaseUrl;
 
   final TokenStorageService _tokenStorageService;
+  final DioService _dioService;
 
-  HttpUserProfileService({TokenStorageService? tokenStorageService})
-      : _tokenStorageService = tokenStorageService ?? TokenStorageService();
+  HttpUserProfileService(this._tokenStorageService, this._dioService);
 
   Future<String?> _getToken() async {
     return await _tokenStorageService.readToken();
@@ -22,18 +20,24 @@ class HttpUserProfileService {
     validateUpdateFields(updateUser);
 
     final token = await _getToken();
-    final uri = Uri.parse('$_baseUrl/profile');
 
-    final res = await http.put(
-      uri,
+    final response = await _dioService.put(
+      uri: '$_baseUrl/profile',
       headers: ApiInfo.getBasicHeaderWithToken(token),
-      body: jsonEncode(updateUser),
+      body: updateUser,
     );
 
-    if (res.statusCode == 200) {
+    // final uri = Uri.parse('$_baseUrl/profile');
+    // final res = await http.put(
+    //   uri,
+    //   headers: ApiInfo.getBasicHeaderWithToken(token),
+    //   body: jsonEncode(updateUser),
+    // );
+
+    if (response.statusCode == 200) {
       debugPrint('사용자 정보 업데이트 성공');
     } else {
-      debugPrint('사용자 정보 업데이트 실패: ${res.statusCode} ${res.body}');
+      debugPrint('사용자 정보 업데이트 실패: ${response.statusCode} ${response.data}');
     }
   }
 

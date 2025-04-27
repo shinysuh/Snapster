@@ -7,7 +7,7 @@ import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
 import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:url_launcher/url_launcher.dart';
 

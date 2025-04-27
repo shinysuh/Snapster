@@ -9,7 +9,7 @@ import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/view_models/video_upload_view_model.dart';
 import 'package:snapster_app/features/video/views/widgets/video_detail_form.dart';
 import 'package:snapster_app/generated/l10n.dart';
-import 'package:snapster_app/utils/base_exception_handler.dart';
+import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';
 import 'package:video_player/video_player.dart';
 
