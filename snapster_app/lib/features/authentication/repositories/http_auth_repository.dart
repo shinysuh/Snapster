@@ -2,10 +2,12 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
+import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class AuthRepository {
@@ -98,5 +100,6 @@ class AuthRepository {
     await _tokenStorageService.deleteToken();
     setUser(null);
     ref.invalidate(authStateProvider);
+    ref.read(routerProvider).go(Splashscreen.routeURL);
   }
 }

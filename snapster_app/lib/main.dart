@@ -49,18 +49,6 @@ void main() async {
       child: SnapsterApp(),
     ),
   );
-
-  /* Provider 사용 시 */
-  // runApp(
-  //   MultiProvider(
-  //     providers: [
-  //       ChangeNotifierProvider(
-  //         create: (context) => PlaybackConfigViewModel(repository),
-  //       )
-  //     ],
-  //     child: const SnapsterApp(),
-  //   ),
-  // );
 }
 
 class SnapsterApp extends ConsumerStatefulWidget {
