@@ -31,14 +31,6 @@ class FileService {
         },
       );
 
-      // final response = await http.get(
-      //   Uri.parse(uri),
-      //   headers: {
-      //     Authorizations.headerKey:
-      //         '${Authorizations.headerValuePrefix} $token',
-      //   },
-      // );
-
       if (response.statusCode == 200) {
         return PresignedUrlModel.fromJson(response.data);
       } else {
@@ -64,12 +56,6 @@ class FileService {
         headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
         body: fileBytes,
       );
-
-      // final response = await http.put(
-      //   Uri.parse(presignedUrl),
-      //   headers: {'Content-Type': _getContentTypeByFileExtension(filePath)},
-      //   body: fileBytes,
-      // );
 
       if (response.statusCode == 200) {
         return true;
@@ -114,12 +100,6 @@ class FileService {
       headers: ApiInfo.getBasicHeaderWithToken(token),
       body: fileInfo.toJson(),
     );
-
-    // final response = await http.put(
-    //   Uri.parse('$_baseUrl/delete'),
-    //   headers: ApiInfo.getBasicHeaderWithToken(token),
-    //   body: jsonEncode(fileInfo),
-    // );
 
     if (response.statusCode == 200) {
       return true;

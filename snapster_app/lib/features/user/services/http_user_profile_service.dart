@@ -27,13 +27,6 @@ class HttpUserProfileService {
       body: updateUser,
     );
 
-    // final uri = Uri.parse('$_baseUrl/profile');
-    // final res = await http.put(
-    //   uri,
-    //   headers: ApiInfo.getBasicHeaderWithToken(token),
-    //   body: jsonEncode(updateUser),
-    // );
-
     if (response.statusCode == 200) {
       debugPrint('사용자 정보 업데이트 성공');
     } else {

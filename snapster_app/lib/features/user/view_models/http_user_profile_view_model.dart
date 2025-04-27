@@ -20,26 +20,14 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
 
   Future<void> updateUserProfile(
       BuildContext context, AppUser updateUser) async {
-    String errMsgPrefix = '사용자 정보 업데이트 실패';
-
     await runFutureWithExceptionHandler(
         context: context,
-        errMsgPrefix: errMsgPrefix,
+        errMsgPrefix: '사용자 정보 업데이트 오류',
         callBackFunction: () async {
           _userProfileRepository.updateUserProfile(updateUser);
           // authStateProvider 업데이트
           ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
         });
-
-    // try {
-    //   _userProfileRepository.updateUserProfile(updateUser);
-    //   // authStateProvider 업데이트
-    //   ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
-    // } on DioException catch (e) {
-    //   if (context.mounted) handleDioException(context, e, errMsgPrefix);
-    // } catch (e) {
-    //   if (context.mounted) basicExceptions(context, e, errMsgPrefix);
-    // }
   }
 }
 
