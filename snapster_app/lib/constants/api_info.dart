@@ -15,7 +15,7 @@ class ApiInfo {
   static Map<String, String> getBasicHeaderWithToken(String? token) {
     return {
       Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',
-      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.contentTypeHeader: 'application/json; charset=utf-8',
     };
   }
 }

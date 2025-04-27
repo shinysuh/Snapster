@@ -1,3 +1,5 @@
+import 'package:snapster_app/utils/text_util.dart';
+
 class AppUser {
   final String userId;
   final String username;
@@ -38,8 +40,8 @@ class AppUser {
         email = json['email'] ?? '',
         profileImageUrl = json['profileImageUrl'] ?? '',
         displayName = json['displayName'] ?? '',
-        bio = json['bio'] ?? '',
-        link = json['link'] ?? '',
+        bio = json['bio'],
+        link = json['link'],
         birthday = json['birthday'] ?? '',
         hasProfileImage = json['hasProfileImage'] ?? false;
 
@@ -50,8 +52,8 @@ class AppUser {
       'email': email,
       'profileImageUrl': profileImageUrl,
       'displayName': displayName,
-      'bio': bio,
-      'link': link,
+      'bio': escapeSpecialCharacters(bio),
+      'link': escapeSpecialCharacters(link),
       'birthday': birthday,
       'hasProfileImage': hasProfileImage,
     };

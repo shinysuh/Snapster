@@ -3,9 +3,9 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:snapster_app/utils/text_util.dart';
 
 class HttpAuthService implements IAuthService {
   static const _baseUrl = ApiInfo.authBaseUrl;
@@ -62,12 +62,14 @@ class HttpAuthService implements IAuthService {
   Future<AppUser> getUserFromToken(String token) async {
     final res = await _client.get(
       Uri.parse('$_baseUrl/me'),
-      headers: {
-        Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token'
-      },
+      headers: ApiInfo.getBasicHeaderWithToken(token),
     );
     if (res.statusCode == 200) {
-      return AppUser.fromJson(jsonDecode(res.body));
+      return AppUser.fromJson(
+        jsonDecode(
+          getUtfDecodedBody(res.bodyBytes),
+        ),
+      );
     } else {
       throw Exception('Fetch user failed: ${res.body}');
     }
