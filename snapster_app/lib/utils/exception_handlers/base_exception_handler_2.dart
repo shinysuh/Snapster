@@ -2,8 +2,13 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
+void sessionExceptionHandler(BuildContext context, Object e, String prefix) {
+  // TODO - 토큰 이상 에러 발생 시(백엔드), 토큰 삭제 후 홈으로 redirect
+}
+
 void basicExceptions(BuildContext context, Object e, String prefix) {
   String errMessage = '####### $prefix :: $e';
+  sessionExceptionHandler(context, e, prefix);
   showCustomErrorSnack(context, errMessage);
   debugPrint(errMessage);
 }
