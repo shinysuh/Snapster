@@ -16,19 +16,25 @@ import java.time.LocalDateTime;
 public class UploadedFile {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private Long userId;
+
     private String fileName;        // 원본 파일명
+
     @Column(name = "s3_file_path", nullable = false)
     private String s3FilePath;
+
     private String url;     // S3 Public URL 또는 Signed URL
+
+    private String type;
 
     private LocalDateTime uploadedAt;
 
     @JsonProperty("isPrivate")
     private boolean isPrivate;
+
     @JsonProperty("isDeleted")
     private boolean isDeleted;
 
@@ -45,6 +51,7 @@ public class UploadedFile {
         this.fileName = dto.getFileName();
         this.s3FilePath = dto.getS3FilePath();
         this.url = dto.getUrl();
+        this.type = dto.getType();
         this.uploadedAt = LocalDateTime.now();
         this.isPrivate = dto.isPrivate();
         this.isDeleted = false;

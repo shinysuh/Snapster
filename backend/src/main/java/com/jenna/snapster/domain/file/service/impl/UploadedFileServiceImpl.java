@@ -60,7 +60,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     }
 
     private void checkAndUpdateProfile(UserProfile profile, UploadedFileDto uploadedFile) {
-        if (uploadedFile.getS3FilePath().contains("/profiles/")) {
+        if (uploadedFile.getS3FilePath().contains("/profile/")) {
             userService.updateUserProfileImage(profile, true, uploadedFile.getUrl());
         }
     }

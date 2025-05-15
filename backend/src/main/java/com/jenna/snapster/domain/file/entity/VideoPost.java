@@ -30,20 +30,26 @@ public class VideoPost {
 
     private String description;
 
-    private String fileUrl;
+    private String tags;
 
-    private String thumbnailUrl;
+    @Transient
+    private List<String> tagList;
+
+    // 비디오 파일 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "video_file_id")
+    private UploadedFile videoFile;
+
+    // 썸네일 파일 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "thumbnail_file_id")
+    private UploadedFile thumbnailFile;
 
     private Long likes;
 
     private Long comments;
 
     private LocalDateTime createdAt;
-
-    private String tags;
-
-    @Transient
-    private List<String> tagList;
 
     @PostLoad
     private void fillTagList() {

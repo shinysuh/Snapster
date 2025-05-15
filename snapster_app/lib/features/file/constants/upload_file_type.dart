@@ -1,8 +1,8 @@
-class UploadFolder {
-  static const profile = 'profiles';
-  static const thumbnail = 'thumbnails';
-  static const post = 'posts';
-  static const story = 'stories';
+class UploadFileType {
+  static const profile = 'profile';
+  static const thumbnail = 'thumbnail';
+  static const video = 'video';
+  static const story = 'story';
 
   static String generateProfileFileName(String fileName) {
     return '$profile/$fileName';
@@ -13,7 +13,7 @@ class UploadFolder {
   }
 
   static String generatePostFileName(String fileName) {
-    return '$post/$fileName';
+    return '$video/$fileName';
   }
 
   static String generateStoryFileName(String fileName) {

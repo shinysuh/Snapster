@@ -47,8 +47,8 @@ public class VideoPostDto {
             .orElse("Unknown");
         this.title = post.getTitle();
         this.description = post.getDescription();
-        this.fileUrl = post.getFileUrl();
-        this.thumbnailUrl = post.getThumbnailUrl();
+        this.fileUrl = post.getVideoFile().getUrl();
+        this.thumbnailUrl = post.getThumbnailFile().getUrl();
         this.tags = post.getTagList();
         this.likes = post.getLikes();
         this.comments = post.getComments();

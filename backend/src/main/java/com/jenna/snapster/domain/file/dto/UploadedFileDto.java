@@ -16,6 +16,7 @@ public class UploadedFileDto {
     private String fileName;
     private String s3FilePath;
     private String url;
+    private String type;
 
     @JsonProperty("isPrivate")
     private boolean isPrivate;

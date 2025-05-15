@@ -4,6 +4,7 @@ class UploadedFileModel {
   final String fileName;
   final String s3FilePath;
   final String url;
+  final String? type;
   final bool? isPrivate;
   final bool? isDeleted;
   final String? uploadedAt;
@@ -14,6 +15,7 @@ class UploadedFileModel {
     required this.fileName,
     required this.s3FilePath,
     required this.url,
+    this.type,
     this.isPrivate,
     this.isDeleted,
     this.uploadedAt,
@@ -25,6 +27,7 @@ class UploadedFileModel {
       'fileName': fileName,
       's3FilePath': s3FilePath,
       'url': url,
+      'type': type ?? '',
       'isPrivate': isPrivate ?? false, // null일 경우 false 처리
     };
   }
@@ -35,6 +38,7 @@ class UploadedFileModel {
         fileName = json['fileName'],
         s3FilePath = json['s3FilePath'],
         url = json['url'],
+        type = json['type'],
         isPrivate = json['isPrivate'],
         isDeleted = json['isDeleted'],
         uploadedAt = json['uploadedAt'];
@@ -44,12 +48,14 @@ class UploadedFileModel {
     String? fileName,
     String? s3FilePath,
     String? url,
+    String? type,
   }) {
     return UploadedFileModel(
       userId: userId ?? this.userId,
       fileName: fileName ?? this.fileName,
       s3FilePath: s3FilePath ?? this.s3FilePath,
       url: url ?? this.url,
+      type: type ?? this.type,
     );
   }
 }

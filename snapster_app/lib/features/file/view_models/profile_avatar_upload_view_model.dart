@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/file/constants/upload_folder.dart';
+import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
@@ -23,7 +23,7 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
 
   String _getFileName(AppUser currentUser, File file) {
     final fileExtension = file.path.split('.').last;
-    return UploadFolder.generateProfileFileName(
+    return UploadFileType.generateProfileFileName(
         '${currentUser.userId}.$fileExtension');
   }
 
@@ -65,8 +65,11 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
             if (!success) throw Exception('Upload to Storage Failed');
 
             // 업로드 파일 정보 저장
-            final saveSuccess = await _fileRepository
-                .saveUploadedFileInfo(presignedUrl.uploadedFileInfo);
+            final saveSuccess = await _fileRepository.saveUploadedFileInfo(
+              presignedUrl.uploadedFileInfo.copyWith(
+                type: UploadFileType.profile,
+              ),
+            );
             if (!saveSuccess) {
               throw Exception('Couldn\'t save uploaded file info');
             }

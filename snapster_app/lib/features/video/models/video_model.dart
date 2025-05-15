@@ -2,7 +2,7 @@ class VideoModel {
   final String id;
   final String title;
   final String description;
-  final List<String> tags;
+  final List<dynamic> tags;
   final String fileUrl;
   final String thumbnailURL;
   final String userDisplayName;
