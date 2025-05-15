@@ -2,11 +2,11 @@ class VideoModel {
   final String id;
   final String title;
   final String description;
-  final List<dynamic> tags;
+  final List<String> tags;
   final String fileUrl;
   final String thumbnailURL;
-  final String uploader;
-  final String uploaderUid;
+  final String userDisplayName;
+  final String userId;
   final int likes;
   final int comments;
   final int createdAt;
@@ -18,8 +18,8 @@ class VideoModel {
     required this.tags,
     required this.fileUrl,
     required this.thumbnailURL,
-    required this.uploader,
-    required this.uploaderUid,
+    required this.userDisplayName,
+    required this.userId,
     required this.likes,
     required this.comments,
     required this.createdAt,
@@ -33,8 +33,8 @@ class VideoModel {
       'tags': tags,
       'fileUrl': fileUrl,
       'thumbnailURL': thumbnailURL,
-      'uploader': uploader,
-      'uploaderUid': uploaderUid,
+      'uploader': userDisplayName,
+      'uploaderUid': userId,
       'likes': likes,
       'comments': comments,
       'createdAt': createdAt,
@@ -50,8 +50,8 @@ class VideoModel {
         tags = json['tags'],
         fileUrl = json['fileUrl'],
         thumbnailURL = json['thumbnailURL'],
-        uploader = json['uploader'],
-        uploaderUid = json['uploaderUid'],
+        userDisplayName = json['uploader'],
+        userId = json['uploaderUid'],
         likes = json['likes'],
         comments = json['comments'],
         createdAt = json['createdAt'];
@@ -61,8 +61,8 @@ class VideoModel {
         tags = [],
         fileUrl = '',
         thumbnailURL = '',
-        uploader = '',
-        uploaderUid = '',
+        userDisplayName = '',
+        userId = '',
         likes = 0,
         comments = 0,
         createdAt = 0;

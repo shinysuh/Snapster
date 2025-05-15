@@ -235,7 +235,7 @@ class VideoPostState extends ConsumerState<VideoPost>
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '@${widget.videoData.uploader}',
+              '@${widget.videoData.userDisplayName}',
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: Sizes.size20,
@@ -272,7 +272,7 @@ class VideoPostState extends ConsumerState<VideoPost>
               backgroundColor: Colors.black,
               foregroundColor: Colors.white,
               foregroundImage: getProfileImgByUserId(
-                widget.videoData.uploaderUid,
+                widget.videoData.userId,
                 false,
               ),
             ),
