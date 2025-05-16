@@ -6,7 +6,7 @@ class VideoPostModel {
   final String videoId;
   final String videoUrl;
   final String thumbnailId;
-  final String thumbnailURL;
+  final String thumbnailUrl;
   final String userDisplayName;
   final String userId;
   final int likes;
@@ -21,7 +21,7 @@ class VideoPostModel {
     required this.videoId,
     required this.videoUrl,
     required this.thumbnailId,
-    required this.thumbnailURL,
+    required this.thumbnailUrl,
     required this.userDisplayName,
     required this.userId,
     required this.likes,
@@ -38,9 +38,9 @@ class VideoPostModel {
       'videoId': videoId,
       'videoUrl': videoUrl,
       'thumbnailId': thumbnailId,
-      'thumbnailURL': thumbnailURL,
-      'uploader': userDisplayName,
-      'uploaderUid': userId,
+      'thumbnailUrl': thumbnailUrl,
+      'userDisplayName': userDisplayName,
+      'userId': userId,
       'likes': likes,
       'comments': comments,
       'createdAt': createdAt,
@@ -60,9 +60,9 @@ class VideoPostModel {
         videoId = json['videoId'],
         videoUrl = json['videoUrl'],
         thumbnailId = json['thumbnailId'],
-        thumbnailURL = json['thumbnailURL'],
-        userDisplayName = json['uploader'],
-        userId = json['uploaderUid'],
+        thumbnailUrl = json['thumbnailUrl'],
+        userDisplayName = json['userDisplayName'],
+        userId = json['userId'],
         likes = json['likes'],
         comments = json['comments'],
         createdAt = json['createdAt'];
@@ -73,7 +73,7 @@ class VideoPostModel {
         videoId = '0',
         videoUrl = '',
         thumbnailId = '0',
-        thumbnailURL = '',
+        thumbnailUrl = '',
         userDisplayName = '',
         userId = '',
         likes = 0,

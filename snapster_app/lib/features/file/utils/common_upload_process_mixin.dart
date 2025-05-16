@@ -50,8 +50,8 @@ mixin CommonUploadProcessHandlerMixin on AsyncNotifier<void> {
     VideoPostModel videoInfo,
   ) async {
     final saveSuccess = await fileRepository.saveVideoFileInfo(
-      videoInfo,
-      presignedUrl.uploadedFileInfo.copyWith(
+      videoInfo: videoInfo,
+      uploadedFileInfo: presignedUrl.uploadedFileInfo.copyWith(
         type: UploadFileType.video,
       ),
     );

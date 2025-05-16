@@ -13,4 +13,9 @@ class UploadedVideoModel {
   UploadedVideoModel.fromJson(Map<String, dynamic> json)
       : videoInfo = VideoPostModel.fromJson(json: json['videoInfo']),
         uploadedFileInfo = UploadedFileModel.fromJson(json['uploadedFileInfo']);
+
+  Map<String, dynamic> toJson() => {
+        "videoInfo": videoInfo.toJson(),
+        "uploadedFileInfo": uploadedFileInfo.toJson(),
+      };
 }

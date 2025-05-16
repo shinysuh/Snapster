@@ -22,10 +22,10 @@ class FileRepository {
     return await _fileService.saveUploadedFileInfo(fileInfo);
   }
 
-  Future<bool> saveVideoFileInfo(
-    VideoPostModel videoInfo,
-    UploadedFileModel uploadedFileInfo,
-  ) async {
+  Future<bool> saveVideoFileInfo({
+    required VideoPostModel videoInfo,
+    required UploadedFileModel uploadedFileInfo,
+  }) async {
     return await _fileService.saveVideoFileInfo(videoInfo, uploadedFileInfo);
   }
 

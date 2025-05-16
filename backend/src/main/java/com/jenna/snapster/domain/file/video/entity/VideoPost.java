@@ -57,12 +57,13 @@ public class VideoPost {
 
     public VideoPost(VideoPostDto dto) {
         this.user = User.builder().id(dto.getUserId()).build();
-        this.user.getProfile().setDisplayName(dto.getUserDisplayName());
         this.title = dto.getTitle();
         this.description = dto.getDescription();
         this.tagList = dto.getTags();
         this.videoFile = UploadedFile.builder().id(dto.getVideoId()).build();
-        this.thumbnailFile = UploadedFile.builder().id(dto.getThumbnailId()).build();
+        this.thumbnailFile = dto.getThumbnailId() != null && dto.getThumbnailId() != 0
+            ? UploadedFile.builder().id(dto.getThumbnailId()).build()
+            : null;
         this.likes = dto.getLikes();
         this.comments = dto.getComments();
         this.createdAt = dto.getCreatedAt();

@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/video/view_models/video_upload_view_model.dart';
+import 'package:snapster_app/features/file/view_models/http_video_upload_view_model.dart';
 import 'package:snapster_app/features/video/views/widgets/video_detail_form.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
@@ -109,9 +109,9 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
       return;
     }
 
-    ref.read(videoUploadProvider.notifier).uploadVideo(
+    ref.read(httpVideoUploadProvider.notifier).uploadVideo(
           context: context,
-          video: File(widget.video.path),
+          file: File(widget.video.path),
           title: videoDetail[title] ?? '',
           description: videoDetail[description] ?? '',
         );
@@ -119,7 +119,7 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
 
   @override
   Widget build(BuildContext context) {
-    var isLoading = ref.watch(videoUploadProvider).isLoading;
+    var isLoading = ref.watch(httpVideoUploadProvider).isLoading;
 
     return GestureDetector(
       onTap: () => onTapOutsideAndDismissKeyboard(context),

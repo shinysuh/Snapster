@@ -34,11 +34,9 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
           state = await AsyncValue.guard(() async {
             // presigned-url 발급
             final presignedUrl = await getPresignedUrl(fileName);
-            debugPrint("############ presignedUrl");
 
             // 파일 업로드
             await uploadFile(presignedUrl, file);
-            debugPrint("############ uploadFile");
 
             // 업로드 비디오 파일 정보 저장
             await saveVideoFileInfo(
@@ -51,13 +49,18 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                   videoId: '0',
                   videoUrl: presignedUrl.uploadedFileInfo.url,
                   thumbnailId: '0',
-                  thumbnailURL: '',
+                  thumbnailUrl: '',
                   userDisplayName: currentUser?.displayName ?? 'unknown',
                   userId: presignedUrl.uploadedFileInfo.userId,
                   likes: 0,
                   comments: 0,
                   createdAt: presignedUrl.uploadedFileInfo.uploadedAt ?? '',
                 ));
+
+            if (context.mounted) {
+              context.pop();
+              context.pop();
+            }
           });
         });
   }
