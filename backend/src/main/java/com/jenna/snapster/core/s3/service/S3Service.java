@@ -3,12 +3,20 @@ package com.jenna.snapster.core.s3.service;
 import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
+import com.jenna.snapster.core.exception.ErrorCode;
+import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.core.s3.PresignedUrlResponseDto;
 import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.ContentType;
+import org.apache.http.entity.FileEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.util.Date;
 
 @Service
@@ -53,6 +61,20 @@ public class S3Service {
             .presignedUrl(amazonS3.generatePresignedUrl(generatePresignedUrlRequest).toString())
             .uploadedFileInfo(uploadedFileDto)
             .build();
+    }
+
+    public UploadedFileDto uploadThumbnailToS3(Long userId, File thumbnail, String s3Path) {
+        PresignedUrlResponseDto presignedUrlResponseDto = this.generatePresignedUrl(userId, s3Path);
+
+        try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+            HttpPut putRequest = new HttpPut(presignedUrlResponseDto.getPresignedUrl());
+            putRequest.setEntity(new FileEntity(thumbnail));
+            putRequest.setHeader("Content-Type", ContentType.IMAGE_JPEG.getMimeType());
+            httpClient.execute(putRequest);
+        } catch (Exception e) {
+            throw new GlobalException(ErrorCode.FAILED_TO_UPLOAD_THUMBNAIL);
+        }
+        return presignedUrlResponseDto.getUploadedFileInfo();
     }
 
     private String getFileUrl(String s3FilePath) {

@@ -48,7 +48,8 @@ public enum ErrorCode {
     // file
     NO_SUCH_FILE("FILE001", "존재하지 않는 파일입니다.", BAD_REQUEST),
     FILE_DELETE_ACTION_UNAUTHORIZED("FILE002", "해당 파일을 삭제할 권한이 없습니다.", UNAUTHORIZED),
-
+    FAILED_TO_CREAT_THUMBNAIL("FILE003", "썸네일 생성 도중 오류가 발생했습니다", INTERNAL_SERVER_ERROR),
+    FAILED_TO_UPLOAD_THUMBNAIL("FILE004", "썸네일 업로드 도중 오류가 발생했습니다", INTERNAL_SERVER_ERROR),
 
     ;
 

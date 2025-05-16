@@ -68,4 +68,15 @@ public class VideoPostDto {
         this.comments = post.getComments();
         this.createdAt = post.getCreatedAt();
     }
+
+    public void setVideoFileInfo(UploadedFile videoFileInfo) {
+        this.videoId = videoFileInfo.getId();
+        this.videoUrl = videoFileInfo.getUrl();
+        this.createdAt = videoFileInfo.getUploadedAt();
+    }
+
+    public void setThumbnailFileInfo(UploadedFile thumbnailFileInfo) {
+        this.thumbnailId = thumbnailFileInfo.getId();
+        this.thumbnailUrl = thumbnailFileInfo.getUrl();
+    }
 }
