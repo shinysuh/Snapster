@@ -3,7 +3,9 @@ import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/presigned_url_model.dart';
+import 'package:snapster_app/features/file/models/video_post_model.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -30,7 +32,9 @@ mixin CommonUploadProcessHandlerMixin on AsyncNotifier<void> {
   }
 
   Future<void> saveUploadedFileInfo(
-      PresignedUrlModel presignedUrl, String uploadType) async {
+    PresignedUrlModel presignedUrl,
+    String uploadType,
+  ) async {
     final saveSuccess = await fileRepository.saveUploadedFileInfo(
       presignedUrl.uploadedFileInfo.copyWith(
         type: uploadType,
@@ -38,6 +42,21 @@ mixin CommonUploadProcessHandlerMixin on AsyncNotifier<void> {
     );
     if (!saveSuccess) {
       throw Exception('Couldn\'t save uploaded file info');
+    }
+  }
+
+  Future<void> saveVideoFileInfo(
+    PresignedUrlModel presignedUrl,
+    VideoPostModel videoInfo,
+  ) async {
+    final saveSuccess = await fileRepository.saveVideoFileInfo(
+      videoInfo,
+      presignedUrl.uploadedFileInfo.copyWith(
+        type: UploadFileType.video,
+      ),
+    );
+    if (!saveSuccess) {
+      throw Exception('Couldn\'t save video file info');
     }
   }
 }

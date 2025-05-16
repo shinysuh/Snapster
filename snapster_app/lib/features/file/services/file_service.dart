@@ -7,6 +7,8 @@ import 'package:snapster_app/features/authentication/services/token_storage_serv
 import 'package:snapster_app/features/file/constants/file_content_type.dart';
 import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
+import 'package:snapster_app/features/file/models/uploaded_video_model.dart';
+import 'package:snapster_app/features/file/models/video_post_model.dart';
 
 class FileService {
   static const _baseUrl = ApiInfo.fileBaseUrl;
@@ -69,21 +71,37 @@ class FileService {
     final token = await _tokenStorageService.readToken();
 
     final response = await _dioService.post(
-      uri: _baseUrl,
+      uri: '$_baseUrl/upload',
       headers: ApiInfo.getBasicHeaderWithToken(token),
       body: fileInfo,
     );
-
-    // final response = await http.post(
-    //   Uri.parse(_baseUrl),
-    //   headers: ApiInfo.getBasicHeaderWithToken(token),
-    //   body: jsonEncode(fileInfo.toJson()),
-    // );
 
     if (response.statusCode == 200) {
       return true;
     } else {
       debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.data}');
+      return false;
+    }
+  }
+
+  Future<bool> saveVideoFileInfo(
+    VideoPostModel videoInfo,
+    UploadedFileModel uploadedFileInfo,
+  ) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.post(
+        uri: '$_baseUrl/video',
+        headers: ApiInfo.getBasicHeaderWithToken(token),
+        body: UploadedVideoModel(
+          videoInfo: videoInfo,
+          uploadedFileInfo: uploadedFileInfo,
+        ));
+
+    if (response.statusCode == 200) {
+      return true;
+    } else {
+      debugPrint('비디오 파일 정보 저장 실패: ${response.statusCode} ${response.data}');
       return false;
     }
   }
