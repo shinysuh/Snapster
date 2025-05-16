@@ -3,11 +3,12 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:go_router/go_router.dart';
+import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/video_post_model.dart';
 import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
+import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class HttpVideoUploadViewModel extends AsyncNotifier<void>
     with CommonUploadProcessHandlerMixin {
@@ -58,8 +59,9 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                 ));
 
             if (context.mounted) {
-              context.pop();
-              context.pop();
+              goRouteReplacementRoute(
+                  context: context,
+                  routeURL: MainNavigationScreen.homeRouteURL);
             }
           });
         });
