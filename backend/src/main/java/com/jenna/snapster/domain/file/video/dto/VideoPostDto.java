@@ -56,7 +56,7 @@ public class VideoPostDto {
         this.videoUrl = post.getVideoFile().getUrl();
 //        this.thumbnailId = post.getThumbnailFile().getId(); // TODO - 썸네일 생성 처리 후 적
         // 개발용 null-safe
-        this.thumbnailId = Optional.of(post.getThumbnailFile())
+        this.thumbnailId = Optional.ofNullable(post.getThumbnailFile())
             .map(UploadedFile::getId)
             .orElse(null);
 //        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
