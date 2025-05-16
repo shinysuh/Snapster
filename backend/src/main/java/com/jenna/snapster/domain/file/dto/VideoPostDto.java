@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.file.dto;
 
+import com.jenna.snapster.domain.file.entity.UploadedFile;
 import com.jenna.snapster.domain.file.entity.VideoPost;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import lombok.AllArgsConstructor;
@@ -48,7 +49,11 @@ public class VideoPostDto {
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.fileUrl = post.getVideoFile().getUrl();
-        this.thumbnailUrl = post.getThumbnailFile().getUrl();
+//        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
+        // 개발용 null-safe
+        this.thumbnailUrl = Optional.ofNullable(post.getThumbnailFile())
+            .map(UploadedFile::getUrl)
+            .orElse(null);
         this.tags = post.getTagList();
         this.likes = post.getLikes();
         this.comments = post.getComments();

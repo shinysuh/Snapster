@@ -2,11 +2,9 @@ package com.jenna.snapster.domain.feed.user.controller;
 
 import com.jenna.snapster.domain.feed.user.service.UserFeedService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,10 +12,32 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserFeedController {
 
     private final UserFeedService userFeedService;
+    private final CacheManager cacheManager;
 
-    @GetMapping("/{userId}")
-    public ResponseEntity<?> getUserFeeds(@PathVariable Long userId) {
-        return ResponseEntity.ok(userFeedService.getUserFeeds(userId));
+    @GetMapping("/all/{userId}")
+    public ResponseEntity<?> getAllUserFeeds(@PathVariable Long userId) {
+        // 사용자가 포스팅한 게시물 전체
+        return ResponseEntity.ok(userFeedService.getAllUserFeeds(userId));
     }
+
+    @GetMapping("/public/{userId}")
+    public ResponseEntity<?> getPublicUserFeeds(@PathVariable Long userId) {
+        // 공개된 피드
+        return ResponseEntity.ok(userFeedService.getPublicUserFeeds(userId));
+    }
+
+    @GetMapping("/private/{userId}")
+    public ResponseEntity<?> getPrivateUserFeeds(@PathVariable Long userId) {
+        // 보관된 피드
+        return ResponseEntity.ok(userFeedService.getPrivateUserFeeds(userId));
+    }
+
+    @DeleteMapping("/cache/{type}/{userId}")
+    public ResponseEntity<?> evictUserFeedCache(@PathVariable String type, @PathVariable Long userId) {
+        cacheManager.getCache("userFeeds::" + type)
+            .evictIfPresent(userId);
+        return ResponseEntity.ok("");
+    }
+
 
 }

@@ -1,10 +1,14 @@
 package com.jenna.snapster.domain.feed.user.service;
 
-import com.jenna.snapster.domain.file.entity.UploadedFile;
+import com.jenna.snapster.domain.file.dto.VideoPostDto;
 
 import java.util.List;
 
 public interface UserFeedService {
 
-    List<UploadedFile> getUserFeeds(Long userId);
+    List<VideoPostDto> getAllUserFeeds(Long userId);
+
+    List<VideoPostDto> getPublicUserFeeds(Long userId);
+
+    List<VideoPostDto> getPrivateUserFeeds(Long userId);
 }

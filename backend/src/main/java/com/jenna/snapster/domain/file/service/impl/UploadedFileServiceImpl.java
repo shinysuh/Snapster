@@ -33,12 +33,12 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     @Transactional(readOnly = true)
     @Override
     public List<UploadedFile> getAllFilesByUserId(Long userId) {
-        return uploadedFileRepository.findAllByUserIdAndIsDeletedFalse(userId);
+        return uploadedFileRepository.findAllByUserIdAndIsDeletedFalseOrderByUploadedAtDesc(userId);
     }
 
     @Override
     public UploadedFile getOneFileByFileIdAndUserId(Long fileId, Long userId) {
-        return uploadedFileRepository.findAllByIdAndUserIdAndIsDeletedFalse(fileId, userId)
+        return uploadedFileRepository.findByIdAndUserIdAndIsDeletedFalse(fileId, userId)
             .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
     }
 

@@ -7,9 +7,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UploadedFileRepository extends JpaRepository<UploadedFile, Long> {
-    List<UploadedFile> findAllByUserIdAndIsDeletedFalse(Long userId);
+    List<UploadedFile> findAllByUserIdAndIsDeletedFalseOrderByUploadedAtDesc(Long userId);
 
-    Optional<UploadedFile> findAllByIdAndUserIdAndIsDeletedFalse(Long id, Long userId);
+    Optional<UploadedFile> findByIdAndUserIdAndIsDeletedFalse(Long id, Long userId);
 
     Optional<UploadedFile> findByUrl(String url);
+
+    List<UploadedFile> findByUserIdAndTypeAndIsDeletedFalseOrderByUploadedAtDesc(Long userId, String type);
+
+    List<UploadedFile> findByUserIdAndTypeAndIsPrivateFalseAndIsDeletedFalseOrderByUploadedAtDesc(Long userId, String typ);
+
+    List<UploadedFile> findByUserIdAndTypeAndIsPrivateTrueAndIsDeletedFalseOrderByUploadedAtDesc(Long userId, String typ);
 }
