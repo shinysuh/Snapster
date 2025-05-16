@@ -48,11 +48,8 @@ class VideoPostModel {
   }
 
   VideoPostModel.fromJson({
-    String? videoId,
     required Map<String, dynamic> json,
-  })  :
-        // video_posts 에 저장된 id
-        id = videoId ?? json['videoId'],
+  })  : id = json['id'].toString(),
         title = json['title'],
         description = json['description'],
         tags = json['tags'],
