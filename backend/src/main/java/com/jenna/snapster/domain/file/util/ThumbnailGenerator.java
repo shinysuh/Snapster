@@ -21,7 +21,7 @@ public class ThumbnailGenerator {
                 "-i",
                 inputUrl,
                 "-ss",
-                "00:00:01.000",
+                "00:00:00.010",
                 "-vframes",
                 "1",
                 "-vf",
