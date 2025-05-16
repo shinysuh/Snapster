@@ -6,25 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
-import 'package:snapster_app/features/file/providers/file_provider.dart';
-import 'package:snapster_app/features/file/repositories/file_repository.dart';
+import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
 
-class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
-  late final FileRepository _fileRepository;
-  late final AppUser? _currentUser;
-
+class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
+    with CommonUploadProcessHandlerMixin {
   @override
   FutureOr<void> build() {
-    _fileRepository = ref.read(fileRepositoryProvider);
-    _currentUser = ref.watch(authStateProvider).user;
-  }
-
-  String _getFileName(AppUser currentUser, File file) {
-    final fileExtension = file.path.split('.').last;
-    return UploadFileType.generateProfileFileName(
-        '${currentUser.userId}.$fileExtension');
+    initCommonUpload(ref); // mixin 초기화
   }
 
   void _updateCurrentUser({
@@ -50,36 +40,25 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
         callBackFunction: () async {
           state = const AsyncValue.loading();
 
-          if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+          if (currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
 
-          final fileName = _getFileName(_currentUser, file);
+          final fileName = UploadFileType.generateProfileFilePath(file);
           state = await AsyncValue.guard(() async {
             // presigned-url 발급
-            final presignedUrl =
-                await _fileRepository.getPresignedUrl(fileName);
-            if (presignedUrl == null) throw Exception('Failed to get URL');
+            final presignedUrl = await getPresignedUrl(fileName);
 
             // 파일 업로드
-            final success = await _fileRepository.uploadFile(
-                presignedUrl.presignedUrl, file);
-            if (!success) throw Exception('Upload to Storage Failed');
+            await uploadFile(presignedUrl, file);
 
             // 업로드 파일 정보 저장
-            final saveSuccess = await _fileRepository.saveUploadedFileInfo(
-              presignedUrl.uploadedFileInfo.copyWith(
-                type: UploadFileType.profile,
-              ),
-            );
-            if (!saveSuccess) {
-              throw Exception('Couldn\'t save uploaded file info');
-            }
+            await saveUploadedFileInfo(presignedUrl, UploadFileType.profile);
 
             // currentUser의 프로필 url 업데이트
             final uploadedFileUrl = presignedUrl.uploadedFileInfo.url;
 
             // 사용자 정보 업데이트
             _updateCurrentUser(
-              currentUser: _currentUser,
+              currentUser: currentUser!,
               hasProfileImage: uploadedFileUrl.isNotEmpty,
               profileImageUrl: uploadedFileUrl,
             );
@@ -94,20 +73,20 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void> {
         callBackFunction: () async {
           state = const AsyncValue.loading();
 
-          if (_currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
+          if (currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
 
           state = await AsyncValue.guard(() async {
-            _fileRepository.updateFileAsDeleted(UploadedFileModel(
-              userId: _currentUser.userId,
+            fileRepository.updateFileAsDeleted(UploadedFileModel(
+              userId: currentUser!.userId,
               fileName: '',
               s3FilePath: '',
-              url: _currentUser.profileImageUrl,
+              url: currentUser!.profileImageUrl,
             ));
           });
 
           // 사용자 정보 업데이트
           _updateCurrentUser(
-            currentUser: _currentUser,
+            currentUser: currentUser!,
             hasProfileImage: false,
             profileImageUrl: '',
           );
