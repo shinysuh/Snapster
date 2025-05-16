@@ -4,7 +4,7 @@ import com.amazonaws.HttpMethod;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest;
 import com.jenna.snapster.core.s3.PresignedUrlResponseDto;
-import com.jenna.snapster.domain.file.dto.UploadedFileDto;
+import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

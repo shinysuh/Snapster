@@ -1,6 +1,6 @@
 package com.jenna.snapster.domain.feed.user.service;
 
-import com.jenna.snapster.domain.file.dto.VideoPostDto;
+import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 
 import java.util.List;
 

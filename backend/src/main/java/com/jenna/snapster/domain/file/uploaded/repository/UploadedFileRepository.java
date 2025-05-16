@@ -1,6 +1,6 @@
-package com.jenna.snapster.domain.file.repository;
+package com.jenna.snapster.domain.file.uploaded.repository;
 
-import com.jenna.snapster.domain.file.entity.UploadedFile;
+import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

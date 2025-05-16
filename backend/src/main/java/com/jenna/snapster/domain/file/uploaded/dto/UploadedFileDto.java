@@ -1,4 +1,4 @@
-package com.jenna.snapster.domain.file.dto;
+package com.jenna.snapster.domain.file.uploaded.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

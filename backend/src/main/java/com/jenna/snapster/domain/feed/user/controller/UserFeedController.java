@@ -16,19 +16,19 @@ public class UserFeedController {
 
     @GetMapping("/all/{userId}")
     public ResponseEntity<?> getAllUserFeeds(@PathVariable Long userId) {
-        // 사용자가 포스팅한 게시물 전체
+        // 사용자가 포스팅한 게시물 전체 - 필요 없을 듯
         return ResponseEntity.ok(userFeedService.getAllUserFeeds(userId));
     }
 
     @GetMapping("/public/{userId}")
     public ResponseEntity<?> getPublicUserFeeds(@PathVariable Long userId) {
-        // 공개된 피드
+        // 공개된 피드 (default)
         return ResponseEntity.ok(userFeedService.getPublicUserFeeds(userId));
     }
 
     @GetMapping("/private/{userId}")
     public ResponseEntity<?> getPrivateUserFeeds(@PathVariable Long userId) {
-        // 보관된 피드
+        // 보관된 피드 (해당 위치 접근 시에만)
         return ResponseEntity.ok(userFeedService.getPrivateUserFeeds(userId));
     }
 

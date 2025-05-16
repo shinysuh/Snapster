@@ -1,6 +1,6 @@
-package com.jenna.snapster.domain.file.repository;
+package com.jenna.snapster.domain.file.video.repository;
 
-import com.jenna.snapster.domain.file.entity.VideoPost;
+import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
-package com.jenna.snapster.domain.file.dto;
+package com.jenna.snapster.domain.file.video.dto;
 
-import com.jenna.snapster.domain.file.entity.UploadedFile;
-import com.jenna.snapster.domain.file.entity.VideoPost;
+import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
+import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -28,7 +28,11 @@ public class VideoPostDto {
 
     private String description;
 
-    private String fileUrl;
+    private Long videoId;
+
+    private String videoUrl;
+
+    private Long thumbnailId;
 
     private String thumbnailUrl;
 
@@ -48,9 +52,14 @@ public class VideoPostDto {
             .orElse("Unknown");
         this.title = post.getTitle();
         this.description = post.getDescription();
-        this.fileUrl = post.getVideoFile().getUrl();
-//        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
+        this.videoId = post.getVideoFile().getId();
+        this.videoUrl = post.getVideoFile().getUrl();
+//        this.thumbnailId = post.getThumbnailFile().getId(); // TODO - 썸네일 생성 처리 후 적
         // 개발용 null-safe
+        this.thumbnailId = Optional.of(post.getThumbnailFile())
+            .map(UploadedFile::getId)
+            .orElse(null);
+//        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
         this.thumbnailUrl = Optional.ofNullable(post.getThumbnailFile())
             .map(UploadedFile::getUrl)
             .orElse(null);

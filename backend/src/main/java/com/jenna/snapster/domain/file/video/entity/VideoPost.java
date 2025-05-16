@@ -1,5 +1,7 @@
-package com.jenna.snapster.domain.file.entity;
+package com.jenna.snapster.domain.file.video.entity;
 
+import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
+import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -52,6 +54,19 @@ public class VideoPost {
     private Long comments;
 
     private LocalDateTime createdAt;
+
+    public VideoPost(VideoPostDto dto) {
+        this.user = User.builder().id(dto.getUserId()).build();
+        this.user.getProfile().setDisplayName(dto.getUserDisplayName());
+        this.title = dto.getTitle();
+        this.description = dto.getDescription();
+        this.tagList = dto.getTags();
+        this.videoFile = UploadedFile.builder().id(dto.getVideoId()).build();
+        this.thumbnailFile = UploadedFile.builder().id(dto.getThumbnailId()).build();
+        this.likes = dto.getLikes();
+        this.comments = dto.getComments();
+        this.createdAt = dto.getCreatedAt();
+    }
 
     @PostLoad
     private void fillTagList() {

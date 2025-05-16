@@ -1,11 +1,11 @@
-package com.jenna.snapster.domain.file.service.impl;
+package com.jenna.snapster.domain.file.uploaded.service.impl;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
-import com.jenna.snapster.domain.file.dto.UploadedFileDto;
-import com.jenna.snapster.domain.file.entity.UploadedFile;
-import com.jenna.snapster.domain.file.repository.UploadedFileRepository;
-import com.jenna.snapster.domain.file.service.UploadedFileService;
+import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
+import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
+import com.jenna.snapster.domain.file.uploaded.repository.UploadedFileRepository;
+import com.jenna.snapster.domain.file.uploaded.service.UploadedFileService;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.service.UserService;

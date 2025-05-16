@@ -1,18 +1,18 @@
-package com.jenna.snapster.domain.file.entity;
+package com.jenna.snapster.domain.file.uploaded.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.jenna.snapster.domain.file.dto.UploadedFileDto;
+import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "uploaded_file")
-@Getter
+@Data
+@Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class UploadedFile {
 
     @Id

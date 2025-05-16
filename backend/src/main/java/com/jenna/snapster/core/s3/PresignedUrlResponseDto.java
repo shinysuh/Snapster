@@ -1,6 +1,6 @@
 package com.jenna.snapster.core.s3;
 
-import com.jenna.snapster.domain.file.dto.UploadedFileDto;
+import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

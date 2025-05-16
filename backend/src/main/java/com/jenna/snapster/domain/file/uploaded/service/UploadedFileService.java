@@ -1,7 +1,7 @@
-package com.jenna.snapster.domain.file.service;
+package com.jenna.snapster.domain.file.uploaded.service;
 
-import com.jenna.snapster.domain.file.dto.UploadedFileDto;
-import com.jenna.snapster.domain.file.entity.UploadedFile;
+import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
+import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.user.entity.User;
 
 import java.util.List;

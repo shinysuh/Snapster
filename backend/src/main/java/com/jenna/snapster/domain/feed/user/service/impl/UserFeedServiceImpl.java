@@ -1,9 +1,9 @@
 package com.jenna.snapster.domain.feed.user.service.impl;
 
 import com.jenna.snapster.domain.feed.user.service.UserFeedService;
-import com.jenna.snapster.domain.file.dto.VideoPostDto;
-import com.jenna.snapster.domain.file.entity.VideoPost;
-import com.jenna.snapster.domain.file.repository.VideoPostRepository;
+import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
+import com.jenna.snapster.domain.file.video.entity.VideoPost;
+import com.jenna.snapster.domain.file.video.repository.VideoPostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
