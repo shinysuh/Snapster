@@ -21,6 +21,7 @@ class FileContentType {
       case 'webp':
         return webp;
       case 'mp4':
+      case 'mov':
         return mp4;
       case 'avi':
         return avi;

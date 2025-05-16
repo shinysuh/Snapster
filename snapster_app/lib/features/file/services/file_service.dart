@@ -45,7 +45,7 @@ class FileService {
   // S3에 파일 업로드
   Future<bool> uploadFileToS3(String presignedUrl, File file) async {
     try {
-      final filePath = file.path;
+      final filePath = _normalizeExtension(file.path);
       // 파일을 바이트로 읽어서 업로드
       final fileBytes = await File(filePath).readAsBytes();
 
@@ -121,6 +121,12 @@ class FileService {
       debugPrint('파일 정보 삭제 실패: ${response.statusCode} ${response.data}');
       return false;
     }
+  }
+
+  String _normalizeExtension(String path) {
+    final extension = path.split('.').last.toLowerCase();
+    if (extension == 'mov') return path.replaceAll(RegExp(r'\.mov$'), '.mp4');
+    return path;
   }
 
   String _getContentTypeByFileExtension(String filePath) {

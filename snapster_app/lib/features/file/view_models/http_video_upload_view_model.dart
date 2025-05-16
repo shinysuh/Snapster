@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/video_post_model.dart';
 import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';
@@ -33,9 +34,11 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
           state = await AsyncValue.guard(() async {
             // presigned-url 발급
             final presignedUrl = await getPresignedUrl(fileName);
+            debugPrint("############ presignedUrl");
 
             // 파일 업로드
             await uploadFile(presignedUrl, file);
+            debugPrint("############ uploadFile");
 
             // 업로드 비디오 파일 정보 저장
             await saveVideoFileInfo(
@@ -59,3 +62,8 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
         });
   }
 }
+
+final httpVideoUploadProvider =
+    AsyncNotifierProvider<HttpVideoUploadViewModel, void>(
+  () => HttpVideoUploadViewModel(),
+);
