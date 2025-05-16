@@ -49,7 +49,7 @@ class VideoUploadViewModel extends AsyncNotifier<void> {
             title: title,
             description: description,
             tags: [],
-            fileUrl: await task.ref.getDownloadURL(),
+            videoUrl: await task.ref.getDownloadURL(),
             thumbnailURL: '',
             userDisplayName: userProfile!.username,
             userId: user.userId,

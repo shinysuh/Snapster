@@ -83,9 +83,9 @@ class VideoPostState extends ConsumerState<VideoPost>
 
   Future<void> _initVideoPlayer() async {
     try {
-      // Use the fileUrl directly from videoData
+      // Use the videoUrl directly from videoData
       _videoPlayerController =
-          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
+          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.videoUrl));
 
       // initialize
       await _videoPlayerController?.initialize();

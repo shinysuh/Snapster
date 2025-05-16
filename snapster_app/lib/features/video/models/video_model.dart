@@ -3,7 +3,7 @@ class VideoModel {
   final String title;
   final String description;
   final List<dynamic> tags;
-  final String fileUrl;
+  final String videoUrl;
   final String thumbnailURL;
   final String userDisplayName;
   final String userId;
@@ -16,7 +16,7 @@ class VideoModel {
     required this.title,
     required this.description,
     required this.tags,
-    required this.fileUrl,
+    required this.videoUrl,
     required this.thumbnailURL,
     required this.userDisplayName,
     required this.userId,
@@ -31,7 +31,7 @@ class VideoModel {
       'title': title,
       'description': description,
       'tags': tags,
-      'fileUrl': fileUrl,
+      'videoUrl': videoUrl,
       'thumbnailURL': thumbnailURL,
       'uploader': userDisplayName,
       'uploaderUid': userId,
@@ -48,7 +48,7 @@ class VideoModel {
         title = json['title'],
         description = json['description'],
         tags = json['tags'],
-        fileUrl = json['fileUrl'],
+        videoUrl = json['videoUrl'],
         thumbnailURL = json['thumbnailURL'],
         userDisplayName = json['uploader'],
         userId = json['uploaderUid'],
@@ -59,7 +59,7 @@ class VideoModel {
   VideoModel.sample({required this.id, required this.title})
       : description = '',
         tags = [],
-        fileUrl = '',
+        videoUrl = '',
         thumbnailURL = '',
         userDisplayName = '',
         userId = '',
