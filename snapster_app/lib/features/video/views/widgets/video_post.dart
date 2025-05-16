@@ -85,7 +85,7 @@ class VideoPostState extends ConsumerState<VideoPost>
     try {
       // Use the videoUrl directly from videoData
       _videoPlayerController =
-          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.videoUrl));
+          VideoPlayerController.networkUrl(Uri.parse(widget.videoData.fileUrl));
 
       // initialize
       await _videoPlayerController?.initialize();

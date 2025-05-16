@@ -1,22 +1,26 @@
-class VideoModel {
+class VideoPostModel {
   final String id;
   final String title;
   final String description;
-  final List<dynamic> tags;
-  final String fileUrl;
+  final List<String> tags;
+  final String videoId;
+  final String videoUrl;
+  final String thumbnailId;
   final String thumbnailURL;
   final String userDisplayName;
   final String userId;
   final int likes;
   final int comments;
-  final int createdAt;
+  final String createdAt;
 
-  VideoModel({
+  VideoPostModel({
     required this.id,
     required this.title,
     required this.description,
     required this.tags,
-    required this.fileUrl,
+    required this.videoId,
+    required this.videoUrl,
+    required this.thumbnailId,
     required this.thumbnailURL,
     required this.userDisplayName,
     required this.userId,
@@ -31,7 +35,9 @@ class VideoModel {
       'title': title,
       'description': description,
       'tags': tags,
-      'fileUrl': fileUrl,
+      'videoId': videoId,
+      'videoUrl': videoUrl,
+      'thumbnailId': thumbnailId,
       'thumbnailURL': thumbnailURL,
       'uploader': userDisplayName,
       'uploaderUid': userId,
@@ -41,14 +47,19 @@ class VideoModel {
     };
   }
 
-  VideoModel.fromJson({
-    required String videoId,
+  VideoPostModel.fromJson({
+    String? videoId,
     required Map<String, dynamic> json,
-  })  : id = videoId,
+  })  :
+        // video_posts 에 저장된 id
+        id = videoId ?? json['videoId'],
         title = json['title'],
         description = json['description'],
         tags = json['tags'],
-        fileUrl = json['fileUrl'],
+        // uploaded_file 에 저장된 비디오 파일 id
+        videoId = json['videoId'],
+        videoUrl = json['videoUrl'],
+        thumbnailId = json['thumbnailId'],
         thumbnailURL = json['thumbnailURL'],
         userDisplayName = json['uploader'],
         userId = json['uploaderUid'],
@@ -56,14 +67,16 @@ class VideoModel {
         comments = json['comments'],
         createdAt = json['createdAt'];
 
-  VideoModel.sample({required this.id, required this.title})
+  VideoPostModel.sample({required this.id, required this.title})
       : description = '',
         tags = [],
-        fileUrl = '',
+        videoId = '0',
+        videoUrl = '',
+        thumbnailId = '0',
         thumbnailURL = '',
         userDisplayName = '',
         userId = '',
         likes = 0,
         comments = 0,
-        createdAt = 0;
+        createdAt = '0';
 }
