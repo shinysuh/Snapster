@@ -5,6 +5,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/feed/view_models/feed_view_model.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/settings/settings_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -14,6 +15,7 @@ import 'package:snapster_app/features/user/widgets/follow_info.dart';
 import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/profile_button.dart';
 import 'package:snapster_app/features/user/widgets/user_profile_tab_bar.dart';
+import 'package:snapster_app/features/video/models/video_post_model.dart';
 import 'package:snapster_app/features/video_old/models/thumbnail_link_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
@@ -250,6 +252,47 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
+  Widget _getFeedGridViewByTabBar({
+    required int colCount,
+    required String playCount,
+    required List<VideoPostModel> feedData,
+  }) {
+    return GridView.builder(
+      // 드래그 시에 keyboard dismiss
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      itemCount: feedData.length,
+      padding: const EdgeInsets.only(top: Sizes.size5),
+      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+        // crossAxisCount => grid 의 컬럼 개수
+        crossAxisCount: colCount,
+        crossAxisSpacing: Sizes.size2,
+        mainAxisSpacing: Sizes.size2,
+        childAspectRatio: _videoRatio,
+      ),
+      itemBuilder: (context, index) {
+        var feed = feedData[index];
+        return Stack(
+          children: [
+            Column(
+              children: [
+                AspectRatio(
+                  aspectRatio: _videoRatio,
+                  child: Image(
+                    fit: BoxFit.cover,
+                    image: NetworkImage(
+                      feed.thumbnailUrl,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            _getPlayCount('2.6K'),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _getGridViewByTabBar({
     required int colCount,
     required String playCount,
@@ -335,8 +378,8 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
             var colCount = isVertical
                 ? 3
                 : width < Breakpoints.lg
-                ? 4
-                : 5;
+                    ? 4
+                    : 5;
             return DefaultTabController(
               initialIndex: widget.show == 'likes' ? 1 : 0,
               length: 2,
@@ -374,26 +417,26 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   SliverToBoxAdapter(
                     child: isVertical
                         ? Column(
-                      children: [
-                        _getUserPic(user, isVertical),
-                        Gaps.v24,
-                        ..._getUserInfo(user),
-                        Gaps.v20,
-                      ],
-                    )
+                            children: [
+                              _getUserPic(user, isVertical),
+                              Gaps.v24,
+                              ..._getUserInfo(user),
+                              Gaps.v20,
+                            ],
+                          )
                         : Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        _getUserPic(user, isVertical),
-                        Column(
-                          children: [
-                            ..._getUserInfo(user),
-                            Gaps.v20,
-                          ],
-                        ),
-                      ],
-                    ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              _getUserPic(user, isVertical),
+                              Column(
+                                children: [
+                                  ..._getUserInfo(user),
+                                  Gaps.v20,
+                                ],
+                              ),
+                            ],
+                          ),
                   ),
                   SliverPersistentHeader(
                     pinned: true,
@@ -404,33 +447,34 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                 body: TabBarView(
                   children: [
                     ref
-                        .watch(uploadedThumbnailListProvider(user.userId))
+                        .watch(feedViewModelProvider(user.userId))
+                        // .watch(uploadedThumbnailListProvider(user.userId))
                         .when(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ),
-                      error: (error, stackTrace) => Center(
-                        child: Text(error.toString()),
-                      ),
-                      data: (thumbnails) => _getGridViewByTabBar(
-                        colCount: colCount,
-                        playCount: '2.6K',
-                        thumbnailData: thumbnails,
-                      ),
-                    ),
+                          loading: () => const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                          error: (error, stackTrace) => Center(
+                            child: Text('FEED ERROR: ${error.toString()}'),
+                          ),
+                          data: (feeds) => _getFeedGridViewByTabBar(
+                            colCount: colCount,
+                            playCount: '2.6K',
+                            feedData: feeds,
+                          ),
+                        ),
                     ref.watch(likedThumbnailListProvider(user.userId)).when(
-                      loading: () => const Center(
-                        child: CircularProgressIndicator.adaptive(),
-                      ),
-                      error: (error, stackTrace) => Center(
-                        child: Text(error.toString()),
-                      ),
-                      data: (likes) => _getGridViewByTabBar(
-                        colCount: colCount,
-                        playCount: '36.1K',
-                        thumbnailData: likes,
-                      ),
-                    ),
+                          loading: () => const Center(
+                            child: CircularProgressIndicator.adaptive(),
+                          ),
+                          error: (error, stackTrace) => Center(
+                            child: Text(error.toString()),
+                          ),
+                          data: (likes) => _getGridViewByTabBar(
+                            colCount: colCount,
+                            playCount: '36.1K',
+                            thumbnailData: likes,
+                          ),
+                        ),
                   ],
                 ),
               ),

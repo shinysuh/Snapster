@@ -52,14 +52,18 @@ class VideoPostModel {
   })  : id = json['id'].toString(),
         title = json['title'],
         description = json['description'],
-        tags = json['tags'],
+        // null-safe 처리
+        tags = (json['tags'] as List<dynamic>?)
+                ?.map((e) => e as String)
+                .toList() ??
+            [],
         // uploaded_file 에 저장된 비디오 파일 id
-        videoId = json['videoId'],
+        videoId = json['videoId'].toString(),
         videoUrl = json['videoUrl'],
-        thumbnailId = json['thumbnailId'],
+        thumbnailId = json['thumbnailId'].toString(),
         thumbnailUrl = json['thumbnailUrl'],
         userDisplayName = json['userDisplayName'],
-        userId = json['userId'],
+        userId = json['userId'].toString(),
         likes = json['likes'],
         comments = json['comments'],
         createdAt = json['createdAt'];
@@ -67,9 +71,9 @@ class VideoPostModel {
   VideoPostModel.sample({required this.id, required this.title})
       : description = '',
         tags = [],
-        videoId = '0',
+        videoId = '',
         videoUrl = '',
-        thumbnailId = '0',
+        thumbnailId = '',
         thumbnailUrl = '',
         userDisplayName = '',
         userId = '',
