@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
+import 'package:snapster_app/features/feed/view_models/feed_view_model.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
@@ -57,6 +58,11 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                   comments: 0,
                   createdAt: presignedUrl.uploadedFileInfo.uploadedAt ?? '',
                 ));
+
+            // user feed 갱신
+            ref
+                .read(feedViewModelProvider(currentUser!.userId).notifier)
+                .refresh();
 
             if (context.mounted) {
               goRouteReplacementRoute(

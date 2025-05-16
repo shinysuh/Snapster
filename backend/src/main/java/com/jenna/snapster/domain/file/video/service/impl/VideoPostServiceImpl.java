@@ -1,6 +1,7 @@
 package com.jenna.snapster.domain.file.video.service.impl;
 
 import com.jenna.snapster.core.s3.service.S3Service;
+import com.jenna.snapster.domain.feed.user.service.UserFeedService;
 import com.jenna.snapster.domain.file.constant.UploadedFileType;
 import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
@@ -13,11 +14,13 @@ import com.jenna.snapster.domain.file.video.repository.VideoPostRepository;
 import com.jenna.snapster.domain.file.video.service.VideoPostService;
 import com.jenna.snapster.domain.user.entity.User;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class VideoPostServiceImpl implements VideoPostService {
@@ -26,6 +29,8 @@ public class VideoPostServiceImpl implements VideoPostService {
     private final UploadedFileService uploadedFileService;
     private final S3Service s3Service;
     private final ThumbnailGenerator thumbnailGenerator;
+
+    private final UserFeedService userFeedService;
 
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -40,7 +45,17 @@ public class VideoPostServiceImpl implements VideoPostService {
         UploadedFile uploadedThumbnail = this.createAndSavaThumbnail(currentUser, uploadedFile);
         video.setThumbnailFileInfo(uploadedThumbnail);
 
-        return videoPostRepository.save(new VideoPost(video));
+        VideoPost uploadedVideo = videoPostRepository.save(new VideoPost(video));
+
+        this.refreshUserFeed(currentUser.getId());
+
+        return uploadedVideo;
+    }
+
+    private void refreshUserFeed(Long userId) {
+        // 캐시 삭제
+        String cacheEviction = userFeedService.evictUserFeedCache(userId, "public");
+        log.info("########### eviction: {}", cacheEviction);
     }
 
     private UploadedFile createAndSavaThumbnail(User currentUser, UploadedFile uploadedVideoFile) {

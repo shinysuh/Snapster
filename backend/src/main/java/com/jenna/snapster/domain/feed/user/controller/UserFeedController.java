@@ -2,7 +2,6 @@ package com.jenna.snapster.domain.feed.user.controller;
 
 import com.jenna.snapster.domain.feed.user.service.UserFeedService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.*;
 public class UserFeedController {
 
     private final UserFeedService userFeedService;
-    private final CacheManager cacheManager;
 
     @GetMapping("/all/{userId}")
     public ResponseEntity<?> getAllUserFeeds(@PathVariable Long userId) {
@@ -34,9 +32,7 @@ public class UserFeedController {
 
     @DeleteMapping("/cache/{type}/{userId}")
     public ResponseEntity<?> evictUserFeedCache(@PathVariable String type, @PathVariable Long userId) {
-        cacheManager.getCache("userFeeds::" + type)
-            .evictIfPresent(userId);
-        return ResponseEntity.ok("");
+        return ResponseEntity.ok(userFeedService.evictUserFeedCache(userId, type));
     }
 
 

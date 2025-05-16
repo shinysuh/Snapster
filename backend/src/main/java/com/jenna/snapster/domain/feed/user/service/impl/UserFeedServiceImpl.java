@@ -5,6 +5,7 @@ import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import com.jenna.snapster.domain.file.video.repository.VideoPostRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 public class UserFeedServiceImpl implements UserFeedService {
 
     private final VideoPostRepository videoPostRepository;
+    private final CacheManager cacheManager;
 
     @Cacheable(value = "userFeeds::all", key = "#userId")
     @Override
@@ -39,6 +41,13 @@ public class UserFeedServiceImpl implements UserFeedService {
         return this.getResponseFromVideoPost(
             videoPostRepository.findByUserIdAndVideoFileIsPrivateTrueAndVideoFileIsDeletedFalseOrderByCreatedAtDesc(userId)
         );
+    }
+
+    @Override
+    public String evictUserFeedCache(Long userId, String type) {
+        cacheManager.getCache("userFeeds::" + type)
+            .evictIfPresent(userId);
+        return type.toUpperCase() + " cache eviction completed";
     }
 
     private List<VideoPostDto> getResponseFromVideoPost(List<VideoPost> videoPosts) {

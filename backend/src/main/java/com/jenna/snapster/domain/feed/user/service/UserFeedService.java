@@ -11,4 +11,6 @@ public interface UserFeedService {
     List<VideoPostDto> getPublicUserFeeds(Long userId);
 
     List<VideoPostDto> getPrivateUserFeeds(Long userId);
+
+    String evictUserFeedCache(Long userId, String type);
 }
