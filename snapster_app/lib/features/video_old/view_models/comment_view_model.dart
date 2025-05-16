@@ -7,9 +7,9 @@ import 'package:snapster_app/features/authentication/providers/firebase_auth_pro
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
-import 'package:snapster_app/features/video/models/comment_model.dart';
-import 'package:snapster_app/features/video/repositories/comment_repository.dart';
-import 'package:snapster_app/features/video/repositories/video_repository.dart';
+import 'package:snapster_app/features/video_old/models/comment_model.dart';
+import 'package:snapster_app/features/video_old/repositories/comment_repository.dart';
+import 'package:snapster_app/features/video_old/repositories/video_repository.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 class CommentViewModel extends FamilyAsyncNotifier<void, String> {

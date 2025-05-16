@@ -4,7 +4,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
-import 'package:snapster_app/features/file/view_models/http_video_upload_view_model.dart';
+import 'package:snapster_app/features/video/view_models/http_video_upload_view_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 

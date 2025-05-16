@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/video/view_models/timeline_view_model.dart';
-import 'package:snapster_app/features/video/views/widgets/video_post.dart';
+import 'package:snapster_app/features/video_old/view_models/timeline_view_model.dart';
+import 'package:snapster_app/features/video_old/views/widgets/video_post.dart';
 
 class VideoTimelineScreen extends ConsumerStatefulWidget {
   const VideoTimelineScreen({super.key});

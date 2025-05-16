@@ -1,7 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/video/models/comment_model.dart';
-import 'package:snapster_app/features/video/repositories/video_repository.dart';
+import 'package:snapster_app/features/video_old/models/comment_model.dart';
+import 'package:snapster_app/features/video_old/repositories/video_repository.dart';
 
 class CommentRepository {
   static const String commentCollection = 'comments';

@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/video/models/video_model.dart';
-import 'package:snapster_app/features/video/repositories/video_repository.dart';
+import 'package:snapster_app/features/video_old/models/video_model.dart';
+import 'package:snapster_app/features/video_old/repositories/video_repository.dart';
 
 // Async - Because it's fetching values from APIs
 class TimelineViewModel extends AsyncNotifier<List<VideoModel>> {

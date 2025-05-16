@@ -8,8 +8,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/video/views/video_preview_screen.dart';
-import 'package:snapster_app/features/video/views/widgets/flash_mode_button.dart';
+import 'package:snapster_app/features/video_old/views/video_preview_screen.dart';
+import 'package:snapster_app/features/video_old/views/widgets/flash_mode_button.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class VideoRecordingScreen extends StatefulWidget {

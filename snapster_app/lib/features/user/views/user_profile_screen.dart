@@ -5,7 +5,6 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/settings/settings_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -15,7 +14,7 @@ import 'package:snapster_app/features/user/widgets/follow_info.dart';
 import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/profile_button.dart';
 import 'package:snapster_app/features/user/widgets/user_profile_tab_bar.dart';
-import 'package:snapster_app/features/video/models/thumbnail_link_model.dart';
+import 'package:snapster_app/features/video_old/models/thumbnail_link_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class UserProfileScreen extends ConsumerStatefulWidget {

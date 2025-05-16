@@ -1,5 +1,5 @@
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
-import 'package:snapster_app/features/file/models/video_post_model.dart';
+import 'package:snapster_app/features/video/models/video_post_model.dart';
 
 class UploadedVideoModel {
   final VideoPostModel videoInfo;

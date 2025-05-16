@@ -7,8 +7,8 @@ import 'package:snapster_app/features/authentication/services/i_auth_service.dar
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
-import 'package:snapster_app/features/video/models/thumbnail_link_model.dart';
-import 'package:snapster_app/features/video/repositories/video_repository.dart';
+import 'package:snapster_app/features/video_old/models/thumbnail_link_model.dart';
+import 'package:snapster_app/features/video_old/repositories/video_repository.dart';
 
 class UserProfileViewModel extends FamilyAsyncNotifier<void, UserProfileModel> {
   late final IAuthService _authProvider;

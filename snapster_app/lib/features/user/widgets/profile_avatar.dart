@@ -4,9 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/file/view_models/profile_avatar_upload_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/avatar_view_model.dart';
+import 'package:snapster_app/features/user/view_models/profile_avatar_upload_view_model.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 
 class ProfileAvatar extends ConsumerWidget {

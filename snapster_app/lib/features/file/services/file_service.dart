@@ -8,7 +8,7 @@ import 'package:snapster_app/features/file/constants/file_content_type.dart';
 import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_video_model.dart';
-import 'package:snapster_app/features/file/models/video_post_model.dart';
+import 'package:snapster_app/features/video/models/video_post_model.dart';
 
 class FileService {
   static const _baseUrl = ApiInfo.fileBaseUrl;

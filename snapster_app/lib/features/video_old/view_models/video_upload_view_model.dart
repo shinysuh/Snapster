@@ -6,8 +6,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
-import 'package:snapster_app/features/video/models/video_model.dart';
-import 'package:snapster_app/features/video/repositories/video_repository.dart';
+import 'package:snapster_app/features/video_old/models/video_model.dart';
+import 'package:snapster_app/features/video_old/repositories/video_repository.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
 class VideoUploadViewModel extends AsyncNotifier<void> {

@@ -4,8 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/common_divider.dart';
-import 'package:snapster_app/features/video/models/thumbnail_link_model.dart';
-import 'package:snapster_app/features/video/models/video_model.dart';
+import 'package:snapster_app/features/video_old/models/thumbnail_link_model.dart';
+import 'package:snapster_app/features/video_old/models/video_model.dart';
 
 class VideoRepository {
   static const String videoCollection = 'videos';

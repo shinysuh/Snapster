@@ -6,7 +6,7 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
-import 'package:snapster_app/features/video/view_models/comment_view_model.dart';
+import 'package:snapster_app/features/video_old/view_models/comment_view_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';

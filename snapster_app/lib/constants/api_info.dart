@@ -12,6 +12,9 @@ class ApiInfo {
   static const fileBaseUrl = '$baseUrl/api/file';
   static const userBaseUrl = '$baseUrl/api/user';
 
+  static const feedBaseUrl = '$baseUrl/api/feed';
+  static const userFeedBaseUrl = '$feedBaseUrl/user';
+
   static Map<String, String> getBasicHeaderWithToken(String? token) {
     return {
       Authorizations.headerKey: '${Authorizations.headerValuePrefix} $token',

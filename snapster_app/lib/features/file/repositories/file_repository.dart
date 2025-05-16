@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
-import 'package:snapster_app/features/file/models/video_post_model.dart';
 import 'package:snapster_app/features/file/services/file_service.dart';
+import 'package:snapster_app/features/video/models/video_post_model.dart';
 
 class FileRepository {
   final FileService _fileService;

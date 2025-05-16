@@ -5,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/presigned_url_model.dart';
-import 'package:snapster_app/features/file/models/video_post_model.dart';
 import 'package:snapster_app/features/file/providers/file_provider.dart';
 import 'package:snapster_app/features/file/repositories/file_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:snapster_app/features/video/models/video_post_model.dart';
 
 mixin CommonUploadProcessHandlerMixin on AsyncNotifier<void> {
   late final FileRepository fileRepository;

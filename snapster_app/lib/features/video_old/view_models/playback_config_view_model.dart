@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/video/models/playback_config_model.dart';
-import 'package:snapster_app/features/video/repositories/playback_config_repository.dart';
+import 'package:snapster_app/features/video_old/models/playback_config_model.dart';
+import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 
 /* Riverpod */
 class PlaybackConfigViewModel extends Notifier<PlaybackConfigModel> {

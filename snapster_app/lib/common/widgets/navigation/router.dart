@@ -18,7 +18,7 @@ import 'package:snapster_app/features/inbox/views/chats_screen.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
-import 'package:snapster_app/features/video/views/video_recording_screen.dart';
+import 'package:snapster_app/features/video_old/views/video_recording_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authRepo = ref.read(authRepositoryProvider);
