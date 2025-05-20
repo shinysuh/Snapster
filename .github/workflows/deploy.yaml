@@ -14,35 +14,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2     # repository 체크아웃
 
-      # ============ Flutter 관련 빌드 블럭 begin =========================
-      # Flutter 의존성 캐시 복원
-#      - name: Restore Flutter dependencies cache
-#        uses: actions/cache@v3
-#        with:
-#          path: |
-#            ~/.pub-cache
-#            snapster_app/.dart_tool
-#            key: flutter-pub-${{ hashFiles('snapster_app/pubspec.lock') }}
-#            restore-keys: |
-#            flutter-pub-
-#
-#      # Flutter 설치
-#      - name: Set up Flutter
-#        uses: subosito/flutter-action@v2
-#        with:
-#          flutter-version: '3.19.6'
-#
-#      # Flutter 의존성 설치
-#      - name: Install Flutter dependencies
-#        run: flutter pub get
-#        working-directory: snapster_app
-#
-#      # Flutter Web 빌드
-#      - name: Build Flutter Web
-#        run: flutter build web --release
-#        working-directory: snapster_app
-      # ============ Flutter 관련 빌드 블럭 end =========================
-
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
@@ -76,16 +47,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
 
-      - name: Cache Docker layers
+      - name: Cache Docker layers (backend)
         uses: actions/cache@v3
         with:
-          path: ${{ env.CACHE_PATH }}/.buildx-cache  # Docker 캐시 경로
-          key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}-${{ github.sha }}   # 캐시 키
+          path: ${{ env.CACHE_PATH }}/.buildx-cache-backend  # Docker 캐시 경로
+          key: ${{ runner.os }}-docker-backend-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}-${{ github.sha }}   # 캐시 키
           restore-keys: |
             key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
+      - name: Cache Docker layers (frontend)
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.CACHE_PATH }}/.buildx-cache-frontend
+          key: ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}
+            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}
+            ${{ runner.os }}-docker-frontend-
 
       # 백엔드 이미지 빌드 및 로드
       - name: Build backend Docker image with caching
@@ -100,24 +80,16 @@ jobs:
           --progress=plain
 
       # 프론트 이미지 빌드 및 로드
-      - name: Build frontend Docker image
+      - name: Build frontend Docker image with caching
         run: |
-          docker build \
+          docker buildx build \
+          --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
+          --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
           --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
           --file snapster_app/Dockerfile \
-          snapster_app/.
-
-#      - name: Build Docker image with caching
-#        # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
-#        run: |
-#          docker buildx build \
-#            --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache \
-#            --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache \
-#            --tag ${{ env.DOCKER_IMAGE }:latest \
-#            --file backend/Dockerfile \
-#            backend/. \
-#            --load \
-#            --progress=plain
+          snapster_app/. \
+          --load \
+          --progress=plain
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
@@ -144,11 +116,6 @@ jobs:
         run: |
           docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > frontend.tar.gz
           scp -i ~/.ssh/id_rsa frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
-
-      #      - name: Copy Docker image to EC2
-#        run: |
-#          docker save snapster-app | gzip > snapster-app.tar.gz
-#          scp -i ~/.ssh/id_rsa snapster-app.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       - name: SSH into EC2 and Deploy Docker container
         run: |
