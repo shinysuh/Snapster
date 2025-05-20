@@ -142,6 +142,7 @@ jobs:
               # 이미 실행 중인 컨테이너 종료
               if docker ps | grep -q \$name; then
                 docker stop \$name
+                docker rm \$name
               fi
               
               # 기존 이미지 삭제 (존재 시)
