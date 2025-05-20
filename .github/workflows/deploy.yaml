@@ -135,10 +135,10 @@ jobs:
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행
             run_docker() {
-              local name=$1
-              local image=$2
-              local ports=$3
-              local envs=$4
+              local name=\$1
+              local image=\$2
+              local ports=\$3
+              local envs=\$4
           
               echo
               echo name $name
@@ -167,7 +167,7 @@ jobs:
             }
           
             # 백엔드 실행
-            run_docker \$BACKEND_CONTAINER \$BACKEND_IMAGE '-p 80:80' \$BACKEND_ENVS\
+            run_docker \$BACKEND_CONTAINER \$BACKEND_IMAGE '-p 80:80' \$BACKEND_ENVS
           
             # 프론트엔드 실행
             run_docker \$FRONTEND_CONTAINER \$FRONTEND_IMAGE '-p 8080:80' ''
