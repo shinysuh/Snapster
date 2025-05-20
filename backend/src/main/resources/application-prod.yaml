@@ -20,5 +20,6 @@ server:
     enabled: false
 logging:
   config: classpath:log4j2-prod.yml
-jwt:
-  expiration: 1800000 # 1000 * 60 * 30    # 30분
+authorization:
+  jwt:
+    expiration: 1800000 # 1000 * 60 * 30    # 30분
