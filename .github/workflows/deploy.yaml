@@ -140,7 +140,7 @@ jobs:
               local envs=\$4
           
               # 이미 실행 중인 컨테이너 종료
-              if docker ps | grep -q \$name; then
+              if docker ps -a | grep -q \$name; then
                 docker stop \$name
                 docker rm \$name
               fi
