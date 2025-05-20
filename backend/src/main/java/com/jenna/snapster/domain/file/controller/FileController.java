@@ -4,6 +4,7 @@ import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
 import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.uploaded.service.UploadedFileService;
+import com.jenna.snapster.domain.file.video.dto.StreamingDto;
 import com.jenna.snapster.domain.file.video.dto.VideoPostRequestDto;
 import com.jenna.snapster.domain.file.video.service.VideoPostService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,13 @@ public class FileController {
     public ResponseEntity<?> saveVideoPostAndUploadedFileInfo(@CurrentUser CustomUserDetails currentUser,
                                                               @RequestBody VideoPostRequestDto videoPostRequestDto) {
         return ResponseEntity.ok(videoPostService.saveVideoPostAndUploadedFileInfo(currentUser.getUser(), videoPostRequestDto));
+    }
+
+    @PostMapping("/streaming")
+    public ResponseEntity<?> saveStreamingFileUploadedFileInfo(@RequestBody StreamingDto streamingDto) {
+
+
+        return null;
     }
 
     @PutMapping("/delete")
