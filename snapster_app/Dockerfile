@@ -1,5 +1,5 @@
 # Flutter 3.19.6 버전을 사용하는 공식 Cirrus CI Flutter SDK 이미지로 베이스 이미지 지정
-FROM cirrusci/flutter:3.19.5 AS build
+FROM ghcr.io/flutter/flutter:3.19.6 AS build
 
 # 작업 디렉토리를 /app으로 설정 (이 위치에서 모든 명령어가 실행됨)
 WORKDIR /app
