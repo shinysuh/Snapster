@@ -5,7 +5,7 @@ FROM openjdk:21-jdk-slim
 WORKDIR /app
 
 # Gradle 빌드 파일 복사
-COPY build/libs/*.jar app.jar
+COPY build/libs/snapster-backend-1.0.0.jar app.jar
 
 # 컨테이너에서 실행할 포트 지정 (80번 포트로 변경)
 EXPOSE 80
