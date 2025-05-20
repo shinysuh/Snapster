@@ -31,7 +31,7 @@ public class FileController {
         return ResponseEntity.ok(videoPostService.saveVideoPostAndUploadedFileInfo(currentUser.getUser(), videoPostRequestDto));
     }
 
-    @PostMapping("/streaming")
+    @PostMapping("/streaming123")
     public ResponseEntity<?> saveStreamingFileUploadedFileInfo(@RequestBody StreamingDto streamingDto) {
 
 
