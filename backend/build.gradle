@@ -25,7 +25,8 @@ repositories {
 
 def buildFileName = "snapster-backend-1.0.0.jar"
 jar {
-    archiveFileName = buildFileName
+    enabled = false
+//    archiveFileName = buildFileName
 }
 
 bootJar {
