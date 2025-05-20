@@ -108,13 +108,13 @@ jobs:
       # 백엔드 도커 이미지 복사
       - name: Copy backend Docker image to EC2
         run: |
-          docker save backend:latest | gzip > ${{ env.DOCKER_IMAGE }}-backend.tar.gz
+          docker save ${{ env.DOCKER_IMAGE }}-backend:latest | gzip > ${{ env.DOCKER_IMAGE }}-backend.tar.gz
           scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-backend ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       # 프론트 도커 이미지 복사
       - name: Copy frontend Docker image to EC2
         run: |
-          docker save frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
+          docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
           scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       - name: SSH into EC2 and Deploy Docker container
@@ -175,54 +175,3 @@ jobs:
           
             docker ps
           EOF
-
-#      - name: SSH into EC2 and Deploy Docker container
-#        run: |
-#          REPOSITORY=/home/ec2-user/snapster/docker
-#          CONTAINER=${{ env.DOCKER_CONTAINER }}
-#          IMAGE=${{ env.DOCKER_IMAGE }}
-#          DOCKER_RUN="docker run -d --rm --name $CONTAINER \
-#            -p 80:80 \
-#            -e KAKAO_CLIENT_SECRET='${{ secrets.KAKAO_CLIENT_SECRET }}' \
-#            -e GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}' \
-#            -e S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}' \
-#            -e S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}' \
-#            -e JWT_SECRET='${{ secrets.JWT_SECRET }}' \
-#            $IMAGE:latest"
-#
-#          ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
-#            run_docker() {
-#              local error_message=$1
-#              $DOCKER_RUN
-#              if [ $? -ne 0 ]; then
-#                echo "$error_message"
-#                exit 1
-#              fi
-#            }
-#
-#            # 실행 중인 타겟 container 중지 (존재 시)
-#            if docker ps | grep -q $CONTAINER; then
-#              docker stop $CONTAINER
-#            else
-#              echo "No running container"
-#            fi
-#
-#            # 기존 이미지 삭제 (존재 시)
-#            if docker images | grep -q $IMAGE; then
-#              docker rmi $IMAGE
-#              if [ $? -ne 0 ]; then
-#              echo "Failed to remove image"
-#              run_docker "Failed to restart previous container"
-#              exit 1
-#              fi
-#            else
-#              echo "No existing image"
-#            fi
-#
-#            # 실행되지 않는 컨테이너 전부 정리
-#            docker container prune -f
-#
-#            docker load < $REPOSITORY/$IMAGE.tar.gz
-#            if [ $? -ne 0 ]; then
-#              echo "Failed to load image"
-#              run_docker "Failed to restart pre
