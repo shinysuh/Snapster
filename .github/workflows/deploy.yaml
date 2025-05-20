@@ -16,31 +16,31 @@ jobs:
 
       # ============ Flutter 관련 빌드 블럭 begin =========================
       # Flutter 의존성 캐시 복원
-      - name: Restore Flutter dependencies cache
-        uses: actions/cache@v3
-        with:
-          path: |
-            ~/.pub-cache
-            snapster_app/.dart_tool
-            key: flutter-pub-${{ hashFiles('snapster_app/pubspec.lock') }}
-            restore-keys: |
-            flutter-pub-
-            
-      # Flutter 설치
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          flutter-version: '3.19.6'
-
-      # Flutter 의존성 설치
-      - name: Install Flutter dependencies
-        run: flutter pub get
-        working-directory: snapster_app
-
-      # Flutter Web 빌드
-      - name: Build Flutter Web
-        run: flutter build web --release
-        working-directory: snapster_app
+#      - name: Restore Flutter dependencies cache
+#        uses: actions/cache@v3
+#        with:
+#          path: |
+#            ~/.pub-cache
+#            snapster_app/.dart_tool
+#            key: flutter-pub-${{ hashFiles('snapster_app/pubspec.lock') }}
+#            restore-keys: |
+#            flutter-pub-
+#
+#      # Flutter 설치
+#      - name: Set up Flutter
+#        uses: subosito/flutter-action@v2
+#        with:
+#          flutter-version: '3.19.6'
+#
+#      # Flutter 의존성 설치
+#      - name: Install Flutter dependencies
+#        run: flutter pub get
+#        working-directory: snapster_app
+#
+#      # Flutter Web 빌드
+#      - name: Build Flutter Web
+#        run: flutter build web --release
+#        working-directory: snapster_app
       # ============ Flutter 관련 빌드 블럭 end =========================
 
       - name: Enable debug logging    # 로그
