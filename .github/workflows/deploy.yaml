@@ -132,6 +132,13 @@ jobs:
           JWT_SECRET='${{ secrets.JWT_SECRET }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
+          
+            echo REPOSITORY $REPOSITORY
+            echo BACKEND_CONTAINER $BACKEND_CONTAINER
+            echo FRONTEND_CONTAINER $FRONTEND_CONTAINER
+            echo BACKEND_IMAGE $BACKEND_IMAGE
+            echo FRONTEND_IMAGE $FRONTEND_IMAGE
+          
             # 함수 정의: 컨테이너 실행
             run_docker() {
               local name=$1
