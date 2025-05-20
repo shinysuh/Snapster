@@ -170,8 +170,8 @@ jobs:
             run_docker "$FRONTEND_CONTAINER" "$FRONTEND_IMAGE" "-p 8080:80" ""
           
             # 백업 파일 저장
-            cp $REPOSITORY/backend.tar.gz $REPOSITORY/tar_backups/backend.tar.gz
-            cp $REPOSITORY/frontend.tar.gz $REPOSITORY/tar_backups/frontend.tar.gz
+            cp $REPOSITORY/$BACKEND_IMAGE.tar.gz $REPOSITORY/tar_backups/$BACKEND_IMAGE.tar.gz
+            cp $REPOSITORY/$FRONTEND_IMAGE.tar.gz $REPOSITORY/tar_backups/$FRONTEND_IMAGE.tar.gz
           
             docker ps
           EOF
