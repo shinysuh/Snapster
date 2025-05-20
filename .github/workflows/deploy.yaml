@@ -162,7 +162,7 @@ jobs:
               docker load < $REPOSITORY/\$image.tar.gz || exit 1
             
               # 컨테이너 실행
-              docker run -d --rm --name \$name \$ports \$envs \$image:latest
+              docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
             # 백엔드 실행
