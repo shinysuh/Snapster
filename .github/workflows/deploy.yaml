@@ -70,12 +70,12 @@ jobs:
           --load \
           --progress=plain
 
-      # 백엔드 이미지 빌드 및 로드
+      # 프론트 이미지 빌드 및 로드
       - name: Build frontend Docker image
         run: |
           docker build \
           --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
-          --file frontend/Dockerfile \
+          --file snapster_app/Dockerfile \
           snapster_app/.
 
 #      - name: Build Docker image with caching
