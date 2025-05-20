@@ -76,7 +76,7 @@ jobs:
           docker build \
           --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
           --file frontend/Dockerfile \
-          frontend/.
+          snapster-app/.
 
 #      - name: Build Docker image with caching
 #        # backend/. 루트 변경 확인 (root에 위치한 Dockerfile 실행 시 변경)
