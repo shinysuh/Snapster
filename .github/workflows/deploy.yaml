@@ -109,13 +109,13 @@ jobs:
       - name: Copy backend Docker image to EC2
         run: |
           docker save ${{ env.DOCKER_IMAGE }}-backend:latest | gzip > ${{ env.DOCKER_IMAGE }}-backend.tar.gz
-          scp -i ~/.ssh/id_rsa backend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-backend ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       # 프론트 도커 이미지 복사
       - name: Copy frontend Docker image to EC2
         run: |
           docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
-          scp -i ~/.ssh/id_rsa frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       - name: SSH into EC2 and Deploy Docker container
         run: |
