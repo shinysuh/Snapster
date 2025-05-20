@@ -141,36 +141,36 @@ jobs:
               local envs=\$4
           
               echo
-              echo name $name
-              echo image $image
-              echo ports $ports
-              echo envs $envs
+              echo name \$name
+              echo image \$image
+              echo ports \$ports
+              echo envs \$envs
               echo 
           
               # 이미 실행 중인 컨테이너 종료
-              if docker ps | grep -q $name; then
-                docker stop $name
+              if docker ps | grep -q \$name; then
+                docker stop \$name
               fi
               
               # 기존 이미지 삭제 (존재 시)
-              if docker images | grep -q $image; then 
-                docker rmi $image || true
+              if docker images | grep -q \$image; then 
+                docker rmi \$image || true
               fi
           
               docker container prune -f
           
               # 이미지 로드
-              docker load < $REPOSITORY/$image.tar.gz || exit 1
+              docker load < $REPOSITORY/\$image.tar.gz || exit 1
             
               # 컨테이너 실행
-              docker run -d --rm --name $name $ports $envs $image:latest
+              docker run -d --rm --name \$name \$ports \$envs \$image:latest
             }
           
             # 백엔드 실행
-            run_docker \$BACKEND_CONTAINER \$BACKEND_IMAGE '-p 80:80' \$BACKEND_ENVS
+            run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" $BACKEND_ENVS
           
             # 프론트엔드 실행
-            run_docker \$FRONTEND_CONTAINER \$FRONTEND_IMAGE '-p 8080:80' ''
+            run_docker $FRONTEND_CONTAINER $FRONTEND_IMAGE "-p 8080:80" ""
           
             # 백업 파일 저장
             cp $REPOSITORY/$BACKEND_IMAGE.tar.gz $REPOSITORY/tar_backups/$BACKEND_IMAGE.tar.gz
