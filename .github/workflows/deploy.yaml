@@ -145,7 +145,7 @@ jobs:
               fi
               
               # 기존 이미지 삭제 (존재 시)
-              if docker images | grep -q \$image; then 
+              if docker images | grep -q $image; then 
                 docker rmi $image || true
               fi
           
