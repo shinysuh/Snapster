@@ -139,13 +139,6 @@ jobs:
               local ports=\$3
               local envs=\$4
           
-              echo
-              echo "Running container: \$name"
-              echo "Using image: \$image"
-              echo "Ports: \$ports"
-              echo "Envs: \$envs"
-              echo 
-          
               # 이미 실행 중인 컨테이너 종료
               if docker ps | grep -q \$name; then
                 docker stop \$name
