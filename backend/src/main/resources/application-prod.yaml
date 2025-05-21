@@ -1,4 +1,7 @@
 spring:
+  web:
+    resources:
+      add-mappings: false
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://172.31.10.98:3306/snapster

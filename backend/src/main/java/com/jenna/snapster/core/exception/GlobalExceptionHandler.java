@@ -9,6 +9,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 import static org.springframework.http.HttpStatus.*;
 
@@ -29,6 +30,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorDTO> handleJwtException(JwtValidationException e) {
         log.warn("JWT 예외 발생: {}", e.getMessage());
         return buildErrorResponse(e, BAD_REQUEST);
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<Void> handleNoResource(NoResourceFoundException e) {
+        return ResponseEntity.notFound().build();
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
