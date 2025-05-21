@@ -17,6 +17,19 @@ jobs:
       - name: Enable debug logging    # 로그
         run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
 
+      # 1) JDK 21 설치
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      # 2) 백엔드 JAR 빌드
+      - name: Build backend JAR
+        run: |
+          cd backend
+          ./gradlew clean bootJar --no-daemon
+
       # Install yq to parse YAML
       - name: Install yq
         run: |
