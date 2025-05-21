@@ -33,7 +33,7 @@ public class FileController {
 
     @PostMapping("/streaming")
     public ResponseEntity<?> saveStreamingFileUploadedFileInfo(@RequestBody StreamingDto streamingDto) {
-
+        uploadedFileService.saveStreamingFile(streamingDto);
 
         return null;
     }

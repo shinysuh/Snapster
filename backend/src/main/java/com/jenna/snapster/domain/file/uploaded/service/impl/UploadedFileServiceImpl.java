@@ -6,16 +6,19 @@ import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.uploaded.repository.UploadedFileRepository;
 import com.jenna.snapster.domain.file.uploaded.service.UploadedFileService;
+import com.jenna.snapster.domain.file.video.dto.StreamingDto;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UploadedFileServiceImpl implements UploadedFileService {
@@ -28,6 +31,16 @@ public class UploadedFileServiceImpl implements UploadedFileService {
     public UploadedFile saveFile(User currentUser, UploadedFileDto uploadedFile) {
         this.checkAndUpdateProfile(currentUser.getProfile(), uploadedFile);
         return uploadedFileRepository.save(new UploadedFile(uploadedFile));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void saveStreamingFile(StreamingDto streamingDto) {
+
+        log.info("\n ====================== Streaming File Save Method Called ======================\n userId: {}, videoId: {}, url: {}", streamingDto.getUserId(), streamingDto.getVideoId(), streamingDto.getUrl());
+
+
+
     }
 
     @Transactional(readOnly = true)
