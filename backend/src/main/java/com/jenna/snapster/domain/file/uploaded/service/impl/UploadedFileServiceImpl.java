@@ -6,7 +6,6 @@ import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.uploaded.repository.UploadedFileRepository;
 import com.jenna.snapster.domain.file.uploaded.service.UploadedFileService;
-import com.jenna.snapster.domain.file.video.dto.StreamingDto;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.service.UserService;
@@ -33,16 +32,6 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         return uploadedFileRepository.save(new UploadedFile(uploadedFile));
     }
 
-    @Transactional(rollbackFor = Exception.class)
-    @Override
-    public void saveStreamingFile(StreamingDto streamingDto) {
-
-        log.info("\n ====================== Streaming File Save Method Called ======================\n userId: {}, videoId: {}, url: {}", streamingDto.getUserId(), streamingDto.getVideoId(), streamingDto.getUrl());
-
-
-
-    }
-
     @Transactional(readOnly = true)
     @Override
     public List<UploadedFile> getAllFilesByUserId(Long userId) {
@@ -55,11 +44,17 @@ public class UploadedFileServiceImpl implements UploadedFileService {
             .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
     }
 
+    @Override
+    public UploadedFile getOneFileByUrlContaining(String keyword) {
+        return uploadedFileRepository.findByUrlContaining(keyword)
+            .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateFileAsDeletedByUrl(User currentUser, UploadedFileDto uploadedFileDto) {
         String url = uploadedFileDto.getUrl();
-        UploadedFile file = this.findUploadedFileByUrl(url);
+        UploadedFile file = this.getUploadedFileByUrl(url);
         if (this.validateFileToDelete(currentUser, file)) return;
 
         file.markDeleted();
@@ -78,7 +73,7 @@ public class UploadedFileServiceImpl implements UploadedFileService {
         }
     }
 
-    private UploadedFile findUploadedFileByUrl(String url) {
+    private UploadedFile getUploadedFileByUrl(String url) {
         return uploadedFileRepository.findByUrl(url)
             .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
     }

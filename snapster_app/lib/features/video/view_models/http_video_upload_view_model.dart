@@ -52,6 +52,8 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                   videoUrl: presignedUrl.uploadedFileInfo.url,
                   thumbnailId: '0',
                   thumbnailUrl: '',
+                  streamingId: '0',
+                  streamingUrl: '',
                   userDisplayName: currentUser?.displayName ?? 'unknown',
                   userId: presignedUrl.uploadedFileInfo.userId,
                   likes: 0,

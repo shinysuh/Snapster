@@ -36,6 +36,10 @@ public class VideoPostDto {
 
     private String thumbnailUrl;
 
+    private Long streamingId;
+
+    private String streamingUrl;
+
     private List<String> tags;
 
     private Long likes;
@@ -61,6 +65,13 @@ public class VideoPostDto {
             .orElse(null);
 //        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
         this.thumbnailUrl = Optional.ofNullable(post.getThumbnailFile())
+            .map(UploadedFile::getUrl)
+            .orElse(null);
+        // 개발용 null-safe
+        this.streamingId = Optional.ofNullable(post.getStreamingFile())
+            .map(UploadedFile::getId)
+            .orElse(null);
+        this.streamingUrl = Optional.ofNullable(post.getStreamingFile())
             .map(UploadedFile::getUrl)
             .orElse(null);
         this.tags = post.getTagList();

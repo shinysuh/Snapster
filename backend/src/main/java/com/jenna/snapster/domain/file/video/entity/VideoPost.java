@@ -5,7 +5,7 @@ import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.user.entity.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "video_posts")
-@Getter
+@Data
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VideoPost {
 
@@ -49,6 +49,11 @@ public class VideoPost {
     @JoinColumn(name = "thumbnail_file_id")
     private UploadedFile thumbnailFile;
 
+    // 스트리밍 파일 매핑
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "streaming_file_id")
+    private UploadedFile streamingFile;
+
     private Long likes;
 
     private Long comments;
@@ -63,6 +68,9 @@ public class VideoPost {
         this.videoFile = UploadedFile.builder().id(dto.getVideoId()).build();
         this.thumbnailFile = dto.getThumbnailId() != null && dto.getThumbnailId() != 0
             ? UploadedFile.builder().id(dto.getThumbnailId()).build()
+            : null;
+        this.streamingFile = dto.getStreamingId() != null && dto.getStreamingId() != 0
+            ? UploadedFile.builder().id(dto.getStreamingId()).build()
             : null;
         this.likes = dto.getLikes();
         this.comments = dto.getComments();

@@ -1,5 +1,7 @@
 package com.jenna.snapster.domain.file.video.service.impl;
 
+import com.jenna.snapster.core.exception.ErrorCode;
+import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.core.s3.service.S3Service;
 import com.jenna.snapster.domain.feed.user.service.UserFeedService;
 import com.jenna.snapster.domain.file.constant.UploadedFileType;
@@ -7,6 +9,7 @@ import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.uploaded.service.UploadedFileService;
 import com.jenna.snapster.domain.file.util.ThumbnailGenerator;
+import com.jenna.snapster.domain.file.video.dto.StreamingDto;
 import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.file.video.dto.VideoPostRequestDto;
 import com.jenna.snapster.domain.file.video.entity.VideoPost;
@@ -90,5 +93,82 @@ public class VideoPostServiceImpl implements VideoPostService {
             .append(uploadedVideoFileId)
             .append(".jpg");
         return sb.toString();
+    }
+
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public VideoPost saveStreamingFile(StreamingDto streamingDto) {
+        log.info("\n ====================== Streaming File Save Method Called ======================\n userId: {}, url: {}", streamingDto.getUserId(), streamingDto.getUrl());
+
+        String userId = streamingDto.getUserId();
+        String url = streamingDto.getUrl();
+
+        String videoUploadedAt = this.extractVideoUploadedAtFromUrl(url);
+
+        UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining(videoUploadedAt);
+
+        UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
+
+        return this.updateVideoPost(videoInfo, streamingFileInfo);
+    }
+
+    @Override
+    public VideoPost getOneByVideoFileId(Long videoFileId) {
+        return videoPostRepository.findByVideoFileId(videoFileId)
+            .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
+    }
+
+    private VideoPost updateVideoPost(UploadedFile videoInfo, UploadedFile streamingFileInfo) {
+        VideoPost videoPost = this.getOneByVideoFileId(videoInfo.getId());
+        videoPost.setStreamingFile(streamingFileInfo);
+        return videoPost;
+    }
+
+    private UploadedFile saveStreamingFileInfo(StreamingDto streamingDto) {
+        String userIdStr = streamingDto.getUserId();
+        String url = streamingDto.getUrl();
+        Long userId = Long.parseLong(userIdStr);
+
+        UploadedFileDto streamingFileInfo = UploadedFileDto.builder()
+            .userId(userId)
+            .fileName(this.extractFileName(url))
+            .s3FilePath(this.extractS3FilePath(userIdStr, url))
+            .url(url)
+            .type(UploadedFileType.STREAMING.getType())
+            .build();
+
+        return uploadedFileService.saveFile(
+            User.builder().id(userId).build(),
+            streamingFileInfo
+        );
+    }
+
+    private String extractVideoUploadedAtFromUrl(String url) {
+        /*
+            url 예시
+            https://snapster-s3-bucket.s3.ap-northeast-2.amazonaws.com
+            /user-10
+            /streaming
+            /1747842277993
+            /1747842277993-image_picker_9909E39B-7846-4695-9856-EE1B608C228D-27663-0000005DCCF93B14trim.3BDBA36E-D531-4EA9-961B-CAC757A2928D.m3u8
+
+            추출 타겟 : 1747842277993
+         */
+        String streamingDir = UploadedFileType.STREAMING.getType();
+        int beginIndex = url.indexOf(streamingDir) + streamingDir.length() + 1;
+        int endIndex = url.lastIndexOf("/");
+        return url.substring(beginIndex, endIndex);
+    }
+
+    private String extractFileName(String url) {
+        int beginIndex = url.lastIndexOf("/") + 1;
+        return url.substring(beginIndex);
+    }
+
+    private String extractS3FilePath(String userId, String url) {
+        userId = "user-" + userId;
+        int beginIndex = url.indexOf(userId) + userId.length() + 1;
+        return url.substring(beginIndex);
     }
 }

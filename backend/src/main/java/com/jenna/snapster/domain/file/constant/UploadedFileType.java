@@ -10,6 +10,7 @@ public enum UploadedFileType {
     PROFILE("profile"),
     VIDEO("video"),
     THUMBNAIL("thumbnail"),
+    STREAMING("streaming"),
     STORY("story"),
     ;
 

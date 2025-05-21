@@ -13,6 +13,8 @@ public interface UploadedFileRepository extends JpaRepository<UploadedFile, Long
 
     Optional<UploadedFile> findByUrl(String url);
 
+    Optional<UploadedFile> findByUrlContaining(String keyword);
+
     List<UploadedFile> findByUserIdAndTypeAndIsDeletedFalseOrderByUploadedAtDesc(Long userId, String type);
 
     List<UploadedFile> findByUserIdAndTypeAndIsPrivateFalseAndIsDeletedFalseOrderByUploadedAtDesc(Long userId, String typ);
