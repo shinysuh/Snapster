@@ -5,8 +5,6 @@ ${AnsiColor.BRIGHT_MAGENTA} |______ | \  | |_____| |_____] |______    |    |____
 ${AnsiColor.RED} ______| |  \_| |     | |       ______|    |    |______ |    \_
 ${AnsiColor.BRIGHT_RED}________________________________________________________________
 
-TEST BOOTJAR
-
 ${AnsiColor.CYAN}Snapster version 1.0.0
 Powered by Spring Boot ${spring-boot.version}
 ${AnsiColor.BRIGHT_WHITE}
