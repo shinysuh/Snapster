@@ -25,13 +25,14 @@ repositories {
 
 def buildFileName = "snapster-backend-1.0.0.jar"
 jar {
-    enabled = false
+//    enabled = false
+    archiveFileName = buildFileName
 }
 
 bootJar {
-    enabled = true
-    archiveFileName = buildFileName
-    mainClass = 'com.jenna.snapster.SnapsterApplication'
+//    enabled = true
+//    archiveFileName = buildFileName
+//    mainClass = 'com.jenna.snapster.SnapsterApplication'
 }
 
 dependencies {
