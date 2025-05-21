@@ -14,9 +14,9 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: https://d3uszapt2fdgux.cloudfront.net//login/oauth2/code/kakao
+            redirect-uri: https://d3uszapt2fdgux.cloudfront.net/login/oauth2/code/kakao
           google:
-            redirect-uri: https://d3uszapt2fdgux.cloudfront.net//login/oauth2/code/google
+            redirect-uri: https://d3uszapt2fdgux.cloudfront.net/login/oauth2/code/google
 server:
   port: 80
   ssl:
