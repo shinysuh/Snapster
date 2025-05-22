@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Map;
-
 @Slf4j
 @RestController
 @RequestMapping("/api/debug")
@@ -16,11 +14,7 @@ public class DebugController {
 
     @GetMapping("/headers")
     public ResponseEntity<?> headers(HttpServletRequest request) {
-        log.info("X-Forwarded-Proto: {}", request.getHeader("X-Forwarded-Proto"));
-        return ResponseEntity.ok(
-            Map.of(
-                "X-Forwarded-Proto", request.getHeader("X-Forwarded-Proto")
-            )
-        );
+        log.info("\n\n ------------- X-Forwarded-Proto: {} ------------- \n\n", request.getHeader("X-Forwarded-Proto"));
+        return ResponseEntity.ok().build();
     }
 }
