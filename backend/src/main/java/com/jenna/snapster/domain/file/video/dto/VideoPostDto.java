@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.file.video.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import com.jenna.snapster.domain.user.entity.UserProfile;
@@ -36,6 +37,7 @@ public class VideoPostDto {
 
     private String thumbnailUrl;
 
+    @JsonIgnore
     private Long streamingId;
 
     private String streamingUrl;
