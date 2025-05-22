@@ -3,7 +3,7 @@ import 'package:snapster_app/features/authentication/constants/authorization.dar
 import 'package:webview_flutter/webview_flutter.dart';
 
 class OAuthWebViewPage extends StatefulWidget {
-  final String initialUrl; // ex: https://.../oauth2/authroization/kakao
+  final String initialUrl; // ex: https://.../oauth2/authorization/kakao
 
   const OAuthWebViewPage({
     required this.initialUrl,
@@ -28,6 +28,9 @@ class _OAuthWebViewPageState extends State<OAuthWebViewPage> {
       ..setNavigationDelegate(
         // 네비게이션 콜백
         NavigationDelegate(
+          onPageStarted: (url) => debugPrint("WebView loading: $url"),
+          onWebResourceError: (error) =>
+              debugPrint("❌ WebView error: ${error.description}"),
           onNavigationRequest: (request) {
             final uri = Uri.parse(request.url);
             // snapster://auth?accessToken=xxx
@@ -41,6 +44,15 @@ class _OAuthWebViewPageState extends State<OAuthWebViewPage> {
         ),
       )
       ..loadRequest(Uri.parse(widget.initialUrl)); // 로드할 URL 지정
+
+    // WebViewController 초기화 이후에 쿠키/캐시 클리어
+    clearCacheAndLoad();
+  }
+
+  Future<void> clearCacheAndLoad() async {
+    await _controller.clearCache();
+    final cookieManager = WebViewCookieManager();
+    await cookieManager.clearCookies();
   }
 
   @override

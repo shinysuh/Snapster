@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/features/authentication/common/auth_button.dart';
-import 'package:snapster_app/features/authentication/view_models/social_auth_view_model.dart';
+import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/generated/l10n.dart';
 
 class AuthButtonsByOrientation extends ConsumerWidget {
@@ -29,15 +29,15 @@ class AuthButtonsByOrientation extends ConsumerWidget {
         icon: FontAwesomeIcons.google,
         text: S.of(context).continueWithGoogle,
         onTapButton: () => ref
-            .read(socialAuthProvider.notifier)
-            .loginWithProvider(context, 'google'),
+            .read(authRepositoryProvider)
+            .loginWithProvider(context, ref, 'google'),
       ),
       AuthButton(
         icon: FontAwesomeIcons.solidMessage,
         text: S.of(context).continueWithKakao,
         onTapButton: () => ref
-            .read(socialAuthProvider.notifier)
-            .loginWithProvider(context, 'kakao'),
+            .read(authRepositoryProvider)
+            .loginWithProvider(context, ref, 'kakao'),
       ),
     ];
   }

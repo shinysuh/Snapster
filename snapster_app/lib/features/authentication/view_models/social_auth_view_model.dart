@@ -4,9 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
-import 'package:snapster_app/features/authentication/views/oauth/oauth_web_view_screen.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -53,31 +51,16 @@ class SocialAuthViewModel extends AsyncNotifier<void> {
     }
   }
 
-  // OAuth 2.0
-  // void launchOAuthSignIn(String provider) async {
-  //   final Uri url = Uri.parse('${ApiInfo.oauthBaseUrl}/$provider');
-  //
-  //   if (await canLaunchUrl(url)) {
-  //     await launchUrl(url, mode: LaunchMode.externalApplication);
-  //   } else {
-  //     throw 'Could not launch $url';
-  //   }
-  // }
-
-  // OAuth 2.0 인앱 로그인
-  Future<void> loginWithProvider(BuildContext context, String provider) async {
-    final url =
-        'https://d3uszapt2fdgux.cloudfront.net/oauth2/authorization/$provider';
-    final token = await Navigator.of(context).push<String>(
-      MaterialPageRoute(
-        builder: (_) => OAuthWebViewPage(initialUrl: url),
-      ),
-    );
-    if (token != null) {
-      final repo = ref.read(authRepositoryProvider);
-      await repo.storeToken(token);
-    }
-  }
+// OAuth 2.0
+// void launchOAuthSignIn(String provider) async {
+//   final Uri url = Uri.parse('${ApiInfo.oauthBaseUrl}/$provider');
+//
+//   if (await canLaunchUrl(url)) {
+//     await launchUrl(url, mode: LaunchMode.externalApplication);
+//   } else {
+//     throw 'Could not launch $url';
+//   }
+// }
 }
 
 final socialAuthProvider = AsyncNotifierProvider<SocialAuthViewModel, void>(

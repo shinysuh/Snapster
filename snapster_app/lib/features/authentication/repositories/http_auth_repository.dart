@@ -1,12 +1,13 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
+import 'package:snapster_app/features/authentication/views/oauth/oauth_web_view_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
@@ -84,14 +85,32 @@ class AuthRepository {
     return success;
   }
 
+  // OAuth 2.0 인앱 로그인
+  Future<void> loginWithProvider(
+      BuildContext context, WidgetRef ref, String provider) async {
+    final url =
+        'https://d3uszapt2fdgux.cloudfront.net/oauth2/authorization/$provider';
+    final token = await Navigator.of(context).push<String>(
+      MaterialPageRoute(
+        builder: (_) => OAuthWebViewPage(initialUrl: url),
+      ),
+    );
+    if (token != null) {
+      final success = await storeToken(token);
+      if (success) ref.invalidate(authStateProvider);
+    }
+  }
+
   // 로그인 시, 토큰 저장 -> 사용자 정보 복구
-  Future<void> storeToken(String token) async {
+  Future<bool> storeToken(String token) async {
     await _tokenStorageService.saveToken(token);
     final user = await verifyAndSetUserFromToken(token);
     if (user != null) {
       debugPrint('로그인 성공: ${user.username}');
+      return true;
     } else {
       debugPrint('로그인 실패');
+      return false;
     }
   }
 
