@@ -41,6 +41,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ).authorizeHttpRequests(auth ->
                 auth.requestMatchers(
+                        "/api/debug/headers",
                         "/",
                         "/api/oauth2/**",
                         "/oauth2/redirect",
