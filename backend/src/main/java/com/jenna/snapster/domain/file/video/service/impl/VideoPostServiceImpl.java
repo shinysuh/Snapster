@@ -101,16 +101,18 @@ public class VideoPostServiceImpl implements VideoPostService {
     public VideoPost saveStreamingFile(StreamingDto streamingDto) {
         log.info("\n ====================== Streaming File Save Method Called ======================\n userId: {}, url: {}", streamingDto.getUserId(), streamingDto.getUrl());
 
-        String userId = streamingDto.getUserId();
-        String url = streamingDto.getUrl();
+//        String videoUploadedAt = this.extractVideoUploadedAtFromUrl(streamingDto.getUrl());
+//        UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining(videoUploadedAt);
+//        UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
 
-        String videoUploadedAt = this.extractVideoUploadedAtFromUrl(url);
+//        return this.updateVideoPost(videoInfo, streamingFileInfo);
 
-        UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining(videoUploadedAt);
-
-        UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
-
-        return this.updateVideoPost(videoInfo, streamingFileInfo);
+        return new VideoPost(
+            VideoPostDto.builder()
+                .userId(Long.parseLong(streamingDto.getUserId()))
+                .streamingUrl(streamingDto.getUrl())
+                .build()
+        );
     }
 
     @Override
