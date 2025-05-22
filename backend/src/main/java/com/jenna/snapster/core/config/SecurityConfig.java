@@ -2,11 +2,13 @@ package com.jenna.snapster.core.config;
 
 import com.jenna.snapster.core.security.jwt.JwtAuthenticationFilter;
 import com.jenna.snapster.core.security.jwt.JwtProvider;
+import com.jenna.snapster.core.security.oauth.CustomAuthorizationRequestResolver;
 import com.jenna.snapster.core.security.oauth.OAuth2SuccessHandler;
 import com.jenna.snapster.domain.user.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,6 +16,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestResolver;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.ForwardedHeaderFilter;
@@ -27,6 +31,10 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
+    private final ClientRegistrationRepository clients;
+
+    @Value("${authorization.app-redirect-uri}")
+    private String redirectUri;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -35,13 +43,22 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        OAuth2AuthorizationRequestResolver customResolver =
+            new CustomAuthorizationRequestResolver(
+                clients,
+                "/oauth2/authorization",
+                redirectUri
+            );
+
         http.csrf(AbstractHttpConfigurer::disable)
             .sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ).authorizeHttpRequests(auth ->
                 auth.requestMatchers(
+                        "/api/debug/headers",
                         "/",
                         "/api/oauth2/**",
+                        "/oauth2/redirect",
                         "/oauth2/authorization/**",
                         "/api/login",
                         "/api/user/login/**",
@@ -49,7 +66,9 @@ public class SecurityConfig {
                     ).permitAll()
                     .anyRequest()
                     .authenticated()
-            ).oauth2Login(oauth -> oauth.successHandler(oAuth2SuccessHandler))
+            ).oauth2Login(oauth -> oauth
+                .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(customResolver))
+                .successHandler(oAuth2SuccessHandler))
             .formLogin(AbstractHttpConfigurer::disable)     // 로그인 관련 리다이렉트/폼 로그인 비활성화
             .addFilterBefore(
                 jwtAuthenticationFilter(),
