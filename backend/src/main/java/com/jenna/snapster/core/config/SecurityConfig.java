@@ -31,10 +31,10 @@ public class SecurityConfig {
     private final JwtProvider jwtProvider;
     private final UserService userService;
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
-    private final ClientRegistrationRepository clientRegistrationRepository;
+    private final ClientRegistrationRepository clients;
 
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
-    private String oauth2RedirectUri;
+    private String kakaoRedirectUri;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -47,9 +47,9 @@ public class SecurityConfig {
 
         OAuth2AuthorizationRequestResolver customResolver =
             new CustomAuthorizationRequestResolver(
-                clientRegistrationRepository,
+                clients,
                 "/oauth2/authorization",
-                oauth2RedirectUri
+                kakaoRedirectUri
             );
 
         http.csrf(AbstractHttpConfigurer::disable)
