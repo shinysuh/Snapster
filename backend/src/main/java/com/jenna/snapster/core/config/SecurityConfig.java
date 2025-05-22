@@ -33,8 +33,8 @@ public class SecurityConfig {
     private final OAuth2SuccessHandler oAuth2SuccessHandler;
     private final ClientRegistrationRepository clients;
 
-    @Value("${authorization.app-redirect-uri}")
-    private String redirectUri;
+    @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
+    private String kakaoRedirectUri;
 
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
@@ -43,11 +43,13 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        log.info("\n========================== SecurityFilterChain Called ==========================\n");
+
         OAuth2AuthorizationRequestResolver customResolver =
             new CustomAuthorizationRequestResolver(
                 clients,
                 "/oauth2/authorization",
-                redirectUri
+                kakaoRedirectUri
             );
 
         http.csrf(AbstractHttpConfigurer::disable)
@@ -59,7 +61,6 @@ public class SecurityConfig {
                         "/",
                         "/api/oauth2/**",
                         "/oauth2/redirect",
-                        "/oauth2/authorization/**",
                         "/api/login",
                         "/api/user/login/**",
                         "/api/file/streaming"
@@ -68,8 +69,8 @@ public class SecurityConfig {
                     .authenticated()
             ).oauth2Login(oauth -> oauth
                 .authorizationEndpoint(endpoint -> endpoint.authorizationRequestResolver(customResolver))
-                .successHandler(oAuth2SuccessHandler))
-            .formLogin(AbstractHttpConfigurer::disable)     // 로그인 관련 리다이렉트/폼 로그인 비활성화
+                .successHandler(oAuth2SuccessHandler)
+            ).formLogin(AbstractHttpConfigurer::disable)     // 로그인 관련 리다이렉트/폼 로그인 비활성화
             .addFilterBefore(
                 jwtAuthenticationFilter(),
                 UsernamePasswordAuthenticationFilter.class
