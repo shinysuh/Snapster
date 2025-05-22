@@ -172,17 +172,6 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            JWT_SECRET_CLEAN=$(echo "$JWT_SECRET" | tr -d '\r\n')
-            
-            echo "==== RAW JWT_SECRET ===="
-            printf "%s" "$JWT_SECRET" | od -c
-          
-            echo "JWT_SECRET: "
-            echo "$JWT_SECRET" | od -c
-          
-            echo "JWT_SECRET_CLEAN: "
-            echo "$JWT_SECRET_CLEAN" | od -c
-          
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
               -e KAKAO_CLIENT_SECRET='$KAKAO_CLIENT_SECRET' \
