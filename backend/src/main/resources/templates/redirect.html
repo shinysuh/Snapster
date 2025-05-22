@@ -1,18 +1,13 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org">
-<head>
+<head th:inline="javascript">
     <meta charset="UTF-8" />
-    <title>Snapster 앱으로 이동 중...</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <script th:inline="javascript">
-        /*<![CDATA[*/
-        window.onload = function () {
-            const accessToken = /*[[${accessToken}]]*/ 'ACCESS_TOKEN_PLACEHOLDER';
-            const deeplink = "snapster://auth?accessToken=" + accessToken;
-            // 강제 딥링크 이동
-            window.location.href = deeplink;
-        };
-        /*]]>*/
+    <title>앱으로 이동 중...</title>
+    <meta http-equiv="refresh" th:content="'0; url=snapster://auth?accessToken=' + ${accessToken}" />
+    <script>
+        setTimeout(() => {
+            window.location.href = "snapster://auth?accessToken=[[${accessToken}]]";
+        }, 100);
     </script>
     <style>
         body {
