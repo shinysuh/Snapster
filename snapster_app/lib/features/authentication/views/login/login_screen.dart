@@ -5,6 +5,7 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/auth_buttons_by_orientation.dart';
 import 'package:snapster_app/features/authentication/views/login/login_form_screen.dart';
+import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
@@ -17,7 +18,10 @@ class LoginScreen extends ConsumerWidget {
   const LoginScreen({super.key});
 
   void _onTapSignUp(BuildContext context) {
-    goBackToPreviousRoute(context);
+    goToRouteNamed(
+      context: context,
+      routeName: SignUpScreen.routeName,
+    );
   }
 
   void _onTapEmailAndPassword(BuildContext context) {

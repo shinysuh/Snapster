@@ -20,7 +20,7 @@ String? getRedirectionLocation(AuthStatus status, String loc) {
 
   // 로그아웃 상태(토큰 X) → 인증(로그인) 페이지로
   if (!isLoggedIn && !isSplash && !isAuthPage) {
-    return SignUpScreen.routeURL; // 로그인 페이지로 이동
+    return LoginScreen.routeURL; // 로그인 페이지로 이동
   }
 
   // 프로필 편집은 홈 리디렉션 예외

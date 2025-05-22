@@ -4,7 +4,6 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/auth_buttons_by_orientation.dart';
-import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/username_screen.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -18,22 +17,7 @@ class SignUpScreen extends ConsumerWidget {
   const SignUpScreen({super.key});
 
   void _onTapLogin(BuildContext context) async {
-    // context.push(LoginScreen.routeURL);
-
-    goToRouteNamed(
-      context: context,
-      routeName: LoginScreen.routeName,
-    );
-
-    // redirectToRoute(context: context, route: LoginScreen.routeName);
-    // redirectToScreen(context: context, targetScreen: const LoginScreen());
-    // final result = await Navigator.of(context).push(
-    //   MaterialPageRoute(
-    //     builder: (context) => const LoginScreen(),
-    //   ),
-    // );
-    //
-    // print('User Came Back From Login Page');
+    goBackToPreviousRoute(context);
   }
 
   void _onTapEmailAndPassword(BuildContext context) {
@@ -41,17 +25,6 @@ class SignUpScreen extends ConsumerWidget {
       context: context,
       targetScreen: const UsernameScreen(),
     );
-    // goToRouteNamed(
-    //   context: context,
-    //   routeName: UsernameScreen.routeName,
-    // );
-    // context.push('/user/jenna?show=likes');
-
-    // redirectToRoute(context: context, route: UsernameScreen.routeName);
-    // routeWithFadeSlideAnimation(
-    //   context: context,
-    //   targetScreen: const UsernameScreen(),
-    // );
   }
 
   @override
