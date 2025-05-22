@@ -40,6 +40,7 @@ public class SecurityConfig {
                 auth.requestMatchers(
                         "/",
                         "/api/oauth2/**",
+                        "/oauth2/redirect",
                         "/api/login",
                         "/api/user/login/**",
                         "/api/file/streaming"

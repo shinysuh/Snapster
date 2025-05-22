@@ -56,6 +56,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     implementation 'org.apache.commons:commons-lang3:3.0'
 
+    // snapster 운영 - oauth2 리디렉션 처리용
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'

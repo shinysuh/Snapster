@@ -1,0 +1,28 @@
+<!-- src/main/resources/templates/redirect.html -->
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <title>Snapster 앱으로 이동 중...</title>
+    <meta http-equiv="refresh" th:content="'0.5; url=snapster://auth?accessToken=' + ${accessToken}" />
+    <style>
+        body {
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+        a {
+            display: inline-block;
+            margin-top: 20px;
+            text-decoration: none;
+            font-size: 16px;
+            color: #2b6cb0;
+        }
+    </style>
+</head>
+<body>
+<h1>앱으로 이동 중입니다...</h1>
+<p>잠시만 기다려주세요.</p>
+<a th:href="'snapster://auth?accessToken=' + ${accessToken}">앱으로 바로 이동하기</a>
+</body>
+</html>
