@@ -67,9 +67,10 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                 .refresh();
 
             if (context.mounted) {
-              goRouteReplacementRoute(
-                  context: context,
-                  routeURL: MainNavigationScreen.homeRouteURL);
+              goToRouteWithoutStack(
+                context: context,
+                location: MainNavigationScreen.homeRouteURL,
+              );
             }
           });
         });
