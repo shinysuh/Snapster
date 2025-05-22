@@ -3,8 +3,8 @@ import 'dart:io';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 
 class ApiInfo {
-  // static const baseUrl = 'https://d3uszapt2fdgux.cloudfront.net';       // 운영
-  static const baseUrl = 'http://localhost:8080';    // 개발
+  static const baseUrl = 'https://d3uszapt2fdgux.cloudfront.net';       // 운영
+  // static const baseUrl = 'http://localhost:8080';    // 개발
 
   static const oauthBaseUrl = '$baseUrl/oauth2/authorization';
   static const presignedBaseUrl = '$baseUrl/api/s3/presigned-url?fileName=';
