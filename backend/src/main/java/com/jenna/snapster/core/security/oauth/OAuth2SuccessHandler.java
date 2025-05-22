@@ -51,7 +51,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         User user = oAuthUserService.processOAuthUser(provider.getProvider(), oAuth2User);
         String accessToken = jwtProvider.createAccessToken(user);
 
-        log.info("\n========================== ACCESS TOKEN CREATED ==========================\n redirectUri: {} , accessToken: {}\n", redirectUri, accessToken);
+//        log.info("\n========================== ACCESS TOKEN CREATED ==========================\n redirectUri: {} , accessToken: {}\n", redirectUri, accessToken);
         response.sendRedirect(redirectUri + accessToken);
     }
 }
