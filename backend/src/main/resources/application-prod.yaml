@@ -11,9 +11,9 @@ spring:
     file: /home/ec2-user/snapster/application.pid
   data:
     redis:
-      client-type: lettuce
       host: 172.31.10.98
       port: 6379
+      password: qwer1234
   security:
     oauth2:
       client:
@@ -29,7 +29,6 @@ server:
     enabled: false
   forward-headers-strategy: native
 authorization:
-#  app-redirect-uri: https://d3uszapt2fdgux.cloudfront.net/oauth2/redirect?accessToken=
   jwt:
     expiration: 1800000 # 1000 * 60 * 30    # 30분
 
