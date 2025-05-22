@@ -64,7 +64,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
         response.setContentType("text/html;charset=UTF-8");
         response.getWriter().write(
             "<html>" +
-                "<head><meta http-equiv='refresh' content='0;url=" + redirectUrl + "' /></head>" +
+                "<head><meta http-equiv='refresh' content='0.5;url=" + redirectUrl + "' /></head>" +
                 "<body>" +
                 "앱으로 이동 중입니다... 이동하지 않으면 <a href='" + redirectUrl + "'>여기</a>를 누르세요." +
                 "</body>" +
