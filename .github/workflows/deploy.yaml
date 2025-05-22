@@ -131,18 +131,18 @@ jobs:
 #          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       - name: SSH into EC2 and Deploy Docker container
+        env:
+          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
+          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
+          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
+          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
         run: |
           REPOSITORY=/home/ec2-user/snapster/docker
           BACKEND_CONTAINER=${{ env.DOCKER_CONTAINER }}-backend
           FRONTEND_CONTAINER=${{ env.DOCKER_CONTAINER }}-frontend
           BACKEND_IMAGE=${{ env.DOCKER_IMAGE }}-backend
           FRONTEND_IMAGE=${{ env.DOCKER_IMAGE }}-frontend
-          
-          KAKAO_CLIENT_SECRET='${{ secrets.KAKAO_CLIENT_SECRET }}'
-          GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'
-          S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
-          S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
-          JWT_SECRET='${{ secrets.JWT_SECRET }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행
@@ -172,7 +172,11 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            echo "$JWT_SECRET" | od -c
+            JWT_SECRET_CLEAN=$(echo "$JWT_SECRET" | tr -d '\\n')
+          
+            echo "JWT_SECRET: $JWT_SECRET" | od -c
+            echo "JWT_SECRET_CLEAN: $JWT_SECRET_CLEAN" | od -c
+          
           
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
@@ -180,7 +184,7 @@ jobs:
               -e GOOGLE_CLIENT_SECRET='$GOOGLE_CLIENT_SECRET' \
               -e S3_ACCESS_KEY='$S3_ACCESS_KEY' \
               -e S3_SECRET_ACCESS_KEY='$S3_SECRET_ACCESS_KEY' \
-              -e JWT_SECRET='$JWT_SECRET'"
+              -e JWT_SECRET='$JWT_SECRET_CLEAN'"
           
             # 프론트엔드 실행
             # run_docker $FRONTEND_CONTAINER $FRONTEND_IMAGE "-p 8080:80" ""
