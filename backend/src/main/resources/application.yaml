@@ -58,8 +58,8 @@ spring:
       port: 6379
 
 authorization:
-  app-redirect-uri: snapster://auth?accessToken=
-#  app-redirect-uri: /oauth2/redirect?accessToken=
+#  app-redirect-uri: snapster://auth?accessToken=
+  app-redirect-uri: /oauth2/redirect?accessToken=
   jwt:
     secret: ${JWT_SECRET}
     expiration: 10800000   # 개발용 3시간
