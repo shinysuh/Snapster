@@ -18,6 +18,13 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  cache:
+    type: redis
+  data:
+    redis:
+      client-type: lettuce
+      host: localhost
+      port: 6379
   security:
     oauth2:
       client:
@@ -49,17 +56,10 @@ spring:
             authorization-uri: https://accounts.google.com/o/oauth2/v2/auth
             token-uri: https://oauth2.googleapis.com/token
             user-info-uri: https://www.googleapis.com/oauth2/v3/userinfo
-  cache:
-    type: redis
-  data:
-    redis:
-      client-type: lettuce
-      host: localhost
-      port: 6379
 
 authorization:
   app-redirect-uri: snapster://auth?accessToken=
-#  app-redirect-uri: /oauth2/redirect?accessToken=
+  #  app-redirect-uri: /oauth2/redirect?accessToken=
   jwt:
     secret: ${JWT_SECRET}
     expiration: 10800000   # 개발용 3시간
