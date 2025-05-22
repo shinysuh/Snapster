@@ -1,5 +1,5 @@
 server:
-  port: 80
+  port: 8080
   error:
     whitelabel:
       enabled: true
@@ -30,12 +30,12 @@ spring:
             scope:
               - profile_nickname
               - profile_image
-            redirect-uri: http://localhost:80/login/oauth2/code/kakao
+            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             client-name: Kakao
           google:
             client-id: 245849604605-jrf3orgldpeccmb2i9m0elehc8s0gnkl.apps.googleusercontent.com
             client-secret: ${GOOGLE_CLIENT_SECRET}
-            redirect-uri: http://localhost:80/login/oauth2/code/google
+            redirect-uri: http://localhost:8080/login/oauth2/code/google
             scope:
               - email
               - profile
@@ -58,8 +58,8 @@ spring:
       port: 6379
 
 authorization:
-#  app-redirect-uri: snapster://auth?accessToken=
-  app-redirect-uri: /oauth2/redirect?accessToken=
+  app-redirect-uri: snapster://auth?accessToken=
+#  app-redirect-uri: /oauth2/redirect?accessToken=
   jwt:
     secret: ${JWT_SECRET}
     expiration: 10800000   # 개발용 3시간
