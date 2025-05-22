@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head th:inline="javascript">
+  <meta charset="UTF-8" />
+  <title>앱으로 이동 중...</title>
+  <meta http-equiv="refresh" th:content="'0; url=snapster://auth?accessToken=' + ${accessToken}" />
+  <script>
+    setTimeout(() => {
+      window.location.href = "snapster://auth?accessToken=[[${accessToken}]]";
+    }, 100);
+  </script>
+  <style>
+    body {
+      font-family: sans-serif;
+      text-align: center;
+      padding-top: 50px;
+    }
+    a {
+      display: inline-block;
+      margin-top: 20px;
+      text-decoration: none;
+      font-size: 16px;
+      color: #2b6cb0;
+    }
+  </style>
+</head>
+<body>
+<h1>앱으로 이동 중입니다...</h1>
+<p>잠시만 기다려주세요.</p>
+<a th:href="'snapster://auth?accessToken=' + ${accessToken}">앱으로 바로 이동하기</a>
+</body>
+</html>

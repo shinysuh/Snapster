@@ -29,6 +29,7 @@ server:
     enabled: false
   forward-headers-strategy: native
 authorization:
+  app-redirect-uri: https://d3uszapt2fdgux.cloudfront.net/oauth2/redirect?accessToken=
   jwt:
     expiration: 1800000 # 1000 * 60 * 30    # 30분
 
