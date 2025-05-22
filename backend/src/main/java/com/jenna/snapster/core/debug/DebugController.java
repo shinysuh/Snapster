@@ -14,7 +14,8 @@ public class DebugController {
 
     @GetMapping("/headers")
     public ResponseEntity<?> headers(HttpServletRequest request) {
-        log.info("\n\n ------------- X-Forwarded-Proto: {} ------------- \n\n", request.getHeader("X-Forwarded-Proto"));
-        return ResponseEntity.ok().build();
+        String result = String.format("%n%n ------------- X-Forwarded-Proto: %s ------------- %n%n", request.getHeader("X-Forwarded-Proto"));
+        log.info(result);
+        return ResponseEntity.ok(result);
     }
 }
