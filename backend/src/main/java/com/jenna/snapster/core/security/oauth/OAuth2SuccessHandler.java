@@ -53,22 +53,7 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
 //        log.info("\n========================== ACCESS TOKEN CREATED : {} ==========================\n", accessToken);
 //
-//        response.sendRedirect(redirectUri + accessToken);
-//        System.out.println("redirectUri: " + redirectUri + accessToken);
-
-        String redirectUrl = redirectUri + accessToken;
-
-        log.info("Redirecting to {}", redirectUrl);
-
-        // HTML로 응답
-        response.setContentType("text/html;charset=UTF-8");
-        response.getWriter().write(
-            "<html>" +
-                "<head><meta http-equiv='refresh' content='0.5;url=" + redirectUrl + "' /></head>" +
-                "<body>" +
-                "앱으로 이동 중입니다... 이동하지 않으면 <a href='" + redirectUrl + "'>여기</a>를 누르세요." +
-                "</body>" +
-                "</html>"
-        );
+        response.sendRedirect(redirectUri + accessToken);
+        System.out.println("redirectUri with AccessToken: " + redirectUri + accessToken);
     }
 }
