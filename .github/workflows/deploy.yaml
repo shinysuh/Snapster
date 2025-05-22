@@ -138,11 +138,11 @@ jobs:
           BACKEND_IMAGE=${{ env.DOCKER_IMAGE }}-backend
           FRONTEND_IMAGE=${{ env.DOCKER_IMAGE }}-frontend
           
-          KAKAO_CLIENT_SECRET: ${{ secrets.KAKAO_CLIENT_SECRET }}
-          GOOGLE_CLIENT_SECRET: ${{ secrets.GOOGLE_CLIENT_SECRET }}
-          S3_ACCESS_KEY: ${{ secrets.S3_ACCESS_KEY }}
-          S3_SECRET_ACCESS_KEY: ${{ secrets.S3_SECRET_ACCESS_KEY }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          KAKAO_CLIENT_SECRET='${{ secrets.KAKAO_CLIENT_SECRET }}'
+          GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'
+          S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
+          S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
+          JWT_SECRET='${{ secrets.JWT_SECRET }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행
