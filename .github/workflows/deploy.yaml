@@ -172,10 +172,11 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            JWT_SECRET_CLEAN=$(echo "$JWT_SECRET" | tr -d '\n')
+            JWT_SECRET_CLEAN=$(printf "%s" "$JWT_SECRET" | xargs)
           
+            echo "JWT_SECRET: "
             echo "JWT_SECRET: $JWT_SECRET" | od -c
-            echo "JWT_SECRET_CLEAN: $JWT_SECRET_CLEAN" | od -c
+            echo -n "JWT_SECRET_CLEAN: " && printf "%s" "$JWT_SECRET_CLEAN" | od -c
           
           
             # 백엔드 실행
