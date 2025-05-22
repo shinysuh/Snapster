@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 
@@ -11,6 +12,8 @@ class TokenStorageService {
 
   // 토큰 읽기
   Future<String?> readToken() async {
+    String? token = await _storage.read(key: _tokenKey);
+    debugPrint("########## accessToken: $token");
     return await _storage.read(key: _tokenKey);
   }
 

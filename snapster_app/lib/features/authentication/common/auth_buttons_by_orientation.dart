@@ -28,14 +28,16 @@ class AuthButtonsByOrientation extends ConsumerWidget {
       AuthButton(
         icon: FontAwesomeIcons.google,
         text: S.of(context).continueWithGoogle,
-        onTapButton: () =>
-            ref.read(socialAuthProvider.notifier).launchOAuthSignIn('google'),
+        onTapButton: () => ref
+            .read(socialAuthProvider.notifier)
+            .loginWithProvider(context, 'google'),
       ),
       AuthButton(
         icon: FontAwesomeIcons.solidMessage,
         text: S.of(context).continueWithKakao,
-        onTapButton: () =>
-            ref.read(socialAuthProvider.notifier).launchOAuthSignIn('kakao'),
+        onTapButton: () => ref
+            .read(socialAuthProvider.notifier)
+            .loginWithProvider(context, 'kakao'),
       ),
     ];
   }
