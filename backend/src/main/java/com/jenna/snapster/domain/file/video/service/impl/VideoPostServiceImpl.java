@@ -106,13 +106,6 @@ public class VideoPostServiceImpl implements VideoPostService {
         UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
 
         return this.updateVideoPost(videoInfo, streamingFileInfo);
-
-//        return new VideoPost(
-//            VideoPostDto.builder()
-//                .userId(Long.parseLong(streamingDto.getUserId()))
-//                .streamingUrl(streamingDto.getUrl())
-//                .build()
-//        );
     }
 
     @Override

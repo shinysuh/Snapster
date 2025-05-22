@@ -172,6 +172,8 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
+            echo "=== JWT_SECRET: $JWT_SECRET"
+          
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
               -e KAKAO_CLIENT_SECRET='$KAKAO_CLIENT_SECRET' \
