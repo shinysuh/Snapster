@@ -52,6 +52,8 @@ public class ThumbnailGenerator {
         ProcessBuilder pb = new ProcessBuilder(
             "ffmpeg",
             "-y",
+            "-ignore_editlist", "1",
+            "-noautorotate",
             "-i",
             inputUrl,
             "-ss",
@@ -59,7 +61,7 @@ public class ThumbnailGenerator {
             "-vframes",
             "1",
             "-vf",
-            vfFilter,
+            vfFilter + ",format=yuvj420p",
             outputFilePath
         );
 
