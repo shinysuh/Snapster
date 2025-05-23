@@ -54,6 +54,7 @@ public class ThumbnailGenerator {
             "-y",
 //            "-ignore_editlist", "1",
 //            "-noautorotate",
+            "-autorotate",
             "-i",
             inputUrl,
             "-ss",
