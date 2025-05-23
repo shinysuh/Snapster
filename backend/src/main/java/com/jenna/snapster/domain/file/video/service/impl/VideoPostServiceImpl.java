@@ -51,7 +51,8 @@ public class VideoPostServiceImpl implements VideoPostService {
 
         VideoPost uploadedVideo = videoPostRepository.save(new VideoPost(video));
 
-        this.refreshUserFeed(currentUser.getId());
+        // 캐시 갱신은 streaming 파일 업로드 후
+//        this.refreshUserFeed(currentUser.getId());
 
         return new VideoSaveDto(uploadedVideo);
     }
@@ -105,8 +106,14 @@ public class VideoPostServiceImpl implements VideoPostService {
         String videoUploadedAt = this.extractVideoUploadedAtFromUrl(streamingDto.getUrl());
         UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining("/" + UploadedFileType.VIDEO.getType() + "/" + videoUploadedAt);
         UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
+        VideoSaveDto updatedVideoPost = this.updateVideoPost(videoInfo, streamingFileInfo);
 
-        return this.updateVideoPost(videoInfo, streamingFileInfo);
+        // 캐시 갱신
+        this.refreshUserFeed(Long.parseLong(streamingDto.getUserId()));
+
+        return updatedVideoPost;
+
+
     }
 
     @Override
