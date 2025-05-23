@@ -70,15 +70,15 @@ jobs:
             ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
             ${{ runner.os }}-docker-
 
-#      - name: Cache Docker layers (frontend)
-#        uses: actions/cache@v3
-#        with:
-#          path: ${{ env.CACHE_PATH }}/.buildx-cache-frontend
-#          key: ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}-${{ github.sha }}
-#          restore-keys: |
-#            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}
-#            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}
-#            ${{ runner.os }}-docker-frontend-
+      #      - name: Cache Docker layers (frontend)
+      #        uses: actions/cache@v3
+      #        with:
+      #          path: ${{ env.CACHE_PATH }}/.buildx-cache-frontend
+      #          key: ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}-${{ github.sha }}
+      #          restore-keys: |
+      #            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}
+      #            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}
+      #            ${{ runner.os }}-docker-frontend-
 
       # 백엔드 이미지 빌드 및 로드
       - name: Build backend Docker image with caching
@@ -93,16 +93,16 @@ jobs:
           --progress=plain
 
       # 프론트 이미지 빌드 및 로드
-#      - name: Build frontend Docker image with caching
-#        run: |
-#          docker buildx build \
-#          --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
-#          --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
-#          --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
-#          --file snapster_app/Dockerfile \
-#          snapster_app/. \
-#          --load \
-#          --progress=plain
+      #      - name: Build frontend Docker image with caching
+      #        run: |
+      #          docker buildx build \
+      #          --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
+      #          --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
+      #          --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
+      #          --file snapster_app/Dockerfile \
+      #          snapster_app/. \
+      #          --load \
+      #          --progress=plain
 
       - name: Log into AWS (EC2)
         uses: aws-actions/configure-aws-credentials@v2
@@ -125,10 +125,10 @@ jobs:
           scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-backend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       # 프론트 도커 이미지 복사
-#      - name: Copy frontend Docker image to EC2
-#        run: |
-#          docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
-#          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+      #      - name: Copy frontend Docker image to EC2
+      #        run: |
+      #          docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
+      #          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
 
       - name: SSH into EC2 and Deploy Docker container
         run: |
@@ -157,7 +157,7 @@ jobs:
                 docker stop \$name
                 docker rm \$name
               fi
-              
+          
               # 기존 이미지 삭제 (존재 시)
               if docker images | grep -q \$image; then 
                 docker rmi \$image || true
@@ -167,20 +167,18 @@ jobs:
           
               # 이미지 로드
               docker load < $REPOSITORY/\$image.tar.gz || exit 1
-            
+          
               # 컨테이너 실행
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            ENV_VARS="-e SPRING_PROFILES_ACTIVE=prod \
-              -e KAKAO_CLIENT_SECRET=\"$KAKAO_CLIENT_SECRET\" \
-              -e GOOGLE_CLIENT_SECRET=\"$GOOGLE_CLIENT_SECRET\" \
-              -e S3_ACCESS_KEY=\"$S3_ACCESS_KEY\" \
-              -e S3_SECRET_ACCESS_KEY=\"$S3_SECRET_ACCESS_KEY\" \
-              -e JWT_SECRET=\"$JWT_SECRET\""
-            
             # 백엔드 실행
-            run_docker "$BACKEND_CONTAINER" "$BACKEND_IMAGE" "-p 80:80" "$ENV_VARS"
+            run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
+              -e KAKAO_CLIENT_SECRET=$KAKAO_CLIENT_SECRET \
+              -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
+              -e S3_ACCESS_KEY=$S3_ACCESS_KEY \
+              -e S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY \
+              -e JWT_SECRET=$JWT_SECRET"
           
             # 프론트엔드 실행
             # run_docker $FRONTEND_CONTAINER $FRONTEND_IMAGE "-p 8080:80" ""
