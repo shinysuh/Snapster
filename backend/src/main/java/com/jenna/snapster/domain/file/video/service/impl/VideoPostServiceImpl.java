@@ -99,11 +99,11 @@ public class VideoPostServiceImpl implements VideoPostService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public VideoPost saveStreamingFile(StreamingDto streamingDto) {
+    public VideoSaveDto saveStreamingFile(StreamingDto streamingDto) {
         log.info("\n ====================== Streaming File Save Method Called ======================\n userId: {}, url: {}", streamingDto.getUserId(), streamingDto.getUrl());
 
         String videoUploadedAt = this.extractVideoUploadedAtFromUrl(streamingDto.getUrl());
-        UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining(videoUploadedAt);
+        UploadedFile videoInfo = uploadedFileService.getOneFileByUrlContaining("/" + UploadedFileType.VIDEO.getType() + "/" + videoUploadedAt);
         UploadedFile streamingFileInfo = this.saveStreamingFileInfo(streamingDto);
 
         return this.updateVideoPost(videoInfo, streamingFileInfo);
@@ -115,10 +115,10 @@ public class VideoPostServiceImpl implements VideoPostService {
             .orElseThrow(() -> new GlobalException(ErrorCode.NO_SUCH_FILE));
     }
 
-    private VideoPost updateVideoPost(UploadedFile videoInfo, UploadedFile streamingFileInfo) {
+    private VideoSaveDto updateVideoPost(UploadedFile videoInfo, UploadedFile streamingFileInfo) {
         VideoPost videoPost = this.getOneByVideoFileId(videoInfo.getId());
         videoPost.setStreamingFile(streamingFileInfo);
-        return videoPost;
+        return new VideoSaveDto(videoPost);
     }
 
     private UploadedFile saveStreamingFileInfo(StreamingDto streamingDto) {

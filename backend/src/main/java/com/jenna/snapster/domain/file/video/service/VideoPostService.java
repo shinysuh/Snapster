@@ -10,7 +10,7 @@ public interface VideoPostService {
 
     VideoSaveDto saveVideoPostAndUploadedFileInfo(User currentUser, VideoPostRequestDto videoPostRequestDto);
 
-    VideoPost saveStreamingFile(StreamingDto streamingDto);
+    VideoSaveDto saveStreamingFile(StreamingDto streamingDto);
 
     VideoPost getOneByVideoFileId(Long videoFileId);
 }
