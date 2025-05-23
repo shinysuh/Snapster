@@ -163,7 +163,7 @@ jobs:
                 docker rmi \$image || true
               fi
           
-              docker container prune -f
+              docker system prune -f
           
               # 이미지 로드
               docker load < $REPOSITORY/\$image.tar.gz || exit 1
