@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
+import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/constants/authorization.dart';
 import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
@@ -88,8 +89,7 @@ class AuthRepository {
   // OAuth 2.0 인앱 로그인
   Future<void> loginWithProvider(
       BuildContext context, WidgetRef ref, String provider) async {
-    final url =
-        'https://d3uszapt2fdgux.cloudfront.net/oauth2/authorization/$provider';
+    final url = '${ApiInfo.baseUrl}/oauth2/authorization/$provider';
     final token = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => OAuthWebViewPage(initialUrl: url),
