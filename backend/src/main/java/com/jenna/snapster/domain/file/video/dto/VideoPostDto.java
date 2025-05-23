@@ -69,12 +69,12 @@ public class VideoPostDto {
         // 개발용 null-safe
         UploadedFile thumbnailFile = post.getThumbnailFile();
         this.thumbnailId = thumbnailFile != null ? thumbnailFile.getId() : null;
-        this.thumbnailUrl = thumbnailFile != null ? thumbnailFile.getUrl() : null;
+        this.thumbnailUrl = thumbnailFile != null ? thumbnailFile.getUrl() : "";
 
         // 개발용 null-safe
         UploadedFile streamingFile = post.getStreamingFile();
         this.streamingId = streamingFile != null ? streamingFile.getId() : null;
-        this.streamingUrl = streamingFile != null ? streamingFile.getUrl() : null;
+        this.streamingUrl = streamingFile != null ? streamingFile.getUrl() : "";
 
         this.tags = post.getTagList();
         this.likes = post.getLikes();
