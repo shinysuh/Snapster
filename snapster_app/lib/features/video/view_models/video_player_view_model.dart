@@ -79,15 +79,15 @@ class VideoPlayerViewModel extends StateNotifier<VideoPlayerState>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState appState) {
-    final controller = state.controller;
-    if (controller == null || !state.isInitialized) return;
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final controller = this.state.controller;
+    if (controller == null || !this.state.isInitialized) return;
 
-    if (appState == AppLifecycleState.paused) {
+    if (state == AppLifecycleState.paused) {
       // 앱 백그라운드 시 영상 일시 정지
-      if (state.isPlaying) {
+      if (this.state.isPlaying) {
         _stopPlay(controller);
-      } else if (appState == AppLifecycleState.resumed) {
+      } else if (state == AppLifecycleState.resumed) {
         // 앱 foreground 시 자동 재생 (원할 경우)
         _startPlay(controller);
       }

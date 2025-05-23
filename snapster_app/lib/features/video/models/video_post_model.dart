@@ -69,13 +69,13 @@ class VideoPostModel {
         // uploaded_file 에 저장된 비디오 파일 id
         videoId = json['videoId'].toString(),
         videoUrl = json['videoUrl'],
-        thumbnailId = json['thumbnailId'].toString(),
+        thumbnailId = json['thumbnailId']?.toString() ?? '',
         thumbnailUrl = json['thumbnailUrl'],
         streamingId = json['streamingId']?.toString() ?? '',
-        streamingUrl = json['streamingUrl'] ?? '',
+        streamingUrl = json['streamingUrl'],
         userId = json['userId'].toString(),
         userDisplayName = json['userDisplayName'],
-        userProfileImageUrl = json['userProfileImageUrl'],
+        userProfileImageUrl = json['userProfileImageUrl'] ?? '',
         likes = json['likes'],
         comments = json['comments'],
         createdAt = json['createdAt'];
