@@ -16,6 +16,7 @@ import 'package:snapster_app/features/user/widgets/profile_avatar.dart';
 import 'package:snapster_app/features/user/widgets/profile_button.dart';
 import 'package:snapster_app/features/user/widgets/user_profile_tab_bar.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/features/video/views/video_streaming_screen.dart';
 import 'package:snapster_app/features/video_old/models/thumbnail_link_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
@@ -34,8 +35,6 @@ class UserProfileScreen extends ConsumerStatefulWidget {
 }
 
 class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
-  final _username = '쭌희';
-  final _userAccount = 'Jason_2426';
   final _videoRatio = 4 / 5;
 
   void _onTapEditProfile(AppUser user) {
@@ -252,6 +251,42 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
+  void _onTapFeedThumbnail(List<VideoPostModel> feedData, index) {
+    redirectToScreen(
+      context: context,
+      // isFullScreen: true,
+      targetScreen: VideoStreamingScreen(
+        videos: feedData,
+        initialIndex: index,
+      ),
+    );
+  }
+
+  Widget _getFeedItem(List<VideoPostModel> feedData, int index) {
+    VideoPostModel feed = feedData[index];
+    return GestureDetector(
+      onTap: () => _onTapFeedThumbnail(feedData, index),
+      child: Stack(
+        children: [
+          Column(
+            children: [
+              AspectRatio(
+                aspectRatio: _videoRatio,
+                child: Image(
+                  fit: BoxFit.cover,
+                  image: NetworkImage(
+                    feed.thumbnailUrl,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          _getPlayCount('2.6K'),
+        ],
+      ),
+    );
+  }
+
   Widget _getFeedGridViewByTabBar({
     required int colCount,
     required String playCount,
@@ -270,25 +305,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
         childAspectRatio: _videoRatio,
       ),
       itemBuilder: (context, index) {
-        var feed = feedData[index];
-        return Stack(
-          children: [
-            Column(
-              children: [
-                AspectRatio(
-                  aspectRatio: _videoRatio,
-                  child: Image(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                      feed.thumbnailUrl,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            _getPlayCount('2.6K'),
-          ],
-        );
+        return _getFeedItem(feedData, index);
       },
     );
   }
@@ -357,13 +374,9 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
       return const Center(child: Text("로그인이 필요합니다."));
     }
 
-    // authenticated일 때만 currentUserProvider 구독
-    // final userAsync = ref.watch(currentUserProvider);
-
     final user = authState.user;
 
     if (user == null) {
-      debugPrint("########## user null");
       return const Center(child: Text('유저 정보가 없습니다.'));
     }
 
@@ -446,10 +459,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                 ],
                 body: TabBarView(
                   children: [
-                    ref
-                        .watch(feedViewModelProvider(user.userId))
-                        // .watch(uploadedThumbnailListProvider(user.userId))
-                        .when(
+                    ref.watch(feedViewModelProvider(user.userId)).when(
                           loading: () => const Center(
                             child: CircularProgressIndicator.adaptive(),
                           ),
@@ -483,139 +493,5 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
         ),
       ),
     );
-
-    // return userAsync.when(
-    //   loading: () {
-    //     debugPrint("########## loading");
-    //     return const Center(
-    //       child: CircularProgressIndicator.adaptive(),
-    //     );
-    //   },
-    //   error: (error, stackTrace) => Center(
-    //     child: Text(error.toString()),
-    //   ),
-    //   data: (user) {
-    //     debugPrint("########## user data: $user"); // 데이터 상태 확인
-    //     if (user == null) {
-    //       debugPrint("########## user null");
-    //       return const Center(child: Text('No user data available'));
-    //     }
-    //     return Scaffold(
-    //       backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-    //       body: SafeArea(
-    //         child: LayoutBuilder(
-    //           builder: (context, constraints) {
-    //             // var width = MediaQuery.of(context).size.width;
-    //             var width = constraints.maxWidth;
-    //             var isVertical = width < Breakpoints.md;
-    //             var colCount = isVertical
-    //                 ? 3
-    //                 : width < Breakpoints.lg
-    //                     ? 4
-    //                     : 5;
-    //             return DefaultTabController(
-    //               initialIndex: widget.show == 'likes' ? 1 : 0,
-    //               length: 2,
-    //               /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-    //               child: NestedScrollView(
-    //                 headerSliverBuilder: (context, innerBoxIsScrolled) => [
-    //                   SliverAppBar(
-    //                     centerTitle: true,
-    //                     // backgroundColor: isDark ? Colors.black : Colors.white,
-    //                     title: Text(user.displayName),
-    //                     actions: [
-    //                       IconButton(
-    //                         onPressed: () => _onTapEditProfile(user),
-    //                         icon: const FaIcon(
-    //                           FontAwesomeIcons.pen,
-    //                           size: Sizes.size18,
-    //                         ),
-    //                       ),
-    //                       IconButton(
-    //                         onPressed: _onTapBell,
-    //                         icon: const FaIcon(
-    //                           FontAwesomeIcons.bell,
-    //                           size: Sizes.size20,
-    //                         ),
-    //                       ),
-    //                       IconButton(
-    //                         onPressed: _onTapGear,
-    //                         icon: const FaIcon(
-    //                           FontAwesomeIcons.gear,
-    //                           size: Sizes.size20,
-    //                         ),
-    //                       ),
-    //                     ],
-    //                   ),
-    //                   SliverToBoxAdapter(
-    //                     child: isVertical
-    //                         ? Column(
-    //                             children: [
-    //                               _getUserPic(user, isVertical),
-    //                               Gaps.v24,
-    //                               ..._getUserInfo(user),
-    //                               Gaps.v20,
-    //                             ],
-    //                           )
-    //                         : Row(
-    //                             mainAxisAlignment: MainAxisAlignment.center,
-    //                             crossAxisAlignment: CrossAxisAlignment.start,
-    //                             children: [
-    //                               _getUserPic(user, isVertical),
-    //                               Column(
-    //                                 children: [
-    //                                   ..._getUserInfo(user),
-    //                                   Gaps.v20,
-    //                                 ],
-    //                               ),
-    //                             ],
-    //                           ),
-    //                   ),
-    //                   SliverPersistentHeader(
-    //                     pinned: true,
-    //                     floating: true,
-    //                     delegate: UserProfileTabBar(),
-    //                   ),
-    //                 ],
-    //                 body: TabBarView(
-    //                   children: [
-    //                     ref
-    //                         .watch(uploadedThumbnailListProvider(user.userId))
-    //                         .when(
-    //                           loading: () => const Center(
-    //                             child: CircularProgressIndicator.adaptive(),
-    //                           ),
-    //                           error: (error, stackTrace) => Center(
-    //                             child: Text(error.toString()),
-    //                           ),
-    //                           data: (thumbnails) => _getGridViewByTabBar(
-    //                             colCount: colCount,
-    //                             playCount: '2.6K',
-    //                             thumbnailData: thumbnails,
-    //                           ),
-    //                         ),
-    //                     ref.watch(likedThumbnailListProvider(user.userId)).when(
-    //                           loading: () => const Center(
-    //                             child: CircularProgressIndicator.adaptive(),
-    //                           ),
-    //                           error: (error, stackTrace) => Center(
-    //                             child: Text(error.toString()),
-    //                           ),
-    //                           data: (likes) => _getGridViewByTabBar(
-    //                             colCount: colCount,
-    //                             playCount: '36.1K',
-    //                             thumbnailData: likes,
-    //                           ),
-    //                         ),
-    //                   ],
-    //                 ),
-    //               ),
-    //             );
-    //           },
-    //         ),
-    //       ),
-    //     );
-    //   },
-    // );
   }
 }
