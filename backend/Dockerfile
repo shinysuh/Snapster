@@ -1,6 +1,12 @@
 # JDK 21 기반 이미지 사용
 FROM openjdk:21-jdk-slim
 
+# ffmpeg 설치
+RUN apt-get update && \
+    apt-get install -y ffmpeg && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 # 작업 디렉토리 생성
 WORKDIR /app
 
