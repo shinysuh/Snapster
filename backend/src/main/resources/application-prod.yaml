@@ -28,9 +28,9 @@ server:
   ssl:
     enabled: false
   forward-headers-strategy: native
-authorization:
-  jwt:
-    expiration: 1800000 # 1000 * 60 * 30    # 30분
+#authorization:
+#  jwt:
+#    expiration: 1800000 # 1000 * 60 * 30    # 30분
 
 logging:
   level:
