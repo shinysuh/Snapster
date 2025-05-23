@@ -174,11 +174,11 @@ jobs:
           
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
-              -e KAKAO_CLIENT_SECRET='$KAKAO_CLIENT_SECRET' \
-              -e GOOGLE_CLIENT_SECRET='$GOOGLE_CLIENT_SECRET' \
-              -e S3_ACCESS_KEY='$S3_ACCESS_KEY' \
-              -e S3_SECRET_ACCESS_KEY='$S3_SECRET_ACCESS_KEY' \
-              -e JWT_SECRET='$JWT_SECRET'"
+              -e KAKAO_CLIENT_SECRET=$KAKAO_CLIENT_SECRET \
+              -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
+              -e S3_ACCESS_KEY=$S3_ACCESS_KEY \
+              -e S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY \
+              -e JWT_SECRET=$JWT_SECRET"
           
             # 프론트엔드 실행
             # run_docker $FRONTEND_CONTAINER $FRONTEND_IMAGE "-p 8080:80" ""

@@ -3,7 +3,7 @@ import 'package:snapster_app/features/authentication/constants/authorization.dar
 import 'package:webview_flutter/webview_flutter.dart';
 
 class OAuthWebViewPage extends StatefulWidget {
-  final String initialUrl; // ex: https://.../oauth2/authorization/kakao
+  final String initialUrl; // ex: {ApiInfo.baseUrl}/oauth2/authorization/kakao
 
   const OAuthWebViewPage({
     required this.initialUrl,
