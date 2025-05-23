@@ -30,7 +30,7 @@ server:
   forward-headers-strategy: native
 #authorization:
 #  jwt:
-#    expiration: 1800000 # 1000 * 60 * 30    # 30분
+#    expiration: 1800000 # 1000 * 60 * 30    # 30분   # TODO - 개발 완료 시 적용 필요
 
 logging:
   level:

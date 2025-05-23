@@ -36,6 +36,9 @@ public class SecurityConfig {
     @Value("${spring.security.oauth2.client.registration.kakao.redirect-uri}")
     private String kakaoRedirectUri;
 
+    @Value("${authorization.jwt.secret}")
+    private String jwtSecret;
+
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() {
         return new JwtAuthenticationFilter(jwtProvider, userService);
@@ -43,7 +46,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        log.info("\n========================== SecurityFilterChain Called ==========================\n");
+        log.info("\n\n========================== SecurityFilterChain Called ==========================\n");
+        log.info("\n\n========================== key: {} ==========================\n", jwtSecret);
 
         OAuth2AuthorizationRequestResolver customResolver =
             new CustomAuthorizationRequestResolver(
