@@ -61,9 +61,7 @@ public class ThumbnailGenerator {
             "-vframes",
             "1",
             "-vf",
-            vfFilter
-//                + ",format=yuvj420p"
-            ,
+            vfFilter + ",format=yuvj420p",
             outputFilePath
         );
 
