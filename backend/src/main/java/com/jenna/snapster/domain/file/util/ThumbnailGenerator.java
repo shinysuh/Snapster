@@ -52,9 +52,9 @@ public class ThumbnailGenerator {
         ProcessBuilder pb = new ProcessBuilder(
             "ffmpeg",
             "-y",
-//            "-ignore_editlist", "1",
-//            "-noautorotate",
-            "-autorotate",
+            "-ignore_editlist", "1",
+            "-noautorotate",
+//            "-autorotate",
             "-i",
             inputUrl,
             "-ss",
