@@ -12,6 +12,7 @@ import com.jenna.snapster.domain.file.util.ThumbnailGenerator;
 import com.jenna.snapster.domain.file.video.dto.StreamingDto;
 import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.file.video.dto.VideoPostRequestDto;
+import com.jenna.snapster.domain.file.video.dto.VideoSaveDto;
 import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import com.jenna.snapster.domain.file.video.repository.VideoPostRepository;
 import com.jenna.snapster.domain.file.video.service.VideoPostService;
@@ -37,7 +38,7 @@ public class VideoPostServiceImpl implements VideoPostService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public VideoPost saveVideoPostAndUploadedFileInfo(User currentUser, VideoPostRequestDto videoPostRequestDto) {
+    public VideoSaveDto saveVideoPostAndUploadedFileInfo(User currentUser, VideoPostRequestDto videoPostRequestDto) {
         UploadedFile uploadedFile = uploadedFileService.saveFile(currentUser, videoPostRequestDto.getUploadedFileInfo());
 
         VideoPostDto video = videoPostRequestDto.getVideoInfo();
@@ -52,7 +53,7 @@ public class VideoPostServiceImpl implements VideoPostService {
 
         this.refreshUserFeed(currentUser.getId());
 
-        return uploadedVideo;
+        return new VideoSaveDto(uploadedVideo);
     }
 
     private void refreshUserFeed(Long userId) {
