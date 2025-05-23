@@ -163,6 +163,13 @@ jobs:
                 docker rmi \$image || true
               fi
           
+              # 도커 리소스 사용량 체크
+              docker system df
+          
+              # 중지된 컨테이너만 제거 (안전한 일상 배포용)
+              # docker container prune -f
+          
+              # 중지 컨테이너 정리 && 이미지는 남기되 기타 리소스만 정리
               docker system prune -f
           
               # 이미지 로드
