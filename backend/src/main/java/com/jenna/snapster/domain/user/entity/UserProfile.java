@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.user.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class UserProfile {
 
     @OneToOne
     @MapsId
+    @JsonIgnore  // 순환 방지: Profile → User 직렬화 막기
     @JoinColumn(name = "user_id")
     private User user;
 
