@@ -11,7 +11,6 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Data
 @Builder
@@ -24,6 +23,8 @@ public class VideoPostDto {
     private Long userId;
 
     private String userDisplayName;
+
+    private String userProfileImageUrl;
 
     private String title;
 
@@ -53,29 +54,28 @@ public class VideoPostDto {
     public VideoPostDto(VideoPost post) {
         this.id = post.getId();
         this.userId = post.getUser().getId();
-        this.userDisplayName = Optional.ofNullable(post.getUser().getProfile())
-            .map(UserProfile::getDisplayName)
-            .orElse("Unknown");
+
+        UserProfile profile = post.getUser().getProfile();
+        this.userDisplayName = profile != null ? profile.getDisplayName() : "Unknown";
+        this.userProfileImageUrl = profile != null && profile.hasProfile() ? profile.getProfileImageUrl() : "";
+
         this.title = post.getTitle();
         this.description = post.getDescription();
         this.videoId = post.getVideoFile().getId();
         this.videoUrl = post.getVideoFile().getUrl();
+
 //        this.thumbnailId = post.getThumbnailFile().getId(); // TODO - 썸네일 생성 처리 후 적
+//        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적
         // 개발용 null-safe
-        this.thumbnailId = Optional.ofNullable(post.getThumbnailFile())
-            .map(UploadedFile::getId)
-            .orElse(null);
-//        this.thumbnailUrl = post.getThumbnailFile().getUrl(); // TODO - 썸네일 생성 처리 후 적용
-        this.thumbnailUrl = Optional.ofNullable(post.getThumbnailFile())
-            .map(UploadedFile::getUrl)
-            .orElse(null);
+        UploadedFile thumbnailFile = post.getThumbnailFile();
+        this.thumbnailId = thumbnailFile != null ? thumbnailFile.getId() : null;
+        this.thumbnailUrl = thumbnailFile != null ? thumbnailFile.getUrl() : null;
+
         // 개발용 null-safe
-        this.streamingId = Optional.ofNullable(post.getStreamingFile())
-            .map(UploadedFile::getId)
-            .orElse(null);
-        this.streamingUrl = Optional.ofNullable(post.getStreamingFile())
-            .map(UploadedFile::getUrl)
-            .orElse(null);
+        UploadedFile streamingFile = post.getStreamingFile();
+        this.streamingId = streamingFile != null ? streamingFile.getId() : null;
+        this.streamingUrl = streamingFile != null ? streamingFile.getUrl() : null;
+
         this.tags = post.getTagList();
         this.likes = post.getLikes();
         this.comments = post.getComments();
