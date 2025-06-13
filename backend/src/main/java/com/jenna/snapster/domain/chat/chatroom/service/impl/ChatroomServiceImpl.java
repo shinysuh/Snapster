@@ -29,6 +29,9 @@ public class ChatroomServiceImpl implements ChatroomService {
         // 발신인/수신인 → 채팅 참여자 목록에 추가  → 수신인 정보 FCM push 알림 시 필요
         participantService.addInitialParticipants(chatRequest);
 
+        // TODO 2: Redis에 채팅방 정보 캐싱
+        // TODO 3: 신규 생성 시, 발신인 채팅방 구독 설정
+
         return chatroom;
     }
 
