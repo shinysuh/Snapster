@@ -1,0 +1,30 @@
+package com.jenna.snapster.domain.chat.controller;
+
+import com.jenna.snapster.core.exception.ErrorCode;
+import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.messaging.handler.annotation.DestinationVariable;
+import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.stereotype.Controller;
+
+import java.security.Principal;
+
+@Controller
+@RequiredArgsConstructor
+@MessageMapping("/chat")
+public class ChatController {
+
+    private final ChatMessageService chatMessageService;
+
+    @MessageMapping("/send.{chatroomId}")
+    public ResponseEntity<?> onMessage(@DestinationVariable Long chatroomId,
+                                       @Payload ChatRequestDto chatRequest,
+                                       Principal user) {
+        chatRequest.setChatroomId(chatroomId != null ? chatroomId : 0L);
+        boolean isSuccess = chatMessageService.processMessage(chatRequest, user.getName());
+        return ResponseEntity.ok(isSuccess ? "Message Successfully Sent" : ErrorCode.MESSAGE_NOT_DELIVERED.getMessage());
+    }
+}
