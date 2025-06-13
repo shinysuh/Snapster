@@ -21,7 +21,7 @@ import java.time.format.DateTimeFormatter;
 
 @EnableCaching
 @Configuration
-public class CacheConfig {
+public class RedisCacheConfig {
 
     /**
      * LocalDateTime 직렬화를 위한 ObjectMapper 빈 등록
