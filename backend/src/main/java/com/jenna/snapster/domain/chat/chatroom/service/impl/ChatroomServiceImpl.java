@@ -40,7 +40,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     public Chatroom getChatroomByIdAndCreatedIfNotExists(ChatRequestDto chatRequest) {
         Long chatroomId = chatRequest.getChatroomId();
 
-        if (chatroomId == 0L) return this.openNewChatroom(chatRequest);
+        if (chatroomId == null) return this.openNewChatroom(chatRequest);
 
         Chatroom chatroom = this.getChatroomById(chatroomId);
         return chatroom != null ? chatroom : this.openNewChatroom(chatRequest);

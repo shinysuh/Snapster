@@ -23,7 +23,7 @@ public class ChatController {
     public ResponseEntity<?> onMessage(@DestinationVariable Long chatroomId,
                                        @Payload ChatRequestDto chatRequest,
                                        Principal user) {
-        chatRequest.setChatroomId(chatroomId != null ? chatroomId : 0L);
+        chatRequest.setChatroomId(chatroomId);
         boolean isSuccess = chatMessageService.processMessage(chatRequest, user.getName());
         return ResponseEntity.ok(isSuccess ? "Message Successfully Sent" : ErrorCode.MESSAGE_NOT_DELIVERED.getMessage());
     }
