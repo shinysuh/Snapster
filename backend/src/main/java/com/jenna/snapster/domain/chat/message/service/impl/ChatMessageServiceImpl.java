@@ -9,6 +9,7 @@ import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.message.repository.ChatMessageRepository;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
+import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,9 +19,10 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
 
-    private final ChatMessageRepository chatMessageRepository;
     private final ChatroomService chatroomService;
     private final RedisPublisher redisPublisher;
+    private final ChatMessageRepository chatMessageRepository;
+    private final ChatroomRedisRepository chatroomRedisRepository;
 
     @Override
     public boolean processMessage(ChatRequestDto chatRequest, String senderId) {
@@ -30,6 +32,9 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         // 1) 채팅방 존재 여부 확인 및 없으면 생성 -> chatroomId 반환
         Chatroom chatroom = chatroomService.getChatroomByIdAndCreatedIfNotExists(chatRequest);
         chatRequest.setChatroomId(chatroom.getId());
+
+        // 2) 채팅방 ttl 연장
+        chatroomRedisRepository.extendChatroomTTL(chatroom.getId());
 
         // 2) Redis 메시지 발행
         ChatMessage message = new ChatMessage(chatRequest);

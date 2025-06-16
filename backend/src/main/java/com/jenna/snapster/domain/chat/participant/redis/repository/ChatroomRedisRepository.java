@@ -20,7 +20,7 @@ public class ChatroomRedisRepository {
     public void addParticipant(Long chatroomId, Long userId) {
         String key = this.getChatroomParticipantKey(chatroomId);
         redisTemplate.opsForSet().add(key, userId.toString());
-        redisTemplate.expire(key, ttlProperties.getChat().getRoom(), TimeUnit.MILLISECONDS);
+        this.extendChatroomTTL(key);
     }
 
     public void addParticipants(Long chatroomId, List<Long> participants) {
@@ -29,7 +29,7 @@ public class ChatroomRedisRepository {
             .map(String::valueOf)
             .toArray(String[]::new);
         redisTemplate.opsForSet().add(key, values);
-        redisTemplate.expire(key, ttlProperties.getChat().getRoom(), TimeUnit.MILLISECONDS);
+        this.extendChatroomTTL(key);
     }
 
     public void removeParticipant(Long chatroomId, Long userId) {
@@ -48,6 +48,14 @@ public class ChatroomRedisRepository {
                     userId.toString()
                 )
         );
+    }
+
+    private void extendChatroomTTL(String key) {
+        redisTemplate.expire(key, ttlProperties.getChat().getRoom(), TimeUnit.MILLISECONDS);
+    }
+
+    public void extendChatroomTTL(Long chatroomId) {
+        this.extendChatroomTTL(this.getChatroomParticipantKey(chatroomId));
     }
 
     private String getChatroomParticipantKey(Long chatroomId) {

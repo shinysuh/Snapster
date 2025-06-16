@@ -17,18 +17,16 @@ public class SubscriptionRedisRepository {
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisTtlProperties ttlProperties;
 
-    private static final String USER_SUBSCRIPTION_KEY = "user:%d:subscriptions";
-
     public void addSubscription(Long chatroomId, Long userId) {
         String key = this.getUserSubscriptionKey(userId);
         redisTemplate.opsForSet().add(key, chatroomId.toString());
-        this.setTemplateTTL(key);
+        this.extendSubscriptionTTL(key);
     }
 
     public void addSubscriptions(List<Long> chatroomIds, Long userId) {
         String key = this.getUserSubscriptionKey(userId);
         redisTemplate.opsForSet().add(key, this.getChatroomIdArray(chatroomIds));
-        this.setTemplateTTL(key);
+        this.extendSubscriptionTTL(key);
     }
 
     public void removeSubscription(Long chatroomId, Long userId) {
@@ -46,7 +44,7 @@ public class SubscriptionRedisRepository {
 
     public Set<String> getAllSubscriptions(Long userId) {
         String key = this.getUserSubscriptionKey(userId);
-        this.setTemplateTTL(key);       // 구독 연장
+        this.extendSubscriptionTTL(key);       // 구독 연장
         return redisTemplate.opsForSet().members(key);
     }
 
@@ -54,6 +52,14 @@ public class SubscriptionRedisRepository {
         Boolean isMember = redisTemplate.opsForSet()
             .isMember(this.getUserSubscriptionKey(userId), chatroomId.toString());
         return Boolean.TRUE.equals(isMember);
+    }
+
+    private void extendSubscriptionTTL(String key) {
+        redisTemplate.expire(key, ttlProperties.getChat().getUser(), TimeUnit.MILLISECONDS);
+    }
+
+    public void extendSubscriptionTTL(Long userId) {
+        this.extendSubscriptionTTL(this.getUserSubscriptionKey(userId));
     }
 
     private String getUserSubscriptionKey(Long userId) {
@@ -64,9 +70,5 @@ public class SubscriptionRedisRepository {
         return chatroomIds.stream()
             .map(String::valueOf)
             .toArray(String[]::new);
-    }
-
-    private void setTemplateTTL(String key) {
-        redisTemplate.expire(key, ttlProperties.getChat().getUser(), TimeUnit.MILLISECONDS);
     }
 }

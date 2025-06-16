@@ -4,10 +4,16 @@ import com.jenna.snapster.domain.chat.chatroom.entity.Chatroom;
 import com.jenna.snapster.domain.chat.chatroom.repository.ChatroomRepository;
 import com.jenna.snapster.domain.chat.chatroom.service.ChatroomService;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
+import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
+import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
+import com.jenna.snapster.domain.chat.participant.redis.repository.SubscriptionRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -15,6 +21,8 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     private final ChatroomRepository chatroomRepository;
     private final ChatroomParticipantService participantService;
+    private final ChatroomRedisRepository chatroomRedisRepository;
+    private final SubscriptionRedisRepository subscriptionRedisRepository;
 
     @Override
     public Chatroom getChatroomById(Long chatroomId) {
@@ -26,11 +34,18 @@ public class ChatroomServiceImpl implements ChatroomService {
     public Chatroom openNewChatroom(ChatRequestDto chatRequest) {
         Chatroom chatroom = chatroomRepository.save(new Chatroom());
 
-        // 발신인/수신인 → 채팅 참여자 목록에 추가  → 수신인 정보 FCM push 알림 시 필요
-        participantService.addInitialParticipants(chatRequest);
+        // 1) 발신인/수신인 → DB에 채팅 참여자 목록에 추가  → 수신인 정보 FCM push 알림 시 필요
+        List<ChatroomParticipant> participants = participantService.addInitialParticipants(chatRequest);
+        List<Long> participantIds = participants.stream()
+            .map(ChatroomParticipant::getId)
+            .map(ChatroomParticipantId::getUserId)
+            .toList();
 
-        // TODO 2: Redis에 채팅방 정보 캐싱
-        // TODO 3: 신규 생성 시, 발신인 채팅방 구독 설정
+        // Redis 정보 동기화
+        // 2) Redis 참여자 목록 동기화
+        chatroomRedisRepository.addParticipants(chatroom.getId(), participantIds);
+        // 3) 발신자 구독 처리 && ttl 설정
+        subscriptionRedisRepository.addSubscription(chatroom.getId(), chatRequest.getSenderId());
 
         return chatroom;
     }
@@ -40,9 +55,15 @@ public class ChatroomServiceImpl implements ChatroomService {
     public Chatroom getChatroomByIdAndCreatedIfNotExists(ChatRequestDto chatRequest) {
         Long chatroomId = chatRequest.getChatroomId();
 
-        if (chatroomId == null) return this.openNewChatroom(chatRequest);
+        if (chatroomId != null) {
+            Chatroom chatroom = this.getChatroomById(chatroomId);
+            if (chatroom != null) {
+                // 발신자 구독 정보 ttl 연장
+                subscriptionRedisRepository.extendSubscriptionTTL(chatRequest.getSenderId());
+                return chatroom;
+            }
+        }
 
-        Chatroom chatroom = this.getChatroomById(chatroomId);
-        return chatroom != null ? chatroom : this.openNewChatroom(chatRequest);
+        return this.openNewChatroom(chatRequest);
     }
 }
