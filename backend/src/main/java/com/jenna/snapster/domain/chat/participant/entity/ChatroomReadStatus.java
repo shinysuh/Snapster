@@ -15,17 +15,19 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "chatroom_participants")
-public class ChatroomParticipant {
+@Table(name = "chatroom_read_status")
+public class ChatroomReadStatus {
 
     @EmbeddedId
     private ChatroomParticipantId id;   // chatroomId, userId
 
-    private LocalDateTime joinedAt;    // 참여 시간
+    private Long lastReadMessageId = null;
 
-    public ChatroomParticipant(ChatroomParticipantId participantId) {
+    private LocalDateTime lastReadAt;
+
+    public ChatroomReadStatus(ChatroomParticipantId participantId) {
         this.id = participantId;
-        this.joinedAt = LocalDateTime.now();
+        this.lastReadAt = LocalDateTime.now();
     }
 }
 
