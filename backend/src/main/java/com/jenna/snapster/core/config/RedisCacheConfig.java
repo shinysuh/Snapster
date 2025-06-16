@@ -5,6 +5,9 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import com.jenna.snapster.core.redis.RedisTtlProperties;
+import lombok.RequiredArgsConstructor;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -21,7 +24,11 @@ import java.time.format.DateTimeFormatter;
 
 @EnableCaching
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(RedisTtlProperties.class)
 public class RedisCacheConfig {
+
+    private final RedisTtlProperties redisTtlProperties;
 
     /**
      * LocalDateTime 직렬화를 위한 ObjectMapper 빈 등록
@@ -47,7 +54,7 @@ public class RedisCacheConfig {
     @Bean
     public RedisCacheConfiguration redisCacheConfiguration(ObjectMapper objectMapper) {
         return RedisCacheConfiguration.defaultCacheConfig()
-            .entryTtl(Duration.ofMinutes(30))   // 캐시 만료 시간 - 30분
+            .entryTtl(Duration.ofMillis(redisTtlProperties.getFeed()))   // 캐시 만료 시간 - 30분
             .serializeValuesWith(RedisSerializationContext.SerializationPair.fromSerializer(
                 new GenericJackson2JsonRedisSerializer(objectMapper)  // JSON 직렬화 (직렬화 방식 변경 가능)
             )).disableCachingNullValues();  // null 값 캐시 미저장
