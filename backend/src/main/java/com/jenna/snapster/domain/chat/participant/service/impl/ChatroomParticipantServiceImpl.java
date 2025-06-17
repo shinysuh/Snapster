@@ -33,7 +33,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Override
     public ChatroomParticipant addParticipant(ChatroomParticipantId participant) {
-        return participantRepository.save(new ChatroomParticipant(participant));
+        return participantRepository.save(ChatroomParticipant.of(participant));
     }
 
     @Override
@@ -43,17 +43,10 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         Long receiverId = chatRequest.getReceiverId();
 
         List<ChatroomParticipant> participants = new ArrayList<>();
-        participants.add(new ChatroomParticipant(this.getParticipantId(chatroomId, senderId)));
-        participants.add(new ChatroomParticipant(this.getParticipantId(chatroomId, receiverId)));
+        participants.add(ChatroomParticipant.of(chatroomId, senderId));
+        participants.add(ChatroomParticipant.of(chatroomId, receiverId));
 
         return participantRepository.saveAll(participants);
-    }
-
-    private ChatroomParticipantId getParticipantId(Long chatroomId, Long userId) {
-        return ChatroomParticipantId.builder()
-            .chatroomId(chatroomId)
-            .userId(userId)
-            .build();
     }
 }
 

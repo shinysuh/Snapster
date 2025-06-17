@@ -27,6 +27,17 @@ public class ChatroomParticipant {
         this.id = participantId;
         this.joinedAt = LocalDateTime.now();
     }
+
+    public static ChatroomParticipant of(Long chatroomId, Long userId) {
+        return ChatroomParticipant.builder()
+            .id(new ChatroomParticipantId(chatroomId, userId))
+            .joinedAt(LocalDateTime.now())
+            .build();
+    }
+
+    public static ChatroomParticipant of(ChatroomParticipantId id) {
+        return ChatroomParticipant.of(id.getChatroomId(), id.getUserId());
+    }
 }
 
 
