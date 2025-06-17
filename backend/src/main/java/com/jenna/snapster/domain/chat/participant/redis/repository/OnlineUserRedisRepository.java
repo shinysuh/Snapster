@@ -5,7 +5,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
@@ -13,28 +15,25 @@ public class OnlineUserRedisRepository {
 
     private final RedisTemplate<String, String> redisTemplate;
 
-    public void addOnlineUser(Long userId) {
-        redisTemplate.opsForSet().add(this.getOnlineUsersKey(), userId.toString());
+    public void setOnline(Long userId) {
+        redisTemplate.opsForValue().set(this.getOnlineUserKey(userId), "1");
     }
 
-    public void removeOnlineUser(Long userId) {
-        redisTemplate.opsForSet().remove(this.getOnlineUsersKey(), userId.toString());
+    public void setOffline(Long userId) {
+        redisTemplate.delete(this.getOnlineUserKey(userId));
     }
 
     public boolean isOnline(Long userId) {
-        return Boolean.TRUE.equals(
-            redisTemplate.opsForSet()
-                .isMember(
-                    this.getOnlineUsersKey(),
-                    userId.toString()
-                ));
+        return Boolean.TRUE.equals(redisTemplate.hasKey(this.getOnlineUserKey(userId)));
     }
 
-    public Set<String> getAllOnlineUsers() {
-        return redisTemplate.opsForSet().members(this.getOnlineUsersKey());
+    public Set<Long> getAllOnlineParticipants(List<Long> userIds) {
+        return userIds.stream()
+            .filter(this::isOnline)
+            .collect(Collectors.toSet());
     }
 
-    private String getOnlineUsersKey() {
-        return RedisKeyUtils.onlineUserGlobalKey();
+    private String getOnlineUserKey(Long userId) {
+        return RedisKeyUtils.onlineUserKey(userId);
     }
 }

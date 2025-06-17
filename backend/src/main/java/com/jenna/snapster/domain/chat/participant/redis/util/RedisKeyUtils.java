@@ -6,11 +6,7 @@ public class RedisKeyUtils {
         return String.format("chatroom:%d:participants", chatroomId);
     }
 
-    public static String userSubscriptionKey(Long userId) {
-        return String.format("user:%d:subscriptions", userId);
-    }
-
-    public static String onlineUserGlobalKey() {
-        return "online_users";
+    public static String onlineUserKey(Long userId) {
+        return String.format("user:online:%d", userId);
     }
 }

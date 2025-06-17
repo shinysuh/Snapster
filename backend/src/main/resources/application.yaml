@@ -76,7 +76,6 @@ redis:
     feed: 1800000   # 30분
     chat:
       room: 86400000    # 1일
-      user: 3600000     # 1시간
 
 logging:
   level:
