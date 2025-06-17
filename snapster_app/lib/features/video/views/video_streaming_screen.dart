@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/video/hls/widgets/hls_streaming_player.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
-import 'package:snapster_app/features/video/views/widgets/video_streaming_player.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 
 class VideoStreamingScreen extends ConsumerStatefulWidget {
@@ -49,22 +50,42 @@ class _VideoStreamingScreenState extends ConsumerState<VideoStreamingScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: false,
-      backgroundColor: isDarkMode(context) ? Colors.black : Colors.white,
-      body: PageView.builder(
-        controller: _pageController,
-        scrollDirection: Axis.vertical,
-        itemCount: _orderedVideos.length,
-        itemBuilder: (context, index) {
-          final video = _orderedVideos[index];
-          return VideoStreamingPlayer(
-            isEmpty: _orderedVideos.isEmpty,
-            pageIndex: index,
-            video: video,
-            onVideoFinished: _onVideoFinished,
-          );
-        },
+    return SafeArea(
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        backgroundColor: isDarkMode(context) ? Colors.black : Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          leading: IconButton(
+            icon: Icon(
+              Icons.chevron_left,
+              size: Sizes.size20,
+              color: Colors.grey.shade600,
+            ),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
+        ),
+        body: PageView.builder(
+          controller: _pageController,
+          scrollDirection: Axis.vertical,
+          itemCount: _orderedVideos.length,
+          itemBuilder: (context, index) {
+            final video = _orderedVideos[index];
+            return HlsStreamingPlayer(
+              isEmpty: _orderedVideos.isEmpty,
+              pageIndex: index,
+              video: video,
+              onVideoFinished: _onVideoFinished,
+            );
+            // return VideoStreamingPlayer(
+            //   isEmpty: _orderedVideos.isEmpty,
+            //   pageIndex: index,
+            //   video: video,
+            //   onVideoFinished: _onVideoFinished,
+            // );
+          },
+        ),
       ),
     );
   }

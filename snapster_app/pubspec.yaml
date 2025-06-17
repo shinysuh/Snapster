@@ -41,7 +41,9 @@ dependencies:
   font_awesome_flutter: ^10.3.0
   video_player: ^2.8.6
   #  video_player: 2.4.10
-  visibility_detector: 0.3.3
+  chewie: ^1.7.0
+  better_player: ^0.0.84
+  visibility_detector: ^0.4.0+2
   readmore: ^2.2.0
   google_fonts: ^4.0.1
   flex_color_scheme: ^7.3.1

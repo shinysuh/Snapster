@@ -6,8 +6,12 @@ allprojects {
 }
 
 buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
     dependencies {
-        classpath 'com.google.gms:google-services:4.3.15' // 최신 버전 권장
+        classpath("com.google.gms:google-services:4.3.15") // 최신 버전 권장
     }
 }
 

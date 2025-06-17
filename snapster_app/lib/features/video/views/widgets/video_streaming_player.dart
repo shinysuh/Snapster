@@ -88,12 +88,10 @@ class _VideoStreamingPlayerState extends ConsumerState<VideoStreamingPlayer>
     });
 
     // return Chewie(controller: _chewieController!);
-    if (controller.value.isInitialized) {
-      return AspectRatio(
-        aspectRatio: controller.value.aspectRatio,
-        child: VideoPlayer(controller),
-      );
-    }
+    return AspectRatio(
+      aspectRatio: controller.value.aspectRatio,
+      child: VideoPlayer(controller),
+    );
   }
 
   void _initChewieController(VideoPlayerController controller) {
@@ -183,9 +181,10 @@ class _VideoStreamingPlayerState extends ConsumerState<VideoStreamingPlayer>
           ),
           if (!widget.isEmpty)
             VideoPageElements(
-                video: widget.video,
-                state: videoState,
-                videoPlayer: videoPlayer)
+              video: widget.video,
+              state: videoState,
+              videoPlayer: videoPlayer,
+            ),
         ],
       ),
     );
