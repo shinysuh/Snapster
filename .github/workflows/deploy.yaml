@@ -24,7 +24,13 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      # 2) 백엔드 JAR 빌드
+      # 2) FCM 푸시용 Firebase Service Account file
+      - name: Create Firebase Service Account File
+        run: |
+          mkdir -p backend/src/main/resources/firebase
+          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
+
+      # 3) 백엔드 JAR 빌드
       - name: Build backend JAR
         run: |
           cd backend

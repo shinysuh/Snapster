@@ -54,6 +54,7 @@ dependencies {
 
     // WebSocket (STOMP 사용 포함)
     implementation("org.springframework.boot:spring-boot-starter-websocket")
+    implementation 'com.google.firebase:firebase-admin:9.1.1'
 
     compileOnly 'org.projectlombok:lombok'
     annotationProcessor 'org.projectlombok:lombok'
