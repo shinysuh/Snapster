@@ -53,23 +53,18 @@ public class RedisSubscriber implements MessageListener {
     }
 
     private void sendPushToUnsubscribedUsers(ChatMessage message) {
-        Long chatroomId = message.getChatroomId();
-        List<Long> participants = participantService.getAllParticipantsByChatroomId(chatroomId);
-
-        for (Long userId : participants) {
-            if (!isUserSubscribed(userId, chatroomId)) {
-                this.sendPushToUser(userId, message);
-            }
-        }
+        // redis에서 채팅방 참여자 전체 정보 fetch
+        List<Long> participants = this.getParticipants(message.getChatroomId());
+        // offline 참여자만 추출
+        Set<Long> offlineParticipants = onlineUserRedisRepository.getAllOfflineParticipants(participants);
+        // offline 참여자 FCM 푸시
+        notificationService.sendPushToUsers(offlineParticipants, message);
     }
 
-    // 수신인 online & 채팅방 구독중
-    private boolean isUserSubscribed(Long userId, Long chatroomId) {
-        // TODO: Redis나 DB에서 구독 여부 확인
-        return true;
-    }
-
-    private void sendPushToUser(Long userId, ChatMessage chatMessage) {
-        // TODO: FCM 푸시. "새 메시지 도착", body & data 알림 => [NotificationService]로 분리
+    private List<Long> getParticipants(Long chatroomId) {
+        return chatroomRedisRepository.getParticipants(chatroomId)
+            .stream()
+            .map(Long::parseLong)
+            .toList();
     }
 }
