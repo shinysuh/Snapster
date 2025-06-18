@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:http/http.dart' as http;
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/chat/notification/models/fcm_token_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/text_util.dart';
 
@@ -72,6 +73,55 @@ class HttpAuthService implements IAuthService {
       );
     } else {
       throw Exception('Fetch user failed: ${res.body}');
+    }
+  }
+
+  @override
+  Future<void> registerFcmToken(String accessToken, String fcmToken) async {
+    final res = await _client.post(
+      Uri.parse('${ApiInfo.notificationBaseUrl}/fcm/save'),
+      headers: ApiInfo.getBasicHeaderWithToken(accessToken),
+      body: jsonEncode(FcmTokenModel(userId: '', fcmToken: fcmToken)),
+    );
+    if (res.statusCode != 200) {
+      throw Exception('FCM token registration failed: ${res.body}');
+    }
+  }
+
+  @override
+  Future<void> updateFcmToken({
+    required String accessToken,
+    required String oldFcmToken,
+    required String newFcmToken,
+  }) async {
+    final res = await _client.post(
+      Uri.parse('${ApiInfo.notificationBaseUrl}/fcm/refresh'),
+      headers: ApiInfo.getBasicHeaderWithToken(accessToken),
+      body: jsonEncode(
+        FcmTokenModel(
+          userId: '',
+          fcmToken: newFcmToken,
+          oldToken: oldFcmToken,
+        ),
+      ),
+    );
+    if (res.statusCode != 200) {
+      throw Exception('FCM token update failed: ${res.body}');
+    }
+  }
+
+  @override
+  Future<void> deleteFcmToken({
+    required String accessToken,
+    required FcmTokenModel fcm,
+  }) async {
+    final res = await _client.post(
+      Uri.parse('${ApiInfo.notificationBaseUrl}/fcm/delete'),
+      headers: ApiInfo.getBasicHeaderWithToken(accessToken),
+      body: jsonEncode(fcm),
+    );
+    if (res.statusCode != 200) {
+      throw Exception('FCM token removal failed: ${res.body}');
     }
   }
 }

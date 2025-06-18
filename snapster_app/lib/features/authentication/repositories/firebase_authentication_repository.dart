@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
+import 'package:snapster_app/features/chat/notification/models/fcm_token_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -82,6 +83,24 @@ class FirebaseAuthenticationRepository implements IAuthService {
   @override
   Future<AppUser> getUserFromToken(String token) {
     // TODO: implement getUserFromToken
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> deleteFcmToken({required String accessToken, required FcmTokenModel fcm}) {
+    // TODO: implement deleteFcmToken
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> registerFcmToken(String accessToken, String fcmToken) {
+    // TODO: implement registerFcmToken
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> updateFcmToken({required String accessToken, required String oldFcmToken, required String newFcmToken}) {
+    // TODO: implement updateFcmToken
     throw UnimplementedError();
   }
 }

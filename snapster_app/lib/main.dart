@@ -45,13 +45,13 @@ void main() async {
         playbackConfigProvider
             .overrideWith(() => PlaybackConfigViewModel(repository)),
       ],
-      child: SnapsterApp(),
+      child: const SnapsterApp(),
     ),
   );
 }
 
 class SnapsterApp extends ConsumerStatefulWidget {
-  SnapsterApp({super.key});
+  const SnapsterApp({super.key});
 
   @override
   ConsumerState<SnapsterApp> createState() => _SnapsterAppState();
