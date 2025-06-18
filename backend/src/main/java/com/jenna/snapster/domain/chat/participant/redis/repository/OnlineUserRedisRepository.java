@@ -33,6 +33,12 @@ public class OnlineUserRedisRepository {
             .collect(Collectors.toSet());
     }
 
+    public Set<Long> getAllOfflineParticipants(List<Long> userIds) {
+        return userIds.stream()
+            .filter(userId -> !isOnline(userId))
+            .collect(Collectors.toSet());
+    }
+
     private String getOnlineUserKey(Long userId) {
         return RedisKeyUtils.onlineUserKey(userId);
     }

@@ -55,6 +55,9 @@ public enum ErrorCode {
     MESSAGE_NOT_DELIVERED("CHAT001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),
     INVALID_MESSAGE_SENDER("CHAT002", "메시지 발신인 정보가 잘못되었습니다. 로그인 정보를 확인해주세요.", BAD_REQUEST),
 
+    // firebase
+    FIREBASE_INITIALIZATION_FAILED("FRB001", "Firebase 초기화 실패", INTERNAL_SERVER_ERROR),
+
     // json
     CONVERT_TO_JSON_ERROR("JSON001", "객체 직렬화 실패", INTERNAL_SERVER_ERROR),
     CONVERT_FROM_JSON_ERROR("JSON002", "객체 역직렬화 실패", INTERNAL_SERVER_ERROR),
