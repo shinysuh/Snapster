@@ -19,7 +19,6 @@ class Splashscreen extends ConsumerStatefulWidget {
 
 class _SplashscreenState extends ConsumerState<Splashscreen>
     with WidgetsBindingObserver {
-  late final StreamSubscription _sub;
 
   @override
   void initState() {
@@ -29,7 +28,6 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
 
   @override
   void dispose() {
-    _sub.cancel();
     super.dispose();
   }
 
