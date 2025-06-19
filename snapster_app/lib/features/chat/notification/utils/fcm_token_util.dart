@@ -1,4 +1,5 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
 import 'package:snapster_app/features/chat/notification/services/fcm_token_storage_service.dart';
 
@@ -31,7 +32,17 @@ class FcmTokenUtil {
   }
 
   Future<String?> generateFcmToken() async {
-    return await FirebaseMessaging.instance.getToken();
+    FirebaseMessaging messaging = FirebaseMessaging.instance;
+    NotificationSettings settings = await messaging.requestPermission();
+
+    if (settings.authorizationStatus == AuthorizationStatus.authorized ||
+        settings.authorizationStatus == AuthorizationStatus.provisional) {
+      return await messaging.getToken();
+    } else {
+      debugPrint('푸시 알림 권한이 거부됨');
+      return null;
+    }
+    // return await FirebaseMessaging.instance.getToken();
   }
 
   Future<String?> readFcmToken() async {

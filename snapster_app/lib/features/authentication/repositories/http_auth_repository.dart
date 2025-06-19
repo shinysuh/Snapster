@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -13,6 +14,7 @@ import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/chat/notification/models/fcm_token_model.dart';
 import 'package:snapster_app/features/chat/notification/utils/fcm_token_util.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AuthRepository {
   final IAuthService _authService;
@@ -96,10 +98,55 @@ class AuthRepository {
     return success;
   }
 
+  Future<void> socialLoginWithProvider({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String provider,
+  }) async {
+    final url = '${ApiInfo.oauthBaseUrl}/$provider';
+
+    debugPrint("Platform.isAndroid : ${Platform.isAndroid}");
+
+    // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)
+    if (Platform.isAndroid) {
+      // kakao
+      String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTAzMTc3MTUsImV4cCI6MTc1MDkyMjUxNX0.tnIUGJEhN5NNoAPznKZQEqLpoSk8TzHSUs6fZBWHgpmmWA2NFfEataR43QBcHAhx-iBnPuc1P3hGH9Vgm0QkCA";
+
+      // google
+      // String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUwMzI0MDMyLCJleHAiOjE3NTA5Mjg4MzJ9.PVKWkDXLgvtOkB7EmD8ogv4URuC6k5mc_sHqEJty4W54OCJPU5bls3RI-XjHlixil2ed-G0T3YGvSdf4vz7U_A";
+
+      await storeToken(fcmToken);
+      return;
+    }
+
+    if (url.startsWith("https") || Platform.isAndroid) {
+      inAppLoginWithProvider(
+        context: context,
+        ref: ref,
+        url: url,
+      );
+    } else {
+      launchOAuthSignIn(url);
+    }
+  }
+
+  // OAuth 2.0 브라우저 로그인
+  void launchOAuthSignIn(String urlStr) async {
+    final Uri url = Uri.parse(urlStr);
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
   // OAuth 2.0 인앱 로그인
-  Future<void> loginWithProvider(
-      BuildContext context, WidgetRef ref, String provider) async {
-    final url = '${ApiInfo.baseUrl}/oauth2/authorization/$provider';
+  Future<void> inAppLoginWithProvider({
+    required BuildContext context,
+    required WidgetRef ref,
+    required String url,
+  }) async {
     final token = await Navigator.of(context).push<String>(
       MaterialPageRoute(
         builder: (_) => OAuthWebViewPage(initialUrl: url),
@@ -133,13 +180,15 @@ class AuthRepository {
       await _fcmTokenUtil.storeFcmToken(fcmToken);
       debugPrint('FCM 토큰 발급 성공');
     }
+    // debugPrint('============ FCM 토큰: $fcmToken');
   }
 
   // 로그아웃 시, 토큰 삭제 및 사용자 상태 초기화(null) => 초기 페이지로 이동
   Future<void> clearToken(WidgetRef ref) async {
     try {
+      final accessToken = await _tokenStorageService.readToken();
       await _tokenStorageService.deleteToken(); // access token 삭제
-      await _clearFcmToken(); // fcm 토큰 서버 삭제 + 로컬 삭제
+      await _clearFcmToken(accessToken); // fcm 토큰 서버 삭제 + 로컬 삭제
       setUser(null); // 사용자 상태 초기화
       ref.invalidate(authStateProvider); // 상태 초기화
       ref.read(routerProvider).go(Splashscreen.routeURL); // 초기 화면으로 이동
@@ -148,8 +197,7 @@ class AuthRepository {
     }
   }
 
-  Future<void> _clearFcmToken() async {
-    final accessToken = await _tokenStorageService.readToken();
+  Future<void> _clearFcmToken(String? accessToken) async {
     final fcmToken = await _fcmTokenUtil.readFcmToken();
     if (accessToken != null && fcmToken != null) {
       await _authService.deleteFcmToken(
