@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:app_links/app_links.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -17,7 +18,6 @@ import 'package:snapster_app/features/video_old/repositories/playback_config_rep
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
 import 'package:snapster_app/generated/l10n.dart';
-import 'package:uni_links/uni_links.dart';
 
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
@@ -58,6 +58,7 @@ class SnapsterApp extends ConsumerStatefulWidget {
 }
 
 class _SnapsterAppState extends ConsumerState<SnapsterApp> {
+  late final _appLinks;
   late final StreamSubscription _sub;
 
   @override
@@ -72,22 +73,33 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
     super.dispose();
   }
 
+  Future<void> _handleDeepLink(Uri uri) async {
+    final repo = ref.read(authRepositoryProvider);
+    final success = await repo.storeTokenFromUriAndRestoreAuth(uri, ref);
+    // 화면 이동
+    if (mounted) {
+      final location =
+          success ? MainNavigationScreen.homeRouteURL : LoginScreen.routeURL;
+      ref.read(routerProvider).go(location);
+    }
+  }
+
   void _initDeepLinkListener() {
-    _sub = uriLinkStream.listen((uri) async {
+    _appLinks = AppLinks();
+
+    _sub = _appLinks.uriLinkStream.listen((uri) async {
       if (uri == null) return;
-
-      final repo = ref.read(authRepositoryProvider);
-      final success = await repo.storeTokenFromUriAndRestoreAuth(uri, ref);
-
-      // 화면 이동
-      if (mounted) {
-        final location =
-            success ? MainNavigationScreen.homeRouteURL : LoginScreen.routeURL;
-        ref.read(routerProvider).go(location);
-      }
+      await _handleDeepLink(uri);
     }, onError: (e) {
       debugPrint('❌ uriLinkStream error: $e');
     });
+
+    // _sub = uriLinkStream.listen((uri) async {
+    //   if (uri == null) return;
+    //   await _handleDeepLink(uri);
+    // }, onError: (e) {
+    //   debugPrint('❌ uriLinkStream error: $e');
+    // });
   }
 
   final lightTextTheme = GoogleFonts.itimTextTheme(
