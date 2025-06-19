@@ -12,16 +12,18 @@ import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
 
+    private final ChatMessageRepository chatMessageRepository;
     private final ChatroomService chatroomService;
     private final RedisPublisher redisPublisher;
-    private final ChatMessageRepository chatMessageRepository;
     private final ChatroomRedisRepository chatroomRedisRepository;
 
     @Override
@@ -39,6 +41,25 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         // 2) Redis 메시지 발행
         ChatMessage message = new ChatMessage(chatRequest);
         return redisPublisher.publish(message);
+    }
+
+    @Override
+    public ChatMessage getRecentMessageByChatroom(Chatroom chatroom) {
+        return chatMessageRepository.findByChatroomIdAndId(chatroom.getId(), chatroom.getLastMessageId())
+            .orElse(null);
+    }
+
+    @Override
+    public List<ChatMessage> getAllChatMessagesByChatroom(Long chatroomId) {
+        return chatMessageRepository.findByChatroomId(chatroomId);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ChatMessage saveChatMessageAndUpdateChatroom(ChatMessage message) {
+        ChatMessage entity = chatMessageRepository.save(message);
+        chatroomService.updateChatroomLastMessageId(message);
+        return entity;
     }
 
     private void validateSender(ChatRequestDto chatRequest, String senderId) {

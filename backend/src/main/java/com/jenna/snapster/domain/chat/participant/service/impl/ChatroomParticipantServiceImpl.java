@@ -18,8 +18,18 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
     private final ChatroomParticipantRepository participantRepository;
 
     @Override
+    public boolean isParticipating(Long chatroomId, Long userId) {
+        return participantRepository.existsById(ChatroomParticipant.of(chatroomId, userId));
+    }
+
+    @Override
     public List<ChatroomParticipant> getAllByChatroomId(Long chatroomId) {
         return participantRepository.findByIdChatroomIdOrderByIdUserIdAsc(chatroomId);
+    }
+
+    @Override
+    public List<ChatroomParticipant> getAllByCUserId(Long userId) {
+        return participantRepository.findByIdUserId(userId);
     }
 
     @Override
@@ -28,6 +38,15 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         return participants.stream()
             .map(ChatroomParticipant::getId)
             .map(ChatroomParticipantId::getUserId)
+            .toList();
+    }
+
+    @Override
+    public List<Long> getAllChatroomsByUserId(Long userId) {
+        List<ChatroomParticipant> chatrooms = this.getAllByCUserId(userId);
+        return chatrooms.stream()
+            .map(ChatroomParticipant::getId)
+            .map(ChatroomParticipantId::getChatroomId)
             .toList();
     }
 

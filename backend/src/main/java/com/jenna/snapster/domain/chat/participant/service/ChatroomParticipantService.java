@@ -8,9 +8,15 @@ import java.util.List;
 
 public interface ChatroomParticipantService {
 
+    boolean isParticipating(Long chatroomId, Long userId);
+
     List<ChatroomParticipant> getAllByChatroomId(Long chatroomId);
 
+    List<ChatroomParticipant> getAllByCUserId(Long userId);
+
     List<Long> getAllParticipantsByChatroomId(Long chatroomId);
+
+    List<Long> getAllChatroomsByUserId(Long userId);
 
     ChatroomParticipant addParticipant(ChatroomParticipantId participant);
 

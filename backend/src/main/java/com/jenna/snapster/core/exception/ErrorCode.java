@@ -51,9 +51,12 @@ public enum ErrorCode {
     FAILED_TO_CREAT_THUMBNAIL("FILE003", "썸네일 생성 도중 오류가 발생했습니다", INTERNAL_SERVER_ERROR),
     FAILED_TO_UPLOAD_THUMBNAIL("FILE004", "썸네일 업로드 도중 오류가 발생했습니다", INTERNAL_SERVER_ERROR),
 
-    // chat
-    MESSAGE_NOT_DELIVERED("CHAT001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),
-    INVALID_MESSAGE_SENDER("CHAT002", "메시지 발신인 정보가 잘못되었습니다. 로그인 정보를 확인해주세요.", BAD_REQUEST),
+    // chatroom
+    CHATROOM_NOT_EXISTS("ROOM001", "채팅방 정보가 존재하지 않습니다.", BAD_REQUEST),
+
+    // chat message
+    MESSAGE_NOT_DELIVERED("MSG001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),
+    INVALID_MESSAGE_SENDER("MSG002", "메시지 발신인 정보가 잘못되었습니다. 로그인 정보를 확인해주세요.", BAD_REQUEST),
 
     // firebase
     FIREBASE_INITIALIZATION_FAILED("FRB001", "Firebase 초기화 실패", INTERNAL_SERVER_ERROR),

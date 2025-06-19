@@ -1,4 +1,4 @@
-package com.jenna.snapster.domain.chat.controller;
+package com.jenna.snapster.domain.chat.message.controller;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
@@ -15,7 +15,7 @@ import java.security.Principal;
 @Controller
 @RequiredArgsConstructor
 @MessageMapping("/chat")
-public class ChatController {
+public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
 

@@ -1,7 +1,7 @@
 package com.jenna.snapster.core.redis;
 
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
-import com.jenna.snapster.domain.chat.message.repository.ChatMessageRepository;
+import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
 import com.jenna.snapster.domain.chat.util.ChatMessageConverter;
@@ -21,9 +21,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RedisSubscriber implements MessageListener {
 
-    private final ChatMessageRepository chatMessageRepository;
     private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatMessageConverter converter;
+    private final ChatMessageService chatMessageService;
     private final NotificationService notificationService;
 
     private final ChatroomRedisRepository chatroomRedisRepository;
@@ -36,10 +36,8 @@ public class RedisSubscriber implements MessageListener {
         log.info("Received message: {}", body);
 
         try {
-            ChatMessage chatMessage = converter.fromJson(body);
-            // 메시지 DB 저장
-            // TODO -> chatroom 마지막 메시지 id 도 업데이트 해야함 -> 합쳐서 service로 보내기
-            chatMessageRepository.save(chatMessage);
+            // 메시지 DB 저장 & chatroom 마지막 메시지 id 업데이트
+            ChatMessage chatMessage = chatMessageService.saveChatMessageAndUpdateChatroom(converter.fromJson(body));
 
             // WebSocket 구독자에게 메시지 전송
             String destination = "/topic/chatroom." + chatMessage.getChatroomId();

@@ -9,5 +9,9 @@ import java.util.List;
 @Repository
 public interface ChatroomParticipantRepository extends JpaRepository<ChatroomParticipant, Long> {
 
+    boolean existsById(ChatroomParticipant id);
+
     List<ChatroomParticipant> findByIdChatroomIdOrderByIdUserIdAsc(Long chatroomId);
+
+    List<ChatroomParticipant> findByIdUserId(Long userId);
 }
