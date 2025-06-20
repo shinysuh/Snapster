@@ -19,6 +19,16 @@ class ChatMessageModel {
     required this.createdAt,
   });
 
+  ChatMessageModel.empty()
+      : id = 0,
+        chatroomId = 0,
+        senderId = 0,
+        content = '',
+        type = '',
+        clientMessageId = '',
+        isDeleted = false,
+        createdAt = 0;
+
   ChatMessageModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         chatroomId = json['chatroomId'],
