@@ -38,7 +38,24 @@ class ChatroomService {
     ChatroomModel? chatroom = handleSingleResponse<ChatroomModel>(
       response: response,
       fromJson: (data) => ChatroomModel.fromJson(data),
-      errorPrefix: '채팅방 조회 실패',
+      errorPrefix: '채팅방 조회',
+    );
+
+    return chatroom ?? ChatroomModel.empty();
+  }
+
+  Future<ChatroomModel> fetchIfOneOnOneChatroomExists(int receiverId) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.get(
+      uri: '$_baseUrl/check/$receiverId',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    ChatroomModel? chatroom = handleSingleResponse<ChatroomModel>(
+      response: response,
+      fromJson: (data) => ChatroomModel.fromJson(data),
+      errorPrefix: '1:1 채팅방 조회',
     );
 
     return chatroom ?? ChatroomModel.empty();
