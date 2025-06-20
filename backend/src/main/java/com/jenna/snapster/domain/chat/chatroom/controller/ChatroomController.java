@@ -18,7 +18,7 @@ public class ChatroomController {
     private final ChatroomService chatroomService;
 
     @GetMapping("")
-    public ResponseEntity<?> getAllChatroomsByUserId(@CurrentUser CustomUserDetails currentUser) {
+    public ResponseEntity<?> getAllChatroomsByUser(@CurrentUser CustomUserDetails currentUser) {
         return ResponseEntity.ok(chatroomService.getAllChatroomsByUserId(currentUser.getUser().getId()));
     }
 

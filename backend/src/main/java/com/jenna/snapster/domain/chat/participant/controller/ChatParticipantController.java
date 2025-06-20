@@ -38,15 +38,9 @@ public class ChatParticipantController {
     public ResponseEntity<?> leaveChatroom(@CurrentUser CustomUserDetails currentUser,
                                            @RequestBody ChatroomParticipantId id) {
         id.setUserId(currentUser.getUser().getId());
-        participantService.leaveChatroom(id);
+        participantService.deleteUserFromChatroom(id);
         return ResponseEntity.ok().build();
     }
-
-//    @PostMapping("/delete")
-//    public ResponseEntity<?> deleteParticipant(@CurrentUser CustomUserDetails currentUser,
-//                                               @RequestBody ChatroomParticipantId id) {
-//        return ResponseEntity.ok(participantService.)
-//    }
 
     @PutMapping("/read")
     public ResponseEntity<?> updateLastReadMessage(@CurrentUser CustomUserDetails currentUser,

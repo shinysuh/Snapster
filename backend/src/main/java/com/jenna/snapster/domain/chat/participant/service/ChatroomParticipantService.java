@@ -28,7 +28,7 @@ public interface ChatroomParticipantService {
 
     void addInitialParticipants(ChatRequestDto chatRequest);
 
-    void leaveChatroom(ChatroomParticipantId id);
+    void deleteUserFromChatroom(ChatroomParticipantId id);
 
     void updateLastReadMessage(ChatroomParticipantDto participant);
 }

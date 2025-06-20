@@ -96,7 +96,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void leaveChatroom(ChatroomParticipantId id) {
+    public void deleteUserFromChatroom(ChatroomParticipantId id) {
         // DB 삭제 && Redis 에서 제거
         // 채팅방에 아무도 안 남았을 경우 TTL 만료 후 자동 Redis 키 삭제
         participantRepository.deleteById(id);
