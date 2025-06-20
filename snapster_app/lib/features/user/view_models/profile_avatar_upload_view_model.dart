@@ -8,7 +8,7 @@ import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
-import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
+import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 
 class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
     with CommonUploadProcessHandlerMixin {

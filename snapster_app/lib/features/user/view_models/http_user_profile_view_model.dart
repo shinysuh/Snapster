@@ -6,7 +6,7 @@ import 'package:snapster_app/features/authentication/providers/auth_status_provi
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/providers/user_profile_provider.dart';
 import 'package:snapster_app/features/user/repository/http_user_profile_repository.dart';
-import 'package:snapster_app/utils/exception_handlers/base_exception_handler_2.dart';
+import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 
 class HttpUserProfileViewModel extends AsyncNotifier<void> {
   late final HttpUserProfileRepository _userProfileRepository;
