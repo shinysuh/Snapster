@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class AddParticipantsRequestDto {
+public class MultipleParticipantsRequestDto {
 
     private Long chatroomId;
 

@@ -3,7 +3,7 @@ package com.jenna.snapster.domain.chat.participant.service.impl;
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
-import com.jenna.snapster.domain.chat.participant.dto.AddParticipantsRequestDto;
+import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
@@ -77,7 +77,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<ChatroomParticipant> addParticipants(AddParticipantsRequestDto addRequestDto, Long requestUserId) {
+    public List<ChatroomParticipant> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId) {
         Long chatroomId = addRequestDto.getChatroomId();
         this.validateRequestUser(chatroomId, requestUserId);
         return this.addMultipleParticipants(chatroomId, addRequestDto.getUserIds());

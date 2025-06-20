@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.chat.participant.controller;
 
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
-import com.jenna.snapster.domain.chat.participant.dto.AddParticipantsRequestDto;
+import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
@@ -30,7 +30,7 @@ public class ChatParticipantController {
 
     @PostMapping("/add/{chatroomId}")
     public ResponseEntity<?> addParticipants(@CurrentUser CustomUserDetails currentUser,
-                                             @RequestBody AddParticipantsRequestDto addRequestDto) {
+                                             @RequestBody MultipleParticipantsRequestDto addRequestDto) {
         return ResponseEntity.ok(participantService.addParticipants(addRequestDto, currentUser.getUser().getId()));
     }
 
