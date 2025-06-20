@@ -78,7 +78,7 @@ public class ChatroomServiceImpl implements ChatroomService {
             Chatroom chatroom = this.getChatroomById(chatroomId);
             if (chatroom != null) {
                 // 채팅방 정보에 수신인 정보 업데이트
-                chatroomRedisRepository.addParticipant(chatroomId, chatRequest.getReceiverId());
+                this.addReceiverAsParticipant(chatroomId, chatRequest.getReceiverId());
                 return chatroom;
             }
         }
@@ -108,5 +108,11 @@ public class ChatroomServiceImpl implements ChatroomService {
 
         if (chatroom == null) throw new GlobalException(ErrorCode.CHATROOM_NOT_EXISTS);
         return chatroom;
+    }
+
+    private void addReceiverAsParticipant(Long chatroomId, Long receiverId) {
+        if (receiverId != null) {
+            chatroomRedisRepository.addParticipant(chatroomId, receiverId);
+        }
     }
 }
