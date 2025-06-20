@@ -18,8 +18,8 @@ public class ChatParticipantController {
     private final ChatroomParticipantService participantService;
 
     @GetMapping("/{chatroomId}")
-    public ResponseEntity<?> getAllParticipants(@PathVariable Long chatroomId) {
-        return ResponseEntity.ok(participantService.getAllParticipantsByChatroomId(chatroomId));
+    public ResponseEntity<?> getAllByChatroom(@PathVariable Long chatroomId) {
+        return ResponseEntity.ok(participantService.getAllByChatroom(chatroomId));
     }
 
     @PostMapping("/one")
