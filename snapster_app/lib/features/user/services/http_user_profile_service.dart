@@ -5,6 +5,7 @@ import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:snapster_app/utils/api_safe_wrapper.dart';
 
 class HttpUserProfileService {
   static const _baseUrl = ApiInfo.userBaseUrl;
@@ -16,6 +17,20 @@ class HttpUserProfileService {
 
   Future<String?> _getToken() async {
     return await _tokenStorageService.readToken();
+  }
+
+  Future<List<AppUser>> getAllOtherUsers() async {
+    final token = await _getToken();
+    final response = await _dioService.get(
+      uri: '$_baseUrl/others',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    return handleListResponse<AppUser>(
+      response: response,
+      fromJson: (data) => AppUser.fromJson(data),
+      errorPrefix: '사용자 목록 조회', // 로그인 사용자를 제외한 다른 모든 사용자 (채팅 목록)
+    );
   }
 
   Future<void> updateUserProfile(AppUser updateUser) async {

@@ -18,6 +18,15 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
     _currentUser = ref.watch(authStateProvider).user;
   }
 
+  Future<List<AppUser>> getAllOtherUsers(BuildContext context) async {
+    return await runFutureWithExceptionHandler<List<AppUser>>(
+      context: context,
+      errorPrefix: '사용자 목록 조회',
+      requestFunction: () async => _userProfileRepository.getAllOtherUsers(),
+      fallback: [],
+    );
+  }
+
   Future<void> updateUserProfile(
       BuildContext context, AppUser updateUser) async {
     await runFutureVoidWithExceptionHandler(
