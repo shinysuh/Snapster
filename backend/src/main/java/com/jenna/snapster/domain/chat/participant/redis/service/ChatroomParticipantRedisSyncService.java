@@ -1,7 +1,6 @@
 package com.jenna.snapster.domain.chat.participant.redis.service;
 
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
-import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.repository.ChatroomParticipantRepository;
 import jakarta.annotation.PostConstruct;
@@ -28,8 +27,7 @@ public class ChatroomParticipantRedisSyncService {
         List<ChatroomParticipant> allParticipants = participantRepository.findAll();
 
         Set<Long> chatroomIds = allParticipants.stream()
-            .map(ChatroomParticipant::getId)
-            .map(ChatroomParticipantId::getChatroomId)
+            .map(cp -> cp.getId().getUserId())
             .collect(Collectors.toSet());
 
         for (Long chatroomId : chatroomIds) {

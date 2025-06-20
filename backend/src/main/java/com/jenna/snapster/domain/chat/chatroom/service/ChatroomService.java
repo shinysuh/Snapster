@@ -13,6 +13,8 @@ public interface ChatroomService {
 
     ChatroomResponseDto getOneChatroomByIdAndUser(Long chatroomId, Long userId);
 
+    ChatroomResponseDto getIfOneOnOneChatroomExists(Long senderId, Long receiverId);
+
     List<ChatroomResponseDto> getAllChatroomsByUserId(Long userId);
 
     Chatroom openNewChatroom(ChatRequestDto chatRequest);

@@ -54,6 +54,15 @@ public class ChatroomServiceImpl implements ChatroomService {
     }
 
     @Override
+    public ChatroomResponseDto getIfOneOnOneChatroomExists(Long senderId, Long receiverId) {
+//        if (senderId.equals(receiverId)) return null;
+        // 1:1 방이 있는지 여부 학인
+        Long chatroomId = participantService.getIfOneOnOneChatroomExists(senderId, receiverId);
+        if (chatroomId == null) return null;
+        return this.getOneChatroomByIdAndUser(chatroomId, senderId);
+    }
+
+    @Override
     public List<ChatroomResponseDto> getAllChatroomsByUserId(Long userId) {
         List<Long> chatroomIds = participantService.getAllChatroomsByUserId(userId);
         List<Chatroom> chatrooms = new ArrayList<>();

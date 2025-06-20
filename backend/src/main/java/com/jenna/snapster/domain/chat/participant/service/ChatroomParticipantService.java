@@ -1,8 +1,8 @@
 package com.jenna.snapster.domain.chat.participant.service;
 
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
-import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
+import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 
@@ -15,6 +15,8 @@ public interface ChatroomParticipantService {
     List<ChatroomParticipant> getAllByChatroom(Long chatroomId);
 
     List<ChatroomParticipantDto> getAllWithReadStatusByChatroom(Long chatroomId);
+
+    Long getIfOneOnOneChatroomExists(Long userId1, Long userId2);
 
     List<ChatroomParticipant> getAllByCUserId(Long userId);
 

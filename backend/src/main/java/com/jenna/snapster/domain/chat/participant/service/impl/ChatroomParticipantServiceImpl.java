@@ -3,8 +3,8 @@ package com.jenna.snapster.domain.chat.participant.service.impl;
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
-import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
+import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomReadStatus;
@@ -45,6 +45,12 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
     @Override
     public List<ChatroomParticipantDto> getAllWithReadStatusByChatroom(Long chatroomId) {
         return participantRepository.findParticipantWithReadStatusByChatroomId(chatroomId);
+    }
+
+    @Override
+    public Long getIfOneOnOneChatroomExists(Long userId1, Long userId2) {
+        return participantRepository.findOneOnOneChatroomId(userId1, userId2)
+            .orElse(null);
     }
 
     @Override
@@ -154,8 +160,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     private List<Long> getParticipantsIds(List<ChatroomParticipant> participants) {
         return participants.stream()
-            .map(ChatroomParticipant::getId)
-            .map(ChatroomParticipantId::getUserId)
+            .map(cp -> cp.getId().getUserId())
             .toList();
     }
 
