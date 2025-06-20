@@ -10,7 +10,6 @@ import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
-import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -65,17 +64,8 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Override
     public Chatroom openNewChatroom(ChatRequestDto chatRequest) {
         Chatroom chatroom = chatroomRepository.save(new Chatroom());
-
-        // 1) 발신인/수신인 → DB에 채팅 참여자 목록에 추가  → 수신인 정보 FCM push 알림 시 필요
-        List<ChatroomParticipant> participants = participantService.addInitialParticipants(chatRequest);
-        List<Long> participantIds = participants.stream()
-            .map(ChatroomParticipant::getId)
-            .map(ChatroomParticipantId::getUserId)
-            .toList();
-
-        // 2) Redis 참여자 목록 동기화
-        chatroomRedisRepository.addParticipants(chatroom.getId(), participantIds);
-
+        // 발신인/수신인 → DB에 채팅 참여자 목록에 추가 → Redis 동기화 → 수신인 정보 FCM push 알림 시 필요
+        participantService.addInitialParticipants(chatRequest);
         return chatroom;
     }
 

@@ -52,7 +52,8 @@ public enum ErrorCode {
     FAILED_TO_UPLOAD_THUMBNAIL("FILE004", "썸네일 업로드 도중 오류가 발생했습니다", INTERNAL_SERVER_ERROR),
 
     // chatroom
-    CHATROOM_NOT_EXISTS("ROOM001", "채팅방 정보가 존재하지 않습니다.", BAD_REQUEST),
+    CHATROOM_NOT_EXISTS("CHAT001", "채팅방 정보가 존재하지 않습니다.", BAD_REQUEST),
+    UNAUTHORIZED_INVITATION_REQUEST("CHAT002", "채팅방에 대한 권한이 없습니다.", UNAUTHORIZED),
 
     // chat message
     MESSAGE_NOT_DELIVERED("MSG001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),

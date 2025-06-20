@@ -17,6 +17,11 @@ public class ChatroomRedisRepository {
     private final RedisTemplate<String, String> redisTemplate;
     private final RedisTtlProperties ttlProperties;
 
+    public boolean existsKey(Long chatroomId) {
+        String key = this.getChatroomParticipantKey(chatroomId);
+        return Boolean.TRUE.equals(redisTemplate.hasKey(key));
+    }
+
     public void addParticipant(Long chatroomId, Long userId) {
         String key = this.getChatroomParticipantKey(chatroomId);
         redisTemplate.opsForSet().add(key, userId.toString());
