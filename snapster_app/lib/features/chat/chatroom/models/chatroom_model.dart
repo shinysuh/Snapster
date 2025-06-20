@@ -20,6 +20,15 @@ class ChatroomModel {
     required this.updatedAt,
   });
 
+  ChatroomModel.empty()
+      : id = 0,
+        lastMessageId = 0,
+        lastMessage = ChatMessageModel.empty(),
+        messages = [],
+        participants = [],
+        createdAt = 0,
+        updatedAt = 0;
+
   ChatroomModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
         lastMessageId = json['lastMessageId'] ?? 0,
@@ -44,7 +53,7 @@ class ChatroomModel {
       'id': id,
       'lastMessageId': lastMessageId,
       'lastMessage': lastMessage.toJson(),
-      'messages': messages?.map((e) => e.toJson()).toList(),
+      'messages': messages.map((e) => e.toJson()).toList(),
       'participants': participants.map((e) => e.toJson()).toList(),
       'createdAt': createdAt,
       'updatedAt': updatedAt,

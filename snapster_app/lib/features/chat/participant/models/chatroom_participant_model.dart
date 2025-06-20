@@ -2,13 +2,13 @@ import 'package:snapster_app/features/chat/participant/models/chatroom_participa
 
 class ChatroomParticipantModel {
   final ChatroomParticipantIdModel id;
-  final int joinedAt;
+  int? joinedAt;
   int? lastReadMessageId;
   int? lastReadAt;
 
   ChatroomParticipantModel({
     required this.id,
-    required this.joinedAt,
+    this.joinedAt,
     this.lastReadMessageId,
     this.lastReadAt,
   });

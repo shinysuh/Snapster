@@ -12,10 +12,15 @@ class ApiInfo {
   static const authBaseUrl = '$baseUrl/api/auth';
   static const fileBaseUrl = '$baseUrl/api/file';
   static const userBaseUrl = '$baseUrl/api/user';
-  static const notificationBaseUrl = '$baseUrl/api/notification';
 
   static const feedBaseUrl = '$baseUrl/api/feed';
   static const userFeedBaseUrl = '$feedBaseUrl/user';
+
+  static const chatroomBaseUrl = '$baseUrl/api/chat/chatroom';
+  static const chatParticipantBaseUrl = '$baseUrl/api/chat/participant';
+  static const chatMessageBaseUrl = '$baseUrl/app/chat/send.';
+
+  static const notificationBaseUrl = '$baseUrl/api/notification';
 
   static Map<String, String> getBasicHeaderWithToken(String? token) {
     return {
