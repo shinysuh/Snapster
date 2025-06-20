@@ -26,7 +26,7 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
   }) async {
     await runFutureVoidWithExceptionHandler(
         context: context,
-        errMsgPrefix: '비디오 업로드 오류',
+        errorPrefix: '비디오 업로드',
         requestFunction: () async {
           state = const AsyncValue.loading();
 

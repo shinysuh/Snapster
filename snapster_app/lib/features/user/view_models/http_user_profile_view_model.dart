@@ -22,7 +22,7 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
       BuildContext context, AppUser updateUser) async {
     await runFutureVoidWithExceptionHandler(
         context: context,
-        errMsgPrefix: '사용자 정보 업데이트 오류',
+        errorPrefix: '사용자 정보 업데이트',
         requestFunction: () async {
           _userProfileRepository.updateUserProfile(updateUser);
           // authStateProvider 업데이트

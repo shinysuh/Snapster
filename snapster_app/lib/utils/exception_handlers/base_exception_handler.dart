@@ -7,14 +7,14 @@ void sessionExceptionHandler(BuildContext context, Object e, String prefix) {
 }
 
 void basicExceptions(BuildContext context, Object e, String prefix) {
-  String errMessage = '####### $prefix :: $e';
+  String errMessage = '####### $prefix 오류 :: $e';
   sessionExceptionHandler(context, e, prefix);
   showCustomErrorSnack(context, errMessage);
   debugPrint(errMessage);
 }
 
 void handleDioException(BuildContext context, DioException e, String prefix) {
-  String errMessage = '####### $prefix :: <DioError>: ${e.message}';
+  String errMessage = '####### $prefix 오류 :: <DioError>: ${e.message}';
   if (e.response != null) {
     errMessage += '\n<Response>: ${e.response?.data}';
   }
@@ -24,15 +24,15 @@ void handleDioException(BuildContext context, DioException e, String prefix) {
 
 Future<void> runFutureVoidWithExceptionHandler({
   required BuildContext context,
-  required String errMsgPrefix,
+  required String errorPrefix,
   required Future<void> Function() requestFunction,
 }) async {
   try {
     await requestFunction();
   } on DioException catch (e) {
-    if (context.mounted) handleDioException(context, e, errMsgPrefix);
+    if (context.mounted) handleDioException(context, e, errorPrefix);
   } catch (e) {
-    if (context.mounted) basicExceptions(context, e, errMsgPrefix);
+    if (context.mounted) basicExceptions(context, e, errorPrefix);
   }
 }
 
@@ -48,6 +48,20 @@ Future<T> runFutureWithExceptionHandler<T>({
     if (context.mounted) handleDioException(context, e, errorPrefix);
   } catch (e) {
     if (context.mounted) basicExceptions(context, e, errorPrefix);
+  }
+  return fallback;
+}
+
+Future<T> runFutureWithExceptionLogs<T>({
+  required String errorPrefix,
+  required Future<T> Function() requestFunction,
+  required T fallback,
+}) async {
+  try {
+    return await requestFunction();
+  } catch (e) {
+    String errMessage = '❌ERROR: $errorPrefix 오류 :: $e';
+    debugPrint(errMessage);
   }
   return fallback;
 }

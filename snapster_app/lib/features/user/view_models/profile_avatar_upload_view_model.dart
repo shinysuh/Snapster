@@ -36,7 +36,7 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
   ) async {
     await runFutureVoidWithExceptionHandler(
         context: context,
-        errMsgPrefix: '프로필 사진 업로드 오류',
+        errorPrefix: '프로필 사진 업로드',
         requestFunction: () async {
           state = const AsyncValue.loading();
 
@@ -69,7 +69,7 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
   Future<void> deleteProfileImage(BuildContext context) async {
     await runFutureVoidWithExceptionHandler(
         context: context,
-        errMsgPrefix: '프로필 사진 삭제 오류',
+        errorPrefix: '프로필 사진 삭제',
         requestFunction: () async {
           state = const AsyncValue.loading();
 
