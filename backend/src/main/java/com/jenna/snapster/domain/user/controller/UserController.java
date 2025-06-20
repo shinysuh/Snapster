@@ -6,10 +6,7 @@ import com.jenna.snapster.domain.user.dto.UserProfileUpdateDto;
 import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,6 +14,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+
+    @GetMapping("")
+    public ResponseEntity<?> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @GetMapping("/others")
+    public ResponseEntity<?> getAllOtherUsers(@CurrentUser CustomUserDetails currentUser) {
+        return ResponseEntity.ok(userService.getAllOtherUsers(currentUser.getUser().getId()));
+    }
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateUserProfile(@CurrentUser CustomUserDetails currentUser,
