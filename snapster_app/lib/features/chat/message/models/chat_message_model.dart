@@ -2,6 +2,7 @@ class ChatMessageModel {
   final int id;
   final int chatroomId;
   final int senderId;
+  int? receiverId;
   final String content;
   final String type;
   final bool isDeleted;
@@ -12,6 +13,7 @@ class ChatMessageModel {
     required this.id,
     required this.chatroomId,
     required this.senderId,
+    this.receiverId,
     required this.content,
     required this.type,
     required this.isDeleted,
@@ -33,6 +35,7 @@ class ChatMessageModel {
       : id = json['id'],
         chatroomId = json['chatroomId'],
         senderId = json['senderId'],
+        receiverId = json['receiverId'],
         content = json['content'],
         type = json['type'],
         isDeleted = json['isDeleted'],
@@ -44,6 +47,7 @@ class ChatMessageModel {
       'id': id,
       'chatroomId': chatroomId,
       'senderId': senderId,
+      'receiverId': receiverId,
       'content': content,
       'type': type,
       'isDeleted': isDeleted,
@@ -56,6 +60,7 @@ class ChatMessageModel {
     int? id,
     int? chatroomId,
     int? senderId,
+    int? receiverId,
     String? content,
     String? type,
     bool? isDeleted,
@@ -66,6 +71,7 @@ class ChatMessageModel {
       id: id ?? this.id,
       chatroomId: chatroomId ?? this.chatroomId,
       senderId: senderId ?? this.senderId,
+      receiverId: receiverId ?? this.receiverId,
       content: content ?? this.content,
       type: type ?? this.type,
       isDeleted: isDeleted ?? this.isDeleted,
