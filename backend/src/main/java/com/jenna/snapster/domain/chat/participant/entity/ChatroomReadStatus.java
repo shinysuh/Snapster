@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.chat.participant.entity;
 
+import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -27,6 +28,12 @@ public class ChatroomReadStatus {
 
     public ChatroomReadStatus(ChatroomParticipantId participantId) {
         this.id = participantId;
+        this.lastReadAt = LocalDateTime.now();
+    }
+
+    public void updateFrom(ChatroomParticipantDto dto) {
+        if (dto.getLastReadMessageId() == null) return;
+        this.lastReadMessageId = dto.getLastReadMessageId();
         this.lastReadAt = LocalDateTime.now();
     }
 }

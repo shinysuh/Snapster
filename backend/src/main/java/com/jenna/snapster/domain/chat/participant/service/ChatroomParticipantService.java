@@ -2,6 +2,7 @@ package com.jenna.snapster.domain.chat.participant.service;
 
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.AddParticipantsRequestDto;
+import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 
@@ -11,7 +12,9 @@ public interface ChatroomParticipantService {
 
     boolean isParticipating(Long chatroomId, Long userId);
 
-    List<ChatroomParticipant> getAllByChatroomId(Long chatroomId);
+    List<ChatroomParticipant> getAllByChatroom(Long chatroomId);
+
+    List<ChatroomParticipantDto> getAllWithReadStatusByChatroom(Long chatroomId);
 
     List<ChatroomParticipant> getAllByCUserId(Long userId);
 
@@ -26,4 +29,6 @@ public interface ChatroomParticipantService {
     void addInitialParticipants(ChatRequestDto chatRequest);
 
     void leaveChatroom(ChatroomParticipantId id);
+
+    void updateLastReadMessage(ChatroomParticipantDto participant);
 }

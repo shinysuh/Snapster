@@ -3,6 +3,7 @@ package com.jenna.snapster.domain.chat.participant.controller;
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
 import com.jenna.snapster.domain.chat.participant.dto.AddParticipantsRequestDto;
+import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -46,4 +47,12 @@ public class ChatParticipantController {
 //                                               @RequestBody ChatroomParticipantId id) {
 //        return ResponseEntity.ok(participantService.)
 //    }
+
+    @PutMapping("/read")
+    public ResponseEntity<?> updateLastReadMessage(@CurrentUser CustomUserDetails currentUser,
+                                                   @RequestBody ChatroomParticipantDto participant) {
+        participant.getId().setUserId(currentUser.getUser().getId());
+        participantService.updateLastReadMessage(participant);
+        return ResponseEntity.ok().build();
+    }
 }

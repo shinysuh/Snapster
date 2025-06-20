@@ -4,22 +4,28 @@ import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.AddParticipantsRequestDto;
+import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
+import com.jenna.snapster.domain.chat.participant.entity.ChatroomReadStatus;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.repository.ChatroomParticipantRepository;
+import com.jenna.snapster.domain.chat.participant.repository.ChatroomReadStatusRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class ChatroomParticipantServiceImpl implements ChatroomParticipantService {
 
     private final ChatroomParticipantRepository participantRepository;
+    private final ChatroomReadStatusRepository readStatusRepository;
     private final ChatroomRedisRepository chatroomRedisRepository;
 
     @Override
@@ -32,8 +38,13 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
     }
 
     @Override
-    public List<ChatroomParticipant> getAllByChatroomId(Long chatroomId) {
+    public List<ChatroomParticipant> getAllByChatroom(Long chatroomId) {
         return participantRepository.findByIdChatroomIdOrderByIdUserIdAsc(chatroomId);
+    }
+
+    @Override
+    public List<ChatroomParticipantDto> getAllWithReadStatusByChatroom(Long chatroomId) {
+        return participantRepository.findParticipantWithReadStatusByChatroomId(chatroomId);
     }
 
     @Override
@@ -43,22 +54,15 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Override
     public List<Long> getAllParticipantsByChatroomId(Long chatroomId) {
-        List<ChatroomParticipant> participants = this.getAllByChatroomId(chatroomId);
-        return participants.stream()
-            .map(ChatroomParticipant::getId)
-            .map(ChatroomParticipantId::getUserId)
-            .toList();
+        return participantRepository.findUserIdsByIdChatroomId(chatroomId);
     }
 
     @Override
     public List<Long> getAllChatroomsByUserId(Long userId) {
-        List<ChatroomParticipant> chatrooms = this.getAllByCUserId(userId);
-        return chatrooms.stream()
-            .map(ChatroomParticipant::getId)
-            .map(ChatroomParticipantId::getChatroomId)
-            .toList();
+        return participantRepository.findChatroomIdsByIdUserId(userId);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public ChatroomParticipant addParticipant(ChatroomParticipantId participant, Long requestUserId) {
         Long chatroomId = participant.getChatroomId();
@@ -71,6 +75,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         return newParticipant;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public List<ChatroomParticipant> addParticipants(AddParticipantsRequestDto addRequestDto, Long requestUserId) {
         Long chatroomId = addRequestDto.getChatroomId();
@@ -89,12 +94,28 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         );
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public void leaveChatroom(ChatroomParticipantId id) {
         // DB 삭제 && Redis 에서 제거
         // 채팅방에 아무도 안 남았을 경우 TTL 만료 후 자동 Redis 키 삭제
         participantRepository.deleteById(id);
         chatroomRedisRepository.removeParticipant(id.getChatroomId(), id.getUserId());
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void updateLastReadMessage(ChatroomParticipantDto participant) {
+        // 사용자 validate
+        ChatroomParticipantId id = participant.getId();
+        this.validateRequestUser(id.getChatroomId(), id.getUserId());
+
+        ChatroomReadStatus status = readStatusRepository.findById(id).orElse(new ChatroomReadStatus(id));
+
+        if (!Objects.equals(status.getLastReadMessageId(), participant.getLastReadMessageId())) {
+            status.updateFrom(participant);
+            readStatusRepository.save(status);
+        }
     }
 
     private void checkRedisKeyAndSyncIfNotExists(Long chatroomId) {
@@ -105,8 +126,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
     }
 
     private void syncParticipantsToRedisByChatroom(Long chatroomId) {
-        List<ChatroomParticipant> participants = this.getAllByChatroomId(chatroomId);
-        List<Long> participantIds = this.getParticipantsIds(participants);
+        List<Long> participantIds = this.getAllParticipantsByChatroomId(chatroomId);
         chatroomRedisRepository.addParticipants(chatroomId, participantIds);
     }
 

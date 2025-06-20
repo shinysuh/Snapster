@@ -9,7 +9,7 @@ import com.jenna.snapster.domain.chat.chatroom.service.ChatroomService;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
-import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
+import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -95,7 +95,7 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     private ChatroomResponseDto getChatroomResponse(Chatroom chatroom) {
         ChatMessage lastMessage = chatMessageService.getRecentMessageByChatroom(chatroom);
-        List<ChatroomParticipant> participants = participantService.getAllByChatroomId(chatroom.getId());
+        List<ChatroomParticipantDto> participants = participantService.getAllWithReadStatusByChatroom(chatroom.getId());
         return new ChatroomResponseDto(chatroom, lastMessage, participants);
     }
 
