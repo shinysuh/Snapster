@@ -12,12 +12,17 @@ import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
+import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +32,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     private final ChatMessageService chatMessageService;
     private final ChatroomParticipantService participantService;
     private final ChatroomRedisRepository chatroomRedisRepository;
+    private final UserService userService;
 
     @Override
     public Chatroom getChatroomById(Long chatroomId) {
@@ -96,7 +102,28 @@ public class ChatroomServiceImpl implements ChatroomService {
     private ChatroomResponseDto getChatroomResponse(Chatroom chatroom) {
         ChatMessage lastMessage = chatMessageService.getRecentMessageByChatroom(chatroom);
         List<ChatroomParticipantDto> participants = participantService.getAllWithReadStatusByChatroom(chatroom.getId());
+        // 유저 세팅
+        this.setParticipantsUserInfo(participants);
         return new ChatroomResponseDto(chatroom, lastMessage, participants);
+    }
+
+    private void setParticipantsUserInfo(List<ChatroomParticipantDto> participants) {
+        List<Long> userIds = participants.stream()
+            .map(cp -> cp.getId().getUserId())
+            .toList();
+
+        List<UserResponseDto> users = userService.getAllUsersByIds(userIds);
+        Map<Long, UserResponseDto> userMap = users.stream()
+            .collect(
+                Collectors.toMap(
+                    UserResponseDto::getUserId, Function.identity()
+                )
+            );
+
+        participants.forEach(cp -> {
+            UserResponseDto user = userMap.get(cp.getId().getUserId());
+            if (user != null) cp.setUser(user);
+        });
     }
 
     private Chatroom checkParticipation(Long chatroomId, Long userId) {
