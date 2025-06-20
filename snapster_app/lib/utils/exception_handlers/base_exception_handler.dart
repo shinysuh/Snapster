@@ -22,16 +22,32 @@ void handleDioException(BuildContext context, DioException e, String prefix) {
   debugPrint(errMessage);
 }
 
-Future<void> runFutureWithExceptionHandler({
+Future<void> runFutureVoidWithExceptionHandler({
   required BuildContext context,
   required String errMsgPrefix,
-  required Future<void> Function() callBackFunction,
+  required Future<void> Function() requestFunction,
 }) async {
   try {
-    await callBackFunction();
+    await requestFunction();
   } on DioException catch (e) {
     if (context.mounted) handleDioException(context, e, errMsgPrefix);
   } catch (e) {
     if (context.mounted) basicExceptions(context, e, errMsgPrefix);
   }
+}
+
+Future<T> runFutureWithExceptionHandler<T>({
+  required BuildContext context,
+  required String errorPrefix,
+  required Future<T> Function() requestFunction,
+  required T fallback,
+}) async {
+  try {
+    return await requestFunction();
+  } on DioException catch (e) {
+    if (context.mounted) handleDioException(context, e, errorPrefix);
+  } catch (e) {
+    if (context.mounted) basicExceptions(context, e, errorPrefix);
+  }
+  return fallback;
 }

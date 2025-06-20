@@ -24,10 +24,10 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
     required String title,
     required String description,
   }) async {
-    await runFutureWithExceptionHandler(
+    await runFutureVoidWithExceptionHandler(
         context: context,
         errMsgPrefix: '비디오 업로드 오류',
-        callBackFunction: () async {
+        requestFunction: () async {
           state = const AsyncValue.loading();
 
           if (currentUser == null) throw Exception('로그인이 필요한 작업입니다.');

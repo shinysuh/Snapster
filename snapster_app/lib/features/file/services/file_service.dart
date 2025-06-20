@@ -9,6 +9,7 @@ import 'package:snapster_app/features/file/models/presigned_url_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/models/uploaded_video_model.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/utils/api_safe_wrapper.dart';
 
 class FileService {
   static const _baseUrl = ApiInfo.fileBaseUrl;
@@ -29,13 +30,11 @@ class FileService {
         headers: ApiInfo.getBasicHeaderWithToken(token),
       );
 
-      if (response.statusCode == 200) {
-        return PresignedUrlModel.fromJson(response.data);
-      } else {
-        debugPrint(
-            'Pre-signed URL 요청 실패: ${response.statusCode} ${response.data}');
-        return null;
-      }
+      return handleSingleResponse<PresignedUrlModel>(
+        response: response,
+        fromJson: (data) => PresignedUrlModel.fromJson(data),
+        errorPrefix: 'Pre-signed URL 요청',
+      );
     } catch (e) {
       debugPrint('Presigned URL 요청 중 오류 발생: $e');
       return null;
@@ -56,12 +55,7 @@ class FileService {
         body: fileBytes,
       );
 
-      if (response.statusCode == 200) {
-        return true;
-      } else {
-        debugPrint('파일 업로드 실패: ${response.statusCode} ${response.data}');
-        return false;
-      }
+      return handleVoidResponse(response: response, errorPrefix: '파일 업로드');
     } catch (e) {
       debugPrint('파일 업로드 중 오류 발생: $e');
       return false;
@@ -77,12 +71,7 @@ class FileService {
       body: fileInfo,
     );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      debugPrint('파일 정보 저장 실패: ${response.statusCode} ${response.data}');
-      return false;
-    }
+    return handleVoidResponse(response: response, errorPrefix: '파일 정보 저장');
   }
 
   Future<bool> saveVideoFileInfo(
@@ -99,12 +88,10 @@ class FileService {
           uploadedFileInfo: uploadedFileInfo,
         ));
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      debugPrint('비디오 파일 정보 저장 실패: ${response.statusCode} ${response.data}');
-      return false;
-    }
+    return handleVoidResponse(
+      response: response,
+      errorPrefix: '비디오 파일 정보 저장',
+    );
   }
 
   Future<bool> updateFileAsDeleted(UploadedFileModel fileInfo) async {
@@ -116,12 +103,10 @@ class FileService {
       body: fileInfo.toJson(),
     );
 
-    if (response.statusCode == 200) {
-      return true;
-    } else {
-      debugPrint('파일 정보 삭제 실패: ${response.statusCode} ${response.data}');
-      return false;
-    }
+    return handleVoidResponse(
+      response: response,
+      errorPrefix: '파일 정보 삭제',
+    );
   }
 
   String _normalizeExtension(String path) {

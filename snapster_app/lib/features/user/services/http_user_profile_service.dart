@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
@@ -27,7 +29,7 @@ class HttpUserProfileService {
       body: updateUser,
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == HttpStatus.ok) {
       debugPrint('사용자 정보 업데이트 성공');
     } else {
       debugPrint('사용자 정보 업데이트 실패: ${response.statusCode} ${response.data}');

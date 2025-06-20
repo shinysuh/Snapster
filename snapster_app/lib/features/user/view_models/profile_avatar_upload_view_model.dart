@@ -34,10 +34,10 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
     BuildContext context,
     File file,
   ) async {
-    await runFutureWithExceptionHandler(
+    await runFutureVoidWithExceptionHandler(
         context: context,
         errMsgPrefix: '프로필 사진 업로드 오류',
-        callBackFunction: () async {
+        requestFunction: () async {
           state = const AsyncValue.loading();
 
           if (currentUser == null) throw Exception('로그인이 필요한 작업입니다.');
@@ -67,10 +67,10 @@ class ProfileAvatarUploadViewModel extends AsyncNotifier<void>
   }
 
   Future<void> deleteProfileImage(BuildContext context) async {
-    await runFutureWithExceptionHandler(
+    await runFutureVoidWithExceptionHandler(
         context: context,
         errMsgPrefix: '프로필 사진 삭제 오류',
-        callBackFunction: () async {
+        requestFunction: () async {
           state = const AsyncValue.loading();
 
           if (currentUser == null) throw Exception('로그인이 필요한 작업입니다.');

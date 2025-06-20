@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/utils/api_safe_wrapper.dart';
 
 class FeedService {
   static const _userFeedBaseUrl = ApiInfo.userFeedBaseUrl;
@@ -20,12 +20,10 @@ class FeedService {
       headers: ApiInfo.getBasicHeaderWithToken(token),
     );
 
-    if (response.statusCode == 200) {
-      final List data = response.data;
-      return data.map((e) => VideoPostModel.fromJson(json: e)).toList();
-    } else {
-      debugPrint('사용자 피드 조회 실패: ${response.statusCode} ${response.data}');
-      return [];
-    }
+    return handleListResponse<VideoPostModel>(
+      response: response,
+      fromJson: (e) => VideoPostModel.fromJson(json: e),
+      errorPrefix: '사용자 피드 조회',
+    );
   }
 }
