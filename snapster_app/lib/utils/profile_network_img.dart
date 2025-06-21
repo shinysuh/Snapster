@@ -12,10 +12,13 @@ NetworkImage getProfileImgByUserId(String userId, bool fetchRealTime) {
 }
 
 NetworkImage getProfileImgByUserProfileImageUrl(
-    String profileImageUrl, bool fetchRealTime) {
+  String profileImageUrl,
+  bool fetchRealTime,
+) {
   if (fetchRealTime) {
     final separator = profileImageUrl.contains('?') ? '&' : '?';
-    profileImageUrl += '${separator}cacheBuster=${DateTime.now().millisecondsSinceEpoch}';
+    profileImageUrl +=
+        '${separator}cacheBuster=${DateTime.now().millisecondsSinceEpoch}';
   }
   return NetworkImage(profileImageUrl);
 }

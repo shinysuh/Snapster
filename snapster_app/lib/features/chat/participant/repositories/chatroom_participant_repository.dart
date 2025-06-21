@@ -24,10 +24,6 @@ class ChatroomParticipantRepository {
     return await _chatroomParticipantService.addParticipants(addRequest);
   }
 
-  Future<bool> leaveChatroom(ChatroomParticipantIdModel id) async {
-    return await _chatroomParticipantService.leaveChatroom(id);
-  }
-
   Future<bool> updateLastReadMessage(
     ChatroomParticipantModel participant,
   ) async {

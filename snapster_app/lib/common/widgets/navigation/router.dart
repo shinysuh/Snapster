@@ -10,7 +10,7 @@ import 'package:snapster_app/features/authentication/providers/http_auth_provide
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
-import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
+import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
 import 'package:snapster_app/features/chat/views/test_chats_screen.dart';
 import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
@@ -110,11 +110,11 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: TestChatDetailScreen.routeName,
             path: TestChatDetailScreen.routeURL,
             builder: (context, state) {
-              final id = state.params['chatroomId'] ?? '';
+              final id = state.params['chatroomId'] ?? 0;
               final chatroom = state.extra;
               return TestChatDetailScreen(
-                chatroomId: id,
-                chatroomBasicInfo: chatroom as ChatroomParticipantModel,
+                chatroomId: int.parse(id.toString()),
+                chatroomBasicInfo: chatroom as ChatroomModel,
               );
             },
           ),

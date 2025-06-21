@@ -70,21 +70,6 @@ class ChatroomParticipantService {
     );
   }
 
-  Future<bool> leaveChatroom(ChatroomParticipantIdModel id) async {
-    final token = await _tokenStorageService.readToken();
-
-    final response = await _dioService.post(
-      uri: '$_baseUrl/leave',
-      headers: ApiInfo.getBasicHeaderWithToken(token),
-      body: id,
-    );
-
-    return handleVoidResponse(
-      response: response,
-      errorPrefix: '채팅방 나가기',
-    );
-  }
-
   Future<bool> updateLastReadMessage(
     ChatroomParticipantModel participant,
   ) async {

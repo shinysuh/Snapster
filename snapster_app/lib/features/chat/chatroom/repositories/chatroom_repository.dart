@@ -17,4 +17,8 @@ class ChatroomRepository {
   Future<ChatroomModel> getIfOneOnOneChatroomExists(int receiverId) async {
     return await _chatroomService.fetchIfOneOnOneChatroomExists(receiverId);
   }
+
+  Future<bool> leaveChatroom(int chatroomId) async {
+    return await _chatroomService.leaveChatroom(chatroomId);
+  }
 }

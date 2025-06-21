@@ -60,4 +60,18 @@ class ChatroomService {
 
     return chatroom ?? ChatroomModel.empty();
   }
+
+  Future<bool> leaveChatroom(int chatroomId) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.post(
+      uri: '$_baseUrl/leave/chatroomId',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    return handleVoidResponse(
+      response: response,
+      errorPrefix: '채팅방 나가기',
+    );
+  }
 }

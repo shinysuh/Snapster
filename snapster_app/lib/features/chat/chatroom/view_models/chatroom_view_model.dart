@@ -72,24 +72,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
     if (chatroom.id == 0 &&
         chatroom.participants.isEmpty &&
         chatroom.messages.isEmpty) {
-      chatroom = chatroom.copyWith(
-        participants: [
-          ChatroomParticipantModel(
-            user: sender,
-            id: ChatroomParticipantIdModel(
-              chatroomId: 0,
-              userId: int.parse(sender.userId),
-            ),
-          ),
-          ChatroomParticipantModel(
-            user: receiver,
-            id: ChatroomParticipantIdModel(
-              chatroomId: 0,
-              userId: receiverId,
-            ),
-          ),
-        ],
-      );
+      chatroom = _getChatroomPreview(sender, receiver);
     }
 
     if (context.mounted) {
@@ -98,6 +81,27 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
         chatroom: chatroom,
       );
     }
+  }
+
+  ChatroomModel _getChatroomPreview(AppUser sender, AppUser receiver) {
+    return ChatroomModel.empty().copyWith(
+      participants: [
+        ChatroomParticipantModel(
+          user: sender,
+          id: ChatroomParticipantIdModel(
+            chatroomId: 0,
+            userId: int.parse(sender.userId),
+          ),
+        ),
+        ChatroomParticipantModel(
+          user: receiver,
+          id: ChatroomParticipantIdModel(
+            chatroomId: 0,
+            userId: int.parse(receiver.userId),
+          ),
+        ),
+      ],
+    );
   }
 
   // 채팅방 입장
@@ -112,6 +116,25 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
       params: {'chatroomId': chatroom.id.toString()},
       extra: chatroom,
     );
+  }
+
+  // 채팅방 나가기
+  Future<void> exitChatroom({
+    required BuildContext context,
+    required List<ChatroomModel> chatroomList,
+    required ChatroomModel chatroom,
+  }) async {
+    final success = await runFutureWithExceptionHandler<bool>(
+      context: context,
+      errorPrefix: '채팅방 나가기',
+      requestFunction: () async =>
+          _chatroomRepository.leaveChatroom(chatroom.id),
+      fallback: false,
+    );
+
+    if (!success) return;
+    // remove 작업 후 프론트 객체도 리스트에서 제거
+    chatroomList.remove(chatroom);
   }
 }
 
