@@ -22,4 +22,6 @@ public interface ChatroomService {
     Chatroom getChatroomByIdAndCreatedIfNotExists(ChatRequestDto chatRequest);
 
     Chatroom updateChatroomLastMessageId(ChatMessage message);
+
+    void leaveChatroom(Long chatroomId, Long userId);
 }

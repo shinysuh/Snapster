@@ -27,7 +27,14 @@ public class ChatroomController {
 
     @PostMapping("/check/{receiverId}")
     public ResponseEntity<?> getIfOneOnOneChatroomExists(@CurrentUser CustomUserDetails currentUser,
-                                                              @PathVariable Long receiverId) {
+                                                         @PathVariable Long receiverId) {
         return ResponseEntity.ok(chatroomService.getIfOneOnOneChatroomExists(currentUser.getUser().getId(), receiverId));
+    }
+
+    @GetMapping("/leave/{chatroomId}")
+    public ResponseEntity<?> leaveChatroom(@CurrentUser CustomUserDetails currentUser,
+                                           @PathVariable Long chatroomId) {
+        chatroomService.leaveChatroom(chatroomId, currentUser.getUser().getId());
+        return ResponseEntity.ok().build();
     }
 }

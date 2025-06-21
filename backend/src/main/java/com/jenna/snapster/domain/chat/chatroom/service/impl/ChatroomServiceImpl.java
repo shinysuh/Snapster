@@ -10,6 +10,7 @@ import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
+import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import com.jenna.snapster.domain.user.dto.UserResponseDto;
@@ -106,6 +107,12 @@ public class ChatroomServiceImpl implements ChatroomService {
         Chatroom chatroom = this.getChatroomById(message.getChatroomId());
         chatroom.setLastMessageId(message.getId());
         return chatroomRepository.save(chatroom);
+    }
+
+    @Override
+    public void leaveChatroom(Long chatroomId, Long userId) {
+        ChatroomParticipantId id = new ChatroomParticipantId(chatroomId, userId);
+        participantService.deleteUserFromChatroom(id);
     }
 
     private ChatroomResponseDto getChatroomResponse(Chatroom chatroom) {

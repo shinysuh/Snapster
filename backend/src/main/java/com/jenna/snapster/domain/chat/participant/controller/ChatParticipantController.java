@@ -2,8 +2,8 @@ package com.jenna.snapster.domain.chat.participant.controller;
 
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
-import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
+import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
@@ -32,14 +32,6 @@ public class ChatParticipantController {
     public ResponseEntity<?> addParticipants(@CurrentUser CustomUserDetails currentUser,
                                              @RequestBody MultipleParticipantsRequestDto addRequestDto) {
         return ResponseEntity.ok(participantService.addParticipants(addRequestDto, currentUser.getUser().getId()));
-    }
-
-    @PostMapping("/leave")
-    public ResponseEntity<?> leaveChatroom(@CurrentUser CustomUserDetails currentUser,
-                                           @RequestBody ChatroomParticipantId id) {
-        id.setUserId(currentUser.getUser().getId());
-        participantService.deleteUserFromChatroom(id);
-        return ResponseEntity.ok().build();
     }
 
     @PutMapping("/read")
