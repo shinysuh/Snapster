@@ -5,17 +5,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
+import 'package:snapster_app/constants/message_types.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/constants/system_message_types.dart';
-import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
-import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
-import 'package:snapster_app/features/inbox/models/chatter_model.dart';
-import 'package:snapster_app/features/inbox/models/message_model.dart';
-import 'package:snapster_app/features/inbox/view_models/chatroom_view_model.dart';
-import 'package:snapster_app/features/inbox/view_models/message_view_model.dart';
-import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
-import 'package:snapster_app/features/inbox/views/chatroom_user_list_screen.dart';
-import 'package:snapster_app/features/user/view_models/user_view_model.dart';
+import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
+import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
+import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/test_chatroom_user_list_screen.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
@@ -33,15 +30,22 @@ class TestChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
-  List<ChatroomParticipantModel> _chatrooms = [];
-  Map<String, MessageModel?> _lastMessages = {};
+  late final AppUser? _currentUser;
+  List<ChatroomModel> _chatrooms = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   void _onClickAddChat() {
+    if (_currentUser == null) return;
+
     Navigator.push(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const ChatroomUserListScreen(),
+              TestChatroomUserListScreen(currentUser: _currentUser),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ));
@@ -51,44 +55,21 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     Navigator.of(context).pop();
   }
 
-  void _removeLeftChatroom(ChatPartnerModel chatroom) {
+  void _removeLeftChatroom(
+      List<ChatroomModel> chatrooms, ChatroomModel chatroom) {
     final index = _chatrooms.indexOf(chatroom);
     _chatrooms.removeAt(index);
     setState(() {});
 
-    // 채팅방 제거
-    ref.read(chatroomProvider.notifier).exitChatroom(context, chatroom);
+    // 채팅방 나가기
+    ref.read(httpChatroomProvider.notifier).exitChatroom(
+          context: context,
+          chatroomList: chatrooms,
+          chatroom: chatroom,
+        );
   }
 
-  List<ChatPartnerModel> _getLastMessageInfo(List<ChatPartnerModel> chatrooms) {
-    List<ChatPartnerModel> sortedChatrooms = [];
-    Map<String, MessageModel?> lastMsgs = {};
-
-    for (var i = 0; i < chatrooms.length; i++) {
-      var chatroom = chatrooms[i];
-      var msg = ref.watch(lastMessageProvider(chatroom.chatroomId));
-
-      if (msg.value != null) {
-        final lastMsg = msg.value!;
-        // 채팅방 업데이트 보다 마지막 메세지가 더 최근이면 메세지 생성 시간으로 업데이트 시간 교체
-        if (chatroom.updatedAt < lastMsg.createdAt) {
-          chatroom = chatroom.copyWith(updatedAt: lastMsg.createdAt);
-        }
-      }
-
-      sortedChatrooms.add(chatroom);
-      lastMsgs[chatroom.chatroomId] = msg.value;
-    }
-
-    setState(() {
-      _lastMessages = lastMsgs;
-    });
-
-    sortedChatrooms.sort((a, b) => b.updatedAt.compareTo(a.updatedAt));
-    return sortedChatrooms;
-  }
-
-  void _onExitChatroom(ChatPartnerModel chatroom) {
+  void _onExitChatroom(List<ChatroomModel> chatrooms, ChatroomModel chatroom) {
     showCupertinoDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -100,7 +81,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
           ),
           CupertinoDialogAction(
             onPressed: () {
-              _removeLeftChatroom(chatroom);
+              _removeLeftChatroom(chatrooms, chatroom);
               _closeExitDialog();
             },
             isDestructiveAction: true,
@@ -111,84 +92,68 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     );
   }
 
-  void _onTapChat(ChatPartnerModel chatroom) {
+  void _onTapChat(ChatroomModel chatroom) {
     goToRouteNamed(
       context: context,
-      routeName: ChatDetailScreen.routeName,
-      params: {'chatroomId': chatroom.chatroomId},
+      routeName: TestChatDetailScreen.routeName,
+      params: {'chatroomId': chatroom.id.toString()},
       extra: chatroom,
     );
   }
 
-  Widget _getChatroomListTile(ChatPartnerModel chatroom, int index) {
-    return FutureBuilder(
-      future: _getPartnerUsername(chatroom.chatPartner),
-      builder: (context, snapshot) {
-        final chatPartner = chatroom.chatPartner;
-        // 상대방의 최신 username 가져와서 세팅
-        final chatInfo = chatroom.copyWith(
-          chatPartner: chatPartner.copyWith(
-            username: snapshot.data,
-          ),
-        );
+  Widget _getChatroomListTile(List<ChatroomModel> chatrooms, int index) {
+    var chatroom = chatrooms[index];
+    var participants = chatroom.participants;
+    var other = participants[0].user;
+    var updatedAt = chatroom.lastMessage.createdAt;
 
-        return ListTile(
-            onLongPress: () => _onExitChatroom(chatInfo),
-            onTap: () => _onTapChat(chatInfo),
-            leading: CircleAvatar(
-              radius: Sizes.size28,
-              foregroundImage: chatPartner.hasProfileImage
-                  ? getProfileImgByUserId(chatPartner.uid, false)
-                  : null,
-              child: ClipOval(child: Text(chatPartner.name)),
+    // TODO - 여러명 참여방일 경우 상대방 출력 로직 필요
+
+    return ListTile(
+        onLongPress: () => _onExitChatroom(chatrooms, chatroom),
+        onTap: () => _onTapChat(chatroom),
+        leading: CircleAvatar(
+          radius: Sizes.size28,
+          foregroundImage: other.hasProfileImage
+              ? getProfileImgByUserProfileImageUrl(other.profileImageUrl, false)
+              : null,
+          child: ClipOval(child: Text(other.username)),
+        ),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Text(
+              other.displayName,
+              style: const TextStyle(
+                fontWeight: FontWeight.w600,
+              ),
             ),
-            title: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  snapshot.data ?? chatPartner.username,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                Text(
-                  _getLastUpdatedAt(chatInfo.updatedAt),
-                  style: TextStyle(
-                    color: Colors.grey.shade500,
-                    fontSize: Sizes.size12,
-                  ),
-                ),
-              ],
+            Text(
+              _getLastUpdatedAt(updatedAt),
+              style: TextStyle(
+                color: Colors.grey.shade500,
+                fontSize: Sizes.size12,
+              ),
             ),
-            subtitle: _getLatestMessageText(chatInfo));
-      },
-    );
+          ],
+        ),
+        subtitle: _getLatestMessageText(chatroom));
   }
 
-  Widget _getLatestMessageText(ChatPartnerModel chatroom) {
-    var text = '';
-    if (_lastMessages.isEmpty) return Text(text);
-
-    MessageModel? msg = _lastMessages[chatroom.chatroomId];
-
-    if (msg != null) {
-      text = !msg.userId.startsWith(MessageViewModel.systemId)
-          ? msg.text
-          : _getLatestSystemMsg(msg.text, chatroom.chatPartner.uid);
-    } else {
-      text = S.of(context).conversationNotStarted;
+  Widget _getLatestMessageText(ChatroomModel chatroom) {
+    if (chatroom.lastMessageId == 0 || chatroom.lastMessage.id == 0) {
+      return Text(S.of(context).conversationNotStarted);
     }
 
-    return Text(text);
-  }
+    var lastMsg = chatroom.lastMessage;
+    var content = lastMsg.content;
 
-  String _getLatestSystemMsg(String text, String partnerUid) {
-    var textElms = text.split(systemMessageDivider);
-    var userId = textElms[0];
-    return userId == partnerUid
-        ? getLeftTypeSystemMessage(context, text)
-        : S.of(context).conversationNotStarted;
+    if (lastMsg.type == MessageType.typeSystem) {
+      content = getLeftTypeSystemMessage(context, content);
+    }
+
+    return Text(content);
   }
 
   String _getLastUpdatedAt(int updatedAt) {
@@ -209,14 +174,20 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     return DateFormat(format, 'en_US').format(lastUpdate);
   }
 
-  Future<String> _getPartnerUsername(ChatterModel partner) async {
-    return await ref
-        .read(userProvider.notifier)
-        .findUsername(context, partner.uid);
-  }
-
   @override
   Widget build(BuildContext context) {
+    final authState = ref.watch(authStateProvider);
+
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
+    }
+
+    if (authState.status == AuthStatus.unauthenticated) {
+      return const Center(child: Text("로그인이 필요합니다."));
+    }
+
+    _currentUser = authState.user;
+
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
       child: Scaffold(
@@ -233,7 +204,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
             ),
           ],
         ),
-        body: ref.watch(chatroomListProvider).when(
+        body: ref.watch(httpChatroomProvider).when(
               loading: () => const Center(
                 child: CircularProgressIndicator.adaptive(),
               ),
@@ -241,7 +212,8 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
                 child: Text(error.toString()),
               ),
               data: (chatrooms) {
-                _chatrooms = _getLastMessageInfo(chatrooms);
+                // _chatrooms = _getLastMessageInfo(chatrooms);
+                _chatrooms = chatrooms;
                 return _chatrooms.isEmpty
                     ? Column(
                         children: [
@@ -277,7 +249,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
                         ),
                         separatorBuilder: (context, index) => Gaps.v5,
                         itemBuilder: (context, index) =>
-                            _getChatroomListTile(_chatrooms[index], index),
+                            _getChatroomListTile(_chatrooms, index),
                       );
               },
             ),
