@@ -33,7 +33,7 @@ public class ChatMessage {
     private String content;
 
     @Column(nullable = false, length = 20)
-    private String type;        // e.g. text, emoji, image
+    private String type;        // e.g. text, emoji, image, system
 
     @Column(nullable = false)
     private LocalDateTime createdAt;

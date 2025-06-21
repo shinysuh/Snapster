@@ -105,7 +105,7 @@ public class ChatroomServiceImpl implements ChatroomService {
     @Override
     public Chatroom updateChatroomLastMessageId(ChatMessage message) {
         Chatroom chatroom = this.getChatroomById(message.getChatroomId());
-        chatroom.setLastMessageId(message.getId());
+        chatroom.updateFrom(message);
         return chatroomRepository.save(chatroom);
     }
 

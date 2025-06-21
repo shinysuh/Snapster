@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.chat.chatroom.entity;
 
+import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,8 +34,13 @@ public class Chatroom {
         this.createdAt = this.updatedAt = LocalDateTime.now();
     }
 
-    @PreUpdate
-    private void onUpdate() {
-        this.updatedAt = LocalDateTime.now();
+    public void updateFrom(ChatMessage message) {
+        this.lastMessageId = message.getId();
+        this.updatedAt = message.getCreatedAt();
     }
+
+//    @PreUpdate
+//    private void onUpdate() {
+//        this.updatedAt = LocalDateTime.now();
+//    }
 }
