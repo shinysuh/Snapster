@@ -35,6 +35,10 @@ final chatroomParticipantRepositoryProvider =
 );
 
 /* message */
-final chatMessageServiceProvider = Provider<ChatService>(
-  (ref) => ChatService(),
+final chatMessageServiceProvider = Provider<ChatMessageService>(
+  (ref) => ChatMessageService(),
+);
+
+final chatMessageRepositoryProvider = Provider<ChatMessageRepository>(
+  (ref) => ChatMessageRepository(ref.read(chatMessageServiceProvider)),
 );

@@ -7,7 +7,6 @@ import 'package:snapster_app/features/chat/message/models/chat_message_model.dar
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
-import 'package:uuid/uuid.dart';
 
 class ChatMessageService {
   static ChatMessageService? _instance;
@@ -25,7 +24,6 @@ class ChatMessageService {
   bool get isConnected => _stompClient.connected;
 
   late String _jwtToken;
-  final _uuid = const Uuid();
   final _chatroomSubs = <int, void Function(Map<String, dynamic>)>{};
   final _subscriptions = <int, void Function()>{}; // 구독 해제용 (클라이언트)
 
@@ -96,31 +94,14 @@ class ChatMessageService {
     }
   }
 
-  void sendMessage({
-    required int chatroomId,
-    required int senderId,
-    required int receiverId,
-    required String content,
-    required String type, // TEXT, EMOJI, IMAGE
-  }) {
+  void sendMessage(ChatMessageModel message) {
     if (!_stompClient.connected) {
       debugPrint("Not connected");
       return;
     }
 
-    final message = ChatMessageModel(
-      id: 0,
-      chatroomId: chatroomId,
-      senderId: senderId,
-      content: content,
-      type: type,
-      isDeleted: false,
-      clientMessageId: _uuid.v4(),
-      createdAt: 0,
-    );
-
     _stompClient.send(
-      destination: '$_messageBaseUrl$chatroomId',
+      destination: '$_messageBaseUrl${message.chatroomId}',
       body: jsonEncode(message),
       headers: ApiInfo.getBasicHeaderWithToken(_jwtToken),
     );
