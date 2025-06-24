@@ -57,6 +57,7 @@ public class SecurityConfig {
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ).authorizeHttpRequests(auth ->
                 auth.requestMatchers(
+                        "/api/auth/dev",        // TODO: 개발 완료 후 제거
                         "/api/debug/headers",
                         "/",
                         "/api/oauth2/**",

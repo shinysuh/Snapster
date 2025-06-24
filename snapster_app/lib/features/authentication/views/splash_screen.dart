@@ -5,8 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
-import 'package:snapster_app/features/authentication/old/views/login/login_screen.dart';
-import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class Splashscreen extends ConsumerStatefulWidget {

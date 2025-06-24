@@ -1,9 +1,28 @@
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
+
+String? getRouterRedirect(AsyncValue<AppUser?> asyncUser, String loc) {
+// 1) 로딩 중엔 리디렉션 하지 않음
+  if (asyncUser.isLoading) {
+    return null;
+  }
+  // 2) 에러 시 로그인 페이지로
+  if (asyncUser.hasError) {
+    return LoginScreen.routeURL;
+  }
+
+  // 3) 정상 값(unwrapped)
+  final user = asyncUser.value; // AppUser?
+  final status = _statusFromUser(user);
+
+  return getRedirectionLocation(status, loc);
+}
 
 /// 현재 auth 상태와 현재 위치(loc)를 기반으로 리디렉션 경로를 반환
 String? getRedirectionLocation(AuthStatus status, String loc) {
@@ -34,4 +53,9 @@ String? getRedirectionLocation(AuthStatus status, String loc) {
   }
 
   return null; // 다른 경우에는 이동하지 않음
+}
+
+AuthStatus _statusFromUser(AppUser? user) {
+  if (user == null) return AuthStatus.unauthenticated;
+  return AuthStatus.authenticated;
 }

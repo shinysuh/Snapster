@@ -66,7 +66,7 @@ class AuthRepository {
   }
 
   // 토큰을 사용해 사용자 정보 복구
-  Future<AppUser?> verifyAndSetUserFromToken(String token) async {
+  Future<AppUser?> _verifyAndSetUserFromToken(String token) async {
     try {
       // 서버에 토큰 유효성 검증 요청
       final user = await _authService.getUserFromToken(token);
@@ -89,7 +89,7 @@ class AuthRepository {
   Future<bool> storeTokenFromUriAndRestoreAuth(Uri uri, WidgetRef ref) async {
     final token = uri.queryParameters[Authorizations.accessTokenKey];
     if (token == null) return false;
-    return await storeToken(token);
+    return await _storeToken(token);
     //
     // await _tokenStorageService.saveToken(token);
     //
@@ -118,23 +118,23 @@ class AuthRepository {
       // google
       // String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUwMzI0MDMyLCJleHAiOjE3NTA5Mjg4MzJ9.PVKWkDXLgvtOkB7EmD8ogv4URuC6k5mc_sHqEJty4W54OCJPU5bls3RI-XjHlixil2ed-G0T3YGvSdf4vz7U_A";
 
-      await storeToken(fcmToken);
+      await _storeToken(fcmToken);
       return;
     }
 
     if (url.startsWith("https") || Platform.isAndroid) {
-      inAppLoginWithProvider(
+      _inAppLoginWithProvider(
         context: context,
         ref: ref,
         url: url,
       );
     } else {
-      launchOAuthSignIn(url);
+      _launchOAuthSignIn(url);
     }
   }
 
   // OAuth 2.0 브라우저 로그인
-  void launchOAuthSignIn(String urlStr) async {
+  void _launchOAuthSignIn(String urlStr) async {
     final Uri url = Uri.parse(urlStr);
 
     if (await canLaunchUrl(url)) {
@@ -145,7 +145,7 @@ class AuthRepository {
   }
 
   // OAuth 2.0 인앱 로그인
-  Future<void> inAppLoginWithProvider({
+  Future<void> _inAppLoginWithProvider({
     required BuildContext context,
     required WidgetRef ref,
     required String url,
@@ -156,15 +156,15 @@ class AuthRepository {
       ),
     );
     if (token != null) {
-      final success = await storeToken(token);
+      final success = await _storeToken(token);
       if (success) ref.invalidate(authStateProvider);
     }
   }
 
   // 로그인 시, 토큰 저장 -> 사용자 정보 복구
-  Future<bool> storeToken(String token) async {
+  Future<bool> _storeToken(String token) async {
     await _tokenStorageService.saveToken(token);
-    final user = await verifyAndSetUserFromToken(token);
+    final user = await _verifyAndSetUserFromToken(token);
     if (user != null) {
       _registerFcmToken(token);
       debugPrint('로그인 성공: ${user.username}');

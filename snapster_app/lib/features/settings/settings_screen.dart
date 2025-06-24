@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
@@ -18,7 +18,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _logOut(BuildContext context, WidgetRef ref) {
-    ref.read(authRepositoryProvider).clearToken(ref);
+    ref.read(authViewModelProvider.notifier).logout(ref);
   }
 
   @override

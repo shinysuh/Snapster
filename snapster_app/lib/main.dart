@@ -13,7 +13,7 @@ import 'package:snapster_app/common/widgets/navigation/views/main_navigation_scr
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/old/views/login/login_screen.dart';
-import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
@@ -74,8 +74,8 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
   }
 
   Future<void> _handleDeepLink(Uri uri) async {
-    final repo = ref.read(authRepositoryProvider);
-    final success = await repo.storeTokenFromUriAndRestoreAuth(uri, ref);
+    final repo = ref.read(authViewModelProvider.notifier);
+    final success = await repo.loginWithDeepLink(uri, ref);
     // 화면 이동
     if (mounted) {
       final location =
