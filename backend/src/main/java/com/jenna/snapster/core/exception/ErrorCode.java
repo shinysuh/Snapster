@@ -54,6 +54,7 @@ public enum ErrorCode {
     // chatroom
     CHATROOM_NOT_EXISTS("CHAT001", "채팅방 정보가 존재하지 않습니다.", BAD_REQUEST),
     UNAUTHORIZED_INVITATION_REQUEST("CHAT002", "채팅방에 대한 권한이 없습니다.", UNAUTHORIZED),
+    RECEIVER_NOT_EXISTS("CHAT003", "채팅 상대의 정보가 존재하지 않습니다.", BAD_REQUEST),
 
     // chat message
     MESSAGE_NOT_DELIVERED("MSG001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),

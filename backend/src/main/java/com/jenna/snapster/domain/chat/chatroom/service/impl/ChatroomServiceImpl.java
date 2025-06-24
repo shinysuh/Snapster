@@ -79,6 +79,7 @@ public class ChatroomServiceImpl implements ChatroomService {
 
     @Override
     public Chatroom openNewChatroom(ChatRequestDto chatRequest) {
+        this.validateReceiver(chatRequest.getReceiverId());
         Chatroom chatroom = chatroomRepository.save(new Chatroom());
         // 발신인/수신인 → DB에 채팅 참여자 목록에 추가 → Redis 동기화 → 수신인 정보 FCM push 알림 시 필요
         participantService.addInitialParticipants(chatRequest);
@@ -153,8 +154,14 @@ public class ChatroomServiceImpl implements ChatroomService {
         return chatroom;
     }
 
+    private void validateReceiver(Long receiverId) {
+        if (receiverId == null || receiverId == 0 || !userService.existsById(receiverId)) {
+            throw new GlobalException(ErrorCode.RECEIVER_NOT_EXISTS);
+        }
+    }
+
     private void addReceiverAsParticipant(Long chatroomId, Long receiverId) {
-        if (receiverId != null) {
+        if (receiverId != null) {  // 여기는 null 로 넘어올 수도 있음
             chatroomRedisRepository.addParticipant(chatroomId, receiverId);
         }
     }

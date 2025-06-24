@@ -23,6 +23,17 @@ public class UserServiceImpl implements UserService {
     private final UserProfileRepository userProfileRepository;
 
     @Override
+    public boolean existsById(Long userId) {
+        return userRepository.existsById(userId);
+    }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId)
+            .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_EXISTS));
+    }
+
+    @Override
     public List<UserResponseDto> getAllUsers() {
         return this.fromEntities(userRepository.findAll());
     }
@@ -39,12 +50,6 @@ public class UserServiceImpl implements UserService {
 
     private List<UserResponseDto> fromEntities(List<User> users) {
         return users.stream().map(UserResponseDto::from).toList();
-    }
-
-    @Override
-    public User getUserById(Long id) {
-        return userRepository.findById(id)
-            .orElseThrow(() -> new GlobalException(ErrorCode.USER_NOT_EXISTS));
     }
 
     @Transactional(rollbackFor = Exception.class)

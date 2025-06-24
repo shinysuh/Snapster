@@ -8,13 +8,16 @@ import com.jenna.snapster.domain.user.entity.UserProfile;
 import java.util.List;
 
 public interface UserService {
+
+    boolean existsById(Long userId);
+
+    User getUserById(Long userId);
+
     List<UserResponseDto> getAllUsers();
 
     List<UserResponseDto> getAllOtherUsers(Long userId);
 
     List<UserResponseDto> getAllUsersByIds(List<Long> userIds);
-
-    User getUserById(Long id);
 
     UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto);
 
