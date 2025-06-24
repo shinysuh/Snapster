@@ -20,17 +20,25 @@ import 'package:snapster_app/utils/tap_to_unfocus.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
-class TestChatDetailScreen extends ConsumerStatefulWidget {
-  static const String routeName = 'test-chatDetail';
-  static const String routeURL = ':chatroomId';
+class ChatroomDetailParams {
+  final int chatroomId;
+  final ChatroomModel chatroom;
 
-  final String chatroomId;
-  final ChatroomParticipantModel chatroomBasicInfo;
+  const ChatroomDetailParams({
+    required this.chatroomId,
+    required this.chatroom,
+  });
+}
+
+class TestChatDetailScreen extends ConsumerStatefulWidget {
+  static const String routeName = 'test-chat-detail';
+  static const String routeURL = 'chat-detail';
+
+  final ChatroomDetailParams chatroomDetails;
 
   const TestChatDetailScreen({
     super.key,
-    required this.chatroomId,
-    required this.chatroomBasicInfo,
+    required this.chatroomDetails,
   });
 
   @override

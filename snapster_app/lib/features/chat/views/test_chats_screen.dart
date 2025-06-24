@@ -55,21 +55,17 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     Navigator.of(context).pop();
   }
 
-  void _removeLeftChatroom(
-      List<ChatroomModel> chatrooms, ChatroomModel chatroom) {
-    final index = _chatrooms.indexOf(chatroom);
-    _chatrooms.removeAt(index);
-    setState(() {});
-
+  void _removeLeftChatroom(ChatroomModel chatroom) {
     // 채팅방 나가기
     ref.read(httpChatroomProvider.notifier).exitChatroom(
           context: context,
-          chatroomList: chatrooms,
+          chatroomList: _chatrooms,
           chatroom: chatroom,
         );
+    setState(() {});
   }
 
-  void _onExitChatroom(List<ChatroomModel> chatrooms, ChatroomModel chatroom) {
+  void onExitChatroom(ChatroomModel chatroom) {
     showCupertinoDialog(
       context: context,
       builder: (context) => CupertinoAlertDialog(
@@ -81,7 +77,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
           ),
           CupertinoDialogAction(
             onPressed: () {
-              _removeLeftChatroom(chatrooms, chatroom);
+              _removeLeftChatroom(chatroom);
               _closeExitDialog();
             },
             isDestructiveAction: true,
@@ -96,13 +92,15 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     goToRouteNamed(
       context: context,
       routeName: TestChatDetailScreen.routeName,
-      params: {'chatroomId': chatroom.id.toString()},
-      extra: chatroom,
+      extra: ChatroomDetailParams(
+        chatroomId: chatroom.id,
+        chatroom: chatroom,
+      ),
     );
   }
 
-  Widget _getChatroomListTile(List<ChatroomModel> chatrooms, int index) {
-    var chatroom = chatrooms[index];
+  Widget _getChatroomListTile(int index) {
+    var chatroom = _chatrooms[index];
     var participants = chatroom.participants;
     var other = participants[0].user;
     var updatedAt = chatroom.lastMessage.createdAt;
@@ -110,7 +108,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     // TODO - 여러명 참여방일 경우 상대방 출력 로직 필요
 
     return ListTile(
-        onLongPress: () => _onExitChatroom(chatrooms, chatroom),
+        onLongPress: () => onExitChatroom(chatroom),
         onTap: () => _onTapChat(chatroom),
         leading: CircleAvatar(
           radius: Sizes.size28,
@@ -240,7 +238,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
                             ),
                             separatorBuilder: (context, index) => Gaps.v5,
                             itemBuilder: (context, index) =>
-                                _getChatroomListTile(_chatrooms, index),
+                                _getChatroomListTile(index),
                           );
                   },
                 ),
