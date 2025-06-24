@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/widgets/auth_guard.dart';
 import 'package:snapster_app/features/feed/view_models/feed_view_model.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/settings/settings_screen.dart';
@@ -364,132 +364,119 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
-    final authState = ref.watch(authStateProvider);
 
-    if (authState.status == AuthStatus.loading) {
-      return const CircularProgressIndicator();
-    }
-
-    if (authState.status == AuthStatus.unauthenticated) {
-      return const Center(child: Text("로그인이 필요합니다."));
-    }
-
-    final user = authState.user;
-
-    if (user == null) {
-      return const Center(child: Text('유저 정보가 없습니다.'));
-    }
-
-    return Scaffold(
-      backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            // var width = MediaQuery.of(context).size.width;
-            var width = constraints.maxWidth;
-            var isVertical = width < Breakpoints.md;
-            var colCount = isVertical
-                ? 3
-                : width < Breakpoints.lg
-                    ? 4
-                    : 5;
-            return DefaultTabController(
-              initialIndex: widget.show == 'likes' ? 1 : 0,
-              length: 2,
-              /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
-              child: NestedScrollView(
-                headerSliverBuilder: (context, innerBoxIsScrolled) => [
-                  SliverAppBar(
-                    centerTitle: true,
-                    // backgroundColor: isDark ? Colors.black : Colors.white,
-                    title: Text(user.displayName),
-                    actions: [
-                      IconButton(
-                        onPressed: () => _onTapEditProfile(user),
-                        icon: const FaIcon(
-                          FontAwesomeIcons.pen,
-                          size: Sizes.size18,
+    return AuthGuard(
+      builder: (context, user) => Scaffold(
+        backgroundColor: Theme.of(context).appBarTheme.backgroundColor,
+        body: SafeArea(
+          child: LayoutBuilder(
+            builder: (context, constraints) {
+              // var width = MediaQuery.of(context).size.width;
+              var width = constraints.maxWidth;
+              var isVertical = width < Breakpoints.md;
+              var colCount = isVertical
+                  ? 3
+                  : width < Breakpoints.lg
+                      ? 4
+                      : 5;
+              return DefaultTabController(
+                initialIndex: widget.show == 'likes' ? 1 : 0,
+                length: 2,
+                /* NestedScrollView => Sliver 와 TabBarView 를 동시에 사용할 때 적용 */
+                child: NestedScrollView(
+                  headerSliverBuilder: (context, innerBoxIsScrolled) => [
+                    SliverAppBar(
+                      centerTitle: true,
+                      // backgroundColor: isDark ? Colors.black : Colors.white,
+                      title: Text(user.displayName),
+                      actions: [
+                        IconButton(
+                          onPressed: () => _onTapEditProfile(user),
+                          icon: const FaIcon(
+                            FontAwesomeIcons.pen,
+                            size: Sizes.size18,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: _onTapBell,
-                        icon: const FaIcon(
-                          FontAwesomeIcons.bell,
-                          size: Sizes.size20,
+                        IconButton(
+                          onPressed: _onTapBell,
+                          icon: const FaIcon(
+                            FontAwesomeIcons.bell,
+                            size: Sizes.size20,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: _onTapGear,
-                        icon: const FaIcon(
-                          FontAwesomeIcons.gear,
-                          size: Sizes.size20,
+                        IconButton(
+                          onPressed: _onTapGear,
+                          icon: const FaIcon(
+                            FontAwesomeIcons.gear,
+                            size: Sizes.size20,
+                          ),
                         ),
-                      ),
+                      ],
+                    ),
+                    SliverToBoxAdapter(
+                      child: isVertical
+                          ? Column(
+                              children: [
+                                _getUserPic(user, isVertical),
+                                Gaps.v24,
+                                ..._getUserInfo(user),
+                                Gaps.v20,
+                              ],
+                            )
+                          : Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                _getUserPic(user, isVertical),
+                                Column(
+                                  children: [
+                                    ..._getUserInfo(user),
+                                    Gaps.v20,
+                                  ],
+                                ),
+                              ],
+                            ),
+                    ),
+                    SliverPersistentHeader(
+                      pinned: true,
+                      floating: true,
+                      delegate: UserProfileTabBar(),
+                    ),
+                  ],
+                  body: TabBarView(
+                    children: [
+                      ref.watch(feedViewModelProvider(user.userId)).when(
+                            loading: () => const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                            error: (error, stackTrace) => Center(
+                              child: Text('FEED ERROR: ${error.toString()}'),
+                            ),
+                            data: (feeds) => _getFeedGridViewByTabBar(
+                              colCount: colCount,
+                              playCount: '2.6K',
+                              feedData: feeds,
+                            ),
+                          ),
+                      ref.watch(likedThumbnailListProvider(user.userId)).when(
+                            loading: () => const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                            error: (error, stackTrace) => Center(
+                              child: Text(error.toString()),
+                            ),
+                            data: (likes) => _getGridViewByTabBar(
+                              colCount: colCount,
+                              playCount: '36.1K',
+                              thumbnailData: likes,
+                            ),
+                          ),
                     ],
                   ),
-                  SliverToBoxAdapter(
-                    child: isVertical
-                        ? Column(
-                            children: [
-                              _getUserPic(user, isVertical),
-                              Gaps.v24,
-                              ..._getUserInfo(user),
-                              Gaps.v20,
-                            ],
-                          )
-                        : Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              _getUserPic(user, isVertical),
-                              Column(
-                                children: [
-                                  ..._getUserInfo(user),
-                                  Gaps.v20,
-                                ],
-                              ),
-                            ],
-                          ),
-                  ),
-                  SliverPersistentHeader(
-                    pinned: true,
-                    floating: true,
-                    delegate: UserProfileTabBar(),
-                  ),
-                ],
-                body: TabBarView(
-                  children: [
-                    ref.watch(feedViewModelProvider(user.userId)).when(
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                          error: (error, stackTrace) => Center(
-                            child: Text('FEED ERROR: ${error.toString()}'),
-                          ),
-                          data: (feeds) => _getFeedGridViewByTabBar(
-                            colCount: colCount,
-                            playCount: '2.6K',
-                            feedData: feeds,
-                          ),
-                        ),
-                    ref.watch(likedThumbnailListProvider(user.userId)).when(
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                          error: (error, stackTrace) => Center(
-                            child: Text(error.toString()),
-                          ),
-                          data: (likes) => _getGridViewByTabBar(
-                            colCount: colCount,
-                            playCount: '36.1K',
-                            thumbnailData: likes,
-                          ),
-                        ),
-                  ],
                 ),
-              ),
-            );
-          },
+              );
+            },
+          ),
         ),
       ),
     );
