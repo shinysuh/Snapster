@@ -9,14 +9,14 @@ import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 import 'package:uuid/uuid.dart';
 
-class ChatService {
-  static ChatService? _instance;
+class ChatMessageService {
+  static ChatMessageService? _instance;
 
-  factory ChatService() {
-    return _instance ??= ChatService._internal();
+  factory ChatMessageService() {
+    return _instance ??= ChatMessageService._internal();
   }
 
-  ChatService._internal();
+  ChatMessageService._internal();
 
   static const _messageBaseUrl = '/app/chat/send.';
 
@@ -27,6 +27,7 @@ class ChatService {
   late String _jwtToken;
   final _uuid = const Uuid();
   final _chatroomSubs = <int, void Function(Map<String, dynamic>)>{};
+  final _subscriptions = <int, void Function()>{}; // 구독 해제용 (클라이언트)
 
   int reconnectTrial = 0;
 
@@ -55,11 +56,11 @@ class ChatService {
         onDebugMessage: (msg) => debugPrint('Debug: $msg'),
         stompConnectHeaders: {
           Authorizations.headerKey:
-          '${Authorizations.headerValuePrefix} $_jwtToken',
+              '${Authorizations.headerValuePrefix} $_jwtToken',
         },
         webSocketConnectHeaders: {
           Authorizations.headerKey:
-          '${Authorizations.headerValuePrefix} $_jwtToken',
+              '${Authorizations.headerValuePrefix} $_jwtToken',
         },
         heartbeatIncoming: const Duration(seconds: 5),
         heartbeatOutgoing: const Duration(seconds: 5),
@@ -73,7 +74,6 @@ class ChatService {
 
   void _onConnect(StompFrame frame) {
     debugPrint('Connected to STOMP');
-
     // 재연결 시 기존 구독 복구
     for (var entry in _chatroomSubs.entries) {
       subscribeToChatroom(entry.key, entry.value);
@@ -132,7 +132,7 @@ class ChatService {
   ) {
     _chatroomSubs[chatroomId] = onMessage;
 
-    _stompClient.subscribe(
+    final subscription = _stompClient.subscribe(
       destination: '/topic/chatroom.$chatroomId',
       callback: (frame) {
         if (frame.body != null) {
@@ -141,6 +141,38 @@ class ChatService {
         }
       },
     );
+
+    _subscriptions[chatroomId] = subscription;
+  }
+
+  void subscribeToChatrooms(
+    List<int> chatroomIds,
+    void Function(Map<String, dynamic>) onMessage,
+  ) {
+    for (var id in chatroomIds) {
+      subscribeToChatroom(id, onMessage);
+    }
+  }
+
+  void unsubscribeFromChatroom(int chatroomId) {
+    _subscriptions.remove(chatroomId)?.call();
+    _chatroomSubs.remove(chatroomId);
+  }
+
+  void unsubscribeFromChatrooms(List<int> chatroomIds) {
+    for (var id in chatroomIds) {
+      unsubscribeFromChatroom(id);
+    }
+  }
+
+  void disconnect() {
+    for (var unsub in _subscriptions.values) {
+      unsub(); // 연결 해제 전 전체 unsubscribe
+    }
+    _subscriptions.clear();
+    _chatroomSubs.clear();
+
+    _stompClient.deactivate();
   }
 
   void updateJwtToken(String newToken) {
@@ -149,9 +181,5 @@ class ChatService {
       _stompClient.deactivate();
     }
     connect(_jwtToken);
-  }
-
-  void disconnect() {
-    _stompClient.deactivate();
   }
 }
