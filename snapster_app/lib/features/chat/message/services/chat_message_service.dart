@@ -130,6 +130,9 @@ class ChatMessageService {
     int chatroomId,
     void Function(Map<String, dynamic>) onMessage,
   ) {
+    // 중복 구독 방지 로직
+    if (_subscriptions.containsKey(chatroomId)) return;
+
     _chatroomSubs[chatroomId] = onMessage;
 
     final subscription = _stompClient.subscribe(
