@@ -18,7 +18,7 @@ class SettingsScreen extends ConsumerWidget {
   }
 
   void _logOut(BuildContext context, WidgetRef ref) {
-    ref.read(authViewModelProvider.notifier).logout(ref);
+    ref.read(authProvider.notifier).logout(ref);
   }
 
   @override

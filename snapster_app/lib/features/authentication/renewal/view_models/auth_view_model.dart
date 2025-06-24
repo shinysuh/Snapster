@@ -63,5 +63,5 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   }
 }
 
-final authViewModelProvider =
+final authProvider =
     AsyncNotifierProvider<AuthViewModel, AppUser?>(AuthViewModel.new);

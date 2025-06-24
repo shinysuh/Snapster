@@ -445,7 +445,7 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                   ],
                   body: TabBarView(
                     children: [
-                      ref.watch(feedViewModelProvider(user.userId)).when(
+                      ref.watch(feedProvider(user.userId)).when(
                             loading: () => const Center(
                               child: CircularProgressIndicator.adaptive(),
                             ),

@@ -33,7 +33,7 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
   Future<void> initApp() async {
     await Future.delayed(const Duration(milliseconds: 100)); // ⏳ 렌더링 시간 확보
 
-    final user = ref.watch(authViewModelProvider);
+    final user = ref.watch(authProvider);
 
     if (!mounted) return;
     final route =

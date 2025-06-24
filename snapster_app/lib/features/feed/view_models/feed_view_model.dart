@@ -37,7 +37,7 @@ class FeedViewModel extends FamilyAsyncNotifier<List<VideoPostModel>, String> {
   }
 }
 
-final feedViewModelProvider =
+final feedProvider =
     AsyncNotifierProvider.family<FeedViewModel, List<VideoPostModel>, String>(
   FeedViewModel.new,
 );

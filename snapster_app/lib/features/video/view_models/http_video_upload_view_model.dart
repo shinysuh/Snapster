@@ -64,7 +64,7 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
 
             // user feed 갱신
             ref
-                .read(feedViewModelProvider(currentUser!.userId).notifier)
+                .read(feedProvider(currentUser!.userId).notifier)
                 .refresh();
 
             if (context.mounted) {

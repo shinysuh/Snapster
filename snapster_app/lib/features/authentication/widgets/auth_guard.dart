@@ -15,7 +15,7 @@ class AuthGuard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return ref.watch(authViewModelProvider).when(
+    return ref.watch(authProvider).when(
           loading: () => const Center(child: CircularProgressIndicator()),
           error: (_, __) => const Center(child: Text('로그인이 필요합니다.')),
           data: (user) {

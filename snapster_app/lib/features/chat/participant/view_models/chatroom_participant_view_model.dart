@@ -130,7 +130,7 @@ class ChatroomParticipantViewModel
   }
 }
 
-final participantViewModelProvider = AsyncNotifierProvider.family<
+final participantProvider = AsyncNotifierProvider.family<
     ChatroomParticipantViewModel, List<ChatroomParticipantModel>, int>(
   ChatroomParticipantViewModel.new,
 );

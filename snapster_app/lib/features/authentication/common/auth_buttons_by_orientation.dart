@@ -29,7 +29,7 @@ class AuthButtonsByOrientation extends ConsumerWidget {
         icon: FontAwesomeIcons.google,
         text: S.of(context).continueWithGoogle,
         onTapButton: () => ref
-            .read(authViewModelProvider.notifier)
+            .read(authProvider.notifier)
             .socialLoginWithProvider(
                 context: context, ref: ref, provider: 'google'),
       ),
@@ -37,7 +37,7 @@ class AuthButtonsByOrientation extends ConsumerWidget {
         icon: FontAwesomeIcons.solidMessage,
         text: S.of(context).continueWithKakao,
         onTapButton: () => ref
-            .read(authViewModelProvider.notifier)
+            .read(authProvider.notifier)
             .socialLoginWithProvider(
                 context: context, ref: ref, provider: 'kakao'),
       ),

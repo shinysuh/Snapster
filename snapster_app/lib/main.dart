@@ -74,7 +74,7 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
   }
 
   Future<void> _handleDeepLink(Uri uri) async {
-    final repo = ref.read(authViewModelProvider.notifier);
+    final repo = ref.read(authProvider.notifier);
     final success = await repo.loginWithDeepLink(uri, ref);
     // 화면 이동
     if (mounted) {
