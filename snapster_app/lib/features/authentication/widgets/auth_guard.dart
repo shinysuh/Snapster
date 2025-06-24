@@ -4,7 +4,9 @@ import 'package:snapster_app/features/authentication/renewal/view_models/auth_vi
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 typedef AuthenticatedBuilder = Widget Function(
-    BuildContext context, AppUser user);
+  BuildContext context,
+  AppUser user,
+);
 
 /// 로딩 · 비로그인 · 로그인된 상태 공통 처리 위젯
 class AuthGuard extends ConsumerWidget {

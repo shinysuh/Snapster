@@ -26,45 +26,29 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
     _chatroomRepository = ref.read(chatroomRepositoryProvider);
     _messageRepository = ref.read(chatMessageRepositoryProvider);
 
-    final accessToken = await _tokenStorageService.readToken();
-    return await _init(accessToken);
+    return await initialize();
   }
 
-  Future<AppUser?> _init(String? token) async {
+  Future<AppUser?> initialize() async {
     // 1) 토큰 복구 시도
     final restored = await _authRepository.restoreFromToken();
     final user = restored ? _authRepository.currentUser : null;
 
-    if (user != null && token != null) {
+    final accessToken = await _tokenStorageService.readToken();
+    if (user != null && accessToken != null) {
+      final chatrooms = await getAllParticipatingChatrooms();
+      final chatroomIds = chatrooms.map((room) => room.id).toList();
       // 2) WebSocket 연결 & 참여 중인 채팅방 일괄 구독
-      await _connectToWebSocket(token);
+      _messageRepository.initializeForUser(accessToken, chatroomIds);
     }
     return user;
   }
 
-  Future<void> _connectToWebSocket(String token) async {
-    _messageRepository.connectToWebSocket(token);
-    await _subscribeAllParticipatingChatrooms();
-  }
-
-  Future<void> _subscribeAllParticipatingChatrooms() async {
-    // 참여 중인 채팅방 목록 (DB)
-    List<ChatroomModel> chatrooms =
-        await runFutureWithExceptionLogs<List<ChatroomModel>>(
+  Future<List<ChatroomModel>> getAllParticipatingChatrooms() async {
+    return await runFutureWithExceptionLogs<List<ChatroomModel>>(
       errorPrefix: '채팅방 목록 조회',
       requestFunction: () async => _chatroomRepository.getAllChatroomsByUser(),
       fallback: [],
-    );
-
-    // 참여 중인 채팅방 일괄 구독
-    final chatroomIds = chatrooms.map((room) => room.id).toList();
-    _messageRepository.subscribeToChatrooms(
-      chatroomIds,
-      (data) {
-        // 전역으로 들어오는 메시지는 여기서 로깅하거나
-        // 이후 ChatMessageViewModel로 전달해줄 수도 있음.
-        debugPrint('[$chatroomIds] 메시지 수신: $data');
-      },
     );
   }
 
@@ -110,7 +94,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   Future<void> logout(WidgetRef ref) async {
     state = const AsyncValue.loading();
     await _authRepository.clearToken(ref);
-    _messageRepository.disconnect();    // 웹소켓 disconnect & 구독 일괄 제거
+    _messageRepository.disconnect(); // 웹소켓 disconnect & 구독 일괄 제거
     state = const AsyncValue.data(null);
   }
 }

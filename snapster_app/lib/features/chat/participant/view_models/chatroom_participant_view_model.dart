@@ -7,6 +7,7 @@ import 'package:snapster_app/features/chat/participant/models/chatroom_participa
 import 'package:snapster_app/features/chat/participant/models/multiple_participant_request_model.dart';
 import 'package:snapster_app/features/chat/participant/repositories/chatroom_participant_repository.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 
 class ChatroomParticipantViewModel
@@ -43,9 +44,11 @@ class ChatroomParticipantViewModel
 
   Future<void> addParticipant({
     required BuildContext context,
-    required int userId,
+    required AppUser target,
   }) async {
     if (state is AsyncData<List<ChatroomParticipantModel>>) {
+      final userId = int.parse(target.userId);
+
       final currentList = _getCurrentParticipants();
       final exists =
           currentList.map((p) => p.id.userId).toSet().contains(userId);
@@ -66,7 +69,7 @@ class ChatroomParticipantViewModel
 
       // 초대된 참여자 수동 추가
       if (success) {
-        final newbie = ChatroomParticipantModel(id: targetId);
+        final newbie = ChatroomParticipantModel(id: targetId, user: target);
         state = AsyncValue.data([...currentList, newbie]);
       }
     }

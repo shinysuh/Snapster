@@ -14,6 +14,7 @@ import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
+import 'package:snapster_app/features/chat/providers/chat_providers.dart';
 import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
@@ -57,20 +58,40 @@ class SnapsterApp extends ConsumerStatefulWidget {
   ConsumerState<SnapsterApp> createState() => _SnapsterAppState();
 }
 
-class _SnapsterAppState extends ConsumerState<SnapsterApp> {
+class _SnapsterAppState extends ConsumerState<SnapsterApp>
+    with WidgetsBindingObserver {
   late final _appLinks;
   late final StreamSubscription _sub;
 
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     _initDeepLinkListener();
   }
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
     _sub.cancel();
     super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    final messageRepo = ref.read(chatMessageRepositoryProvider);
+    final authState = ref.read(authProvider);
+
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      messageRepo.disconnect();
+    }
+
+    if (state == AppLifecycleState.resumed &&
+        authState is AsyncData &&
+        authState.value != null) {
+      ref.read(authProvider.notifier).initialize();
+    }
   }
 
   Future<void> _handleDeepLink(Uri uri) async {
