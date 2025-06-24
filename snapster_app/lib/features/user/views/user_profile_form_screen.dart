@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/user/view_models/profile_avatar_upload_view_model.dart';

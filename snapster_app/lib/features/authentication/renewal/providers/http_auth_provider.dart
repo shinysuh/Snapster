@@ -1,10 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/token_storage_provider.dart';
-import 'package:snapster_app/features/authentication/repositories/http_auth_repository.dart';
-import 'package:snapster_app/features/authentication/services/http_auth_service.dart';
-import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/token_storage_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/repositories/http_auth_repository.dart';
+import 'package:snapster_app/features/authentication/renewal/services/http_auth_service.dart';
+import 'package:snapster_app/features/authentication/renewal/services/i_auth_service.dart';
 import 'package:snapster_app/features/chat/notification/providers/fcm_token_providers.dart';
 
 // IAuthService 서비스 구현체 주입 (HTTP 호출 담당)

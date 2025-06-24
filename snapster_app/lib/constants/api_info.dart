@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
 
 class ApiInfo {
   // static const baseUrl = 'https://d3uszapt2fdgux.cloudfront.net';      // 운영

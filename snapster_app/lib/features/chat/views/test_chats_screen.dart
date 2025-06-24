@@ -7,7 +7,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/message_types.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
 import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';

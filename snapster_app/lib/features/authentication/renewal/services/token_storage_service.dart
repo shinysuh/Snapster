@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
 
 class TokenStorageService {
   final _tokenKey = Authorizations.authTokenKey;

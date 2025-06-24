@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
-import 'package:snapster_app/features/authentication/view_models/login_view_model.dart';
+import 'package:snapster_app/features/authentication/old/view_models/login_view_model.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';
 
 class LoginFormScreen extends ConsumerStatefulWidget {

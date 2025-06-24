@@ -1,4 +1,4 @@
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 class AuthState {

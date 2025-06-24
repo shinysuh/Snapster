@@ -1,7 +1,7 @@
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
-import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
 

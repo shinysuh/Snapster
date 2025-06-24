@@ -1,7 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
-import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/renewal/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:snapster_app/features/chat/notification/models/fcm_token_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';

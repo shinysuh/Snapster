@@ -1,9 +1,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/providers/dio_provider.dart';
-import 'package:snapster_app/features/authentication/providers/token_storage_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/token_storage_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/chat/chatroom/services/chatroom_service.dart';
-import 'package:snapster_app/features/chat/message/services/chat_service.dart';
+import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
+import 'package:snapster_app/features/chat/message/services/chat_message_service.dart';
 import 'package:snapster_app/features/chat/participant/repositories/chatroom_participant_repository.dart';
 import 'package:snapster_app/features/chat/participant/services/chatroom_participant_service.dart';
 

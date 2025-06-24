@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
+import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/api_safe_wrapper.dart';
 

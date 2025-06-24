@@ -4,7 +4,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/feed/view_models/feed_view_model.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/features/settings/settings_screen.dart';

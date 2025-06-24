@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 class OAuthWebViewPage extends StatefulWidget {

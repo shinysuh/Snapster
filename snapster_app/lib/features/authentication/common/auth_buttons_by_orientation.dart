@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/features/authentication/common/auth_button.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
 import 'package:snapster_app/generated/l10n.dart';
 
 class AuthButtonsByOrientation extends ConsumerWidget {

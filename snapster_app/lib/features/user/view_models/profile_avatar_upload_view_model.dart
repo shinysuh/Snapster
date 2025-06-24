@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/file/constants/upload_file_type.dart';
 import 'package:snapster_app/features/file/models/uploaded_file_model.dart';
 import 'package:snapster_app/features/file/utils/common_upload_process_mixin.dart';

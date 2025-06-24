@@ -5,10 +5,13 @@ import 'package:snapster_app/common/widgets/navigation/go_router_refresh_stream.
 import 'package:snapster_app/common/widgets/navigation/router_redirect_rules.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/old/views/login/login_screen.dart';
+import 'package:snapster_app/features/authentication/old/views/signup/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
-import 'package:snapster_app/features/authentication/views/sign_up/sign_up_screen.dart';
+import 'package:snapster_app/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
@@ -29,8 +32,8 @@ final routerProvider = Provider<GoRouter>((ref) {
     initialLocation: Splashscreen.routeURL,
     refreshListenable: GoRouterRefreshStream(authRepo.authStateChanges),
     redirect: (context, state) {
-      return getRedirectionLocation(
-        ref.read(authStateProvider).status,
+      return getRouterRedirect(
+        ref.read(authViewModelProvider),
         state.subloc,
       );
     },
@@ -114,7 +117,7 @@ final routerProvider = Provider<GoRouter>((ref) {
               final chatroom = state.extra;
               return TestChatDetailScreen(
                 chatroomId: int.parse(id.toString()),
-                chatroomBasicInfo: chatroom as ChatroomModel,
+                chatroom: chatroom as ChatroomModel,
               );
             },
           ),

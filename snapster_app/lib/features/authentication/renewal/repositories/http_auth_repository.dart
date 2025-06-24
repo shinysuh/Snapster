@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
-import 'package:snapster_app/features/authentication/providers/auth_status_provider.dart';
-import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
-import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
-import 'package:snapster_app/features/authentication/views/oauth/oauth_web_view_screen.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
+import 'package:snapster_app/features/authentication/renewal/views/oauth_web_view_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
 import 'package:snapster_app/features/chat/notification/models/fcm_token_model.dart';
 import 'package:snapster_app/features/chat/notification/utils/fcm_token_util.dart';
@@ -80,6 +80,7 @@ class AuthRepository {
     } catch (e) {
       debugPrint('토큰 유효성 검증 실패: $e');
       setUser(null);
+      // todo - login 페이지로 이동 필요
       return null;
     }
   }
@@ -88,14 +89,15 @@ class AuthRepository {
   Future<bool> storeTokenFromUriAndRestoreAuth(Uri uri, WidgetRef ref) async {
     final token = uri.queryParameters[Authorizations.accessTokenKey];
     if (token == null) return false;
-
-    await _tokenStorageService.saveToken(token);
-
-    final user = await verifyAndSetUserFromToken(token);
-
-    final success = user != null;
-    if (success) ref.invalidate(authStateProvider);
-    return success;
+    return await storeToken(token);
+    //
+    // await _tokenStorageService.saveToken(token);
+    //
+    // final user = await verifyAndSetUserFromToken(token);
+    //
+    // final success = user != null;
+    // if (success) ref.invalidate(authStateProvider);
+    // return success;
   }
 
   Future<void> socialLoginWithProvider({
@@ -110,7 +112,8 @@ class AuthRepository {
     // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)
     if (Platform.isAndroid) {
       // kakao
-      String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTAzMTc3MTUsImV4cCI6MTc1MDkyMjUxNX0.tnIUGJEhN5NNoAPznKZQEqLpoSk8TzHSUs6fZBWHgpmmWA2NFfEataR43QBcHAhx-iBnPuc1P3hGH9Vgm0QkCA";
+      String fcmToken =
+          "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTAzMTc3MTUsImV4cCI6MTc1MDkyMjUxNX0.tnIUGJEhN5NNoAPznKZQEqLpoSk8TzHSUs6fZBWHgpmmWA2NFfEataR43QBcHAhx-iBnPuc1P3hGH9Vgm0QkCA";
 
       // google
       // String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUwMzI0MDMyLCJleHAiOjE3NTA5Mjg4MzJ9.PVKWkDXLgvtOkB7EmD8ogv4URuC6k5mc_sHqEJty4W54OCJPU5bls3RI-XjHlixil2ed-G0T3YGvSdf4vz7U_A";

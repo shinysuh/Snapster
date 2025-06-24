@@ -1,9 +1,8 @@
 // 로그인 상태 스트림 (앱 전체에서 watch 가능)
 // Stream 은 변화가 바로 반영됨 (watch)
-import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/auth_state_model.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/models/auth_state_model.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 
 enum AuthStatus {

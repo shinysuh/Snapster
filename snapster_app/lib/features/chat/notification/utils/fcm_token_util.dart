@@ -1,6 +1,6 @@
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:snapster_app/features/authentication/services/i_auth_service.dart';
+import 'package:snapster_app/features/authentication/renewal/services/i_auth_service.dart';
 import 'package:snapster_app/features/chat/notification/services/fcm_token_storage_service.dart';
 
 class FcmTokenUtil {

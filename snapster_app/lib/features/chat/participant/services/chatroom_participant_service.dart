@@ -1,6 +1,6 @@
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/features/authentication/services/token_storage_service.dart';
+import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_id_model.dart';
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
 import 'package:snapster_app/features/chat/participant/models/multiple_participant_request_model.dart';

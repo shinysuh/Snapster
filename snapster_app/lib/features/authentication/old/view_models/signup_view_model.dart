@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/providers/firebase_auth_provider.dart';
-import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
+import 'package:snapster_app/features/authentication/old/providers/firebase_auth_provider.dart';
+import 'package:snapster_app/features/authentication/old/repositories/firebase_authentication_repository.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/view_models/user_view_model.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';

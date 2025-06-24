@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/constants/api_info.dart';
-import 'package:snapster_app/features/authentication/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';

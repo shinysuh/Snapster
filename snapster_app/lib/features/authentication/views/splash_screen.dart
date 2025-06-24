@@ -3,8 +3,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
-import 'package:snapster_app/features/authentication/providers/http_auth_provider.dart';
+import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
+import 'package:snapster_app/features/authentication/old/views/login/login_screen.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/http_auth_provider.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class Splashscreen extends ConsumerStatefulWidget {
@@ -19,7 +21,6 @@ class Splashscreen extends ConsumerStatefulWidget {
 
 class _SplashscreenState extends ConsumerState<Splashscreen>
     with WidgetsBindingObserver {
-
   @override
   void initState() {
     super.initState();
@@ -34,12 +35,11 @@ class _SplashscreenState extends ConsumerState<Splashscreen>
   Future<void> initApp() async {
     await Future.delayed(const Duration(milliseconds: 100)); // ⏳ 렌더링 시간 확보
 
-    final user = ref.read(authRepositoryProvider).currentUser;
+    final user = ref.watch(authViewModelProvider);
 
     if (!mounted) return;
-    final route = user != null
-        ? MainNavigationScreen.homeRouteURL
-        : LoginScreen.routeURL;
+    final route =
+        user != null ? MainNavigationScreen.homeRouteURL : LoginScreen.routeURL;
 
     goRouteReplacementRoute(
       context: context,

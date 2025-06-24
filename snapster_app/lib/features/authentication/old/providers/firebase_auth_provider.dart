@@ -1,5 +1,5 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/authentication/repositories/firebase_authentication_repository.dart';
+import 'package:snapster_app/features/authentication/old/repositories/firebase_authentication_repository.dart';
 
 // TODO - 제거 예정
 final firebaseAuthServiceProvider = Provider(
