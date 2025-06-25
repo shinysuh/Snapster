@@ -4,7 +4,7 @@ import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.video.entity.VideoPost;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Optional;
 
 @Data
@@ -14,7 +14,7 @@ public class VideoSaveDto {
     private Long thumbnailId;
     private String title;
     private String description;
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public VideoSaveDto(VideoPost post) {
         this.id = post.getId();

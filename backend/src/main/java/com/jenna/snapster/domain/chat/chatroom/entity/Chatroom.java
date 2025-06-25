@@ -7,7 +7,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -26,14 +26,14 @@ public class Chatroom {
     private ChatMessage lastMessage;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     @Column(nullable = false)
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     @PrePersist
     protected void onCreate() {
-        this.createdAt = this.updatedAt = LocalDateTime.now();
+        this.createdAt = this.updatedAt = Instant.now();
     }
 
     public void updateFrom(ChatMessage message) {
@@ -43,6 +43,6 @@ public class Chatroom {
 
 //    @PreUpdate
 //    private void onUpdate() {
-//        this.updatedAt = LocalDateTime.now();
+//        this.updatedAt = Instant.now();
 //    }
 }

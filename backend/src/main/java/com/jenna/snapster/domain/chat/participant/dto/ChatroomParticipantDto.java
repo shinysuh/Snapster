@@ -5,7 +5,7 @@ import com.jenna.snapster.domain.user.dto.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @AllArgsConstructor
@@ -15,18 +15,17 @@ public class ChatroomParticipantDto {
 
     private UserResponseDto user;
 
-    private LocalDateTime joinedAt;    // 참여 시간
+    private Instant joinedAt;    // 참여 시간
 
     private Long lastReadMessageId = null;
 
-    private LocalDateTime lastReadAt;
+    private Instant lastReadAt;
 
     // repository 쿼리에서 사용
     ChatroomParticipantDto(ChatroomParticipantId id,
-                           LocalDateTime joinedAt,
+                           Instant joinedAt,
                            Long lastReadMessageId,
-                           LocalDateTime lastReadAt
-    ) {
+                           Instant lastReadAt) {
         this.id = id;
         this.joinedAt = joinedAt;
         this.lastReadMessageId = lastReadMessageId;

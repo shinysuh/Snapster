@@ -1,12 +1,13 @@
 package com.jenna.snapster.domain.chat.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -22,6 +23,11 @@ public class ChatRequestDto {
 
     private String content;
     private String type;        // e.g. text, emoji, image
-    private LocalDateTime createdAt;
+
+    @JsonIgnore
+    private Instant createdAt;
     private String clientMessageId;
+
+    @JsonProperty("isDeleted")
+    private boolean isDelete;
 }

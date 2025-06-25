@@ -5,7 +5,7 @@ import com.jenna.snapster.domain.file.uploaded.dto.UploadedFileDto;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Entity
 @Table(name = "uploaded_file")
@@ -30,7 +30,7 @@ public class UploadedFile {
 
     private String type;
 
-    private LocalDateTime uploadedAt;
+    private Instant uploadedAt;
 
     @JsonProperty("isPrivate")
     private boolean isPrivate;
@@ -43,7 +43,7 @@ public class UploadedFile {
         this.fileName = fileName;
         this.s3FilePath = s3FilePath;
         this.url = url;
-        this.uploadedAt = LocalDateTime.now();
+        this.uploadedAt = Instant.now();
     }
 
     public UploadedFile(UploadedFileDto dto) {
@@ -52,7 +52,7 @@ public class UploadedFile {
         this.s3FilePath = dto.getS3FilePath();
         this.url = dto.getUrl();
         this.type = dto.getType();
-        this.uploadedAt = LocalDateTime.now();
+        this.uploadedAt = Instant.now();
         this.isPrivate = dto.isPrivate();
         this.isDeleted = false;
     }

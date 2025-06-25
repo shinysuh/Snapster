@@ -9,7 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -58,7 +58,7 @@ public class VideoPost {
 
     private Long comments;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
     public VideoPost(VideoPostDto dto) {
         this.user = User.builder().id(dto.getUserId()).build();

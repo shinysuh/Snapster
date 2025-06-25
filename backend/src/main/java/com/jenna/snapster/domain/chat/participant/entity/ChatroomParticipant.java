@@ -8,7 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -21,17 +21,17 @@ public class ChatroomParticipant {
     @EmbeddedId
     private ChatroomParticipantId id;   // chatroomId, userId
 
-    private LocalDateTime joinedAt;    // 참여 시간
+    private Instant joinedAt;    // 참여 시간
 
     public ChatroomParticipant(ChatroomParticipantId participantId) {
         this.id = participantId;
-        this.joinedAt = LocalDateTime.now();
+        this.joinedAt = Instant.now();
     }
 
     public static ChatroomParticipant of(Long chatroomId, Long userId) {
         return ChatroomParticipant.builder()
             .id(new ChatroomParticipantId(chatroomId, userId))
-            .joinedAt(LocalDateTime.now())
+            .joinedAt(Instant.now())
             .build();
     }
 

@@ -5,7 +5,7 @@ import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 import java.util.List;
 
 @Data
@@ -16,9 +16,9 @@ public class ChatroomResponseDto {
 
     private List<ChatroomParticipantDto> participants;
 
-    private LocalDateTime createdAt;
+    private Instant createdAt;
 
-    private LocalDateTime updatedAt;
+    private Instant updatedAt;
 
     public ChatroomResponseDto(Chatroom chatroom, List<ChatroomParticipantDto> participants) {
         this.id = chatroom.getId();

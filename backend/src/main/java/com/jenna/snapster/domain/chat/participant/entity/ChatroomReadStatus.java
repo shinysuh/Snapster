@@ -8,7 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @NoArgsConstructor
@@ -22,17 +22,17 @@ public class ChatroomReadStatus {
 
     private Long lastReadMessageId = null;
 
-    private LocalDateTime lastReadAt;
+    private Instant lastReadAt;
 
     public ChatroomReadStatus(ChatroomParticipantId participantId) {
         this.id = participantId;
-        this.lastReadAt = LocalDateTime.now();
+        this.lastReadAt = Instant.now();
     }
 
     public void updateFrom(ChatroomParticipantDto dto) {
         if (dto.getLastReadMessageId() == null) return;
         this.lastReadMessageId = dto.getLastReadMessageId();
-        this.lastReadAt = LocalDateTime.now();
+        this.lastReadAt = Instant.now();
     }
 }
 

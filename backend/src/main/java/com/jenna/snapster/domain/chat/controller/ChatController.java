@@ -19,7 +19,7 @@ public class ChatController {
 
     private final ChatMessageService chatMessageService;
 
-    @MessageMapping("/send.{chatroomId}")
+    @MessageMapping("/send/{chatroomId}")
     public ResponseEntity<?> onMessage(@DestinationVariable Long chatroomId,
                                        @Payload ChatRequestDto chatRequest,
                                        Principal user) {
