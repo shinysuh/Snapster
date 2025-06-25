@@ -30,7 +30,7 @@ class TestChatsScreen extends ConsumerStatefulWidget {
 }
 
 class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
-  late final AppUser? _currentUser;
+  AppUser? _currentUser;
   List<ChatroomModel> _chatrooms = [];
 
   @override
@@ -45,7 +45,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              TestChatroomUserListScreen(currentUser: _currentUser),
+              TestChatroomUserListScreen(currentUser: _currentUser!),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ));
@@ -88,15 +88,26 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     );
   }
 
-  void _onTapChat(ChatroomModel chatroom) {
-    goToRouteNamed(
-      context: context,
-      routeName: TestChatDetailScreen.routeName,
-      extra: ChatroomDetailParams(
-        chatroomId: chatroom.id,
-        chatroom: chatroom,
-      ),
-    );
+  Future<void> _onTapChat(int chatroomId) async {
+    if (_currentUser == null) return;
+
+    ChatroomModel chatroom = await ref
+        .read(httpChatroomProvider.notifier)
+        .getOneChatroom(context: context, chatroomId: chatroomId);
+
+    if (chatroomId == 0) return;
+
+    if (mounted) {
+      goToRouteNamed(
+        context: context,
+        routeName: TestChatDetailScreen.routeName,
+        extra: ChatroomDetailParams(
+          chatroomId: chatroom.id,
+          chatroom: chatroom,
+          currentUser: _currentUser!,
+        ),
+      );
+    }
   }
 
   Widget _getChatroomListTile(int index) {
@@ -109,12 +120,14 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
 
     return ListTile(
         onLongPress: () => onExitChatroom(chatroom),
-        onTap: () => _onTapChat(chatroom),
+        onTap: () => _onTapChat(chatroom.id),
         leading: CircleAvatar(
           radius: Sizes.size28,
-          foregroundImage: other.hasProfileImage
-              ? getProfileImgByUserProfileImageUrl(other.profileImageUrl, false)
-              : null,
+          foregroundImage: getProfileImgByUserProfileImageUrl(
+            other.hasProfileImage,
+            other.profileImageUrl,
+            false,
+          ),
           child: ClipOval(child: Text(other.username)),
         ),
         title: Row(
@@ -140,7 +153,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
   }
 
   Widget _getLatestMessageText(ChatroomModel chatroom) {
-    if (chatroom.lastMessageId == 0 || chatroom.lastMessage.id == 0) {
+    if (chatroom.lastMessage.id == 0) {
       return Text(S.of(context).conversationNotStarted);
     }
 
@@ -176,7 +189,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
   Widget build(BuildContext context) {
     return AuthGuard(
       builder: (context, user) {
-        _currentUser = user;
+        _currentUser ??= user;
         return RegulatedMaxWidth(
           maxWidth: Breakpoints.sm,
           child: Scaffold(

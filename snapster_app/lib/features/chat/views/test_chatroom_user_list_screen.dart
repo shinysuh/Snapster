@@ -47,15 +47,9 @@ class _UserListScreenState extends ConsumerState<TestChatroomUserListScreen> {
     // 1:1 채팅방 입장
     ref.read(httpChatroomProvider.notifier).enterOneOnOneChatroom(
           context: context,
-          sender: widget.currentUser,
+          currentUser: widget.currentUser,
           receiver: other,
         );
-
-    // // chatroom create
-    // ref.read(chatroomProvider.notifier).createChatroom(
-    //       context,
-    //       chatPartner,
-    //     );
   }
 
   @override
@@ -79,9 +73,11 @@ class _UserListScreenState extends ConsumerState<TestChatroomUserListScreen> {
                   onTap: () => _onClickUser(other),
                   leading: CircleAvatar(
                     radius: Sizes.size28,
-                    foregroundImage: other.hasProfileImage
-                        ? getProfileImgByUserId(other.userId, false)
-                        : null,
+                    foregroundImage: getProfileImgByUserProfileImageUrl(
+                      other.hasProfileImage,
+                      other.profileImageUrl,
+                      false,
+                    ),
                     child: ClipOval(child: Text(other.displayName)),
                   ),
                   title: Text(other.displayName),

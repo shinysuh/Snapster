@@ -19,21 +19,22 @@ class ChatroomParticipantViewModel
   FutureOr<List<ChatroomParticipantModel>> build(int arg) async {
     _participantRepository = ref.read(chatroomParticipantRepositoryProvider);
     _chatroomId = arg;
-    final data = await getParticipants(_chatroomId);
-    return data;
+    final participants = await _getParticipants(_chatroomId);
+    return participants;
   }
 
   Future<void> refresh() async {
     state = const AsyncValue.loading();
     try {
-      final newData = await getParticipants(_chatroomId);
+      final newData = await _getParticipants(_chatroomId);
       state = AsyncValue.data(newData);
     } catch (e, stackTrace) {
       state = AsyncValue.error(e, stackTrace);
     }
   }
 
-  Future<List<ChatroomParticipantModel>> getParticipants(int chatroomId) async {
+  Future<List<ChatroomParticipantModel>> _getParticipants(
+      int chatroomId) async {
     return await runFutureWithExceptionLogs<List<ChatroomParticipantModel>>(
       errorPrefix: '채팅방 참여자 목록 조회',
       requestFunction: () async =>

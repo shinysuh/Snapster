@@ -3,6 +3,8 @@ import 'package:snapster_app/common/providers/dio_provider.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/token_storage_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/chat/chatroom/services/chatroom_service.dart';
+import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
+import 'package:snapster_app/features/chat/message/services/chat_message_service.dart';
 import 'package:snapster_app/features/chat/participant/repositories/chatroom_participant_repository.dart';
 import 'package:snapster_app/features/chat/participant/services/chatroom_participant_service.dart';
 import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
@@ -44,4 +46,13 @@ final chatroomParticipantRepositoryProvider =
 );
 
 /* message */
+final chatMessageServiceProvider = Provider<ChatMessageService>(
+  (ref) => ChatMessageService(
+    ref.read(tokenStorageServiceProvider),
+    ref.read(dioServiceProvider),
+  ),
+);
 
+final chatMessageRepositoryProvider = Provider<ChatMessageRepository>(
+  (ref) => ChatMessageRepository(ref.read(chatMessageServiceProvider)),
+);

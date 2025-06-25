@@ -3,16 +3,14 @@ import 'package:snapster_app/features/chat/participant/models/chatroom_participa
 
 class ChatroomModel {
   final int id;
-  final int lastMessageId;
   final ChatMessageModel lastMessage;
-  final List<ChatMessageModel> messages;
+  final List<ChatMessageModel> messages;  // 채팅방 입장 후 세팅
   final List<ChatroomParticipantModel> participants;
   final int createdAt;
   final int updatedAt;
 
   ChatroomModel({
     required this.id,
-    required this.lastMessageId,
     required this.lastMessage,
     required this.messages,
     required this.participants,
@@ -22,7 +20,6 @@ class ChatroomModel {
 
   ChatroomModel.empty()
       : id = 0,
-        lastMessageId = 0,
         lastMessage = ChatMessageModel.empty(),
         messages = [],
         participants = [],
@@ -31,7 +28,6 @@ class ChatroomModel {
 
   ChatroomModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
-        lastMessageId = json['lastMessageId'] ?? 0,
         lastMessage = json['lastMessage'] != null
             ? ChatMessageModel.fromJson(json['lastMessage'])
             : ChatMessageModel.empty(),
@@ -51,7 +47,6 @@ class ChatroomModel {
   Map<String, dynamic> toJson() {
     return {
       'id': id,
-      'lastMessageId': lastMessageId,
       'lastMessage': lastMessage.toJson(),
       'messages': messages.map((e) => e.toJson()).toList(),
       'participants': participants.map((e) => e.toJson()).toList(),
@@ -62,7 +57,6 @@ class ChatroomModel {
 
   ChatroomModel copyWith({
     int? id,
-    int? lastMessageId,
     ChatMessageModel? lastMessage,
     List<ChatMessageModel>? messages,
     List<ChatroomParticipantModel>? participants,
@@ -71,7 +65,6 @@ class ChatroomModel {
   }) {
     return ChatroomModel(
       id: id ?? this.id,
-      lastMessageId: lastMessageId ?? this.lastMessageId,
       lastMessage: lastMessage ?? this.lastMessage,
       messages: messages ?? this.messages,
       participants: participants ?? this.participants,

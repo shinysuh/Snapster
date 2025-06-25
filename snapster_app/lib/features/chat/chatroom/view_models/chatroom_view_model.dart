@@ -41,6 +41,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
     );
   }
 
+  // 참여자 포함 채팅방 상세 정보 조회
   Future<ChatroomModel> getOneChatroom({
     required BuildContext context,
     required int chatroomId,
@@ -56,7 +57,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
 
   Future<void> enterOneOnOneChatroom({
     required BuildContext context,
-    required AppUser sender,
+    required AppUser currentUser,
     required AppUser receiver,
   }) async {
     final receiverId = int.parse(receiver.userId);
@@ -72,13 +73,14 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
     if (chatroom.id == 0 &&
         chatroom.participants.isEmpty &&
         chatroom.messages.isEmpty) {
-      chatroom = _getChatroomPreview(sender, receiver);
+      chatroom = _getChatroomPreview(currentUser, receiver);
     }
 
     if (context.mounted) {
       _enterChatroom(
         context: context,
         chatroom: chatroom,
+        currentUser: currentUser,
       );
     }
   }
@@ -108,6 +110,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
   void _enterChatroom({
     required BuildContext context,
     required ChatroomModel chatroom,
+    required AppUser currentUser,
   }) {
     context.pop();
     goToRouteNamed(
@@ -116,6 +119,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
       extra: ChatroomDetailParams(
         chatroomId: chatroom.id,
         chatroom: chatroom,
+        currentUser: currentUser,
       ),
     );
   }
