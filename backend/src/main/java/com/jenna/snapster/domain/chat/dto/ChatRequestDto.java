@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 public class ChatRequestDto {
-    private Long id;
+    private Long id;        // message id
     private Long chatroomId;
     private Long senderId;
 

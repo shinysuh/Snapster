@@ -62,11 +62,27 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return entity;
     }
 
-    private void validateSender(ChatRequestDto chatRequest, String senderId) {
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public ChatMessage updateMessageToDeleted(Long userId, ChatRequestDto chatRequest) {
+        this.validateSender(chatRequest, userId);
+        ChatMessage message = chatMessageRepository.findByChatroomIdAndId(chatRequest.getChatroomId(), chatRequest.getId())
+            .orElseThrow(() -> new GlobalException(ErrorCode.MESSAGE_NOT_FOUND));
+
+        message.setContent("[삭제된 메시지입니다.]");
+        message.setIsDeleted(true);
+
+        return chatMessageRepository.save(message);
+    }
+
+    private void validateSender(ChatRequestDto chatRequest, Long senderId) {
         Long messageSenderId = chatRequest.getSenderId();
-        if (!Objects.equals(messageSenderId, Long.parseLong(senderId))) {
+        if (!Objects.equals(messageSenderId, senderId)) {
             throw new GlobalException(ErrorCode.INVALID_MESSAGE_SENDER);
         }
     }
 
+    private void validateSender(ChatRequestDto chatRequest, String senderId) {
+        this.validateSender(chatRequest, Long.parseLong(senderId));
+    }
 }

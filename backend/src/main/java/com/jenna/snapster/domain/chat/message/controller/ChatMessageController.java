@@ -1,30 +1,36 @@
 package com.jenna.snapster.domain.chat.message.controller;
 
-import com.jenna.snapster.core.exception.ErrorCode;
+import com.jenna.snapster.core.security.annotation.CurrentUser;
+import com.jenna.snapster.core.security.util.CustomUserDetails;
+import com.jenna.snapster.domain.chat.chatroom.entity.Chatroom;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.messaging.handler.annotation.DestinationVariable;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.*;
 
-import java.security.Principal;
-
-@Controller
+@RestController
 @RequiredArgsConstructor
-@MessageMapping("/chat")
+@RequestMapping("/api/chat/message")
 public class ChatMessageController {
 
     private final ChatMessageService chatMessageService;
 
-    @MessageMapping("/send.{chatroomId}")
-    public ResponseEntity<?> onMessage(@DestinationVariable Long chatroomId,
-                                       @Payload ChatRequestDto chatRequest,
-                                       Principal user) {
-        chatRequest.setChatroomId(chatroomId);
-        boolean isSuccess = chatMessageService.processMessage(chatRequest, user.getName());
-        return ResponseEntity.ok(isSuccess ? "Message Successfully Sent" : ErrorCode.MESSAGE_NOT_DELIVERED.getMessage());
+    @GetMapping("/{chatroomId}")
+    public ResponseEntity<?> getAllMessagesByChatroom(@PathVariable Long chatroomId) {
+        return ResponseEntity.ok(chatMessageService.getAllChatMessagesByChatroom(chatroomId));
+    }
+
+    @PostMapping("/recent/{chatroomId}")
+    public ResponseEntity<?> getRecentMessageByChatroom(@PathVariable Long chatroomId,
+                                                        @RequestBody Chatroom chatroom) {
+        chatroom.setId(chatroomId);
+        return ResponseEntity.ok(chatMessageService.getRecentMessageByChatroom(chatroom));
+    }
+
+    @PutMapping("/delete")
+    public ResponseEntity<?> updateMessageToDeleted(@CurrentUser CustomUserDetails currentUser,
+                                                    @RequestBody ChatRequestDto chatRequest) {
+        return ResponseEntity.ok(chatMessageService.updateMessageToDeleted(currentUser.getUser().getId(), chatRequest));
     }
 }

@@ -59,6 +59,7 @@ public enum ErrorCode {
     // chat message
     MESSAGE_NOT_DELIVERED("MSG001", "메시지 전송 실패", INTERNAL_SERVER_ERROR),
     INVALID_MESSAGE_SENDER("MSG002", "메시지 발신인 정보가 잘못되었습니다. 로그인 정보를 확인해주세요.", BAD_REQUEST),
+    MESSAGE_NOT_FOUND("MSG003", "존재하지 않는 메시지입니다.", BAD_REQUEST),
 
     // firebase
     FIREBASE_INITIALIZATION_FAILED("FRB001", "Firebase 초기화 실패", INTERNAL_SERVER_ERROR),
