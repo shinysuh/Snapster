@@ -17,7 +17,7 @@ public class ChatroomParticipantDto {
 
     private Instant joinedAt;    // 참여 시간
 
-    private Long lastReadMessageId = null;
+    private Long lastReadMessageId;
 
     private Instant lastReadAt;
 

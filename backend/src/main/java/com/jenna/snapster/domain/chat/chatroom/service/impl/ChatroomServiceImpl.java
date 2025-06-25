@@ -76,6 +76,7 @@ public class ChatroomServiceImpl implements ChatroomService {
         this.validateReceiver(chatRequest.getReceiverId());
         Chatroom chatroom = chatroomRepository.save(new Chatroom());
         // 발신인/수신인 → DB에 채팅 참여자 목록에 추가 → Redis 동기화 → 수신인 정보 FCM push 알림 시 필요
+        chatRequest.setChatroomId(chatroom.getId());
         participantService.addInitialParticipants(chatRequest);
         return chatroom;
     }
