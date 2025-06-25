@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ChatMessageService {
 
-    boolean processMessage(ChatRequestDto chatRequest, String senderId);
+    boolean processMessage(ChatRequestDto chatRequest, Long senderId);
 
     ChatMessage getRecentMessageByChatroom(Chatroom chatroom);
 

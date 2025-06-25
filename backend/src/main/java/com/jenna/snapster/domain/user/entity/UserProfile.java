@@ -2,10 +2,7 @@ package com.jenna.snapster.domain.user.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.time.LocalDate;
@@ -25,6 +22,7 @@ public class UserProfile {
     @OneToOne
     @MapsId
     @JsonIgnore  // 순환 방지: Profile → User 직렬화 막기
+    @ToString.Exclude   // 순환 방지
     @JoinColumn(name = "user_id")
     private User user;
 

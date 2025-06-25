@@ -27,7 +27,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
     private final ChatroomRedisRepository chatroomRedisRepository;
 
     @Override
-    public boolean processMessage(ChatRequestDto chatRequest, String senderId) {
+    public boolean processMessage(ChatRequestDto chatRequest, Long senderId) {
         // senderId & message.getSenderId() 일치 검증
         this.validateSender(chatRequest, senderId);
 
@@ -80,9 +80,5 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         if (!Objects.equals(messageSenderId, senderId)) {
             throw new GlobalException(ErrorCode.INVALID_MESSAGE_SENDER);
         }
-    }
-
-    private void validateSender(ChatRequestDto chatRequest, String senderId) {
-        this.validateSender(chatRequest, Long.parseLong(senderId));
     }
 }

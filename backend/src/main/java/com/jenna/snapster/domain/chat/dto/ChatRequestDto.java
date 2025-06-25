@@ -18,7 +18,6 @@ public class ChatRequestDto {
     private Long chatroomId;
     private Long senderId;
 
-    @JsonIgnore
     private Long receiverId;    // 수신인
 
     private String content;
