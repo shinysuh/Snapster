@@ -18,7 +18,10 @@ class ApiInfo {
 
   static const chatroomBaseUrl = '$baseUrl/api/chat/chatroom';
   static const chatParticipantBaseUrl = '$baseUrl/api/chat/participant';
-  static const chatMessageBaseUrl = '$baseUrl/app/chat/send.';
+  static const chatMessageBaseUrl = '$baseUrl/api/chat/message';
+
+  static const webSocketUrl = '$baseUrl/websocket';
+  static const stompBaseUrl = '/app/chat/send.';
 
   static const notificationBaseUrl = '$baseUrl/api/notification';
 

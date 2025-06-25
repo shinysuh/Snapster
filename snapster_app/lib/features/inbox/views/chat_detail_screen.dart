@@ -275,8 +275,8 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
       style: TextStyle(
         fontSize: Sizes.size12,
         color: isDark
-            ? Colors.white.withOpacity(0.6)
-            : Colors.black.withOpacity(0.4),
+            ? Colors.white.withAlpha((0.6 * 255).round())
+            : Colors.black.withAlpha((0.4 * 255).round()),
       ),
     );
   }
@@ -297,7 +297,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.2),
+              color: Colors.black.withAlpha((0.2 * 255).round()),
               blurRadius: 20,
               spreadRadius: 3,
               offset: const Offset(0, 10),
@@ -495,8 +495,8 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                   messageSender == MessageSenderType.partner;
                               final isSystem = !isMine && !isPartner;
                               final systemColor = isDark
-                                  ? Colors.white.withOpacity(0.4)
-                                  : Colors.black.withOpacity(0.3);
+                                  ? Colors.white.withAlpha((0.4 * 255).round())
+                                  : Colors.black.withAlpha((0.3 * 255).round());
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,

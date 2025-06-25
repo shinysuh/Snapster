@@ -2,20 +2,20 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
-import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
+import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
 import 'package:uuid/uuid.dart';
 
-class ChatMessageViewModel
+class StompViewModel
     extends FamilyNotifier<List<ChatMessageModel>, ChatroomModel> {
-  late final ChatMessageRepository _messageRepository;
+  late final StompRepository _stompRepository;
   late final ChatroomModel _chatroom;
 
   final _uuid = const Uuid();
 
   @override
   List<ChatMessageModel> build(ChatroomModel arg) {
-    _messageRepository = ref.watch(chatMessageRepositoryProvider);
+    _stompRepository = ref.watch(stompRepositoryProvider);
     _chatroom = arg;
 
     // 초기 메시지 리스트 (DB)
@@ -46,11 +46,11 @@ class ChatMessageViewModel
       createdAt: 0,
     );
 
-    _messageRepository.sendMessage(message);
+    _stompRepository.sendMessage(message);
   }
 
   void subscribeChatroom() {
-    _messageRepository.subscribeToChatroom(
+    _stompRepository.subscribeToChatroom(
       _chatroom.id,
       (data) {
         final msg = ChatMessageModel.fromJson(data);
@@ -60,11 +60,11 @@ class ChatMessageViewModel
   }
 
   void leaveRoom() {
-    _messageRepository.unsubscribeFromChatroom(_chatroom.id);
+    _stompRepository.unsubscribeFromChatroom(_chatroom.id);
   }
 }
 
-final chatMessageProvider = NotifierProvider.family<ChatMessageViewModel,
+final stompProvider = NotifierProvider.family<StompViewModel,
     List<ChatMessageModel>, ChatroomModel>(
-  ChatMessageViewModel.new,
+  StompViewModel.new,
 );

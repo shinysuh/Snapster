@@ -41,14 +41,14 @@ class _InterestButtonState extends State<InterestButton> {
                   ? Colors.grey.shade700
                   : Colors.white,
           border: Border.all(
-            color: Colors.black.withOpacity(0.07),
+            color: Colors.black.withAlpha((0.07 * 255).round()),
           ),
           borderRadius: BorderRadius.circular(
             Sizes.size32,
           ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withAlpha((0.04 * 255).round()),
               blurRadius: 10,
               spreadRadius: 5,
               offset: const Offset(5, 5),
@@ -63,7 +63,7 @@ class _InterestButtonState extends State<InterestButton> {
             color: _isSelected
                 ? Colors.white
                 : isDark
-                    ? Colors.white.withOpacity(0.8)
+                    ? Colors.white.withAlpha((0.8 * 255).round())
                     : Colors.black87,
           ),
         ),

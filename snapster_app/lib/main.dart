@@ -79,12 +79,12 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp>
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    final messageRepo = ref.read(chatMessageRepositoryProvider);
+    final stompRepository = ref.read(stompRepositoryProvider);
     final authState = ref.read(authProvider);
 
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
-      messageRepo.disconnect();
+      stompRepository.disconnect();
     }
 
     if (state == AppLifecycleState.resumed &&

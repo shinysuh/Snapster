@@ -8,8 +8,8 @@ import 'package:snapster_app/features/authentication/renewal/repositories/http_a
 import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_repository.dart';
-import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
+import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 
@@ -17,14 +17,14 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   late final AuthRepository _authRepository;
   late final TokenStorageService _tokenStorageService;
   late final ChatroomRepository _chatroomRepository;
-  late final ChatMessageRepository _messageRepository;
+  late final StompRepository _stompRepository;
 
   @override
   FutureOr<AppUser?> build() async {
     _authRepository = ref.read(authRepositoryProvider);
     _tokenStorageService = ref.read(tokenStorageServiceProvider);
     _chatroomRepository = ref.read(chatroomRepositoryProvider);
-    _messageRepository = ref.read(chatMessageRepositoryProvider);
+    _stompRepository = ref.read(stompRepositoryProvider);
 
     return await initialize();
   }
@@ -39,7 +39,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
       final chatrooms = await getAllParticipatingChatrooms();
       final chatroomIds = chatrooms.map((room) => room.id).toList();
       // 2) WebSocket 연결 & 참여 중인 채팅방 일괄 구독
-      _messageRepository.initializeForUser(accessToken, chatroomIds);
+      _stompRepository.initializeForUser(accessToken, chatroomIds);
     }
     return user;
   }
@@ -94,7 +94,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   Future<void> logout(WidgetRef ref) async {
     state = const AsyncValue.loading();
     await _authRepository.clearToken(ref);
-    _messageRepository.disconnect(); // 웹소켓 disconnect & 구독 일괄 제거
+    _stompRepository.disconnect(); // 웹소켓 disconnect & 구독 일괄 제거
     state = const AsyncValue.data(null);
   }
 }

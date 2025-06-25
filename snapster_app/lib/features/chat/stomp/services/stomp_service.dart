@@ -8,16 +8,16 @@ import 'package:stomp_dart_client/stomp.dart';
 import 'package:stomp_dart_client/stomp_config.dart';
 import 'package:stomp_dart_client/stomp_frame.dart';
 
-class ChatMessageService {
-  static ChatMessageService? _instance;
+class StompService {
+  static StompService? _instance;
 
-  factory ChatMessageService() {
-    return _instance ??= ChatMessageService._internal();
+  factory StompService() {
+    return _instance ??= StompService._internal();
   }
 
-  ChatMessageService._internal();
+  StompService._internal();
 
-  static const _messageBaseUrl = '/app/chat/send.';
+  static const _messageBaseUrl = ApiInfo.stompBaseUrl;
 
   late StompClient _stompClient;
 
@@ -34,7 +34,7 @@ class ChatMessageService {
 
     _stompClient = StompClient(
       config: StompConfig.SockJS(
-        url: '${ApiInfo.baseUrl}/websocket',
+        url: ApiInfo.webSocketUrl,
         // SockJS endpoint
         onConnect: _onConnect,
         beforeConnect: () async {

@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
-import 'package:snapster_app/features/chat/message/services/chat_message_service.dart';
+import 'package:snapster_app/features/chat/stomp/services/stomp_service.dart';
 
-class ChatMessageRepository {
-  final ChatMessageService _chatMessageService;
+class StompRepository {
+  final StompService _stompService;
 
-  ChatMessageRepository(this._chatMessageService);
+  StompRepository(this._stompService);
 
   void initializeForUser(
     String accessToken,
@@ -25,40 +25,40 @@ class ChatMessageRepository {
   }
 
   void connectToWebSocket(String accessToken) {
-    _chatMessageService.connect(accessToken);
+    _stompService.connect(accessToken);
   }
 
   void sendMessage(ChatMessageModel message) {
-    _chatMessageService.sendMessage(message);
+    _stompService.sendMessage(message);
   }
 
   void subscribeToChatroom(
     int chatroomId,
     void Function(Map<String, dynamic>) onMessage,
   ) {
-    _chatMessageService.subscribeToChatroom(chatroomId, onMessage);
+    _stompService.subscribeToChatroom(chatroomId, onMessage);
   }
 
   void subscribeToChatrooms(
     List<int> chatroomIds,
     void Function(Map<String, dynamic>) onMessage,
   ) {
-    _chatMessageService.subscribeToChatrooms(chatroomIds, onMessage);
+    _stompService.subscribeToChatrooms(chatroomIds, onMessage);
   }
 
   void unsubscribeFromChatroom(int chatroomId) {
-    _chatMessageService.unsubscribeFromChatroom(chatroomId);
+    _stompService.unsubscribeFromChatroom(chatroomId);
   }
 
   void unsubscribeFromChatrooms(List<int> chatroomIds) {
-    _chatMessageService.unsubscribeFromChatrooms(chatroomIds);
+    _stompService.unsubscribeFromChatrooms(chatroomIds);
   }
 
   void disconnect() {
-    _chatMessageService.disconnect();
+    _stompService.disconnect();
   }
 
   void updateJwtToken(String newToken) {
-    _chatMessageService.updateJwtToken(newToken);
+    _stompService.updateJwtToken(newToken);
   }
 }
