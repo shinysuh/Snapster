@@ -20,7 +20,12 @@ T? handleSingleResponse<T>({
   required String errorPrefix,
 }) {
   if (response.statusCode == HttpStatus.ok) {
-    return fromJson(response.data);
+    final data = response.data;
+    // 서버에서 null 반환 시, 빈 문자열 값 들어오는 이슈 핸들링
+    if (data == null || (data is String && (data.isEmpty || data == 'null)'))) {
+      return null;
+    }
+    return fromJson(data);
   } else {
     debugPrint('$errorPrefix 실패: ${response.statusCode} ${response.data}');
     return null;
