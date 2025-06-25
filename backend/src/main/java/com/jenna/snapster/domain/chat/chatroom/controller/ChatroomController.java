@@ -5,7 +5,10 @@ import com.jenna.snapster.core.security.util.CustomUserDetails;
 import com.jenna.snapster.domain.chat.chatroom.service.ChatroomService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +28,7 @@ public class ChatroomController {
         return ResponseEntity.ok(chatroomService.getOneChatroomByIdAndUser(chatroomId, currentUser.getUser().getId()));
     }
 
-    @PostMapping("/check/{receiverId}")
+    @GetMapping("/check/{receiverId}")
     public ResponseEntity<?> getIfOneOnOneChatroomExists(@CurrentUser CustomUserDetails currentUser,
                                                          @PathVariable Long receiverId) {
         return ResponseEntity.ok(chatroomService.getIfOneOnOneChatroomExists(currentUser.getUser().getId(), receiverId));
