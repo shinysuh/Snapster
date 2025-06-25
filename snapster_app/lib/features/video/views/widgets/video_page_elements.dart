@@ -178,12 +178,11 @@ class _VideoPageElementsState extends ConsumerState<VideoPageElements>
       radius: 25,
       backgroundColor: Colors.black,
       foregroundColor: Colors.white,
-      foregroundImage: profileImageUrl.isNotEmpty
-          ? getProfileImgByUserProfileImageUrl(
-              profileImageUrl,
-              false,
-            )
-          : null,
+      foregroundImage: getProfileImgByUserProfileImageUrl(
+        profileImageUrl.isNotEmpty,
+        profileImageUrl,
+        false,
+      ),
     );
   }
 

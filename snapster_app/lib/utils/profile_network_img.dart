@@ -11,14 +11,19 @@ NetworkImage getProfileImgByUserId(String userId, bool fetchRealTime) {
   return NetworkImage(imageURL);
 }
 
-NetworkImage getProfileImgByUserProfileImageUrl(
+NetworkImage? getProfileImgByUserProfileImageUrl(
+  bool hasProfileImage,
   String profileImageUrl,
   bool fetchRealTime,
 ) {
+  if (profileImageUrl.isEmpty) return null;
+
   if (fetchRealTime) {
     final separator = profileImageUrl.contains('?') ? '&' : '?';
     profileImageUrl +=
         '${separator}cacheBuster=${DateTime.now().millisecondsSinceEpoch}';
   }
-  return NetworkImage(profileImageUrl);
+  return hasProfileImage && profileImageUrl.isNotEmpty
+      ? NetworkImage(profileImageUrl)
+      : null;
 }

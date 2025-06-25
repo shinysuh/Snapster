@@ -56,11 +56,11 @@ class ProfileAvatar extends ConsumerWidget {
           : CircleAvatar(
               radius: isVertical ? Sizes.size48 + Sizes.size2 : Sizes.size64,
               foregroundColor: Colors.indigo,
-              foregroundImage:
-                  (user.hasProfileImage && user.profileImageUrl.isNotEmpty)
-                      ? getProfileImgByUserProfileImageUrl(
-                          user.profileImageUrl, true)
-                      : null,
+              foregroundImage: getProfileImgByUserProfileImageUrl(
+                user.hasProfileImage,
+                user.profileImageUrl,
+                true,
+              ),
               child: ClipOval(child: Text(user.displayName)),
             ),
     );

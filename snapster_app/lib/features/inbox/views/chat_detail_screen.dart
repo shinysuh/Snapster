@@ -643,9 +643,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                   ),
                                   style: ButtonStyle(
                                     backgroundColor:
-                                        MaterialStateProperty.all<Color>(
+                                        WidgetStateProperty.all<Color>(
                                             circleColor),
-                                    padding: MaterialStateProperty.all<
+                                    padding: WidgetStateProperty.all<
                                         EdgeInsetsGeometry>(
                                       EdgeInsets.only(
                                         bottom: Sizes.size2,
