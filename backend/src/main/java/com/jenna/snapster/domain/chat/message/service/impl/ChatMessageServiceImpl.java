@@ -45,7 +45,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public ChatMessage getRecentMessageByChatroom(Chatroom chatroom) {
-        return chatMessageRepository.findByChatroomIdAndId(chatroom.getId(), chatroom.getLastMessageId())
+        return chatMessageRepository.findByChatroomIdAndId(chatroom.getId(), chatroom.getLastMessage().getId())
             .orElse(null);
     }
 

@@ -21,7 +21,9 @@ public class Chatroom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long lastMessageId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "last_message_id", referencedColumnName = "id", insertable = false, updatable = false)
+    private ChatMessage lastMessage;
 
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
@@ -35,7 +37,7 @@ public class Chatroom {
     }
 
     public void updateFrom(ChatMessage message) {
-        this.lastMessageId = message.getId();
+        this.lastMessage = message;
         this.updatedAt = message.getCreatedAt();
     }
 

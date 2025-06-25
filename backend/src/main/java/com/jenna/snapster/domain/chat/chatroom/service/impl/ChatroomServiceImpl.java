@@ -8,7 +8,6 @@ import com.jenna.snapster.domain.chat.chatroom.repository.ChatroomRepository;
 import com.jenna.snapster.domain.chat.chatroom.service.ChatroomService;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
-import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
@@ -30,13 +29,13 @@ import java.util.stream.Collectors;
 public class ChatroomServiceImpl implements ChatroomService {
 
     private final ChatroomRepository chatroomRepository;
-    private final ChatMessageService chatMessageService;
     private final ChatroomParticipantService participantService;
     private final ChatroomRedisRepository chatroomRedisRepository;
     private final UserService userService;
 
     @Override
     public Chatroom getChatroomById(Long chatroomId) {
+        // last_message 있음
         return chatroomRepository.findById(chatroomId)
             .orElse(null);
     }
@@ -45,13 +44,8 @@ public class ChatroomServiceImpl implements ChatroomService {
     public ChatroomResponseDto getOneChatroomByIdAndUser(Long chatroomId, Long userId) {
         // 실제 참여자인지 확인 후 반환
         Chatroom chatroom = this.checkParticipation(chatroomId, userId);
-
-        ChatroomResponseDto response = this.getChatroomResponse(chatroom);
-        // 전체 메시지 세팅
-        List<ChatMessage> messages = chatMessageService.getAllChatMessagesByChatroom(chatroomId);
-        response.setMessages(messages);
-
-        return response;
+        // 전체 메시지는 프론트에서 세팅
+        return this.getChatroomResponse(chatroom);
     }
 
     @Override
@@ -117,11 +111,10 @@ public class ChatroomServiceImpl implements ChatroomService {
     }
 
     private ChatroomResponseDto getChatroomResponse(Chatroom chatroom) {
-        ChatMessage lastMessage = chatMessageService.getRecentMessageByChatroom(chatroom);
         List<ChatroomParticipantDto> participants = participantService.getAllWithReadStatusByChatroom(chatroom.getId());
         // 유저 세팅
         this.setParticipantsUserInfo(participants);
-        return new ChatroomResponseDto(chatroom, lastMessage, participants);
+        return new ChatroomResponseDto(chatroom, participants);
     }
 
     private void setParticipantsUserInfo(List<ChatroomParticipantDto> participants) {

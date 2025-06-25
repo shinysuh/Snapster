@@ -19,7 +19,7 @@ public class ChatroomController {
         return ResponseEntity.ok(chatroomService.getAllChatroomsByUserId(currentUser.getUser().getId()));
     }
 
-    @GetMapping("/one/{chatroomId}}")
+    @GetMapping("/one/{chatroomId}")
     public ResponseEntity<?> getOneChatroom(@CurrentUser CustomUserDetails currentUser,
                                             @PathVariable Long chatroomId) {
         return ResponseEntity.ok(chatroomService.getOneChatroomByIdAndUser(chatroomId, currentUser.getUser().getId()));
