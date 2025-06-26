@@ -5,6 +5,7 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
+import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
 import com.jenna.snapster.domain.notification.dto.FcmTokenRequestDto;
 import com.jenna.snapster.domain.notification.entity.FcmToken;
 import com.jenna.snapster.domain.notification.repository.FcmTokenRepository;
@@ -24,6 +25,7 @@ import java.util.Set;
 public class FcmNotificationService implements NotificationService {
 
     private final FcmTokenRepository fcmTokenRepository;
+    private final OnlineUserRedisRepository onlineUserRedisRepository;
 
     @Override
     public void sendPushToUsers(Set<Long> userIds, ChatMessage message) {
@@ -111,5 +113,6 @@ public class FcmNotificationService implements NotificationService {
     @Override
     public void deleteFcmToken(FcmTokenRequestDto fcmToken) {
         fcmTokenRepository.delete(new FcmToken(fcmToken));
+        onlineUserRedisRepository.setOffline(fcmToken.getUserId());
     }
 }

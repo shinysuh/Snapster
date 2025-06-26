@@ -38,6 +38,24 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
           ref.read(authStateProvider.notifier).updateCurrentUser(updateUser);
         });
   }
+
+  Future<void> setUserOnline(BuildContext context) async {
+    await runFutureVoidWithExceptionHandler(
+        context: context,
+        errorPrefix: '사용자 Redis 온리인 세팅',
+        requestFunction: () async {
+          _userProfileRepository.syncRedisOnline();
+        });
+  }
+
+  Future<void> setUserOffline(BuildContext context) async {
+    await runFutureVoidWithExceptionHandler(
+        context: context,
+        errorPrefix: '사용자 Redis 오프라인 처리',
+        requestFunction: () async {
+          _userProfileRepository.syncRedisOnline();
+        });
+  }
 }
 
 final httpUserProfileProvider =

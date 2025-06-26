@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
@@ -34,7 +31,7 @@ class HttpUserProfileService {
   }
 
   Future<void> updateUserProfile(AppUser updateUser) async {
-    validateUpdateFields(updateUser);
+    _validateUpdateFields(updateUser);
 
     final token = await _getToken();
 
@@ -44,19 +41,44 @@ class HttpUserProfileService {
       body: updateUser,
     );
 
-    if (response.statusCode == HttpStatus.ok) {
-      debugPrint('사용자 정보 업데이트 성공');
-    } else {
-      debugPrint('사용자 정보 업데이트 실패: ${response.statusCode} ${response.data}');
-    }
+    handleResponseWithLogs(
+      response: response,
+      logPrefix: '사용자 정보 업데이트',
+    );
   }
 
-  void validateUpdateFields(AppUser updateUser) {
+  void _validateUpdateFields(AppUser updateUser) {
     if (updateUser.username.isEmpty) {
       throw Exception('Username cannot be empty');
     }
     if (updateUser.displayName.isEmpty) {
       throw Exception('Nickname cannot be empty');
     }
+  }
+
+  Future<void> syncRedisOnline() async {
+    final token = await _getToken();
+    final response = await _dioService.get(
+      uri: '$_baseUrl/online',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    handleResponseWithLogs(
+      response: response,
+      logPrefix: '사용자 Redis 온리인 세팅',
+    );
+  }
+
+  Future<void> syncRedisOffline() async {
+    final token = await _getToken();
+    final response = await _dioService.get(
+      uri: '$_baseUrl/offline',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    handleResponseWithLogs(
+      response: response,
+      logPrefix: '사용자 Redis 오프라인 처리',
+    );
   }
 }

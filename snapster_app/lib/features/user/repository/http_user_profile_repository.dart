@@ -13,4 +13,12 @@ class HttpUserProfileRepository {
   Future<void> updateUserProfile(AppUser updateUser) async {
     _userProfileService.updateUserProfile(updateUser);
   }
+
+  Future<void> syncRedisOnline() async {
+    _userProfileService.syncRedisOnline();
+  }
+
+  Future<void> syncRedisOffline() async {
+    _userProfileService.syncRedisOffline();
+  }
 }

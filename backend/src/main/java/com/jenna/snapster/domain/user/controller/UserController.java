@@ -30,4 +30,16 @@ public class UserController {
                                                @RequestBody UserProfileUpdateDto profileUpdateDto) {
         return ResponseEntity.ok(userService.updateUserProfile(currentUser.getUser(), profileUpdateDto));
     }
+
+    @GetMapping("/online")
+    public ResponseEntity<?> syncRedisOnline(@CurrentUser CustomUserDetails currentUser) {
+        userService.syncRedisOnline(currentUser.getUser().getId());
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/offline")
+    public ResponseEntity<?> syncRedisOffline(@CurrentUser CustomUserDetails currentUser) {
+        userService.syncRedisOffline(currentUser.getUser().getId());
+        return ResponseEntity.ok().build();
+    }
 }

@@ -4,6 +4,7 @@ import com.jenna.snapster.core.security.jwt.JwtProvider;
 import com.jenna.snapster.core.security.util.SecurityUtil;
 import com.jenna.snapster.domain.user.dto.UserResponseDto;
 import com.jenna.snapster.domain.user.entity.User;
+import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,10 +15,12 @@ import org.springframework.web.bind.annotation.*;
 public class OAuthController {
 
     private final JwtProvider jwtProvider;
+    private final UserService userService;
 
     @GetMapping("/me")
     public ResponseEntity<?> getLoginUserInfo() {
         User user = SecurityUtil.getCurentUser();
+        userService.syncRedisOnline(user.getId());
         return ResponseEntity.ok(UserResponseDto.from(user));
     }
 
@@ -27,4 +30,5 @@ public class OAuthController {
         String accessToken = jwtProvider.createAccessToken(user);
         return ResponseEntity.ok(accessToken);
     }
+
 }

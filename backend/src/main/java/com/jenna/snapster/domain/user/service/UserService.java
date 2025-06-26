@@ -22,4 +22,8 @@ public interface UserService {
     UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto);
 
     void updateUserProfileImage(UserProfile profile, boolean hasProfileImage, String profileImageUrl);
+
+    void syncRedisOnline(Long userId);
+
+    void syncRedisOffline(Long userId);
 }

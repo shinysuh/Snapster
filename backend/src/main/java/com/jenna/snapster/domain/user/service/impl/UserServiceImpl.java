@@ -2,6 +2,7 @@ package com.jenna.snapster.domain.user.service.impl;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
+import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
 import com.jenna.snapster.domain.user.dto.UserProfileUpdateDto;
 import com.jenna.snapster.domain.user.dto.UserResponseDto;
 import com.jenna.snapster.domain.user.entity.User;
@@ -21,6 +22,7 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final UserProfileRepository userProfileRepository;
+    private final OnlineUserRedisRepository onlineUserRedisRepository;
 
     @Override
     public boolean existsById(Long userId) {
@@ -73,6 +75,16 @@ public class UserServiceImpl implements UserService {
         profile.setProfileImageUrl(profileImageUrl);
 
         userProfileRepository.save(profile);
+    }
+
+    @Override
+    public void syncRedisOnline(Long userId) {
+        onlineUserRedisRepository.setOnline(userId);
+    }
+
+    @Override
+    public void syncRedisOffline(Long userId) {
+        onlineUserRedisRepository.setOffline(userId);
     }
 
 }

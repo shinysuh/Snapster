@@ -3,6 +3,15 @@ import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+void handleResponseWithLogs(
+    {required Response response, required String logPrefix, o}) {
+  if (response.statusCode == HttpStatus.ok) {
+    debugPrint('$logPrefix 성공');
+  } else {
+    debugPrint('$logPrefix 실패: ${response.statusCode} ${response.data}');
+  }
+}
+
 bool handleVoidResponse({
   required Response response,
   required String errorPrefix,

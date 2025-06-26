@@ -15,6 +15,7 @@ import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
+import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
@@ -81,16 +82,19 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp>
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final stompRepository = ref.read(stompRepositoryProvider);
     final authState = ref.read(authProvider);
+    final onlineStatus = ref.read(httpUserProfileProvider.notifier);
 
     if (state == AppLifecycleState.paused ||
         state == AppLifecycleState.detached) {
       stompRepository.disconnect();
+      onlineStatus.setUserOffline(context);
     }
 
     if (state == AppLifecycleState.resumed &&
         authState is AsyncData &&
         authState.value != null) {
       ref.read(authProvider.notifier).initialize();
+      onlineStatus.setUserOnline(context);
     }
   }
 
