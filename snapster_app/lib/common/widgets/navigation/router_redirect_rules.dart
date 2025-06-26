@@ -8,7 +8,7 @@ import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
 
 String? getRouterRedirect(AsyncValue<AppUser?> asyncUser, String loc) {
-// 1) 로딩 중엔 리디렉션 하지 않음
+  // 1) 로딩 중엔 리디렉션 하지 않음
   if (asyncUser.isLoading) {
     return null;
   }

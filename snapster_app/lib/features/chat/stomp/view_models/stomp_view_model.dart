@@ -43,7 +43,6 @@ class StompViewModel
       type: type,
       isDeleted: false,
       clientMessageId: _uuid.v4(),
-      createdAt: 0,
     );
 
     _stompRepository.sendMessage(message);

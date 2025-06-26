@@ -4,27 +4,25 @@ import 'package:snapster_app/features/chat/participant/models/chatroom_participa
 class ChatroomModel {
   final int id;
   final ChatMessageModel lastMessage;
-  final List<ChatMessageModel> messages;  // 채팅방 입장 후 세팅
+  final List<ChatMessageModel> messages; // 채팅방 입장 후 세팅
   final List<ChatroomParticipantModel> participants;
-  final int createdAt;
-  final int updatedAt;
+  DateTime? createdAt;
+  DateTime? updatedAt;
 
   ChatroomModel({
     required this.id,
     required this.lastMessage,
     required this.messages,
     required this.participants,
-    required this.createdAt,
-    required this.updatedAt,
+    this.createdAt,
+    this.updatedAt,
   });
 
   ChatroomModel.empty()
       : id = 0,
         lastMessage = ChatMessageModel.empty(),
         messages = [],
-        participants = [],
-        createdAt = 0,
-        updatedAt = 0;
+        participants = [];
 
   ChatroomModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -41,8 +39,12 @@ class ChatroomModel {
                 .map((e) => ChatroomParticipantModel.fromJson(e))
                 .toList()
             : [],
-        createdAt = json['createdAt'] ?? 0,
-        updatedAt = json['updatedAt'] ?? 0;
+        createdAt = json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : null,
+        updatedAt = json['updatedAt'] != null
+            ? DateTime.parse(json['updatedAt'])
+            : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -60,8 +62,8 @@ class ChatroomModel {
     ChatMessageModel? lastMessage,
     List<ChatMessageModel>? messages,
     List<ChatroomParticipantModel>? participants,
-    int? createdAt,
-    int? updatedAt,
+    DateTime? createdAt,
+    DateTime? updatedAt,
   }) {
     return ChatroomModel(
       id: id ?? this.id,

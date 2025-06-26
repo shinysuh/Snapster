@@ -7,7 +7,7 @@ class ChatMessageModel {
   final String type;
   final bool isDeleted;
   final String clientMessageId;
-  final int createdAt;
+  DateTime? createdAt;
 
   ChatMessageModel({
     required this.id,
@@ -18,7 +18,7 @@ class ChatMessageModel {
     required this.type,
     required this.isDeleted,
     required this.clientMessageId,
-    required this.createdAt,
+    this.createdAt,
   });
 
   ChatMessageModel.empty()
@@ -28,8 +28,7 @@ class ChatMessageModel {
         content = '',
         type = '',
         clientMessageId = '',
-        isDeleted = false,
-        createdAt = 0;
+        isDeleted = false;
 
   ChatMessageModel.fromJson(Map<String, dynamic> json)
       : id = json['id'],
@@ -40,7 +39,9 @@ class ChatMessageModel {
         type = json['type'],
         isDeleted = json['isDeleted'],
         clientMessageId = json['clientMessageId'],
-        createdAt = json['createdAt'] ?? 0;
+        createdAt = json['createdAt'] != null
+            ? DateTime.parse(json['createdAt'])
+            : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -65,7 +66,7 @@ class ChatMessageModel {
     String? type,
     bool? isDeleted,
     String? clientMessageId,
-    int? createdAt,
+    DateTime? createdAt,
   }) {
     return ChatMessageModel(
       id: id ?? this.id,

@@ -22,10 +22,10 @@ public class ChatroomParticipantDto {
     private Instant lastReadAt;
 
     // repository 쿼리에서 사용
-    ChatroomParticipantDto(ChatroomParticipantId id,
-                           Instant joinedAt,
-                           Long lastReadMessageId,
-                           Instant lastReadAt) {
+    public ChatroomParticipantDto(ChatroomParticipantId id,
+                                  Instant joinedAt,
+                                  Long lastReadMessageId,
+                                  Instant lastReadAt) {
         this.id = id;
         this.joinedAt = joinedAt;
         this.lastReadMessageId = lastReadMessageId;

@@ -100,8 +100,9 @@ class StompService {
       return;
     }
 
+    final destination = '$_messageBaseUrl/${message.chatroomId}';
     _stompClient.send(
-      destination: '$_messageBaseUrl${message.chatroomId}',
+      destination: destination,
       body: jsonEncode(message),
       headers: ApiInfo.getBasicHeaderWithToken(_jwtToken),
     );

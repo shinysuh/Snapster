@@ -4,9 +4,9 @@ import 'package:snapster_app/features/user/models/app_user_model.dart';
 class ChatroomParticipantModel {
   final ChatroomParticipantIdModel id;
   final AppUser user;
-  int? joinedAt;
+  DateTime? joinedAt;
   int? lastReadMessageId;
-  int? lastReadAt;
+  DateTime? lastReadAt;
 
   ChatroomParticipantModel({
     required this.id,
@@ -19,9 +19,12 @@ class ChatroomParticipantModel {
   ChatroomParticipantModel.fromJson(Map<String, dynamic> json)
       : id = ChatroomParticipantIdModel.fromJson(json['id']),
         user = AppUser.fromJson(json['user']),
-        joinedAt = json['joinedAt'] ?? 0,
+        joinedAt =
+            json['joinedAt'] != null ? DateTime.parse(json['joinedAt']) : null,
         lastReadMessageId = json['lastReadMessageId'] ?? 0,
-        lastReadAt = json['lastReadAt'] ?? 0;
+        lastReadAt = json['lastReadAt'] != null
+            ? DateTime.parse(json['lastReadAt'])
+            : null;
 
   Map<String, dynamic> toJson() {
     return {
@@ -36,9 +39,9 @@ class ChatroomParticipantModel {
   ChatroomParticipantModel copyWith({
     ChatroomParticipantIdModel? id,
     AppUser? user,
-    int? joinedAt,
+    DateTime? joinedAt,
     int? lastReadMessageId,
-    int? lastReadAt,
+    DateTime? lastReadAt,
   }) {
     return ChatroomParticipantModel(
       id: id ?? this.id,
