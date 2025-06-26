@@ -4,7 +4,7 @@ import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Data
-@ConfigurationProperties(prefix = "redis.chat")
+@ConfigurationProperties(prefix = "redis.ttl")
 public class RedisTtlProperties {
 
     private long feed;
