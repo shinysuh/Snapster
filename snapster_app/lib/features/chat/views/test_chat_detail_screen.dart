@@ -12,6 +12,7 @@ import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/message/view_models/chat_message_view_model.dart';
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
+import 'package:snapster_app/features/chat/participant/view_models/chatroom_participant_view_model.dart';
 import 'package:snapster_app/features/chat/stomp/view_models/stomp_view_model.dart';
 import 'package:snapster_app/features/inbox/view_models/chatroom_view_model.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
@@ -61,16 +62,46 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   bool _isDropdownOpen = false;
 
   @override
+  void dispose() {
+    _textEditingController.dispose();
+    super.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     _chatroom = widget.chatroomDetails.chatroom;
-    _currentUser = _chatroom.participants.firstWhere(
-      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
-    );
-    _currentUserId = _currentUser.id.userId;
+    var currentUserIdx = _chatroom.participants.indexWhere(
+        (p) => widget.chatroomDetails.currentUser.userId == p.user.userId);
+
+    _currentUserId = _chatroom.participants[currentUserIdx].id.userId;
     _others = _chatroom.participants
         .where((p) => p.id.userId != _currentUserId)
         .toList();
+
+    _initialize(currentUserIdx);
+  }
+
+  Future<void> _initialize(int currentUserIdx) async {
+    var currUser = _chatroom.participants.firstWhere(
+      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
+    );
+
+    if (_chatroom.lastMessage.id != _currentUser.lastReadMessageId) {
+      currUser = currUser.copyWith(
+        lastReadMessageId: _chatroom.lastMessage.id,
+      );
+
+      _currentUser = currUser;
+      await updateLastReadMessage(_currentUser);
+    }
+  }
+
+  Future<void> updateLastReadMessage(
+      ChatroomParticipantModel currentUser) async {
+    await ref
+        .read(participantProvider(_chatroom.id).notifier)
+        .updateLastReadMessage(context, currentUser);
   }
 
   // Future<void> _getChatroomInfo(String partnerId) async {
@@ -80,12 +111,6 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   //             partnerId,
   //           );
   // }
-
-  @override
-  void dispose() {
-    _textEditingController.dispose();
-    super.dispose();
-  }
 
   void _onTapScaffold() {
     onTapOutsideAndDismissKeyboard(context);
@@ -103,7 +128,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   }
 
   Future<void> _onSendMessage() async {
-    final hasOtherParticipants = _others.length > 1;
+    final hasOtherParticipants = _others.isNotEmpty;
 
     var reInvitationConfirm = true;
 
@@ -165,43 +190,6 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
             ));
   }
 
-  // Future<bool> _getReInvitationConfirm() async {
-  //   if (_chatroomInfo == null) return false;
-  //
-  //   var chatroom = _chatroomInfo;
-  //   var partner = _chatroomBasic.chatPartner;
-  //   var now = DateTime.now().millisecondsSinceEpoch;
-  //
-  //   var isPartnerPersonA = _chatroomInfo!.chatroomId.startsWith(partner.uid);
-  //
-  //   var reInvited = false;
-  //
-  //   await _getAlert(
-  //     title: S.of(context).reInvitationConfirmMsg,
-  //     confirmActionCallback: () async {
-  //       await ref.read(chatroomProvider.notifier).reJoinChatroom(
-  //             context: context,
-  //             chatroom: ChatroomModel(
-  //               chatroomId: chatroom!.chatroomId,
-  //               personA: isPartnerPersonA ? partner : chatroom.personA,
-  //               personB: isPartnerPersonA ? chatroom.personB : partner,
-  //               updatedAt: now,
-  //             ),
-  //             isPersonARejoining: isPartnerPersonA,
-  //             now: now,
-  //           );
-  //
-  //       _setPartnerParticipationInfo(true);
-  //
-  //       _closeDialog();
-  //       reInvited = true;
-  //     },
-  //     destructiveActionCallback: _closeDialog,
-  //   );
-  //
-  //   return reInvited;
-  // }
-
   void _onTapDots() {
     // setState(() {
     //   _isDropdownOpen = true;
@@ -214,44 +202,22 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
 
   void _onExitChatroom() {
     context.pop();
-    // TODO - 방 나가기 로직 (alert 포함)
-    // showCupertinoDialog(
-    //   context: context,
-    //   builder: (context) => CupertinoAlertDialog(
-    //     title: Text(S.of(context).exitChatroom),
-    //     // content: const Text('Please confirm'),
-    //     actions: [
-    //       CupertinoDialogAction(
-    //         onPressed: _closeExitDialog,
-    //         child: const Text("No"),
-    //       ),
-    //       CupertinoDialogAction(
-    //         onPressed: () {
-    //           ref
-    //               .read(chatroomProvider.notifier)
-    //               .exitChatroom(context, chatroom);
-    //           _closeExitDialog();
-    //         },
-    //         isDestructiveAction: true,
-    //         child: const Text("Yes"),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
-  // void _setPartnerParticipationInfo(bool isParticipating) {
-  //   _chatroomBasic = _chatroomBasic.copyWith(
-  //     chatPartner: _chatroomBasic.chatPartner.copyWith(
-  //       isParticipating: isParticipating,
-  //     ),
-  //   );
-  // }
-
   List<ChatMessageModel> _getAllowedMessages(List<ChatMessageModel> messages) {
-    if (_currentUser.joinedAt == null) return [];
-    if (messages.isEmpty ||
-        _currentUser.joinedAt! <= _chatroom.messages.first.createdAt) {
+    if (messages.isEmpty) {
+      return messages;
+    }
+
+    DateTime? msgCreatedAt = _chatroom.messages.first.createdAt;
+    DateTime? userJoinedAt = _currentUser.joinedAt;
+
+    if (userJoinedAt == null || msgCreatedAt == null) {
+      debugPrint('##### userJoinedAt || msgCreatedAt 누락 오류 발생');
+      return [];
+    }
+
+    if (userJoinedAt.isBefore(msgCreatedAt)) {
       return messages;
     }
 
@@ -285,9 +251,12 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   }
 
   void _updateMessageToDeleted(ChatMessageModel message) {
-    var threeMinutes = 180000;
-    var now = DateTime.now().millisecondsSinceEpoch;
-    bool isDeletable = now - message.createdAt < threeMinutes;
+    var threeMinutes = const Duration(minutes: 3);
+    var now = DateTime.now();
+    bool isDeletable = message.createdAt != null
+        ? now.difference(message.createdAt!).inMilliseconds <
+            threeMinutes.inMilliseconds
+        : false;
 
     // 보낸지 3분 이내에 삭제 가능
     if (!isDeletable) return;
@@ -307,8 +276,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
     );
   }
 
-  Widget _getMsgSentAt(int createdAt, bool isDark) {
-    var sentAt = DateTime.fromMillisecondsSinceEpoch(createdAt);
+  Widget _getMsgSentAt(DateTime sentAt, bool isDark) {
     return Text(
       DateFormat(
         S.of(context).hourMinuteAPM,
@@ -543,6 +511,8 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                             separatorBuilder: (context, index) => Gaps.v10,
                             itemBuilder: (context, index) {
                               final message = messages[index];
+                              final createdAt = message.createdAt!;
+
                               final senderType = ref
                                   .read(chatMessageProvider(_chatroom.id)
                                       .notifier)
@@ -568,10 +538,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        _getMsgSentAt(
-                                          message.createdAt,
-                                          isDark,
-                                        ),
+                                        _getMsgSentAt(createdAt, isDark),
                                         Gaps.h6,
                                       ],
                                     ),
@@ -631,10 +598,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                                           CrossAxisAlignment.end,
                                       children: [
                                         Gaps.h6,
-                                        _getMsgSentAt(
-                                          message.createdAt,
-                                          isDark,
-                                        ),
+                                        _getMsgSentAt(createdAt, isDark),
                                       ],
                                     ),
                                 ],

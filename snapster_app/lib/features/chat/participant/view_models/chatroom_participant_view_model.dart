@@ -132,6 +132,18 @@ class ChatroomParticipantViewModel
         .toList();
     return filteredNewbies;
   }
+
+  Future<void> updateLastReadMessage(
+    BuildContext context,
+    ChatroomParticipantModel participant,
+  ) async {
+    await runFutureVoidWithExceptionHandler(
+      context: context,
+      errorPrefix: '읽음 상태 업데이트',
+      requestFunction: () async =>
+          _participantRepository.updateLastReadMessage(participant),
+    );
+  }
 }
 
 final participantProvider = AsyncNotifierProvider.family<
