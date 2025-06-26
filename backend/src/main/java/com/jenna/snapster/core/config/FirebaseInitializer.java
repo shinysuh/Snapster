@@ -28,13 +28,11 @@ public class FirebaseInitializer {
                 // 운영: 환경변수에서 Firebase JSON 내용 읽기 (예: FIREBASE_CONFIG_JSON)
                 String firebaseConfigJson = System.getenv("FIREBASE_CONFIG_JSON");
                 if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
-                    throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, "Firebase config JSON environment variable is empty");
+                    log.error("Firebase config JSON not found in classpath and environment variable FIREBASE_CONFIG_JSON is empty.");
+                    throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, "Firebase config JSON not found");
                 }
-
-                // JSON 문자열을 InputStream으로 변환
                 serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
             }
-
 
             FirebaseOptions options = FirebaseOptions.builder()
                 .setCredentials(GoogleCredentials.fromStream(serviceAccount))
