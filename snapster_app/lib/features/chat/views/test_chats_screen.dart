@@ -7,7 +7,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/message_types.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/widgets/auth_guard.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
 import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
@@ -113,7 +113,16 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
   Widget _getChatroomListTile(int index) {
     var chatroom = _chatrooms[index];
     var participants = chatroom.participants;
+
     var other = participants[0].user;
+
+    if (participants.length > 1) {
+      other = participants
+          .firstWhere(
+            (p) => _currentUser?.userId != p.user.userId,
+          )
+          .user;
+    }
     var updatedAt = chatroom.lastMessage.createdAt;
 
     // TODO - 여러명 참여방일 경우 상대방 출력 로직 필요
@@ -167,9 +176,11 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     return Text(content);
   }
 
-  String _getLastUpdatedAt(int updatedAt) {
+  String _getLastUpdatedAt(DateTime? updatedAt) {
+    if (updatedAt == null) return '';
+
     var today = DateTime.now();
-    var lastUpdate = DateTime.fromMillisecondsSinceEpoch(updatedAt);
+    var lastUpdate = updatedAt;
 
     var isThisYear = today.year == lastUpdate.year;
     var isToday = isThisYear &&
@@ -187,77 +198,84 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AuthGuard(
-      builder: (context, user) {
-        _currentUser ??= user;
-        return RegulatedMaxWidth(
-          maxWidth: Breakpoints.sm,
-          child: Scaffold(
-            appBar: AppBar(
-              elevation: 1,
-              centerTitle: true,
-              title: const Text('Direct messages'),
-              actions: [
-                IconButton(
-                  onPressed: _onClickAddChat,
-                  icon: const FaIcon(
-                    FontAwesomeIcons.plus,
-                  ),
-                ),
-              ],
+    final authState = ref.watch(authStateProvider);
+
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
+    }
+
+    if (authState.status == AuthStatus.unauthenticated) {
+      return const Center(child: Text("로그인이 필요합니다."));
+    }
+
+    _currentUser = authState.user;
+
+    return RegulatedMaxWidth(
+      maxWidth: Breakpoints.sm,
+      child: Scaffold(
+        appBar: AppBar(
+          elevation: 1,
+          centerTitle: true,
+          title: const Text('Direct messages'),
+          actions: [
+            IconButton(
+              onPressed: _onClickAddChat,
+              icon: const FaIcon(
+                FontAwesomeIcons.plus,
+              ),
             ),
-            body: ref.watch(httpChatroomProvider).when(
-                  loading: () => const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  ),
-                  error: (error, stackTrace) => Center(
-                    child: Text(error.toString()),
-                  ),
-                  data: (chatrooms) {
-                    // _chatrooms = _getLastMessageInfo(chatrooms);
-                    _chatrooms = chatrooms;
-                    return _chatrooms.isEmpty
-                        ? Column(
-                            children: [
-                              Gaps.v20,
-                              ListTile(
-                                title: ListTile(
-                                  onTap: _onClickAddChat,
-                                  contentPadding: const EdgeInsets.only(
-                                    left: Sizes.size20,
-                                  ),
-                                  title: Text(
-                                    S
-                                        .of(context)
-                                        .selectAProfileToStartAConversation,
-                                    style: const TextStyle(
-                                      fontSize: Sizes.size16,
-                                    ),
-                                  ),
-                                  trailing: FaIcon(
-                                    FontAwesomeIcons.chevronRight,
-                                    size: Sizes.size14,
-                                    color: Colors.grey.shade700,
-                                  ),
+          ],
+        ),
+        body: ref.watch(httpChatroomProvider).when(
+              loading: () => const Center(
+                child: CircularProgressIndicator.adaptive(),
+              ),
+              error: (error, stackTrace) => Center(
+                child: Text(error.toString()),
+              ),
+              data: (chatrooms) {
+                // _chatrooms = _getLastMessageInfo(chatrooms);
+                _chatrooms = chatrooms;
+                return _chatrooms.isEmpty
+                    ? Column(
+                        children: [
+                          Gaps.v20,
+                          ListTile(
+                            title: ListTile(
+                              onTap: _onClickAddChat,
+                              contentPadding: const EdgeInsets.only(
+                                left: Sizes.size20,
+                              ),
+                              title: Text(
+                                S
+                                    .of(context)
+                                    .selectAProfileToStartAConversation,
+                                style: const TextStyle(
+                                  fontSize: Sizes.size16,
                                 ),
                               ),
-                            ],
-                          )
-                        : ListView.separated(
-                            // key: _key,
-                            itemCount: _chatrooms.length,
-                            padding: const EdgeInsets.symmetric(
-                              vertical: Sizes.size10,
+                              trailing: FaIcon(
+                                FontAwesomeIcons.chevronRight,
+                                size: Sizes.size14,
+                                color: Colors.grey.shade700,
+                              ),
                             ),
-                            separatorBuilder: (context, index) => Gaps.v5,
-                            itemBuilder: (context, index) =>
-                                _getChatroomListTile(index),
-                          );
-                  },
-                ),
-          ),
-        );
-      },
+                          ),
+                        ],
+                      )
+                    : ListView.separated(
+                        // key: _key,
+                        itemCount: _chatrooms.length,
+                        padding: const EdgeInsets.symmetric(
+                          vertical: Sizes.size10,
+                        ),
+                        separatorBuilder: (context, index) => Gaps.v5,
+                        itemBuilder: (context, index) =>
+                            _getChatroomListTile(index),
+                      );
+              },
+            ),
+      ),
     );
   }
 }

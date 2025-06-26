@@ -5,7 +5,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
-import 'package:snapster_app/features/authentication/widgets/auth_guard.dart';
+import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/user/view_models/profile_avatar_upload_view_model.dart';
@@ -241,70 +241,79 @@ class _UserProfileFormScreenState extends ConsumerState<UserProfileFormScreen>
   @override
   Widget build(BuildContext context) {
     // final isDark = isDarkMode(context);
+    final authState = ref.watch(authStateProvider);
 
-    return AuthGuard(
-      builder: (context, user) => GestureDetector(
-        onTap: () => onTapOutsideAndDismissKeyboard(context),
-        child: Scaffold(
-          resizeToAvoidBottomInset: false,
-          appBar: AppBar(
-            centerTitle: true,
-            title: Text(S.of(context).editProfile),
-          ),
-          body: SingleChildScrollView(
-            controller: _scrollController,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
-              child: Column(
-                children: [
-                  ..._getUserPic(user),
-                  Form(
-                    key: _formKey,
-                    child: Column(
-                      children: [
-                        Gaps.v28,
-                        getTextFormFieldByField(
-                          'displayName',
-                          'Nickname (Name to display)',
-                          EditableFields.name,
-                          false,
-                        ),
-                        Gaps.v16,
-                        getTextFormFieldByField(
-                          'username',
-                          'Username',
-                          EditableFields.username,
-                          true,
-                        ),
-                        Gaps.v16,
-                        getTextFormFieldByField(
-                          'bio',
-                          'Add bio to your profile',
-                          EditableFields.bio,
-                          true,
-                        ),
-                        Gaps.v16,
-                        getTextFormFieldByField(
-                          'link',
-                          'Add a link to your profile',
-                          EditableFields.link,
-                          true,
-                        ),
-                        Gaps.v28,
-                        FormButton(
-                          disabled: ref.watch(userProvider).isLoading,
-                          onTapButton: _onTapSave,
-                          buttonText: S.of(context).save,
-                        ),
-                        SizedBox(
-                          height: MediaQuery.of(context).viewInsets.bottom +
-                              Sizes.size32,
-                        ),
-                      ],
-                    ),
+    if (authState.status == AuthStatus.loading) {
+      return const CircularProgressIndicator();
+    }
+
+    if (authState.status == AuthStatus.unauthenticated) {
+      return const Center(child: Text("로그인이 필요합니다."));
+    }
+
+    final user = authState.user ?? widget.user;
+
+    return GestureDetector(
+      onTap: () => onTapOutsideAndDismissKeyboard(context),
+      child: Scaffold(
+        resizeToAvoidBottomInset: false,
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(S.of(context).editProfile),
+        ),
+        body: SingleChildScrollView(
+          controller: _scrollController,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: Sizes.size36),
+            child: Column(
+              children: [
+                ..._getUserPic(user),
+                Form(
+                  key: _formKey,
+                  child: Column(
+                    children: [
+                      Gaps.v28,
+                      getTextFormFieldByField(
+                        'displayName',
+                        'Nickname (Name to display)',
+                        EditableFields.name,
+                        false,
+                      ),
+                      Gaps.v16,
+                      getTextFormFieldByField(
+                        'username',
+                        'Username',
+                        EditableFields.username,
+                        true,
+                      ),
+                      Gaps.v16,
+                      getTextFormFieldByField(
+                        'bio',
+                        'Add bio to your profile',
+                        EditableFields.bio,
+                        true,
+                      ),
+                      Gaps.v16,
+                      getTextFormFieldByField(
+                        'link',
+                        'Add a link to your profile',
+                        EditableFields.link,
+                        true,
+                      ),
+                      Gaps.v28,
+                      FormButton(
+                        disabled: ref.watch(userProvider).isLoading,
+                        onTapButton: _onTapSave,
+                        buttonText: S.of(context).save,
+                      ),
+                      SizedBox(
+                        height: MediaQuery.of(context).viewInsets.bottom +
+                            Sizes.size32,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ),
         ),
