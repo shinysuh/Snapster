@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.chat.main.controller;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -23,12 +23,12 @@ public class ChatController {
 
     @MessageMapping("/send/{chatroomId}")
     public ResponseEntity<?> onMessage(@DestinationVariable Long chatroomId,
-                                       @Payload ChatRequestDto chatRequest,
+                                       @Payload ChatMessageDto messageRequest,
                                        Principal principal) {
-        chatRequest.setChatroomId(chatroomId);
+        messageRequest.setChatroomId(chatroomId);
         CustomUserDetails currentUser = (CustomUserDetails) ((Authentication) principal).getPrincipal();
         Long userId = currentUser.getUser().getId();
-        boolean isSuccess = chatMessageService.processMessage(chatRequest, userId);
+        boolean isSuccess = chatMessageService.processMessage(messageRequest, userId);
         return ResponseEntity.ok(isSuccess ? "Message Successfully Sent" : ErrorCode.MESSAGE_NOT_DELIVERED.getMessage());
     }
 }

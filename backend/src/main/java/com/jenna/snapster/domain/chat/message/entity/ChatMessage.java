@@ -1,6 +1,6 @@
 package com.jenna.snapster.domain.chat.message.entity;
 
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -47,12 +47,12 @@ public class ChatMessage {
         this.createdAt = Instant.now();
     }
 
-    public ChatMessage(ChatRequestDto chatRequest) {
-        this.chatroomId = chatRequest.getChatroomId();
-        this.senderId = chatRequest.getSenderId();
-        this.content = chatRequest.getContent();
-        this.type = chatRequest.getType();
-        this.createdAt = chatRequest.getCreatedAt();
-        this.clientMessageId = chatRequest.getClientMessageId();
+    public ChatMessage(ChatMessageDto messageRequest) {
+        this.chatroomId = messageRequest.getChatroomId();
+        this.senderId = messageRequest.getSenderId();
+        this.content = messageRequest.getContent();
+        this.type = messageRequest.getType();
+        this.createdAt = messageRequest.getCreatedAt();
+        this.clientMessageId = messageRequest.getClientMessageId();
     }
 }

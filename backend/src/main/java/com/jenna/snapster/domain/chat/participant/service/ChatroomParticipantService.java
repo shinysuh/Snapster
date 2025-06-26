@@ -1,6 +1,6 @@
 package com.jenna.snapster.domain.chat.participant.service;
 
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
@@ -29,7 +29,7 @@ public interface ChatroomParticipantService {
 
     List<ChatroomParticipant> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId);
 
-    void addInitialParticipants(ChatRequestDto chatRequest);
+    void addInitialParticipants(ChatMessageDto messageRequest);
 
     void deleteUserFromChatroom(ChatroomParticipantId id);
 

@@ -3,7 +3,7 @@ package com.jenna.snapster.domain.chat.message.controller;
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
 import com.jenna.snapster.domain.chat.chatroom.entity.Chatroom;
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -30,7 +30,7 @@ public class ChatMessageController {
 
     @PutMapping("/delete")
     public ResponseEntity<?> updateMessageToDeleted(@CurrentUser CustomUserDetails currentUser,
-                                                    @RequestBody ChatRequestDto chatRequest) {
-        return ResponseEntity.ok(chatMessageService.updateMessageToDeleted(currentUser.getUser().getId(), chatRequest));
+                                                    @RequestBody ChatMessageDto messageRequest) {
+        return ResponseEntity.ok(chatMessageService.updateMessageToDeleted(currentUser.getUser().getId(), messageRequest));
     }
 }

@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.chat.participant.service.impl;
 
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
@@ -91,12 +91,12 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
     }
 
     @Override
-    public void addInitialParticipants(ChatRequestDto chatRequest) {
+    public void addInitialParticipants(ChatMessageDto messageRequest) {
         List<ChatroomParticipant> dd = this.addMultipleParticipants(
-            chatRequest.getChatroomId(),
+            messageRequest.getChatroomId(),
             List.of(
-                chatRequest.getSenderId(),
-                chatRequest.getReceiverId()
+                messageRequest.getSenderId(),
+                messageRequest.getReceiverId()
             )
         );
     }

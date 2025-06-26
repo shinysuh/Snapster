@@ -1,7 +1,8 @@
-package com.jenna.snapster.domain.chat.dto;
+package com.jenna.snapster.domain.chat.message.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -13,7 +14,7 @@ import java.time.Instant;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ChatRequestDto {
+public class ChatMessageDto {
     private Long id;        // message id
     private Long chatroomId;
     private Long senderId;
@@ -29,4 +30,15 @@ public class ChatRequestDto {
 
     @JsonProperty("isDeleted")
     private boolean isDelete;
+
+    public ChatMessageDto(ChatMessage message) {
+        this.id = message.getId();
+        this.chatroomId = message.getChatroomId();
+        this.senderId = message.getSenderId();
+        this.content = message.getContent();
+        this.type = message.getType();
+        this.createdAt = message.getCreatedAt();
+        this.clientMessageId = message.getClientMessageId();
+        this.isDelete = message.getIsDeleted();
+    }
 }

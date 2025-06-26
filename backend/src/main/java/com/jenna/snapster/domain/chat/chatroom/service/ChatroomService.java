@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.chat.chatroom.service;
 
 import com.jenna.snapster.domain.chat.chatroom.dto.ChatroomResponseDto;
 import com.jenna.snapster.domain.chat.chatroom.entity.Chatroom;
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public interface ChatroomService {
 
     List<ChatroomResponseDto> getAllChatroomsByUserId(Long userId);
 
-    Chatroom openNewChatroom(ChatRequestDto chatRequest);
+    Chatroom openNewChatroom(ChatMessageDto messageRequest);
 
-    Chatroom getChatroomByIdAndCreatedIfNotExists(ChatRequestDto chatRequest);
+    Chatroom getChatroomByIdAndCreatedIfNotExists(ChatMessageDto messageRequest);
 
     Chatroom updateChatroomLastMessageId(ChatMessage message);
 

@@ -6,7 +6,7 @@ import com.jenna.snapster.domain.chat.chatroom.dto.ChatroomResponseDto;
 import com.jenna.snapster.domain.chat.chatroom.entity.Chatroom;
 import com.jenna.snapster.domain.chat.chatroom.repository.ChatroomRepository;
 import com.jenna.snapster.domain.chat.chatroom.service.ChatroomService;
-import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
@@ -72,30 +72,30 @@ public class ChatroomServiceImpl implements ChatroomService {
     }
 
     @Override
-    public Chatroom openNewChatroom(ChatRequestDto chatRequest) {
-        this.validateReceiver(chatRequest.getReceiverId());
+    public Chatroom openNewChatroom(ChatMessageDto messageRequest) {
+        this.validateReceiver(messageRequest.getReceiverId());
         Chatroom chatroom = chatroomRepository.save(new Chatroom());
         // 발신인/수신인 → DB에 채팅 참여자 목록에 추가 → Redis 동기화 → 수신인 정보 FCM push 알림 시 필요
-        chatRequest.setChatroomId(chatroom.getId());
-        participantService.addInitialParticipants(chatRequest);
+        messageRequest.setChatroomId(chatroom.getId());
+        participantService.addInitialParticipants(messageRequest);
         return chatroom;
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Chatroom getChatroomByIdAndCreatedIfNotExists(ChatRequestDto chatRequest) {
-        Long chatroomId = chatRequest.getChatroomId();
+    public Chatroom getChatroomByIdAndCreatedIfNotExists(ChatMessageDto messageRequest) {
+        Long chatroomId = messageRequest.getChatroomId();
 
         if (chatroomId != null) {
             Chatroom chatroom = this.getChatroomById(chatroomId);
             if (chatroom != null) {
                 // 채팅방 정보에 수신인 정보 업데이트
-                this.addReceiverAsParticipant(chatroomId, chatRequest.getReceiverId());
+                this.addReceiverAsParticipant(chatroomId, messageRequest.getReceiverId());
                 return chatroom;
             }
         }
 
-        return this.openNewChatroom(chatRequest);
+        return this.openNewChatroom(messageRequest);
     }
 
     @Transactional(rollbackFor = Exception.class)
