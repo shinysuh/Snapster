@@ -102,6 +102,8 @@ public class ChatroomServiceImpl implements ChatroomService {
     public Chatroom updateChatroomLastMessageId(ChatMessage message) {
         Chatroom chatroom = this.getChatroomById(message.getChatroomId());
         chatroom.updateFrom(message);
+        // 발신인 읽음 상태 업데이트
+        participantService.updateSenderReadStatus(message);
         return chatroomRepository.save(chatroom);
     }
 

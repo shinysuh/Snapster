@@ -3,6 +3,7 @@ package com.jenna.snapster.domain.chat.participant.service.impl;
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.dto.ChatRequestDto;
+import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
@@ -115,11 +116,20 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         // 사용자 validate
         ChatroomParticipantId id = participant.getId();
         this.validateRequestUser(id.getChatroomId(), id.getUserId());
+        this.updateReadStatus(id, participant.getLastReadMessageId());
+    }
 
+    @Override
+    public void updateSenderReadStatus(ChatMessage message) {
+        ChatroomParticipantId id = new ChatroomParticipantId(message.getChatroomId(), message.getSenderId());
+        this.updateReadStatus(id, message.getId());
+    }
+
+    private void updateReadStatus(ChatroomParticipantId id, Long lastReadMessageId) {
         ChatroomReadStatus status = readStatusRepository.findById(id).orElse(new ChatroomReadStatus(id));
 
-        if (!Objects.equals(status.getLastReadMessageId(), participant.getLastReadMessageId())) {
-            status.updateFrom(participant);
+        if (!Objects.equals(status.getLastReadMessageId(), lastReadMessageId)) {
+            status.updateReadStatus(lastReadMessageId);
             readStatusRepository.save(status);
         }
     }
