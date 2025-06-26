@@ -98,6 +98,7 @@ public class ChatroomServiceImpl implements ChatroomService {
         return this.openNewChatroom(chatRequest);
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
     public Chatroom updateChatroomLastMessageId(ChatMessage message) {
         Chatroom chatroom = this.getChatroomById(message.getChatroomId());

@@ -22,7 +22,7 @@ public class Chatroom {
     private Long id;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "last_message_id", referencedColumnName = "id", insertable = false, updatable = false)
+    @JoinColumn(name = "last_message_id", referencedColumnName = "id")
     private ChatMessage lastMessage;
 
     @Column(nullable = false, updatable = false)
