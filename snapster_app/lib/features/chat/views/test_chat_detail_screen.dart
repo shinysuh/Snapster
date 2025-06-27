@@ -284,7 +284,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
       DateFormat(
         S.of(context).hourMinuteAPM,
         'en_US',
-      ).format(sentAt),
+      ).format(sentAt.toLocal()),
       style: TextStyle(
         fontSize: Sizes.size12,
         color: isDark

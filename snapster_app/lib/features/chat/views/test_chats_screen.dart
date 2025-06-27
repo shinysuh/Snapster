@@ -179,13 +179,14 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
   String _getLastUpdatedAt(DateTime? updatedAt) {
     if (updatedAt == null) return '';
 
-    var today = DateTime.now();
-    var lastUpdate = updatedAt;
+    var now = DateTime.now();
+    // UTC -> LOCAL
+    var localUpdate = updatedAt.toLocal();
 
-    var isThisYear = today.year == lastUpdate.year;
+    var isThisYear = now.year == localUpdate.year;
     var isToday = isThisYear &&
-        today.month == lastUpdate.month &&
-        today.day == lastUpdate.day;
+        now.month == localUpdate.month &&
+        now.day == localUpdate.day;
 
     var format = isToday
         ? S.of(context).hourMinuteAPM
@@ -193,7 +194,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
             ? S.of(context).monthDate
             : S.of(context).yearMonthDate;
 
-    return DateFormat(format, 'en_US').format(lastUpdate);
+    return DateFormat(format, 'en_US').format(localUpdate);
   }
 
   @override
