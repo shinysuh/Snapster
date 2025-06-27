@@ -28,7 +28,9 @@ jobs:
       - name: Create Firebase Service Account File
         run: |
           mkdir -p backend/src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
+          echo "${{ secrets.TIKTOK_CLONE_SERVICE_ACCOUNT}}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
+      #    기존 새 프로젝트 파일 - FIREBASE_SERVICE_ACCOUNT (마이그레이션 전 : TIKTOK_CLONE_SERVICE_ACCOUNT)
+#          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
 
       # 3) 백엔드 JAR 빌드
       - name: Build backend JAR
@@ -186,8 +188,8 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            echo "FIREBASE $FIREBASE_SECRET" > firebase.json
-            cat firebase.json
+            # echo "FIREBASE $FIREBASE_SECRET" > firebase.json
+            # cat firebase.json
           
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \

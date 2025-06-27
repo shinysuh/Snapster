@@ -49,4 +49,4 @@ app.*.map.json
 /android/app/release
 
 # Firebase Admin SDK key
-backend/src/main/resources/firebase/snapster-firebase-service-account.json
+backend/src/main/resources/firebase/**/snapster-firebase-service-account.json
