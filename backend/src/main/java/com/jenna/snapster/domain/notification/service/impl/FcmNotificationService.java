@@ -4,7 +4,7 @@ import com.google.firebase.messaging.FirebaseMessaging;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
-import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
 import com.jenna.snapster.domain.notification.dto.FcmTokenRequestDto;
 import com.jenna.snapster.domain.notification.entity.FcmToken;
@@ -12,11 +12,14 @@ import com.jenna.snapster.domain.notification.repository.FcmTokenRepository;
 import com.jenna.snapster.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 @Slf4j
@@ -28,14 +31,14 @@ public class FcmNotificationService implements NotificationService {
     private final OnlineUserRedisRepository onlineUserRedisRepository;
 
     @Override
-    public void sendPushToUsers(Set<Long> userIds, ChatMessage message) {
+    public void sendPushToUsers(Set<Long> userIds, ChatMessageDto message) {
         for (Long userId : userIds) {
             this.sendPushToUser(userId, message);
         }
     }
 
     @Override
-    public void sendPushToUser(Long userId, ChatMessage message) {
+    public void sendPushToUser(Long userId, ChatMessageDto message) {
         List<FcmToken> fcmTokens = this.getAllFcmTokensByUserId(userId);
 
         for (FcmToken fcmToken : fcmTokens) {
@@ -43,7 +46,8 @@ public class FcmNotificationService implements NotificationService {
 
             Message pushMessage = Message.builder()
                 .setToken(token)
-                .setNotification(this.getNotification(message.getContent()))
+//                .setNotification(this.getNotification(message.getContent()))
+                .putAllData(this.getPutData(message))
                 .build();
 
             this.send(fcmToken, pushMessage);
@@ -67,7 +71,7 @@ public class FcmNotificationService implements NotificationService {
     }
 
     private void deleteInvalidFcmToken(FcmToken fcmToken, String errorCode) {
-        if ("REGISTRATION_TOKEN_NOT_REGISTERED".equals(errorCode)
+        if ("UNREGISTERED".equals(errorCode)
             || "INVALID_ARGUMENT".equals(errorCode)) {
             fcmTokenRepository.delete(fcmToken);
             log.info("[FCM] 유효하지 않은 토큰 삭제: userId={}, token={}",
@@ -82,6 +86,17 @@ public class FcmNotificationService implements NotificationService {
             .setTitle(title)
             .setBody(content)
             .build();
+    }
+
+    private Map<String, String> getPutData(ChatMessageDto message) {
+        Map<String, String> data = new HashMap<>();
+        data.put("chatroomId", message.getChatroomId().toString());
+        data.put("senderId", message.getSenderId().toString());
+        data.put("senderDisplayName", StringUtils.isNotEmpty(
+            message.getSenderDisplayName()) ? message.getSenderDisplayName() : ""
+        );
+        data.put("content", message.getContent());
+        return data;
     }
 
     @Override

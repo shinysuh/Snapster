@@ -1,5 +1,6 @@
 package com.jenna.snapster.core.redis;
 
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
@@ -36,21 +37,24 @@ public class RedisSubscriber implements MessageListener {
         log.info("Received message: {}", body);
 
         try {
+            ChatMessageDto messageDto = converter.fromJson(body);
+
             // 메시지 DB 저장 & chatroom 마지막 메시지 id 업데이트
-            ChatMessage chatMessage = chatMessageService.saveChatMessageAndUpdateChatroom(converter.fromJson(body));
+            ChatMessage chatMessage = chatMessageService.saveChatMessageAndUpdateChatroom(messageDto);
+
 
             // WebSocket 구독자에게 메시지 전송
-            String destination = "/topic/chatroom." + chatMessage.getChatroomId();
-            simpMessagingTemplate.convertAndSend(destination, chatMessage);
+            String destination = "/topic/chatroom." + messageDto.getChatroomId();
+            simpMessagingTemplate.convertAndSend(destination, messageDto);
 
             // FCM 푸시 알림 (오프라인 or 미구독자)
-            this.sendPushToUnsubscribedUsers(chatMessage);
+            this.sendPushToUnsubscribedUsers(messageDto);
         } catch (Exception e) {
             log.error("Failed to process message", e);
         }
     }
 
-    private void sendPushToUnsubscribedUsers(ChatMessage message) {
+    private void sendPushToUnsubscribedUsers(ChatMessageDto message) {
         // redis에서 채팅방 참여자 전체 정보 fetch
         List<Long> participants = this.getParticipants(message.getChatroomId());
         // offline 참여자만 추출

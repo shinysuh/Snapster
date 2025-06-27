@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.chat.message.entity;
 
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,7 +28,7 @@ public class UndeliveredMessage {
 
     private String type;
 
-    public UndeliveredMessage(ChatMessage message) {
+    public UndeliveredMessage(ChatMessageDto message) {
         this.chatroomId = message.getChatroomId();
         this.senderId = message.getSenderId();
         this.content = message.getContent();

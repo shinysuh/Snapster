@@ -39,8 +39,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         chatroomRedisRepository.extendChatroomTTL(chatroom.getId());
 
         // 2) Redis 메시지 발행
-        ChatMessage message = new ChatMessage(messageRequest);
-        return redisPublisher.publish(message);
+        return redisPublisher.publish(messageRequest);
     }
 
     @Override
@@ -56,7 +55,8 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ChatMessage saveChatMessageAndUpdateChatroom(ChatMessage message) {
+    public ChatMessage saveChatMessageAndUpdateChatroom(ChatMessageDto messageRequest) {
+        ChatMessage message = new ChatMessage(messageRequest);
         ChatMessage entity = chatMessageRepository.save(message);
         chatroomService.updateChatroomLastMessageId(message);
         return entity;

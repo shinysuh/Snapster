@@ -1,6 +1,6 @@
 package com.jenna.snapster.core.redis;
 
-import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
+import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.UndeliveredMessage;
 import com.jenna.snapster.domain.chat.message.repository.UndeliveredMessageRepository;
 import com.jenna.snapster.domain.chat.util.ChatMessageConverter;
@@ -22,7 +22,7 @@ public class RedisPublisher {
     private static final long RETRY_INTERVAL_MS = 5000;
     private static final int MAX_RETRY = 3;
 
-    public boolean publish(ChatMessage message) {
+    public boolean publish(ChatMessageDto message) {
         String topic = TOPIC_PREFIX + message.getChatroomId();
         String json = converter.toJson(message);
 
@@ -45,7 +45,7 @@ public class RedisPublisher {
         return false;
     }
 
-    private void saveUndeliveredMessage(ChatMessage message) {
+    private void saveUndeliveredMessage(ChatMessageDto message) {
         UndeliveredMessage undeliveredMessage =
             undeliveredMessageRepository.save(new UndeliveredMessage(message));
         log.error("ERROR: 메시지 전송 실패, Undelivered Message ID: ({})",

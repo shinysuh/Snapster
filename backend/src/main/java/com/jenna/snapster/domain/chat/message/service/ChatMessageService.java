@@ -14,7 +14,7 @@ public interface ChatMessageService {
 
     List<ChatMessage> getAllChatMessagesByChatroom(Long chatroomId);
 
-    ChatMessage saveChatMessageAndUpdateChatroom(ChatMessage message);
+    ChatMessage saveChatMessageAndUpdateChatroom(ChatMessageDto messageRequest);
 
     ChatMessage updateMessageToDeleted(Long userId, ChatMessageDto messageRequest);
 }

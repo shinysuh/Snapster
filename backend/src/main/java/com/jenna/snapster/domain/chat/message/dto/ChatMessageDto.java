@@ -18,6 +18,7 @@ public class ChatMessageDto {
     private Long id;        // message id
     private Long chatroomId;
     private Long senderId;
+    private String senderDisplayName;
 
     private Long receiverId;    // 수신인
 
