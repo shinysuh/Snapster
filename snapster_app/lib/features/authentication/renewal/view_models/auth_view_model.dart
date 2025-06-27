@@ -38,8 +38,6 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
     final restored = await _authRepository.restoreFromToken();
     final user = restored ? _authRepository.currentUser : null;
 
-    debugPrint('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ called');
-
     final accessToken = await _tokenStorageService.readToken();
     if (user != null && accessToken != null) {
       await _setOnline(); // redis 온라인 상태 저장

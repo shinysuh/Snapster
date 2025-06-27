@@ -64,6 +64,16 @@ class StompRepository {
     _stompService.connect(accessToken);
   }
 
+  Future<void> waitUntilConnected({int retries = 10}) async {
+    int retry = 0;
+    while (!_stompService.isConnected && retry++ < retries) {
+      await Future.delayed(const Duration(milliseconds: 300));
+    }
+    if (!_stompService.isConnected) {
+      throw Exception('STOMP 연결 실패');
+    }
+  }
+
   void sendMessage(ChatMessageModel message) {
     _stompService.sendMessage(message);
   }

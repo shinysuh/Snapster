@@ -24,9 +24,11 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
     _messageRepository = ref.watch(chatMessageRepositoryProvider);
     _chatroomId = arg;
 
+    await _ensureStompConnected();
+
     // 초기 메시지 리스트 (DB)
     final messages = await _getMessagesByChatroom();
-    // 2) STOMP 브로드캐스트 구독 등록
+    // 2) STOMP 실시간 메시지 구독 등록
     subscribeChatroom();
 
     _subscription = _stompRepository.messageStream
@@ -41,6 +43,14 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
     });
 
     return messages;
+  }
+
+  Future<void> _ensureStompConnected() async {
+    try {
+      await _stompRepository.waitUntilConnected();
+    } catch (e) {
+      debugPrint('❌ STOMP 연결 실패: $e');
+    }
   }
 
   Future<List<ChatMessageModel>> _getMessagesByChatroom() async {
