@@ -19,7 +19,6 @@ class AppLifecycleHandler with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     final stompRepository = ref.read(stompRepositoryProvider);
-    final authState = ref.read(authProvider);
     final onlineStatus = ref.read(httpUserProfileProvider.notifier);
 
     if (state == AppLifecycleState.paused ||
@@ -28,9 +27,7 @@ class AppLifecycleHandler with WidgetsBindingObserver {
       onlineStatus.setUserOffline(context);
     }
 
-    if (state == AppLifecycleState.resumed &&
-        authState is AsyncData &&
-        authState.value != null) {
+    if (state == AppLifecycleState.resumed) {
       ref.read(authProvider.notifier).initialize();
       onlineStatus.setUserOnline(context);
     }
