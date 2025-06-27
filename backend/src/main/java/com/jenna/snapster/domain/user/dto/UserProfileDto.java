@@ -4,16 +4,30 @@ import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 
-@Data
-public class UserProfileUpdateDto {
+import java.time.LocalDate;
+import java.util.Objects;
 
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserProfileDto {
+    private Long userId;
     private String username;
+    private String profileImageUrl;
+
+    private String email;
     private String displayName;
     private String bio;
     private String link;
+    private LocalDate birthday;
+    private boolean hasProfileImage;
 
     public void trimFields() {
         this.displayName = this.displayName.trim();
@@ -21,8 +35,22 @@ public class UserProfileUpdateDto {
         this.link = this.link.trim();
     }
 
+    public static UserProfileDto from(User user) {
+        return UserProfileDto.builder()
+            .userId(user.getId())
+            .email(user.getEmail())
+            .username(user.getUsername())
+            .displayName(user.getProfile().getDisplayName())
+            .bio(user.getProfile().getBio())
+            .link(user.getProfile().getLink())
+            .birthday(user.getProfile().getBirthday())
+            .hasProfileImage(user.getProfile().isHasProfileImage())
+            .profileImageUrl(user.getProfile().getProfileImageUrl())
+            .build();
+    }
+
     public void setUpdatedFields(User user, UserProfile profile) {
-        this.validateUpdateFields();
+        this.validateUpdateFields(user);
 
         if (!this.username.equals(user.getUsername())) {
             user.setUsername(this.username);
@@ -38,7 +66,11 @@ public class UserProfileUpdateDto {
         }
     }
 
-    public void validateUpdateFields() {
+    public void validateUpdateFields(User user) {
+        if (!Objects.equals(user.getId(), this.userId)) {
+            throw new GlobalException(ErrorCode.INVALID_USER_ACCESS);
+        }
+
         if (StringUtils.isEmpty(this.username)) {
             throw new GlobalException(ErrorCode.USER_NAME_REQUIRED);
         }
@@ -46,5 +78,4 @@ public class UserProfileUpdateDto {
             throw new GlobalException(ErrorCode.DISPLAY_NAME_REQUIRED);
         }
     }
-
 }

@@ -40,6 +40,7 @@ public enum ErrorCode {
     USER_REGISTER_ERROR("USER007", "회원 가입 도중 오류가 발생했습니다. \n관리자에게 문의해주세요", INTERNAL_SERVER_ERROR),
     USER_UPDATE_ERROR("USER008", "사용자 정보를 수정하는 도중 오류가 발생했습니다. \n관리자에게 문의해주세요", INTERNAL_SERVER_ERROR),
     USER_DELETE_ERROR("USER009", "사용자 정보를 삭제하는 도중 오류가 발생했습니다. \n관리자에게 문의해주세요", INTERNAL_SERVER_ERROR),
+    INVALID_USER_ACCESS("USER010", "사용자 정보가 일치하지 않습니다.", UNAUTHORIZED),
 
     // profile
     USER_NAME_REQUIRED("PRF001", "사용자명을 입력해주세요.", BAD_REQUEST),

@@ -3,8 +3,7 @@ package com.jenna.snapster.domain.user.service.impl;
 import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
-import com.jenna.snapster.domain.user.dto.UserProfileUpdateDto;
-import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 import com.jenna.snapster.domain.user.repository.UserProfileRepository;
@@ -36,35 +35,35 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDto> getAllUsers() {
+    public List<UserProfileDto> getAllUsers() {
         return this.fromEntities(userRepository.findAll());
     }
 
     @Override
-    public List<UserResponseDto> getAllOtherUsers(Long userId) {
+    public List<UserProfileDto> getAllOtherUsers(Long userId) {
         return this.fromEntities(userRepository.findAllExceptCurrentUser(userId));
     }
 
     @Override
-    public List<UserResponseDto> getAllUsersByIds(List<Long> userIds) {
+    public List<UserProfileDto> getAllUsersByIds(List<Long> userIds) {
         return this.fromEntities(userRepository.findAllByIdIn(userIds));
     }
 
-    private List<UserResponseDto> fromEntities(List<User> users) {
-        return users.stream().map(UserResponseDto::from).toList();
+    private List<UserProfileDto> fromEntities(List<User> users) {
+        return users.stream().map(UserProfileDto::from).toList();
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto) {
+    public UserProfileDto updateUserProfile(User currentUser, UserProfileDto userProfile) {
         User user = this.getUserById(currentUser.getId());  // 최신 정보 조회
 
-        profileUpdateDto.trimFields();
+        userProfile.trimFields();
 
         UserProfile profile = user.getProfile();
-        profileUpdateDto.setUpdatedFields(user, profile);  // entity에 수정값 반영
+        userProfile.setUpdatedFields(user, profile);  // entity에 수정값 반영
 
-        return profileUpdateDto;
+        return userProfile;
     }
 
     @Transactional(rollbackFor = Exception.class)

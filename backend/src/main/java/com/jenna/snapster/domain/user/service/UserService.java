@@ -1,7 +1,6 @@
 package com.jenna.snapster.domain.user.service;
 
-import com.jenna.snapster.domain.user.dto.UserProfileUpdateDto;
-import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.entity.UserProfile;
 
@@ -13,13 +12,13 @@ public interface UserService {
 
     User getUserById(Long userId);
 
-    List<UserResponseDto> getAllUsers();
+    List<UserProfileDto> getAllUsers();
 
-    List<UserResponseDto> getAllOtherUsers(Long userId);
+    List<UserProfileDto> getAllOtherUsers(Long userId);
 
-    List<UserResponseDto> getAllUsersByIds(List<Long> userIds);
+    List<UserProfileDto> getAllUsersByIds(List<Long> userIds);
 
-    UserProfileUpdateDto updateUserProfile(User currentUser, UserProfileUpdateDto profileUpdateDto);
+    UserProfileDto updateUserProfile(User currentUser, UserProfileDto userProfile);
 
     void updateUserProfileImage(UserProfile profile, boolean hasProfileImage, String profileImageUrl);
 

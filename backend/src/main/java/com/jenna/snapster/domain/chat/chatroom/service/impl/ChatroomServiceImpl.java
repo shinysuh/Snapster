@@ -12,7 +12,7 @@ import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
-import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -126,16 +126,16 @@ public class ChatroomServiceImpl implements ChatroomService {
             .map(cp -> cp.getId().getUserId())
             .toList();
 
-        List<UserResponseDto> users = userService.getAllUsersByIds(userIds);
-        Map<Long, UserResponseDto> userMap = users.stream()
+        List<UserProfileDto> users = userService.getAllUsersByIds(userIds);
+        Map<Long, UserProfileDto> userMap = users.stream()
             .collect(
                 Collectors.toMap(
-                    UserResponseDto::getUserId, Function.identity()
+                    UserProfileDto::getUserId, Function.identity()
                 )
             );
 
         participants.forEach(cp -> {
-            UserResponseDto user = userMap.get(cp.getId().getUserId());
+            UserProfileDto user = userMap.get(cp.getId().getUserId());
             if (user != null) cp.setUser(user);
         });
     }

@@ -1,7 +1,7 @@
 package com.jenna.snapster.domain.chat.participant.dto;
 
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
-import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -13,7 +13,7 @@ public class ChatroomParticipantDto {
 
     private ChatroomParticipantId id;   // chatroomId, userId
 
-    private UserResponseDto user;
+    private UserProfileDto user;
 
     private Instant joinedAt;    // 참여 시간
 

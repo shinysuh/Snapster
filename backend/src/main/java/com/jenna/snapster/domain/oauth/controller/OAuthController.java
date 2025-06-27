@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.oauth.controller;
 
 import com.jenna.snapster.core.security.jwt.JwtProvider;
 import com.jenna.snapster.core.security.util.SecurityUtil;
-import com.jenna.snapster.domain.user.dto.UserResponseDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import com.jenna.snapster.domain.user.entity.User;
 import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class OAuthController {
     public ResponseEntity<?> getLoginUserInfo() {
         User user = SecurityUtil.getCurentUser();
         userService.syncRedisOnline(user.getId());
-        return ResponseEntity.ok(UserResponseDto.from(user));
+        return ResponseEntity.ok(UserProfileDto.from(user));
     }
 
     @PostMapping("/dev")

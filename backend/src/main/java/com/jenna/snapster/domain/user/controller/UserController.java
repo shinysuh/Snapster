@@ -2,7 +2,7 @@ package com.jenna.snapster.domain.user.controller;
 
 import com.jenna.snapster.core.security.annotation.CurrentUser;
 import com.jenna.snapster.core.security.util.CustomUserDetails;
-import com.jenna.snapster.domain.user.dto.UserProfileUpdateDto;
+import com.jenna.snapster.domain.user.dto.UserProfileDto;
 import com.jenna.snapster.domain.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -27,8 +27,8 @@ public class UserController {
 
     @PutMapping("/profile")
     public ResponseEntity<?> updateUserProfile(@CurrentUser CustomUserDetails currentUser,
-                                               @RequestBody UserProfileUpdateDto profileUpdateDto) {
-        return ResponseEntity.ok(userService.updateUserProfile(currentUser.getUser(), profileUpdateDto));
+                                               @RequestBody UserProfileDto userProfile) {
+        return ResponseEntity.ok(userService.updateUserProfile(currentUser.getUser(), userProfile));
     }
 
     @GetMapping("/online")
