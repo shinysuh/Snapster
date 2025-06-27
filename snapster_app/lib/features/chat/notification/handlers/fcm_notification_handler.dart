@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,6 +8,8 @@ import 'package:snapster_app/common/navigation/navigation.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
+import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/notification/widgets/notification_popup.dart';
 import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -43,9 +47,11 @@ class FCMNotificationHandler {
     final navigator = _navigatorKey.currentState;
     if (navigator == null || !navigator.mounted) return;
 
-    final data = message.data;
-    final chatroomId = int.tryParse(data['chatroomId'] ?? '');
-    if (chatroomId == null) return;
+    final data = jsonDecode(message.data['message']);
+
+    final receivedMsg = ChatMessageModel.fromJson(data);
+    final chatroomId = receivedMsg.chatroomId;
+    if (chatroomId == 0) return;
 
     try {
       final chatroom = await _getChatroom(chatroomId);
@@ -53,6 +59,16 @@ class FCMNotificationHandler {
 
       final currentUser = _getCurrentUser();
       if (currentUser == null) return;
+
+      if (message.notification != null && navigator.overlay != null) {
+        NotificationPopup.show(
+          overlay: navigator.overlay!,
+          message: receivedMsg.copyWith(
+            senderDisplayName: 'FCM ][ ${receivedMsg.senderDisplayName}',
+          ),
+          onTap: () => navigateToChatroom(navigator, chatroomId, currentUser),
+        );
+      }
 
       navigateToChatroom(navigator, chatroomId, currentUser);
     } catch (e) {

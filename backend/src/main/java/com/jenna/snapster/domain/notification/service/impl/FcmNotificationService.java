@@ -6,13 +6,13 @@ import com.google.firebase.messaging.Message;
 import com.google.firebase.messaging.Notification;
 import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
+import com.jenna.snapster.domain.chat.util.ChatMessageConverter;
 import com.jenna.snapster.domain.notification.dto.FcmTokenRequestDto;
 import com.jenna.snapster.domain.notification.entity.FcmToken;
 import com.jenna.snapster.domain.notification.repository.FcmTokenRepository;
 import com.jenna.snapster.domain.notification.service.NotificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +29,7 @@ public class FcmNotificationService implements NotificationService {
 
     private final FcmTokenRepository fcmTokenRepository;
     private final OnlineUserRedisRepository onlineUserRedisRepository;
+    private final ChatMessageConverter converter;
 
     @Override
     public void sendPushToUsers(Set<Long> userIds, ChatMessageDto message) {
@@ -46,7 +47,7 @@ public class FcmNotificationService implements NotificationService {
 
             Message pushMessage = Message.builder()
                 .setToken(token)
-//                .setNotification(this.getNotification(message.getContent()))
+                .setNotification(this.getNotification(message.getContent()))
                 .putAllData(this.getPutData(message))
                 .build();
 
@@ -90,12 +91,7 @@ public class FcmNotificationService implements NotificationService {
 
     private Map<String, String> getPutData(ChatMessageDto message) {
         Map<String, String> data = new HashMap<>();
-        data.put("chatroomId", message.getChatroomId().toString());
-        data.put("senderId", message.getSenderId().toString());
-        data.put("senderDisplayName", StringUtils.isNotEmpty(
-            message.getSenderDisplayName()) ? message.getSenderDisplayName() : ""
-        );
-        data.put("content", message.getContent());
+        data.put("message", converter.toJson(message));
         return data;
     }
 
