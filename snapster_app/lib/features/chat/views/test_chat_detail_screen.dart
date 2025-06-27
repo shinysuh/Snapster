@@ -510,10 +510,10 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                               left: Sizes.size20,
                               right: Sizes.size20,
                             ),
-                            itemCount: messages.length,
+                            itemCount: _messages.length,
                             separatorBuilder: (context, index) => Gaps.v10,
                             itemBuilder: (context, index) {
-                              final message = messages[index];
+                              final message = _messages[index];
                               final createdAt = message.createdAt!;
 
                               final senderType = ref

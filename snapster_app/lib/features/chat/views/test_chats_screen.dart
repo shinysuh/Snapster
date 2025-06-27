@@ -123,7 +123,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
           )
           .user;
     }
-    var updatedAt = chatroom.lastMessage.createdAt;
+    var updatedAt = chatroom.lastMessage.createdAt ?? chatroom.updatedAt;
 
     // TODO - 여러명 참여방일 경우 상대방 출력 로직 필요
 

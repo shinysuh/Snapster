@@ -27,6 +27,6 @@ public class ChatroomResponseDto {
             : null;
         this.participants = participants;
         this.createdAt = chatroom.getCreatedAt();
-        this.updatedAt = chatroom.getUpdatedAt();
+        this.updatedAt = chatroom.getLastMessage().getCreatedAt();
     }
 }
