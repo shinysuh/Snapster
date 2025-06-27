@@ -186,7 +186,7 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            echo "$FIREBASE_SECRET" > firebase.json
+            echo "FIREBASE $FIREBASE_SECRET" > firebase.json
             cat firebase.json
           
             # 백엔드 실행
