@@ -75,9 +75,7 @@ class FCMNotificationHandler {
       },
     ).toString();
 
-    debugPrint(
-        '❌ 현재: $currentLocation, 타겟: $targetRoute, 일치: ${currentLocation.endsWith(targetRoute)}');
-    if (currentLocation.endsWith(targetRoute)) {
+    if (!currentLocation.endsWith(targetRoute)) {
       goToRouteNamed(
         context: context,
         routeName: TestChatDetailScreen.routeName,
@@ -90,8 +88,6 @@ class FCMNotificationHandler {
           currentUser: currentUser,
         ),
       );
-    } else {
-      debugPrint('❌현재 채팅방');
     }
   }
 

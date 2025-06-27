@@ -8,11 +8,11 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snapster_app/common/handlers/app_lifecycle_handler.dart';
 import 'package:snapster_app/common/handlers/deep_link_handler.dart';
-import 'package:snapster_app/common/handlers/fcm_notification_handler.dart';
-import 'package:snapster_app/common/handlers/stomp_notification_handler.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
+import 'package:snapster_app/features/chat/notification/handlers/fcm_notification_handler.dart';
+import 'package:snapster_app/features/chat/notification/handlers/stomp_notification_handler.dart';
 import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
@@ -62,7 +62,6 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // 로그 출력
   print('[FCM BG] 백그라운드 메시지 받음: data=${message.data}');
 }
-
 
 class SnapsterApp extends ConsumerStatefulWidget {
   const SnapsterApp({super.key});
