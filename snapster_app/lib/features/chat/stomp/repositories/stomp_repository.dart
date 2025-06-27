@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/stomp/services/stomp_service.dart';
@@ -7,18 +9,52 @@ class StompRepository {
 
   StompRepository(this._stompService);
 
+  final _messageController = StreamController<ChatMessageModel>.broadcast(
+    onListen: () => debugPrint('messageStream: listener attached'),
+    onCancel: () => debugPrint('messageStream: listener detached'),
+  );
+
+  Stream<ChatMessageModel> get messageStream => _messageController.stream;
+  bool _isDisposed = false;
+  bool _isInitialized = false;
+
+  void _streamMessage(Map<String, dynamic> data) {
+    try {
+      final msg = ChatMessageModel.fromJson(data);
+      _messageController.add(msg);
+    } catch (e, st) {
+      debugPrint('❌ [STOMP] 메시지 디코딩 실패: $e\n$st');
+      _messageController.addError(e, st);
+    }
+  }
+
+  void dispose() {
+    if (_isDisposed) return;
+    _isDisposed = true;
+
+    _messageController.close();
+    debugPrint('🧹 StompRepository disposed and stream closed');
+  }
+
+  void disconnect() {
+    _stompService.disconnect();
+    dispose(); // 스트림 정리
+  }
+
   void initializeForUser(
     String accessToken,
     List<int> chatroomIds,
   ) {
+    if (_isInitialized) return;
+    _isInitialized = true;
+
     // 웹소켓 연결
     connectToWebSocket(accessToken);
     // 참여 중인 채팅방 일괄 구독
     subscribeToChatrooms(
       chatroomIds,
       (data) {
-        // 전역으로 들어오는 메시지는 여기서 로깅하거나
-        // 이후 ChatMessageViewModel로 전달해줄 수도 있음.
+        _streamMessage(data);
         debugPrint('[$chatroomIds] 메시지 수신: $data');
       },
     );
@@ -52,10 +88,6 @@ class StompRepository {
 
   void unsubscribeFromChatrooms(List<int> chatroomIds) {
     _stompService.unsubscribeFromChatrooms(chatroomIds);
-  }
-
-  void disconnect() {
-    _stompService.disconnect();
   }
 
   void updateJwtToken(String newToken) {

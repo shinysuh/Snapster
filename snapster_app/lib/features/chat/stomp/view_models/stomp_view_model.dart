@@ -1,30 +1,55 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
 import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
+import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 import 'package:uuid/uuid.dart';
 
-class StompViewModel
-    extends FamilyNotifier<List<ChatMessageModel>, ChatroomModel> {
+class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
+  late final StreamSubscription<ChatMessageModel> _subscription;
+
   late final StompRepository _stompRepository;
-  late final ChatroomModel _chatroom;
+  late final ChatMessageRepository _messageRepository;
+  late final int _chatroomId;
 
   final _uuid = const Uuid();
 
   @override
-  List<ChatMessageModel> build(ChatroomModel arg) {
+  FutureOr<List<ChatMessageModel>> build(int arg) async {
     _stompRepository = ref.watch(stompRepositoryProvider);
-    _chatroom = arg;
+    _messageRepository = ref.watch(chatMessageRepositoryProvider);
+    _chatroomId = arg;
 
     // 초기 메시지 리스트 (DB)
-    state = List.of(_chatroom.messages);
-
+    final messages = await _getMessagesByChatroom();
     // 2) STOMP 브로드캐스트 구독 등록
     subscribeChatroom();
 
-    return state;
+    _subscription = _stompRepository.messageStream
+        .where((msg) => msg.chatroomId == _chatroomId)
+        .listen((msg) {
+      final prev = state.asData?.value ?? [];
+      state = AsyncValue.data([...prev, msg]);
+    });
+
+    ref.onDispose(() {
+      leaveRoom();
+    });
+
+    return messages;
+  }
+
+  Future<List<ChatMessageModel>> _getMessagesByChatroom() async {
+    return await runFutureWithExceptionLogs<List<ChatMessageModel>>(
+      errorPrefix: '채팅방 전체 메시지 조회(초기화)',
+      requestFunction: () async =>
+          _messageRepository.getAllMessagesByChatroom(_chatroomId),
+      fallback: [],
+    );
   }
 
   void sendMessageToRoom({
@@ -36,7 +61,7 @@ class StompViewModel
   }) {
     final message = ChatMessageModel(
       id: 0,
-      chatroomId: _chatroom.id,
+      chatroomId: _chatroomId,
       senderId: senderId,
       receiverId: receiverId,
       content: content,
@@ -50,20 +75,24 @@ class StompViewModel
 
   void subscribeChatroom() {
     _stompRepository.subscribeToChatroom(
-      _chatroom.id,
-      (data) {
-        final msg = ChatMessageModel.fromJson(data);
-        state = [...state, msg];
+      _chatroomId,
+          (data) async {
+        state = await AsyncValue.guard(() async {
+          final msg = ChatMessageModel.fromJson(data);
+          final prev = state.asData?.value ?? [];
+          return [...prev, msg];
+        });
       },
     );
   }
 
   void leaveRoom() {
-    _stompRepository.unsubscribeFromChatroom(_chatroom.id);
+    _subscription.cancel();
+    _stompRepository.unsubscribeFromChatroom(_chatroomId);
   }
 }
 
-final stompProvider = NotifierProvider.family<StompViewModel,
-    List<ChatMessageModel>, ChatroomModel>(
+final stompProvider =
+AsyncNotifierProvider.family<StompViewModel, List<ChatMessageModel>, int>(
   StompViewModel.new,
 );

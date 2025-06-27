@@ -12,21 +12,21 @@ import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
 
-class ChatMessageViewModel
-    extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
+class ChatMessageViewModel extends FamilyAsyncNotifier<void, int> {
   late final ChatMessageRepository _messageRepository;
   late final int _chatroomId;
 
   @override
-  FutureOr<List<ChatMessageModel>> build(int arg) async {
+  FutureOr<void> build(int arg) async {
     _messageRepository = ref.read(chatMessageRepositoryProvider);
     _chatroomId = arg;
-    final messages = await _getMessagesByChatroom();
-    return messages;
   }
 
-  Future<List<ChatMessageModel>> _getMessagesByChatroom() async {
-    return await runFutureWithExceptionLogs<List<ChatMessageModel>>(
+  Future<List<ChatMessageModel>> getMessagesByChatroom(
+    BuildContext context,
+  ) async {
+    return await runFutureWithExceptionHandler<List<ChatMessageModel>>(
+      context: context,
       errorPrefix: '채팅방 전체 메시지 조회',
       requestFunction: () async =>
           _messageRepository.getAllMessagesByChatroom(_chatroomId),
@@ -98,7 +98,7 @@ class ChatMessageViewModel
   }
 }
 
-final chatMessageProvider = AsyncNotifierProvider.family<ChatMessageViewModel,
-    List<ChatMessageModel>, int>(
+final chatMessageProvider =
+    AsyncNotifierProvider.family<ChatMessageViewModel, void, int>(
   ChatMessageViewModel.new,
 );

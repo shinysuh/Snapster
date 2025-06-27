@@ -21,6 +21,10 @@ class ChatMessageModel {
     this.createdAt,
   });
 
+  bool isEmpty() {
+    return id == 0 && chatroomId == 0 && senderId == 0;
+  }
+
   ChatMessageModel.empty()
       : id = 0,
         chatroomId = 0,

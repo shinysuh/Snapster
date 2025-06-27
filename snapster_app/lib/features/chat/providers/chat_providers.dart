@@ -3,6 +3,7 @@ import 'package:snapster_app/common/providers/dio_provider.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/token_storage_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/chat/chatroom/services/chatroom_service.dart';
+import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
 import 'package:snapster_app/features/chat/message/services/chat_message_service.dart';
 import 'package:snapster_app/features/chat/participant/repositories/chatroom_participant_repository.dart';
@@ -16,8 +17,21 @@ final stompServiceProvider = Provider<StompService>(
 );
 
 final stompRepositoryProvider = Provider<StompRepository>(
-  (ref) => StompRepository(ref.read(stompServiceProvider)),
+  (ref) {
+    final repository = StompRepository(ref.read(stompServiceProvider));
+
+    ref.onDispose(() {
+      repository.disconnect();
+    });
+
+    return repository;
+  },
 );
+
+// 모든 채팅방 브로드캐스트 감지용 provider
+final stompMessageStreamProvider = StreamProvider<ChatMessageModel>((ref) {
+  return ref.watch(stompRepositoryProvider).messageStream;
+});
 
 /* chatroom */
 final chatroomServiceProvider = Provider<ChatroomService>(

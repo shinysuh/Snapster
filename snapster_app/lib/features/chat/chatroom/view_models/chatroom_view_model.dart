@@ -72,7 +72,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
     // 빈 채팅방 (생성 전)
     if (chatroom.id == 0 &&
         chatroom.participants.isEmpty &&
-        chatroom.messages.isEmpty) {
+        chatroom.lastMessage.isEmpty()) {
       chatroom = _getChatroomPreview(currentUser, receiver);
     }
 
