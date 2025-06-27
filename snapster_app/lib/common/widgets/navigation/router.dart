@@ -1,6 +1,7 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:snapster_app/common/navigation/navigation.dart';
 import 'package:snapster_app/common/widgets/navigation/go_router_refresh_stream.dart';
 import 'package:snapster_app/common/widgets/navigation/router_redirect_rules.dart';
 import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
@@ -109,9 +110,18 @@ final routerProvider = Provider<GoRouter>((ref) {
             name: TestChatDetailScreen.routeName,
             path: TestChatDetailScreen.routeURL,
             builder: (context, state) {
-              final chatDetails = state.extra;
+              final chatroomId = int.tryParse(
+                state.queryParams['chatroomId'] ?? '',
+              );
+              final chatDetails = state.extra as ChatroomDetailParams;
+
+              if (chatroomId == null) {
+                return const Scaffold(
+                  body: Center(child: Text('잘못된 접근')),
+                );
+              }
               return TestChatDetailScreen(
-                chatroomDetails: chatDetails as ChatroomDetailParams,
+                chatroomDetails: chatDetails,
               );
             },
           ),

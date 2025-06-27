@@ -101,6 +101,9 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
       goToRouteNamed(
         context: context,
         routeName: TestChatDetailScreen.routeName,
+        queryParams: {
+          'chatroomId': chatroom.id.toString(),
+        },
         extra: ChatroomDetailParams(
           chatroomId: chatroom.id,
           chatroom: chatroom,

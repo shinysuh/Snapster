@@ -76,8 +76,14 @@ void goToRouteNamed({
   required String routeName,
   Object? extra,
   Map<String, String>? params,
+  Map<String, dynamic>? queryParams,
 }) {
-  context.pushNamed(routeName, extra: extra, params: params ?? {});
+  context.pushNamed(
+    routeName,
+    extra: extra,
+    params: params ?? {},
+    queryParams: queryParams ?? {},
+  );
 }
 
 void goBackToPreviousRoute(BuildContext context) {
