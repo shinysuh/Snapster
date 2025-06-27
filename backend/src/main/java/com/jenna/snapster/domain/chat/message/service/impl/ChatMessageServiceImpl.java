@@ -51,7 +51,7 @@ public class ChatMessageServiceImpl implements ChatMessageService {
 
     @Override
     public List<ChatMessage> getAllChatMessagesByChatroom(Long chatroomId) {
-        return chatMessageRepository.findByChatroomId(chatroomId);
+        return chatMessageRepository.findByChatroomIdOrderByCreatedAtDesc(chatroomId);
     }
 
     @Transactional(rollbackFor = Exception.class)

@@ -58,6 +58,8 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   late final int _currentUserId;
   late final List<ChatroomParticipantModel> _others;
 
+  List<ChatMessageModel> _messages = [];
+
   bool _isWriting = false;
   bool _isDropdownOpen = false;
 
@@ -74,7 +76,10 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
     var currentUserIdx = _chatroom.participants.indexWhere(
         (p) => widget.chatroomDetails.currentUser.userId == p.user.userId);
 
-    _currentUserId = _chatroom.participants[currentUserIdx].id.userId;
+    _currentUser = _chatroom.participants.firstWhere(
+      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
+    );
+    _currentUserId = _currentUser.id.userId;
     _others = _chatroom.participants
         .where((p) => p.id.userId != _currentUserId)
         .toList();
@@ -83,9 +88,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   }
 
   Future<void> _initialize(int currentUserIdx) async {
-    var currUser = _chatroom.participants.firstWhere(
-      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
-    );
+    var currUser = _currentUser;
 
     if (_chatroom.lastMessage.id != _currentUser.lastReadMessageId) {
       currUser = currUser.copyWith(
@@ -143,7 +146,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
     }
 
     if (reInvitationConfirm && mounted) {
-      ref.read(stompProvider(_chatroom).notifier).sendMessageToRoom(
+      ref.read(stompProvider(_chatroom.id).notifier).sendMessageToRoom(
             context: context,
             senderId: _currentUserId,
             receiverId: receiverId,
@@ -209,7 +212,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
       return messages;
     }
 
-    DateTime? msgCreatedAt = _chatroom.messages.first.createdAt;
+    DateTime? msgCreatedAt = messages.last.createdAt;
     DateTime? userJoinedAt = _currentUser.joinedAt;
 
     if (userJoinedAt == null || msgCreatedAt == null) {
@@ -489,7 +492,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
               ),
               body: Stack(
                 children: [
-                  ref.watch(chatMessageProvider(_chatroom.id)).when(
+                  ref.watch(stompProvider(_chatroom.id)).when(
                         loading: () => const Center(
                           child: CircularProgressIndicator.adaptive(),
                         ),
@@ -497,7 +500,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                           child: Text(error.toString()),
                         ),
                         data: (messages) {
-                          messages = _getAllowedMessages(messages);
+                          _messages = _getAllowedMessages(messages);
                           return ListView.separated(
                             reverse: true,
                             padding: EdgeInsets.only(

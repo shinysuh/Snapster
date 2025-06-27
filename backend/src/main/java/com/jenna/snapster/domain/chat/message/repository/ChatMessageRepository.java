@@ -12,6 +12,6 @@ public interface ChatMessageRepository extends JpaRepository<ChatMessage, Long> 
 
     Optional<ChatMessage> findByChatroomIdAndId(Long chatroomId, Long id);
 
-    List<ChatMessage> findByChatroomId(Long chatroomId);
+    List<ChatMessage> findByChatroomIdOrderByCreatedAtDesc(Long chatroomId);
 
 }

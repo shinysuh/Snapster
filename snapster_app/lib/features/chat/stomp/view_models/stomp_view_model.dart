@@ -33,7 +33,7 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
         .where((msg) => msg.chatroomId == _chatroomId)
         .listen((msg) {
       final prev = state.asData?.value ?? [];
-      state = AsyncValue.data([...prev, msg]);
+      state = AsyncValue.data([msg, ...prev]);
     });
 
     ref.onDispose(() {
@@ -76,11 +76,11 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
   void subscribeChatroom() {
     _stompRepository.subscribeToChatroom(
       _chatroomId,
-          (data) async {
+      (data) async {
         state = await AsyncValue.guard(() async {
           final msg = ChatMessageModel.fromJson(data);
           final prev = state.asData?.value ?? [];
-          return [...prev, msg];
+          return [msg, ...prev];
         });
       },
     );
@@ -93,6 +93,6 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
 }
 
 final stompProvider =
-AsyncNotifierProvider.family<StompViewModel, List<ChatMessageModel>, int>(
+    AsyncNotifierProvider.family<StompViewModel, List<ChatMessageModel>, int>(
   StompViewModel.new,
 );
