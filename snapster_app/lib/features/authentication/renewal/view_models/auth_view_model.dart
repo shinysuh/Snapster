@@ -11,11 +11,14 @@ import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_reposi
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
 import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:snapster_app/features/user/providers/user_profile_provider.dart';
+import 'package:snapster_app/features/user/repository/http_user_profile_repository.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 
 class AuthViewModel extends AsyncNotifier<AppUser?> {
   late final AuthRepository _authRepository;
   late final TokenStorageService _tokenStorageService;
+  late final HttpUserProfileRepository _userProfileRepository;
   late final ChatroomRepository _chatroomRepository;
   late final StompRepository _stompRepository;
 
@@ -23,6 +26,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   FutureOr<AppUser?> build() async {
     _authRepository = ref.read(authRepositoryProvider);
     _tokenStorageService = ref.read(tokenStorageServiceProvider);
+    _userProfileRepository = ref.read(userProfileRepositoryProvider);
     _chatroomRepository = ref.read(chatroomRepositoryProvider);
     _stompRepository = ref.read(stompRepositoryProvider);
 
@@ -34,8 +38,11 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
     final restored = await _authRepository.restoreFromToken();
     final user = restored ? _authRepository.currentUser : null;
 
+    debugPrint('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ called');
+
     final accessToken = await _tokenStorageService.readToken();
     if (user != null && accessToken != null) {
+      await _setOnline(); // redis 온라인 상태 저장
       final chatrooms = await getAllParticipatingChatrooms();
       final chatroomIds = chatrooms.map((room) => room.id).toList();
       // 2) WebSocket 연결 & 참여 중인 채팅방 일괄 구독
@@ -59,6 +66,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
     final success =
         await _authRepository.storeTokenFromUriAndRestoreAuth(uri, ref);
     if (success) {
+      await _setOnline();
       state = AsyncValue.data(_authRepository.currentUser);
     } else {
       state = AsyncValue.error('로그인 실패', StackTrace.current);
@@ -82,6 +90,7 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
 
     final user = _authRepository.currentUser;
     if (user != null) {
+      await _setOnline();
       state = AsyncValue.data(user);
       return true;
     } else {
@@ -93,9 +102,18 @@ class AuthViewModel extends AsyncNotifier<AppUser?> {
   // 로그아웃
   Future<void> logout(WidgetRef ref) async {
     state = const AsyncValue.loading();
+    await _setOffline();
     await _authRepository.clearToken(ref);
     _stompRepository.disconnect(); // 웹소켓 disconnect & 구독 일괄 제거
     state = const AsyncValue.data(null);
+  }
+
+  Future<void> _setOnline() async {
+    await _userProfileRepository.syncRedisOnline();
+  }
+
+  Future<void> _setOffline() async {
+    await _userProfileRepository.syncRedisOffline();
   }
 }
 

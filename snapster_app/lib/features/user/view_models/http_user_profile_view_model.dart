@@ -53,7 +53,7 @@ class HttpUserProfileViewModel extends AsyncNotifier<void> {
         context: context,
         errorPrefix: '사용자 Redis 오프라인 처리',
         requestFunction: () async {
-          _userProfileRepository.syncRedisOnline();
+          _userProfileRepository.syncRedisOffline();
         });
   }
 }

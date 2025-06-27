@@ -162,7 +162,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
   }
 
   Widget _getLatestMessageText(ChatroomModel chatroom) {
-    if (chatroom.lastMessage.id == 0) {
+    if (chatroom.lastMessage.isEmpty()) {
       return Text(S.of(context).conversationNotStarted);
     }
 

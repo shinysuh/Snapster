@@ -16,6 +16,10 @@ class ChatroomModel {
     this.updatedAt,
   });
 
+  bool isEmpty() {
+    return id == 0 && participants.isEmpty && lastMessage.isEmpty();
+  }
+
   ChatroomModel.empty()
       : id = 0,
         lastMessage = ChatMessageModel.empty(),
