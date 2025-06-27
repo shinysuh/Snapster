@@ -2,6 +2,7 @@ class ChatMessageModel {
   final int id;
   final int chatroomId;
   final int senderId;
+  final String senderDisplayName;
   int? receiverId;
   final String content;
   final String type;
@@ -13,6 +14,7 @@ class ChatMessageModel {
     required this.id,
     required this.chatroomId,
     required this.senderId,
+    required this.senderDisplayName,
     this.receiverId,
     required this.content,
     required this.type,
@@ -29,6 +31,7 @@ class ChatMessageModel {
       : id = 0,
         chatroomId = 0,
         senderId = 0,
+        senderDisplayName = '',
         content = '',
         type = '',
         clientMessageId = '',
@@ -38,6 +41,7 @@ class ChatMessageModel {
       : id = json['id'],
         chatroomId = json['chatroomId'],
         senderId = json['senderId'],
+        senderDisplayName = json['senderDisplayName'] ?? '',
         receiverId = json['receiverId'],
         content = json['content'],
         type = json['type'],
@@ -52,6 +56,7 @@ class ChatMessageModel {
       'id': id,
       'chatroomId': chatroomId,
       'senderId': senderId,
+      'senderDisplayName': senderDisplayName,
       'receiverId': receiverId,
       'content': content,
       'type': type,
@@ -65,6 +70,7 @@ class ChatMessageModel {
     int? id,
     int? chatroomId,
     int? senderId,
+    String? senderDisplayName,
     int? receiverId,
     String? content,
     String? type,
@@ -76,6 +82,7 @@ class ChatMessageModel {
       id: id ?? this.id,
       chatroomId: chatroomId ?? this.chatroomId,
       senderId: senderId ?? this.senderId,
+      senderDisplayName: senderDisplayName ?? this.senderDisplayName,
       receiverId: receiverId ?? this.receiverId,
       content: content ?? this.content,
       type: type ?? this.type,

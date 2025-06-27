@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
+import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
 import 'package:snapster_app/features/chat/stomp/repositories/stomp_repository.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
@@ -64,7 +65,7 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
 
   void sendMessageToRoom({
     required BuildContext context,
-    required int senderId,
+    required ChatroomParticipantModel sender,
     int? receiverId,
     required String content,
     required String type, // MessageType: text, emoji, image
@@ -72,7 +73,8 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
     final message = ChatMessageModel(
       id: 0,
       chatroomId: _chatroomId,
-      senderId: senderId,
+      senderId: sender.id.userId,
+      senderDisplayName: sender.user.displayName,
       receiverId: receiverId,
       content: content,
       type: type,

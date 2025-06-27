@@ -54,7 +54,7 @@ class FCMNotificationHandler {
       final currentUser = _getCurrentUser();
       if (currentUser == null) return;
 
-      navigateToChatroom(navigator, chatroom, currentUser);
+      navigateToChatroom(navigator, chatroomId, currentUser);
     } catch (e) {
       debugPrint('❌ 푸시 클릭 이동 실패: $e');
     }
@@ -62,7 +62,7 @@ class FCMNotificationHandler {
 
   void navigateToChatroom(
     NavigatorState navigator,
-    ChatroomModel chatroom,
+    int chatroomId,
     AppUser currentUser,
   ) {
     final context = navigator.context;
@@ -71,7 +71,7 @@ class FCMNotificationHandler {
     final targetRoute = Uri(
       path: TestChatDetailScreen.routeURL,
       queryParameters: {
-        'chatroomId': chatroom.id.toString(),
+        'chatroomId': chatroomId.toString(),
       },
     ).toString();
 
@@ -80,12 +80,12 @@ class FCMNotificationHandler {
         context: context,
         routeName: TestChatDetailScreen.routeName,
         queryParams: {
-          'chatroomId': chatroom.id.toString(),
+          'chatroomId': chatroomId.toString(),
         },
         extra: ChatroomDetailParams(
-          chatroomId: chatroom.id,
-          chatroom: chatroom,
+          chatroomId: chatroomId,
           currentUser: currentUser,
+          chatroom: null,
         ),
       );
     }

@@ -90,11 +90,6 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
 
   Future<void> _onTapChat(int chatroomId) async {
     if (_currentUser == null) return;
-
-    ChatroomModel chatroom = await ref
-        .read(httpChatroomProvider.notifier)
-        .getOneChatroom(context: context, chatroomId: chatroomId);
-
     if (chatroomId == 0) return;
 
     if (mounted) {
@@ -102,12 +97,12 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
         context: context,
         routeName: TestChatDetailScreen.routeName,
         queryParams: {
-          'chatroomId': chatroom.id.toString(),
+          'chatroomId': chatroomId.toString(),
         },
         extra: ChatroomDetailParams(
-          chatroomId: chatroom.id,
-          chatroom: chatroom,
+          chatroomId: chatroomId,
           currentUser: _currentUser!,
+          chatroom: null,
         ),
       );
     }

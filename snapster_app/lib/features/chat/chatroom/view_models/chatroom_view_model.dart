@@ -119,8 +119,8 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
       },
       extra: ChatroomDetailParams(
         chatroomId: chatroom.id,
-        chatroom: chatroom,
         currentUser: currentUser,
+        chatroom: chatroom,
       ),
     );
   }

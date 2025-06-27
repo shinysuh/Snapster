@@ -9,6 +9,7 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/message_types.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
+import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/message/view_models/chat_message_view_model.dart';
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
@@ -25,13 +26,13 @@ import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
 class ChatroomDetailParams {
   final int chatroomId;
-  final ChatroomModel chatroom;
   final AppUser currentUser;
+  final ChatroomModel? chatroom;
 
   const ChatroomDetailParams({
     required this.chatroomId,
-    required this.chatroom,
     required this.currentUser,
+    this.chatroom,
   });
 }
 
@@ -58,8 +59,11 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   late final int _currentUserId;
   late final List<ChatroomParticipantModel> _others;
 
+  late final int _chatroomId = widget.chatroomDetails.chatroomId;
+
   List<ChatMessageModel> _messages = [];
 
+  bool _isInitializing = true;
   bool _isWriting = false;
   bool _isDropdownOpen = false;
 
@@ -72,32 +76,43 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
   @override
   void initState() {
     super.initState();
-    _chatroom = widget.chatroomDetails.chatroom;
-    var currentUserIdx = _chatroom.participants.indexWhere(
-        (p) => widget.chatroomDetails.currentUser.userId == p.user.userId);
-
-    _currentUser = _chatroom.participants.firstWhere(
-      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
-    );
-    _currentUserId = _currentUser.id.userId;
-    _others = _chatroom.participants
-        .where((p) => p.id.userId != _currentUserId)
-        .toList();
-
-    _initialize(currentUserIdx);
+    _initialize();
   }
 
-  Future<void> _initialize(int currentUserIdx) async {
-    var currUser = _currentUser;
+  Future<void> _initialize() async {
+    _chatroom = widget.chatroomDetails.chatroom ?? await _getChatroomDetail();
+    await _initializeAsync();
 
-    if (_chatroom.lastMessage.id != _currentUser.lastReadMessageId) {
+    _isInitializing = false;
+
+    setState(() {});
+  }
+
+  Future<ChatroomModel> _getChatroomDetail() async {
+    return await ref
+        .read(httpChatroomProvider.notifier)
+        .getOneChatroom(context: context, chatroomId: _chatroomId);
+  }
+
+  Future<void> _initializeAsync() async {
+    var currUser = _chatroom.participants.firstWhere(
+      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
+    );
+
+    if (!_chatroom.lastMessage.isEmpty() &&
+        _chatroom.lastMessage.id != currUser.lastReadMessageId) {
       currUser = currUser.copyWith(
         lastReadMessageId: _chatroom.lastMessage.id,
       );
 
-      _currentUser = currUser;
-      await updateLastReadMessage(_currentUser);
+      await updateLastReadMessage(currUser);
     }
+
+    _currentUser = currUser;
+    _currentUserId = _currentUser.id.userId;
+    _others = _chatroom.participants
+        .where((p) => p.id.userId != _currentUserId)
+        .toList();
   }
 
   Future<void> updateLastReadMessage(
@@ -106,14 +121,6 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
         .read(participantProvider(_chatroom.id).notifier)
         .updateLastReadMessage(context, currentUser);
   }
-
-  // Future<void> _getChatroomInfo(String partnerId) async {
-  //   _chatroomInfo =
-  //       await ref.read(chatroomProvider.notifier).fetchChatroomByPartnerId(
-  //             context,
-  //             partnerId,
-  //           );
-  // }
 
   void _onTapScaffold() {
     onTapOutsideAndDismissKeyboard(context);
@@ -148,7 +155,7 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
     if (reInvitationConfirm && mounted) {
       ref.read(stompProvider(_chatroom.id).notifier).sendMessageToRoom(
             context: context,
-            senderId: _currentUserId,
+            sender: _currentUser,
             receiverId: receiverId,
             content: _textEditingController.text,
             type: MessageType.typeText,
@@ -411,6 +418,10 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
 
     var isLoading = ref.watch(chatroomProvider).isLoading;
 
+    if (_isInitializing) {
+      return const Center(child: CupertinoActivityIndicator());
+    }
+
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
       child: Stack(
@@ -514,7 +525,8 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
                             separatorBuilder: (context, index) => Gaps.v10,
                             itemBuilder: (context, index) {
                               final message = _messages[index];
-                              final createdAt = message.createdAt!;
+                              final createdAt =
+                                  message.createdAt ?? DateTime.now();
 
                               final senderType = ref
                                   .read(chatMessageProvider(_chatroom.id)
