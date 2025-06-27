@@ -1,6 +1,3 @@
-import 'dart:async';
-
-import 'package:app_links/app_links.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -8,14 +5,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:snapster_app/common/handlers/app_lifecycle_handler.dart';
+import 'package:snapster_app/common/handlers/deep_link_handler.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
-import 'package:snapster_app/common/widgets/navigation/views/main_navigation_screen.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
-import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
-import 'package:snapster_app/features/chat/providers/chat_providers.dart';
-import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/features/video_old/repositories/playback_config_repository.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/firebase_options.dart';
@@ -59,72 +53,23 @@ class SnapsterApp extends ConsumerStatefulWidget {
   ConsumerState<SnapsterApp> createState() => _SnapsterAppState();
 }
 
-class _SnapsterAppState extends ConsumerState<SnapsterApp>
-    with WidgetsBindingObserver {
-  late final _appLinks;
-  late final StreamSubscription _sub;
+class _SnapsterAppState extends ConsumerState<SnapsterApp> {
+  late final AppLifecycleHandler _lifecycleHandler;
+  late final DeepLinkHandler _deepLinkHandler;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
-    _initDeepLinkListener();
+    _lifecycleHandler = AppLifecycleHandler(ref, context);
+    _deepLinkHandler = DeepLinkHandler(ref);
+    _deepLinkHandler.startListening();
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
-    _sub.cancel();
+    _lifecycleHandler.dispose();
+    _deepLinkHandler.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    final stompRepository = ref.read(stompRepositoryProvider);
-    final authState = ref.read(authProvider);
-    final onlineStatus = ref.read(httpUserProfileProvider.notifier);
-
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.detached) {
-      stompRepository.disconnect();
-      onlineStatus.setUserOffline(context);
-    }
-
-    if (state == AppLifecycleState.resumed &&
-        authState is AsyncData &&
-        authState.value != null) {
-      ref.read(authProvider.notifier).initialize();
-      onlineStatus.setUserOnline(context);
-    }
-  }
-
-  Future<void> _handleDeepLink(Uri uri) async {
-    final repo = ref.read(authProvider.notifier);
-    final success = await repo.loginWithDeepLink(uri, ref);
-    // 화면 이동
-    if (mounted) {
-      final location =
-          success ? MainNavigationScreen.homeRouteURL : LoginScreen.routeURL;
-      ref.read(routerProvider).go(location);
-    }
-  }
-
-  void _initDeepLinkListener() {
-    _appLinks = AppLinks();
-
-    _sub = _appLinks.uriLinkStream.listen((uri) async {
-      if (uri == null) return;
-      await _handleDeepLink(uri);
-    }, onError: (e) {
-      debugPrint('❌ uriLinkStream error: $e');
-    });
-
-    // _sub = uriLinkStream.listen((uri) async {
-    //   if (uri == null) return;
-    //   await _handleDeepLink(uri);
-    // }, onError: (e) {
-    //   debugPrint('❌ uriLinkStream error: $e');
-    // });
   }
 
   final lightTextTheme = GoogleFonts.itimTextTheme(
