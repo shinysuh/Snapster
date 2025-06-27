@@ -26,6 +26,7 @@ import 'package:snapster_app/features/video_old/views/video_recording_screen.dar
 final routerProvider = Provider<GoRouter>((ref) {
   final authRepo = ref.read(authRepositoryProvider);
   return GoRouter(
+    navigatorKey: ref.read(navigatorKeyProvider),
     initialLocation: Splashscreen.routeURL,
     refreshListenable: GoRouterRefreshStream(authRepo.authStateChanges),
     redirect: (context, state) {

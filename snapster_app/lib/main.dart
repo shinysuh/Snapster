@@ -1,4 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -7,6 +8,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snapster_app/common/handlers/app_lifecycle_handler.dart';
 import 'package:snapster_app/common/handlers/deep_link_handler.dart';
+import 'package:snapster_app/common/handlers/fcm_notification_handler.dart';
+import 'package:snapster_app/common/handlers/stomp_notification_handler.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/common/widgets/video_config/video_config.dart';
 import 'package:snapster_app/constants/sizes.dart';
@@ -19,12 +22,15 @@ void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
 
-  // firebase initialization
+  // 1) Firebase 초기화
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  // 화면 전환 방지 (허락되는 방향만 지정)
+  // 2) 백그라운드 메시지 핸들러 등록
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+
+  // 3) 화면 방향 및 UI 오버레이 설정
   await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]);
@@ -35,6 +41,7 @@ void main() async {
   final repository = PlaybackConfigRepository(preferences);
 
   /* Riverpod 사용 */
+  // 4) 앱 실행
   runApp(
     ProviderScope(
       overrides: [
@@ -46,6 +53,17 @@ void main() async {
   );
 }
 
+// 백그라운드 메시지를 처리할 top-level 함수
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  // Firebase 초기화 (백그라운드 컨텍스트에서는 직접 초기화 필요)
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  // 로그 출력
+  print('[FCM BG] 백그라운드 메시지 받음: data=${message.data}');
+}
+
+
 class SnapsterApp extends ConsumerStatefulWidget {
   const SnapsterApp({super.key});
 
@@ -54,13 +72,24 @@ class SnapsterApp extends ConsumerStatefulWidget {
 }
 
 class _SnapsterAppState extends ConsumerState<SnapsterApp> {
+  late final FCMNotificationHandler _fcmHandler;
   late final AppLifecycleHandler _lifecycleHandler;
+  late final StompNotificationHandler _notificationHandler;
   late final DeepLinkHandler _deepLinkHandler;
 
   @override
   void initState() {
     super.initState();
-    _lifecycleHandler = AppLifecycleHandler(ref, context);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      // 앱 back/foreground -> stomp 연결 관리
+      _lifecycleHandler = AppLifecycleHandler(ref, context);
+      // 채팅 메시지 처리
+      _notificationHandler = StompNotificationHandler(ref);
+    });
+    // FCM 푸시 수신
+    _fcmHandler = FCMNotificationHandler(ref);
+    _fcmHandler.initFCMListeners();
+    // 딥링크
     _deepLinkHandler = DeepLinkHandler(ref);
     _deepLinkHandler.startListening();
   }
@@ -69,6 +98,7 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
   void dispose() {
     _lifecycleHandler.dispose();
     _deepLinkHandler.dispose();
+    _notificationHandler.dispose();
     super.dispose();
   }
 
