@@ -113,7 +113,10 @@ class StompService {
     void Function(Map<String, dynamic>) onMessage,
   ) {
     // 중복 구독 방지 로직
-    if (_subscriptions.containsKey(chatroomId)) return;
+    if (_subscriptions.containsKey(chatroomId)) {
+      debugPrint('⚠️ Already subscribed to chatroom $chatroomId');
+      return;
+    }
 
     _chatroomSubs[chatroomId] = onMessage;
 

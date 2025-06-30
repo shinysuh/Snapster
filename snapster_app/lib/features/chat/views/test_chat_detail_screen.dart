@@ -164,6 +164,11 @@ class _ChatDetailScreenState extends ConsumerState<TestChatDetailScreen> {
       // 입력창 clear
       _textEditingController.clear();
 
+      if (_chatroomId == 0) {
+        // 새 채팅방일 경우, 메시지 전송 후 채팅방 목록 새로고침
+        await ref.read(httpChatroomProvider.notifier).refresh();
+      }
+
       setState(() {
         _isWriting = false;
       });

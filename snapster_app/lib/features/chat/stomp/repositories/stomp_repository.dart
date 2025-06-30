@@ -16,7 +16,6 @@ class StompRepository {
 
   Stream<ChatMessageModel> get messageStream => _messageController.stream;
   bool _isDisposed = false;
-  bool _isInitialized = false;
 
   void _streamMessage(Map<String, dynamic> data) {
     try {
@@ -45,8 +44,7 @@ class StompRepository {
     String accessToken,
     List<int> chatroomIds,
   ) {
-    if (_isInitialized) return;
-    _isInitialized = true;
+    if (_stompService.isConnected) return;
 
     // 웹소켓 연결
     connectToWebSocket(accessToken);

@@ -111,12 +111,16 @@ class AuthRepository {
 
     // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)
     if (Platform.isAndroid) {
-      // kakao
-      String fcmToken =
-          "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTAzMTc3MTUsImV4cCI6MTc1MDkyMjUxNX0.tnIUGJEhN5NNoAPznKZQEqLpoSk8TzHSUs6fZBWHgpmmWA2NFfEataR43QBcHAhx-iBnPuc1P3hGH9Vgm0QkCA";
-
-      // google
-      // String fcmToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUwMzI0MDMyLCJleHAiOjE3NTA5Mjg4MzJ9.PVKWkDXLgvtOkB7EmD8ogv4URuC6k5mc_sHqEJty4W54OCJPU5bls3RI-XjHlixil2ed-G0T3YGvSdf4vz7U_A";
+      String fcmToken = '';
+      if (provider == 'kakao') {
+        // kakao
+        fcmToken =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTEyNjQxNDIsImV4cCI6MTc1MTg2ODk0Mn0.PvgeUtl3N4wsMSXNzlOk5NuNYvfeFAVnS_PPG_gvjYhE2QFR69-4uCLNbQFZbzimsuqUKG0ltftiFVu051tqGw";
+      } else if (provider == 'google') {
+        // google
+        fcmToken =
+            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUxMjY0MTE1LCJleHAiOjE3NTE4Njg5MTV9.i53Nb6y6UTDbig_O1-hxOGTPR9F7Fi-ZdokVo6SM1EpQranZF-5PJswULUnzfxN84qGJfWpsl2wtUw7XFRoyiA";
+      }
 
       await _storeToken(fcmToken);
       return;
@@ -201,12 +205,12 @@ class AuthRepository {
   }
 
   Future<void> _clearFcmToken(String? accessToken) async {
-    final fcmToken = await _fcmTokenUtil.readFcmToken();
+    final fcmToken = await _fcmTokenUtil.loadFcmToken();
     if (accessToken != null && fcmToken != null) {
       await _authService.deleteFcmToken(
           accessToken: accessToken,
           fcm: FcmTokenModel(userId: '', fcmToken: fcmToken));
-      await _fcmTokenUtil.deleteFcmToken();
+      await _fcmTokenUtil.clearFcmToken();
     }
   }
 }

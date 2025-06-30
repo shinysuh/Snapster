@@ -45,7 +45,7 @@ class FcmTokenUtil {
     // return await FirebaseMessaging.instance.getToken();
   }
 
-  Future<String?> readFcmToken() async {
+  Future<String?> loadFcmToken() async {
     return await _fcmStorageService.readFcmToken();
   }
 
@@ -53,7 +53,19 @@ class FcmTokenUtil {
     await _fcmStorageService.saveFcmToken(fcmToken);
   }
 
-  Future<void> deleteFcmToken() async {
+  Future<void> clearFcmToken() async {
     await _fcmStorageService.deleteFcmToken();
+  }
+
+  Future<void> storeFCMChatroomId(int chatroomId) async {
+    await _fcmStorageService.savePendingChatroomId(chatroomId);
+  }
+
+  Future<int?> loadFCMChatroomId() async {
+    return await _fcmStorageService.readPendingChatroomId();
+  }
+
+  Future<void> clearFCMChatroomId() async {
+    await _fcmStorageService.deletePendingChatroomId();
   }
 }
