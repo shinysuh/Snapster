@@ -45,16 +45,39 @@ class FCMNotificationHandler {
     });
   }
 
-  void _handleMessage(RemoteMessage message) async {
+  Future<void> checkAndNavigateToChatroom() async {
+    final fcmUtil = ref.read(fcmTokenUtilProvider);
+    final chatroomId = await fcmUtil.loadFCMChatroomId();
+    if (chatroomId == null || chatroomId == 0) return;
+
+    final currentUser = _getCurrentUser();
+    if (currentUser == null) return;
+
     final navigator = _navigatorKey.currentState;
     if (navigator == null || !navigator.mounted) return;
 
+    navigateToChatroom(navigator, chatroomId, currentUser);
+    await fcmUtil.clearFCMChatroomId();
+  }
+
+  ChatMessageModel _convertToChatMessage(RemoteMessage message) {
     final data = jsonDecode(message.data['message']);
+    return ChatMessageModel.fromJson(data);
+  }
 
-    final receivedMsg = ChatMessageModel.fromJson(data);
-    final chatroomId = receivedMsg.chatroomId;
-    if (chatroomId == 0) return;
+  void _handleMessageOffline(RemoteMessage message) async {
+    try {
+      final receivedMsg = _convertToChatMessage(message);
+      final chatroomId = receivedMsg.chatroomId;
 
+      // 채팅방id -> SharedPreferences에 저장
+      await ref.read(fcmTokenUtilProvider).storeFCMChatroomId(chatroomId);
+    } catch (e) {
+      debugPrint('❌ 푸시 클릭 처리 실패: $e');
+    }
+  }
+
+  void _handleMessageOnline(RemoteMessage message) async {
     try {
       final navigator = _navigatorKey.currentState;
       if (navigator == null || !navigator.mounted) return;
