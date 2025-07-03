@@ -19,7 +19,7 @@ public class ChatParticipantController {
 
     @GetMapping("/{chatroomId}")
     public ResponseEntity<?> getAllByChatroom(@PathVariable Long chatroomId) {
-        return ResponseEntity.ok(participantService.getAllByChatroom(chatroomId));
+        return ResponseEntity.ok(participantService.getAllWithReadStatusByChatroom(chatroomId));
     }
 
     @PostMapping("/one")

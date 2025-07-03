@@ -30,9 +30,9 @@ class ChatroomParticipantModel {
     return {
       'id': id.toJson(),
       'user': user.toJson(),
-      'joinedAt': joinedAt,
+      'joinedAt': joinedAt?.toIso8601String(),
       'lastReadMessageId': lastReadMessageId,
-      'lastReadAt': lastReadAt,
+      'lastReadAt': lastReadAt?.toIso8601String(),
     };
   }
 

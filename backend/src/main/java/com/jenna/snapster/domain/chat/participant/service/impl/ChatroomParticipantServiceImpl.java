@@ -71,7 +71,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ChatroomParticipant addParticipant(ChatroomParticipantId participant, Long requestUserId) {
+    public ChatroomParticipantDto addParticipant(ChatroomParticipantId participant, Long requestUserId) {
         Long chatroomId = participant.getChatroomId();
         // 초대 작업을 수행하는 사용자가 채팅방에 참여 중인지 확인
         this.validateRequestUser(chatroomId, requestUserId);
@@ -79,12 +79,13 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         ChatroomParticipant newParticipant = participantRepository.save(ChatroomParticipant.of(participant));
         // redis
         chatroomRedisRepository.addParticipant(chatroomId, participant.getUserId());
-        return newParticipant;
+
+        return ChatroomParticipantDto.from(newParticipant);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<ChatroomParticipant> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId) {
+    public List<ChatroomParticipantDto> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId) {
         Long chatroomId = addRequestDto.getChatroomId();
         this.validateRequestUser(chatroomId, requestUserId);
         return this.addMultipleParticipants(chatroomId, addRequestDto.getUserIds());
@@ -92,7 +93,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Override
     public void addInitialParticipants(ChatMessageDto messageRequest) {
-        List<ChatroomParticipant> dd = this.addMultipleParticipants(
+        List<ChatroomParticipantDto> dd = this.addMultipleParticipants(
             messageRequest.getChatroomId(),
             List.of(
                 messageRequest.getSenderId(),
@@ -146,7 +147,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         chatroomRedisRepository.addParticipants(chatroomId, participantIds);
     }
 
-    private List<ChatroomParticipant> addMultipleParticipants(Long chatroomId, List<Long> userIds) {
+    private List<ChatroomParticipantDto> addMultipleParticipants(Long chatroomId, List<Long> userIds) {
         List<ChatroomParticipant> entitiesToSave = this.getUsersToParticipate(chatroomId, userIds);
 
         // 1) DB 저장
@@ -155,7 +156,9 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
         // 2) Redis 참여자 목록 동기화
         chatroomRedisRepository.addParticipants(chatroomId, participantIds);
-        return participants;
+        return participants.stream()
+            .map(ChatroomParticipantDto::from)
+            .toList();
     }
 
     private List<ChatroomParticipant> getUsersToParticipate(Long chatroomId, List<Long> userIds) {

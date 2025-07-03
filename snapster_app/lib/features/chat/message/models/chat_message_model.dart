@@ -62,7 +62,7 @@ class ChatMessageModel {
       'type': type,
       'isDeleted': isDeleted,
       'clientMessageId': clientMessageId,
-      'createdAt': createdAt,
+      'createdAt': createdAt?.toIso8601String(),
     };
   }
 

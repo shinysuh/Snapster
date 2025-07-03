@@ -47,8 +47,8 @@ class ChatroomModel {
       'id': id,
       'lastMessage': lastMessage.toJson(),
       'participants': participants.map((e) => e.toJson()).toList(),
-      'createdAt': createdAt,
-      'updatedAt': updatedAt,
+      'createdAt': createdAt?.toIso8601String(),
+      'updatedAt': updatedAt?.toIso8601String(),
     };
   }
 
