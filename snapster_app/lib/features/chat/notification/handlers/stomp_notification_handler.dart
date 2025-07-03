@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:snapster_app/common/navigation/navigation.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
@@ -51,10 +52,15 @@ class StompNotificationHandler {
     // ✅ 채팅방별 알림 뱃지, 로컬 알림, 알림 소리 등 원하는 처리를 여기에
     // _updateChatListBadge(message.chatroomId);
 
-    _showNotificationPopup(
-      message,
-      () => _goToChatroomDetail(message),
-    );
+    final showNotification = _isSenderNotMe(_currentUser!, message.senderId) &&
+        !_isChatroomAlreadyOnScreen(message.chatroomId);
+
+    if (showNotification) {
+      _showNotificationPopup(
+        message,
+        () => _goToChatroomDetail(message),
+      );
+    }
   }
 
   void _goToChatroomDetail(
@@ -90,6 +96,27 @@ class StompNotificationHandler {
       message: message,
       onTap: onTap,
     );
+  }
+
+  bool _isSenderNotMe(AppUser currentUser, int senderId) {
+    return currentUser.userId != senderId.toString();
+  }
+
+  bool _isChatroomAlreadyOnScreen(int chatroomId) {
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || !navigator.mounted) return true;
+
+    final context = navigator.context;
+    final currentLocation = GoRouter.of(context).location;
+
+    final targetRoute = Uri(
+      path: TestChatDetailScreen.routeURL,
+      queryParameters: {
+        'chatroomId': chatroomId.toString(),
+      },
+    ).toString();
+
+    return currentLocation.endsWith(targetRoute);
   }
 
   void _updateChatListBadge(int chatroomId) {

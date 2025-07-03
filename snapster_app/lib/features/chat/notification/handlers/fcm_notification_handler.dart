@@ -90,7 +90,10 @@ class FCMNotificationHandler {
       if (chatroom.isEmpty()) return;
 
       final currentUser = _getCurrentUser();
-      if (currentUser == null) return;
+      if (currentUser == null ||
+          currentUser.userId == receivedMsg.senderId.toString()) {
+        return;
+      }
 
       // 1. 채팅방 목록 새로고침
       await ref.read(httpChatroomProvider.notifier).refresh();
@@ -118,16 +121,8 @@ class FCMNotificationHandler {
     AppUser currentUser,
   ) {
     final context = navigator.context;
-    final currentLocation = GoRouter.of(context).location;
 
-    final targetRoute = Uri(
-      path: TestChatDetailScreen.routeURL,
-      queryParameters: {
-        'chatroomId': chatroomId.toString(),
-      },
-    ).toString();
-
-    if (!currentLocation.endsWith(targetRoute)) {
+    if (!_checkCurrentLocation(navigator, chatroomId)) {
       goToRouteNamed(
         context: context,
         routeName: TestChatDetailScreen.routeName,
@@ -148,6 +143,22 @@ class FCMNotificationHandler {
           context: _navigatorKey.currentState!.context,
           chatroomId: chatroomId,
         );
+  }
+
+  bool _checkCurrentLocation(
+    NavigatorState navigator,
+    int chatroomId,
+  ) {
+    final currentLocation = GoRouter.of(navigator.context).location;
+
+    final targetRoute = Uri(
+      path: TestChatDetailScreen.routeURL,
+      queryParameters: {
+        'chatroomId': chatroomId.toString(),
+      },
+    ).toString();
+
+    return currentLocation.endsWith(targetRoute);
   }
 
   AppUser? _getCurrentUser() {
