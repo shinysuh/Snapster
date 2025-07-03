@@ -40,14 +40,15 @@ class StompRepository {
     dispose(); // 스트림 정리
   }
 
-  void initializeForUser(
+  Future<void> initializeForUser(
     String accessToken,
     List<int> chatroomIds,
-  ) {
-    if (_stompService.isConnected) return;
-
-    // 웹소켓 연결
-    connectToWebSocket(accessToken);
+  ) async {
+    if (!_stompService.isConnected) {
+      // 웹소켓 연결
+      connectToWebSocket(accessToken);
+      await waitUntilConnected();
+    }
     // 참여 중인 채팅방 일괄 구독
     subscribeToChatrooms(
       chatroomIds,
@@ -59,15 +60,18 @@ class StompRepository {
   }
 
   void connectToWebSocket(String accessToken) {
-    _stompService.connect(accessToken);
+    if (!_stompService.isConnected) {
+      _stompService.connect(accessToken);
+    }
   }
 
-  Future<void> waitUntilConnected({int retries = 10}) async {
+  Future<void> waitUntilConnected({int retries = 30}) async {
     int retry = 0;
     while (!_stompService.isConnected && retry++ < retries) {
       await Future.delayed(const Duration(milliseconds: 300));
     }
     if (!_stompService.isConnected) {
+      debugPrint('❌STOMP 연결 실패 after $retries attempts');
       throw Exception('STOMP 연결 실패');
     }
   }

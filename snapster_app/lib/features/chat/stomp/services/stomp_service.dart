@@ -19,18 +19,27 @@ class StompService {
 
   static const _messageBaseUrl = ApiInfo.stompBaseUrl;
 
-  late StompClient _stompClient;
+  StompClient? _stompClient;
 
-  bool get isConnected => _stompClient.connected;
+  bool get isConnected => _stompClient?.connected == true;
+
+  int _reconnectTrial = 0;
+  bool _isConnecting = false;
 
   late String _jwtToken;
   final _chatroomSubs = <int, void Function(Map<String, dynamic>)>{};
   final _subscriptions = <int, void Function()>{}; // 구독 해제용 (클라이언트)
 
-  int reconnectTrial = 0;
-
   void connect(String jwtToken) {
     _jwtToken = jwtToken;
+
+    if (isConnected || _isConnecting) {
+      debugPrint("⚠️STOMP 이미 연결 중 또는 연결됨");
+      return;
+    }
+
+    debugPrint("STOMP 연결 시작...");
+    _isConnecting = true;
 
     _stompClient = StompClient(
       config: StompConfig.SockJS(
@@ -43,14 +52,22 @@ class StompService {
         },
         onWebSocketError: (error) {
           debugPrint('WebSocket error: $error');
+          _isConnecting = false;
           _tryReconnect();
         },
         onWebSocketDone: () {
           debugPrint('WebSocket closed.');
+          _isConnecting = false;
           _tryReconnect();
         },
-        onDisconnect: (frame) => debugPrint('Disconnected from STOMP'),
-        onStompError: (frame) => debugPrint('STOMP error: ${frame.body}'),
+        onDisconnect: (frame) {
+          debugPrint('STOMP 연결 해제됨');
+          _isConnecting = false;
+        },
+        onStompError: (frame) {
+          debugPrint('STOMP error: ${frame.body}');
+          _isConnecting = false;
+        },
         onDebugMessage: (msg) => debugPrint('Debug: $msg'),
         stompConnectHeaders: {
           Authorizations.headerKey:
@@ -67,11 +84,14 @@ class StompService {
       ),
     );
 
-    _stompClient.activate();
+    _stompClient!.activate();
   }
 
   void _onConnect(StompFrame frame) {
-    debugPrint('Connected to STOMP');
+    debugPrint('STOMP 연결 성공');
+    _isConnecting = false;
+    _reconnectTrial = 0;
+
     // 재연결 시 기존 구독 복구
     for (var entry in _chatroomSubs.entries) {
       subscribeToChatroom(entry.key, entry.value);
@@ -79,29 +99,34 @@ class StompService {
   }
 
   void _tryReconnect() {
-    if (reconnectTrial > 4) {
-      debugPrint("====== STOMP Reconnect Trial Terminated ======");
+    if (_reconnectTrial > 4) {
+      debugPrint("====== STOMP 재연결 시도 중단 (최대 횟수 초과) ======");
       return;
     }
 
-    if (!_stompClient.connected) {
-      reconnectTrial++;
-      debugPrint("====== STOMP Reconnect Trial $reconnectTrial ======");
+    if (_stompClient?.connected != true) {
+      _reconnectTrial++;
+      debugPrint("====== STOMP 재연결 시도 $_reconnectTrial ======");
       Future.delayed(const Duration(seconds: 3), () {
-        debugPrint('Reconnecting to STOMP...');
-        _stompClient.activate();
+        if (_stompClient == null) {
+          debugPrint("⚠️재연결 시도 불가: StompClient가 null임");
+          return;
+        }
+
+        debugPrint('STOMP 재활성화 시도...');
+        _stompClient!.activate();
       });
     }
   }
 
   void sendMessage(ChatMessageModel message) {
-    if (!_stompClient.connected) {
-      debugPrint("Not connected");
+    if (!isConnected) {
+      debugPrint("❌STOMP 연결되지 않음. 메시지 전송 실패");
       return;
     }
 
     final destination = '$_messageBaseUrl/${message.chatroomId}';
-    _stompClient.send(
+    _stompClient!.send(
       destination: destination,
       body: jsonEncode(message),
       headers: ApiInfo.getBasicHeaderWithToken(_jwtToken),
@@ -114,13 +139,18 @@ class StompService {
   ) {
     // 중복 구독 방지 로직
     if (_subscriptions.containsKey(chatroomId)) {
-      debugPrint('⚠️ Already subscribed to chatroom $chatroomId');
+      debugPrint('이미 구독된 채팅방: $chatroomId');
+      return;
+    }
+
+    if (!isConnected) {
+      debugPrint("❌STOMP 미연결 상태. 구독 불가");
       return;
     }
 
     _chatroomSubs[chatroomId] = onMessage;
 
-    final subscription = _stompClient.subscribe(
+    final subscription = _stompClient!.subscribe(
       destination: '/topic/chatroom.$chatroomId',
       callback: (frame) {
         if (frame.body != null) {
@@ -145,6 +175,7 @@ class StompService {
   void unsubscribeFromChatroom(int chatroomId) {
     _subscriptions.remove(chatroomId)?.call();
     _chatroomSubs.remove(chatroomId);
+    debugPrint('채팅방 $chatroomId 구독 해제됨');
   }
 
   void unsubscribeFromChatrooms(List<int> chatroomIds) {
@@ -154,19 +185,24 @@ class StompService {
   }
 
   void disconnect() {
+    debugPrint("STOMP 연결 해제 시작");
+
     for (var unsub in _subscriptions.values) {
       unsub(); // 연결 해제 전 전체 unsubscribe
     }
     _subscriptions.clear();
     _chatroomSubs.clear();
 
-    _stompClient.deactivate();
+    _stompClient?.deactivate();
+    _stompClient = null;
+    _isConnecting = false;
+    // _stompClient.deactivate();
   }
 
   void updateJwtToken(String newToken) {
     _jwtToken = newToken;
-    if (_stompClient.connected) {
-      _stompClient.deactivate();
+    if (isConnected) {
+      _stompClient?.deactivate();
     }
     connect(_jwtToken);
   }

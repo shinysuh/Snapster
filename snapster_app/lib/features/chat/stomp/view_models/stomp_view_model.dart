@@ -50,7 +50,7 @@ class StompViewModel extends FamilyAsyncNotifier<List<ChatMessageModel>, int> {
     try {
       await _stompRepository.waitUntilConnected();
     } catch (e) {
-      debugPrint('❌ STOMP 연결 실패: $e');
+      debugPrint('❌STOMP 연결 실패: $e');
     }
   }
 
