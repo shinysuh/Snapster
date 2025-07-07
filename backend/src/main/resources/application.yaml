@@ -80,7 +80,7 @@ redis:
       room: 86400000    # 1일
 firebase:
   config:
-    path: classpath:firebase/snapster-firebase-service-account.json
+    path: firebase/snapster-firebase-service-account.json
 
 logging:
   level:

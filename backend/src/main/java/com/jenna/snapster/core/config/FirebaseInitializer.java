@@ -7,6 +7,7 @@ import com.jenna.snapster.core.exception.ErrorCode;
 import com.jenna.snapster.core.exception.GlobalException;
 import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.ByteArrayInputStream;
@@ -18,11 +19,14 @@ import java.nio.charset.StandardCharsets;
 @Configuration
 public class FirebaseInitializer {
 
+    @Value("${firebase.config.path}")
+    private String firebaseConfigPath;
+
     @PostConstruct
     public void init() {
         try {
             // 개발
-            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream("firebase/snapster-firebase-service-account.json");
+            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
 
             if (serviceAccount == null) {
                 // 운영: 환경변수에서 Firebase JSON 내용 읽기 (예: FIREBASE_CONFIG_JSON)
