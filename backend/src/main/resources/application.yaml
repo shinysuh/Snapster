@@ -7,7 +7,7 @@ server:
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://3.34.253.46:3306/snapster
+    url: jdbc:mysql://43.202.142.170:3306/snapster
 #    url: jdbc:mysql://localhost:3306/snapster
     username: snapster_app
     password: qwer1234
