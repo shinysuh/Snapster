@@ -24,8 +24,10 @@ spring:
   data:
     redis:
       client-type: lettuce
-      host: localhost
+      host: 43.202.142.170
+#      host: localhost
       port: 6379
+      password: qwer1234
   security:
     oauth2:
       client:
@@ -81,6 +83,12 @@ redis:
 firebase:
   config:
     path: firebase/snapster-firebase-service-account.json
+
+elasticsearch:
+  host: 43.202.142.170
+  port: 9200
+  index:
+    video: snapster_video_post
 
 logging:
   level:
