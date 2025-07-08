@@ -47,6 +47,8 @@ dependencies {
     implementation 'com.amazonaws:aws-java-sdk-s3:1.12.212'
 
     implementation 'com.mysql:mysql-connector-j'
+    // Elasticsearch
+    implementation 'co.elastic.clients:elasticsearch-java:8.10.3'
 
     implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
     runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.5'
