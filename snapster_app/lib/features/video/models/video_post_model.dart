@@ -15,6 +15,8 @@ class VideoPostModel {
   final int likes;
   final int comments;
   final String createdAt;
+  bool? isDeleted;
+  bool? isPrivate;
 
   VideoPostModel({
     required this.id,
@@ -33,6 +35,8 @@ class VideoPostModel {
     required this.likes,
     required this.comments,
     required this.createdAt,
+    this.isDeleted,
+    this.isPrivate,
   });
 
   Map<String, dynamic> toJson() {
@@ -53,6 +57,8 @@ class VideoPostModel {
       'likes': likes,
       'comments': comments,
       'createdAt': createdAt,
+      'isDeleted': isDeleted,
+      'isPrivate': isPrivate,
     };
   }
 
@@ -78,7 +84,9 @@ class VideoPostModel {
         userProfileImageUrl = json['userProfileImageUrl'] ?? '',
         likes = json['likes'],
         comments = json['comments'],
-        createdAt = json['createdAt'];
+        createdAt = json['createdAt'],
+        isDeleted = json['isDeleted'] ?? false,
+        isPrivate = json['isPrivate'] ?? false;
 
   VideoPostModel.sample({required this.id, required this.title})
       : description = '',

@@ -1,5 +1,6 @@
 package com.jenna.snapster.domain.file.video.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.jenna.snapster.domain.file.uploaded.entity.UploadedFile;
 import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
 import com.jenna.snapster.domain.user.entity.User;
@@ -60,6 +61,12 @@ public class VideoPost {
 
     private Instant createdAt;
 
+    @JsonProperty("isPrivate")
+    private boolean isPrivate;
+
+    @JsonProperty("isDeleted")
+    private boolean isDeleted;
+
     public VideoPost(VideoPostDto dto) {
         this.user = User.builder().id(dto.getUserId()).build();
         this.title = dto.getTitle();
@@ -75,6 +82,8 @@ public class VideoPost {
         this.likes = dto.getLikes();
         this.comments = dto.getComments();
         this.createdAt = dto.getCreatedAt();
+        this.isPrivate = dto.isPrivate();
+        this.isDeleted = dto.isDeleted();
     }
 
     @PostLoad
