@@ -28,9 +28,13 @@ server:
   ssl:
     enabled: false
   forward-headers-strategy: native
-#authorization:
-#  jwt:
-#    expiration: 1800000 # 1000 * 60 * 30    # 30분   # TODO - 개발 완료 시 적용 필요
+authorization:
+  jwt:
+    expiration: 1800000 # 1000 * 60 * 30    # 30분
+
+firebase:
+  config:
+    path: /home/ec2-user/firebase/snapster-firebase-service-account.json
 
 logging:
   level:
