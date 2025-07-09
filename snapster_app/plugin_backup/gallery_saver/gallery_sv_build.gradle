@@ -27,7 +27,8 @@ apply plugin: 'kotlin-android'
 
 android {
     namespace = "carnegietechnologies.gallery_saver"
-    compileSdkVersion 30
+//    compileSdkVersion 30
+    compileSdkVersion flutter.compileSdkVersion
 
     sourceSets {
         main.java.srcDirs += 'src/main/kotlin'

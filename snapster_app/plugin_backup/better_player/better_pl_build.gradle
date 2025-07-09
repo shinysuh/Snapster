@@ -34,7 +34,8 @@ apply plugin: 'kotlin-android'
 // int get hashCode => hashValues(a, b, c); -> int get hashCode => Object.hash(a, b, c);
 android {
     namespace = "com.jhomlala.better_player"
-    compileSdkVersion 31
+    compileSdkVersion flutter.compileSdkVersion
+//    compileSdkVersion 31
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_11

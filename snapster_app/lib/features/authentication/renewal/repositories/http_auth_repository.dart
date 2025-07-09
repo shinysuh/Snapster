@@ -108,20 +108,16 @@ class AuthRepository {
     final url = '${ApiInfo.oauthBaseUrl}/$provider';
 
     debugPrint("Platform.isAndroid : ${Platform.isAndroid}");
+    debugPrint("url : $url");
+
+    String fcmToken = provider == 'kakao'
+        ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiLshJzsi6DsmIEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTE5NjM5MzAsImV4cCI6MTc1MjU2ODczMH0.I5Y58E-owaaif-TeHAzJroHSWJoLvfNbQrjmJoeJHi7s170lXwm_rmq5HMJmoBTtBJF-39XbltUeODY9hQie3w"
+        : provider == 'google'
+            ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJTdW1tZXIxMjMiLCJlbWFpbCI6InNoaW55c3VoMTk5MkBnbWFpbC5jb20iLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTE5NjM5NDYsImV4cCI6MTc1MjU2ODc0Nn0.oVFrlqv_siaxzP-geCFgfDxhsPs7MgULbceecM6GjzLUFtVAS1vDjwuL7g7fiZKWnVqy9zGpzh-ugzSqhKqUdw"
+            : '';
 
     // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)
-    if (Platform.isAndroid) {
-      String fcmToken = '';
-      if (provider == 'kakao') {
-        // kakao
-        fcmToken =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMCIsInVzZXJuYW1lIjoiSmVubmEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTEyNjQxNDIsImV4cCI6MTc1MTg2ODk0Mn0.PvgeUtl3N4wsMSXNzlOk5NuNYvfeFAVnS_PPG_gvjYhE2QFR69-4uCLNbQFZbzimsuqUKG0ltftiFVu051tqGw";
-      } else if (provider == 'google') {
-        // google
-        fcmToken =
-            "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMSIsInVzZXJuYW1lIjoi7ISc7Iug7JiBIiwiZW1haWwiOiJzaGlueXN1aDE5OTJAZ21haWwuY29tIiwiaXNzIjoic25hcHN0ZXItYXBwIiwiaWF0IjoxNzUxMjY0MTE1LCJleHAiOjE3NTE4Njg5MTV9.i53Nb6y6UTDbig_O1-hxOGTPR9F7Fi-ZdokVo6SM1EpQranZF-5PJswULUnzfxN84qGJfWpsl2wtUw7XFRoyiA";
-      }
-
+    if (Platform.isAndroid || provider == 'google') {
       await _storeToken(fcmToken);
       return;
     }
