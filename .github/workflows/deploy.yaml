@@ -143,7 +143,8 @@ jobs:
           S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
           S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
           JWT_SECRET='${{ secrets.JWT_SECRET }}'
-          FIREBASE_SERVICE_ACCOUNT='${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASE64 }}'
+          FIREBASE_SERVICE_ACCOUNT='${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          FIREBASE_SERVICE_ACCOUNT_BASE64='${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASE64 }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행
@@ -180,7 +181,8 @@ jobs:
               docker run -d --name \$name \$ports \$envs \$image:latest
             }
           
-            echo "$FIREBASE_SERVICE_ACCOUNT_BASE64" | base64 -d > /app/firebase/snapster-firebase-service-account.json
+            echo "FIREBASE_SERVICE_ACCOUNT" > /app/firebase/snapster-firebase-service-account.json
+            # echo "$FIREBASE_SERVICE_ACCOUNT_BASE64" | base64 -d > /app/firebase/snapster-firebase-service-account.json
           
             # 백엔드 실행
             run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
