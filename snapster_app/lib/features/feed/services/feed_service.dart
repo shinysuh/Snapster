@@ -26,4 +26,37 @@ class FeedService {
       errorPrefix: '사용자 피드 조회',
     );
   }
+
+  Future<List<VideoPostModel>> fetchPrivateUserFeeds(String userId) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.get(
+      uri: '$_userFeedBaseUrl/private/$userId',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    return handleListResponse<VideoPostModel>(
+      response: response,
+      fromJson: (e) => VideoPostModel.fromJson(json: e),
+      errorPrefix: '사용자 [보관] 피드 조회',
+    );
+  }
+
+  /// type: public, private, all
+  Future<bool> evictUserFeeds(
+    String type,
+    String userId,
+  ) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.delete(
+      uri: '$_userFeedBaseUrl//cache/$type/$userId',
+      headers: ApiInfo.getBasicHeaderWithToken(token),
+    );
+
+    return handleVoidResponse(
+      response: response,
+      errorPrefix: '사용자 [$type] 피드 캐시 제거',
+    );
+  }
 }

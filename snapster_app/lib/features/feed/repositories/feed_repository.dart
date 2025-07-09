@@ -9,4 +9,12 @@ class FeedRepository {
   Future<List<VideoPostModel>> getPublicUserFeeds(String userId) {
     return _feedService.fetchPublicUserFeeds(userId);
   }
+
+  Future<List<VideoPostModel>> getPrivateUserFeeds(String userId) {
+    return _feedService.fetchPrivateUserFeeds(userId);
+  }
+
+  Future<bool> evictUserFeeds(String type, String userId) {
+    return _feedService.evictUserFeeds(type, userId);
+  }
 }

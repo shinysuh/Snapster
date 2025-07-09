@@ -35,6 +35,27 @@ class FeedViewModel extends FamilyAsyncNotifier<List<VideoPostModel>, String> {
       fallback: [],
     );
   }
+
+  Future<List<VideoPostModel>> getPrivateUserFeeds(String userId) async {
+    return await runFutureWithExceptionLogs<List<VideoPostModel>>(
+      errorPrefix: '사용자 [보관] 피드 조회',
+      requestFunction: () async => _feedRepository.getPrivateUserFeeds(userId),
+      fallback: [],
+    );
+  }
+
+  Future<void> evictUserFeeds(
+    String type,
+    String userId,
+  ) async {
+    await runFutureWithExceptionLogs<void>(
+      errorPrefix: '사용자 [$type] 피드 캐시 제거',
+      requestFunction: () async {
+        _feedRepository.evictUserFeeds(type, userId);
+      },
+      fallback: null,
+    );
+  }
 }
 
 final feedProvider =

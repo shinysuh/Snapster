@@ -60,6 +60,10 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
     );
   }
 
+  Future<void> _onRefreshFeeds(String userId) async {
+    await ref.read(feedProvider(userId).notifier).refresh();
+  }
+
   Widget _getUserPic(AppUser user, bool isVertical) {
     return Column(
       children: [
@@ -459,32 +463,40 @@ class _UserProfileScreenState extends ConsumerState<UserProfileScreen> {
                 ],
                 body: TabBarView(
                   children: [
-                    ref.watch(feedProvider(user.userId)).when(
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
+                    RefreshIndicator(
+                      onRefresh: () => _onRefreshFeeds(user.userId),
+                      child: ref.watch(feedProvider(user.userId)).when(
+                            loading: () => const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                            error: (error, stackTrace) => Center(
+                              child: Text('FEED ERROR: ${error.toString()}'),
+                            ),
+                            data: (feeds) => _getFeedGridViewByTabBar(
+                              colCount: colCount,
+                              playCount: '2.6K',
+                              feedData: feeds,
+                            ),
                           ),
-                          error: (error, stackTrace) => Center(
-                            child: Text('FEED ERROR: ${error.toString()}'),
+                    ),
+                    RefreshIndicator(
+                      onRefresh: () => _onRefreshFeeds(user.userId),
+                      child: ref
+                          .watch(likedThumbnailListProvider(user.userId))
+                          .when(
+                            loading: () => const Center(
+                              child: CircularProgressIndicator.adaptive(),
+                            ),
+                            error: (error, stackTrace) => Center(
+                              child: Text(error.toString()),
+                            ),
+                            data: (likes) => _getGridViewByTabBar(
+                              colCount: colCount,
+                              playCount: '36.1K',
+                              thumbnailData: likes,
+                            ),
                           ),
-                          data: (feeds) => _getFeedGridViewByTabBar(
-                            colCount: colCount,
-                            playCount: '2.6K',
-                            feedData: feeds,
-                          ),
-                        ),
-                    ref.watch(likedThumbnailListProvider(user.userId)).when(
-                          loading: () => const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          ),
-                          error: (error, stackTrace) => Center(
-                            child: Text(error.toString()),
-                          ),
-                          data: (likes) => _getGridViewByTabBar(
-                            colCount: colCount,
-                            playCount: '36.1K',
-                            thumbnailData: likes,
-                          ),
-                        ),
+                    ),
                   ],
                 ),
               ),
