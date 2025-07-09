@@ -24,15 +24,7 @@ jobs:
           distribution: temurin
           java-version: '21'
 
-      # 2) FCM 푸시용 Firebase Service Account file
-      # 기존 새 프로젝트 파일 - FIREBASE_SERVICE_ACCOUNT (마이그레이션 전 : TIKTOK_CLONE_SERVICE_ACCOUNT)
-      # echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
-      - name: Create Firebase Service Account File
-        run: |
-          mkdir -p backend/src/main/resources/firebase
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT }}" > backend/src/main/resources/firebase/snapster-firebase-service-account.json
-
-      # 3) 백엔드 JAR 빌드
+      # 2) 백엔드 JAR 빌드
       - name: Build backend JAR
         run: |
           cd backend
@@ -151,7 +143,7 @@ jobs:
           S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
           S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
           JWT_SECRET='${{ secrets.JWT_SECRET }}'
-          FIREBASE_SERVICE_ACCOUNT='${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
+          FIREBASE_SERVICE_ACCOUNT='${{ secrets.FIREBASE_SERVICE_ACCOUNT_BASE64 }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행

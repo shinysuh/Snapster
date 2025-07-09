@@ -11,7 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 
 @Slf4j
 @Configuration
@@ -33,13 +33,15 @@ public class FirebaseInitializer {
                 serviceAccount = new FileInputStream(file);
                 log.info("✅ Firebase config loaded from file: {}", firebaseConfigPath);
             } else {
-                // 환경 변수 fallback
-                String firebaseConfigJson = System.getenv("FIREBASE_CONFIG_JSON");
-                if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
-                    log.error("❌ Firebase config not found at path: {} and FIREBASE_CONFIG_JSON is empty.", firebaseConfigPath);
+                // base64 인코딩된 환경 변수 fallback
+                String firebaseConfigBase64 = System.getenv("FIREBASE_SERVICE_ACCOUNT_BASE64");
+                if (firebaseConfigBase64 == null || firebaseConfigBase64.isEmpty()) {
+                    log.error("❌ Firebase config not found at path: {} and FIREBASE_SERVICE_ACCOUNT_BASE64 is empty.", firebaseConfigPath);
                     throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, "Firebase config not found");
                 }
-                serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
+
+                byte[] decoded = Base64.getDecoder().decode(firebaseConfigBase64);
+                serviceAccount = new ByteArrayInputStream(decoded);
                 log.info("✅ Firebase config loaded from environment variable.");
             }
 
@@ -55,34 +57,4 @@ public class FirebaseInitializer {
             throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, e.getMessage());
         }
     }
-
-//    @PostConstruct
-//    public void init() {
-//        try {
-//            // 개발
-//            InputStream serviceAccount = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
-//
-//            if (serviceAccount == null) {
-//                // 운영: 환경변수에서 Firebase JSON 내용 읽기 (예: FIREBASE_CONFIG_JSON)
-//                String firebaseConfigJson = System.getenv("FIREBASE_CONFIG_JSON");
-//                if (firebaseConfigJson == null || firebaseConfigJson.isEmpty()) {
-//                    log.error("Firebase config JSON not found in classpath and environment variable FIREBASE_CONFIG_JSON is empty.");
-//                    throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, "Firebase config JSON not found");
-//                }
-//                serviceAccount = new ByteArrayInputStream(firebaseConfigJson.getBytes(StandardCharsets.UTF_8));
-//            }
-//
-//            FirebaseOptions options = FirebaseOptions.builder()
-//                .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-//                .build();
-//
-//            if (FirebaseApp.getApps().isEmpty()) {
-//                log.info("\n\n========================== Firebase Initialization Called ==========================\n");
-//                FirebaseApp.initializeApp(options);
-//            }
-//        } catch (IOException e) {
-//            throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, e.getMessage());
-//        }
-//    }
-
 }
