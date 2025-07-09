@@ -10,8 +10,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 
-import java.io.*;
-import java.util.Base64;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 @Slf4j
 @Configuration
@@ -29,20 +31,13 @@ public class FirebaseInitializer {
             File file = new File(firebaseConfigPath);
 
             if (file.exists()) {
-                // 운영 또는 로컬에서 경로가 유효하면 그대로 사용
+                // 운영에서 EC2에 있는 파일 복사해 온 파일 있음
                 serviceAccount = new FileInputStream(file);
                 log.info("✅ Firebase config loaded from file: {}", firebaseConfigPath);
             } else {
-                // base64 인코딩된 환경 변수 fallback
-                String firebaseConfigBase64 = System.getenv("FIREBASE_SERVICE_ACCOUNT_BASE64");
-                if (firebaseConfigBase64 == null || firebaseConfigBase64.isEmpty()) {
-                    log.error("❌ Firebase config not found at path: {} and FIREBASE_SERVICE_ACCOUNT_BASE64 is empty.", firebaseConfigPath);
-                    throw new GlobalException(ErrorCode.FIREBASE_INITIALIZATION_FAILED, "Firebase config not found");
-                }
-
-                byte[] decoded = Base64.getDecoder().decode(firebaseConfigBase64);
-                serviceAccount = new ByteArrayInputStream(decoded);
-                log.info("✅ Firebase config loaded from environment variable.");
+                // 개발
+                serviceAccount = getClass().getClassLoader().getResourceAsStream(firebaseConfigPath);
+                log.info("✅ Firebase config loaded from getClass().getClassLoader().getResourceAsStream().");
             }
 
             FirebaseOptions options = FirebaseOptions.builder()
