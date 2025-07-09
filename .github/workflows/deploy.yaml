@@ -124,7 +124,7 @@ jobs:
           mkdir -p ~/.ssh
           printf '%s\n' "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan ec2-3-34-253-46.ap-northeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
+          ssh-keyscan ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
 
       # 백엔드 도커 이미지 복사
       - name: Copy backend Docker image to EC2
