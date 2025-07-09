@@ -34,7 +34,7 @@ authorization:
 
 firebase:
   config:
-    path: /home/ec2-user/firebase/snapster-firebase-service-account.json
+    path: /app/firebase/snapster-firebase-service-account.json
 
 logging:
   level:
