@@ -151,6 +151,7 @@ jobs:
           S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
           S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
           JWT_SECRET='${{ secrets.JWT_SECRET }}'
+          FIREBASE_SERVICE_ACCOUNT='${{ secrets.FIREBASE_SERVICE_ACCOUNT }}'
           
           ssh -i ~/.ssh/id_rsa ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com <<EOF
             # 함수 정의: 컨테이너 실행
@@ -193,6 +194,7 @@ jobs:
               -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
               -e S3_ACCESS_KEY=$S3_ACCESS_KEY \
               -e S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY \
+              -e FIREBASE_CONFIG_JSON="${FIREBASE_SERVICE_ACCOUNT}" \
               -e JWT_SECRET=$JWT_SECRET"
           
             # 프론트엔드 실행
