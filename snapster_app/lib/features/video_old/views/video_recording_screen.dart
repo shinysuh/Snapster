@@ -234,142 +234,145 @@ class _VideoRecordingScreenState extends State<VideoRecordingScreen>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: SizedBox(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: !_hasPermission
-            ? Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Text(
-                    _permissionDenied
-                        ? 'Permission Denied.\nPleas go to App Settings.'
-                        : 'Initializing...',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: Sizes.size20,
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.black,
+        body: SizedBox(
+          width: MediaQuery.of(context).size.width,
+          height: MediaQuery.of(context).size.height,
+          child: !_hasPermission
+              ? Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    Text(
+                      _permissionDenied
+                          ? 'Permission Denied.\nPleas go to App Settings.'
+                          : 'Initializing...',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: Sizes.size20,
+                      ),
                     ),
-                  ),
-                  Gaps.v20,
-                  const CircularProgressIndicator.adaptive(),
-                ],
-              )
-            : Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (!_noCamera && _isInitialized)
-                    CameraPreview(_cameraController),
-                  const Positioned(
-                    top: Sizes.size32,
-                    left: Sizes.size4,
-                    child: CloseButton(
-                      color: Colors.white,
-                    ),
-                  ),
-                  if (!_noCamera)
+                    Gaps.v20,
+                    const CircularProgressIndicator.adaptive(),
+                  ],
+                )
+              : Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (!_noCamera && _isInitialized)
+                      CameraPreview(_cameraController),
                     Positioned(
-                      top: Sizes.size32,
-                      right: Sizes.size1,
-                      child: Column(
+                      top: Sizes.size8,
+                      left: Sizes.size4,
+                      child: CloseButton(
+                        color: Colors.white,
+                        onPressed: () => goBackToPreviousRoute(context),
+                      ),
+                    ),
+                    if (!_noCamera)
+                      Positioned(
+                        top: Sizes.size32,
+                        right: Sizes.size1,
+                        child: Column(
+                          children: [
+                            IconButton(
+                              color: Colors.white,
+                              onPressed: _toggleSelfieMode,
+                              icon: const Icon(
+                                Icons.cameraswitch,
+                                size: Sizes.size28,
+                              ),
+                            ),
+                            Gaps.v10,
+                            FlashModeButton(
+                              icon: Icons.flash_off_rounded,
+                              setFlashMode: _setFlashMode,
+                              currentFlashMode: _flashMode,
+                              buttonFlashMode: FlashMode.off,
+                            ),
+                            Gaps.v10,
+                            FlashModeButton(
+                              icon: Icons.flash_on_rounded,
+                              setFlashMode: _setFlashMode,
+                              currentFlashMode: _flashMode,
+                              buttonFlashMode: FlashMode.always,
+                            ),
+                            Gaps.v10,
+                            FlashModeButton(
+                              icon: Icons.flash_auto_rounded,
+                              setFlashMode: _setFlashMode,
+                              currentFlashMode: _flashMode,
+                              buttonFlashMode: FlashMode.auto,
+                            ),
+                            Gaps.v10,
+                            FlashModeButton(
+                              icon: Icons.flashlight_on_rounded,
+                              setFlashMode: _setFlashMode,
+                              currentFlashMode: _flashMode,
+                              buttonFlashMode: FlashMode.torch,
+                            ),
+                          ],
+                        ),
+                      ),
+                    Positioned(
+                      bottom: Sizes.size80 + Sizes.size10,
+                      width: MediaQuery.of(context).size.width,
+                      child: Row(
                         children: [
-                          IconButton(
-                            color: Colors.white,
-                            onPressed: _toggleSelfieMode,
-                            icon: const Icon(
-                              Icons.cameraswitch,
-                              size: Sizes.size28,
+                          // Spacer => 빈 공간
+                          const Spacer(),
+                          GestureDetector(
+                            onTapDown: _startRecording,
+                            onTapUp: (details) => _stopRecording(),
+                            onVerticalDragUpdate: _onDragWhileRecording,
+                            child: ScaleTransition(
+                              scale: _buttonAnimation,
+                              child: Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                    width: Sizes.size60 + Sizes.size14,
+                                    height: Sizes.size60 + Sizes.size14,
+                                    child: CircularProgressIndicator(
+                                      color: Colors.red.shade400,
+                                      strokeWidth: Sizes.size5,
+                                      value: _progressAnimationController.value,
+                                    ),
+                                  ),
+                                  Container(
+                                    width: Sizes.size60,
+                                    height: Sizes.size60,
+                                    decoration: BoxDecoration(
+                                      shape: BoxShape.circle,
+                                      color: Colors.red.shade400,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_off_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.off,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_on_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.always,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flash_auto_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.auto,
-                          ),
-                          Gaps.v10,
-                          FlashModeButton(
-                            icon: Icons.flashlight_on_rounded,
-                            setFlashMode: _setFlashMode,
-                            currentFlashMode: _flashMode,
-                            buttonFlashMode: FlashMode.torch,
+                          Expanded(
+                            child: Container(
+                              // 클릭 적용 범위 제한을 위한 Container - center
+                              alignment: Alignment.center,
+                              child: IconButton(
+                                onPressed: _onPressPickVideo,
+                                icon: const FaIcon(
+                                  FontAwesomeIcons.image,
+                                  color: Colors.white,
+                                  size: Sizes.size28,
+                                ),
+                              ),
+                            ),
                           ),
                         ],
                       ),
                     ),
-                  Positioned(
-                    bottom: Sizes.size80 + Sizes.size10,
-                    width: MediaQuery.of(context).size.width,
-                    child: Row(
-                      children: [
-                        // Spacer => 빈 공간
-                        const Spacer(),
-                        GestureDetector(
-                          onTapDown: _startRecording,
-                          onTapUp: (details) => _stopRecording(),
-                          onVerticalDragUpdate: _onDragWhileRecording,
-                          child: ScaleTransition(
-                            scale: _buttonAnimation,
-                            child: Stack(
-                              alignment: Alignment.center,
-                              children: [
-                                Container(
-                                  width: Sizes.size60 + Sizes.size14,
-                                  height: Sizes.size60 + Sizes.size14,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.red.shade400,
-                                    strokeWidth: Sizes.size5,
-                                    value: _progressAnimationController.value,
-                                  ),
-                                ),
-                                Container(
-                                  width: Sizes.size60,
-                                  height: Sizes.size60,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.red.shade400,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          child: Container(
-                            // 클릭 적용 범위 제한을 위한 Container - center
-                            alignment: Alignment.center,
-                            child: IconButton(
-                              onPressed: _onPressPickVideo,
-                              icon: const FaIcon(
-                                FontAwesomeIcons.image,
-                                color: Colors.white,
-                                size: Sizes.size28,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+        ),
       ),
     );
   }
