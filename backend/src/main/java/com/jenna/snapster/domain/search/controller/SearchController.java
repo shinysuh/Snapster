@@ -18,7 +18,7 @@ public class SearchController {
     private final VideoSearchService videoSearchService;
 
     @GetMapping("")
-    public ResponseEntity<?> search(@RequestParam String keyword) throws IOException {
+    public ResponseEntity<?> searchByKeyword(@RequestParam String keyword) throws IOException {
         return ResponseEntity.ok(videoSearchService.searchByKeyword(keyword));
     }
 
