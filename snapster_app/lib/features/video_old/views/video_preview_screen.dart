@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:gallery_saver/gallery_saver.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/view_models/http_video_upload_view_model.dart';
+import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/features/video_old/views/widgets/video_detail_form.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
@@ -38,6 +39,8 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   bool _isSaved = false;
   bool _isAutoValidationTriggered = false;
 
+  late final bool _isMuted = ref.watch(playbackConfigProvider).muted;
+
   @override
   void initState() {
     super.initState();
@@ -56,6 +59,9 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
 
     await _videoPlayerController.initialize();
     await _videoPlayerController.setLooping(true);
+
+    _videoPlayerController.setVolume(_isMuted ? 0 : 1);
+
     await _videoPlayerController.play();
 
     // initialization 을 build 메소드가 알도록 하는 역할
