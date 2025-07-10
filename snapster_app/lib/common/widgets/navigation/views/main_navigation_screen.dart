@@ -6,7 +6,7 @@ import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/navigation_tabs.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/discover/discover_screen.dart';
+import 'package:snapster_app/features/discover/views/discover_screen.dart';
 import 'package:snapster_app/features/inbox/views/inbox_screen.dart';
 import 'package:snapster_app/features/user/views/user_profile_screen.dart';
 import 'package:snapster_app/features/video_old/views/video_recording_screen.dart';
