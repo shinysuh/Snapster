@@ -61,6 +61,8 @@ public class VideoPostServiceImpl implements VideoPostService {
         // 캐시 삭제
         String cacheEviction = userFeedService.evictUserFeedCache(userId, "public");
         log.info("########### eviction: {}", cacheEviction);
+        // 캐시 갱신
+        userFeedService.getPublicUserFeeds(userId);
     }
 
     private UploadedFile createAndSavaThumbnail(User currentUser, UploadedFile uploadedVideoFile) {
