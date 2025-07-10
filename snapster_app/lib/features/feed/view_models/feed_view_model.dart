@@ -45,9 +45,9 @@ class FeedViewModel extends FamilyAsyncNotifier<List<VideoPostModel>, String> {
   }
 
   Future<void> evictUserFeeds(
-    String type,
-    String userId,
-  ) async {
+      String type,
+      String userId,
+      ) async {
     await runFutureWithExceptionLogs<void>(
       errorPrefix: '사용자 [$type] 피드 캐시 제거',
       requestFunction: () async {
@@ -59,6 +59,6 @@ class FeedViewModel extends FamilyAsyncNotifier<List<VideoPostModel>, String> {
 }
 
 final feedProvider =
-    AsyncNotifierProvider.family<FeedViewModel, List<VideoPostModel>, String>(
+AsyncNotifierProvider.family<FeedViewModel, List<VideoPostModel>, String>(
   FeedViewModel.new,
 );

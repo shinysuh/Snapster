@@ -60,7 +60,7 @@ public class RedisSubscriber implements MessageListener {
         List<Long> participants = this.getParticipants(message.getChatroomId());
 
         // TODO - 테스트 후 제거
-        this.testFcm(participants, message);
+//        this.testFcm(participants, message);
 
         // offline 참여자만 추출
         Set<Long> offlineParticipants = onlineUserRedisRepository.getAllOfflineParticipants(participants);

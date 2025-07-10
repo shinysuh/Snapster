@@ -62,10 +62,10 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                   createdAt: presignedUrl.uploadedFileInfo.uploadedAt ?? '',
                 ));
 
-            // user feed 갱신
-            ref
-                .read(feedProvider(currentUser!.userId).notifier)
-                .refresh();
+            // user feed 갱신 => 백엔드에서 streaming file 저장 후 리프레시 되게 15초 딜레이
+            Future.delayed(const Duration(seconds: 15), () {
+              ref.read(feedProvider(currentUser!.userId).notifier).refresh();
+            });
 
             if (context.mounted) {
               goToRouteWithoutStack(
