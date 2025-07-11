@@ -48,17 +48,17 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   }
 
   Future<void> _onChangeSearchKeyword(String searchKeyword) async {
-    print('onChange: $searchKeyword');
-    await searchByKeywordPrefix(searchKeyword);
+    print('searchKeyword: $searchKeyword');
     setState(() {
       _searchKeyword = searchKeyword;
     });
+    await _searchByKeywordPrefix(searchKeyword);
   }
 
-  Future<void> searchByKeywordPrefix(String searchKeyword) async {
+  Future<void> _searchByKeywordPrefix(String searchKeyword) async {
     await ref
         .read(searchProvider.notifier)
-        .searchByKeywordPrefix(_searchKeyword);
+        .onSearchKeywordChange(searchKeyword);
   }
 
   void _onSubmitSearchKeyword(String searchKeyword) {
@@ -293,7 +293,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               return TabBarView(
                 children: [
                   RefreshIndicator(
-                    onRefresh: () => _onChangeSearchKeyword(_searchKeyword),
+                    onRefresh: () => _searchByKeywordPrefix(_searchKeyword),
                     child: ref.watch(searchProvider).when(
                         loading: () => const Center(
                               child: CircularProgressIndicator.adaptive(),
