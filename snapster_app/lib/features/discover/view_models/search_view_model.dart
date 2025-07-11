@@ -13,27 +13,30 @@ class SearchViewModel extends AsyncNotifier<List<VideoPostModel>> {
   @override
   FutureOr<List<VideoPostModel>> build() async {
     _searchRepository = ref.read(searchRepositoryProvider);
-    return await _searchRepository.searchByKeywordPrefix("");
+    return await _searchByKeywordPrefix("");
   }
 
   void searchWithDebounce(String keyword,
       [Duration delay = const Duration(milliseconds: 300)]) {
     _debounce?.cancel();
-    _debounce = Timer(delay, () => searchByKeywordPrefix(keyword));
+    _debounce = Timer(delay, () => onSearchKeywordChange(keyword));
   }
 
-  Future<void> searchByKeywordPrefix(String keyword) async {
+  Future<void> onSearchKeywordChange(String keyword) async {
     state = const AsyncValue.loading();
-
     state = await AsyncValue.guard(
       () async {
-        return await runFutureWithExceptionLogs<List<VideoPostModel>>(
-          errorPrefix: '[$keyword] 검색 결과 조회',
-          requestFunction: () async =>
-              _searchRepository.searchByKeywordPrefix(keyword),
-          fallback: [],
-        );
+        return await _searchByKeywordPrefix(keyword);
       },
+    );
+  }
+
+  Future<List<VideoPostModel>> _searchByKeywordPrefix(String keyword) async {
+    return await runFutureWithExceptionLogs<List<VideoPostModel>>(
+      errorPrefix: '[$keyword] 검색 결과 조회',
+      requestFunction: () async =>
+          _searchRepository.searchByKeywordPrefix(keyword),
+      fallback: [],
     );
   }
 }
