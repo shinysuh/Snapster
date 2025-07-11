@@ -194,7 +194,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
                 overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.start,
                 style: const TextStyle(
-                  fontSize: Sizes.size18,
+                  fontSize: Sizes.size12,
                   fontWeight: FontWeight.w500,
                   height: 1.2,
                 ),
