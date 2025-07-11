@@ -66,15 +66,23 @@ class FCMNotificationHandler {
   }
 
   void _handleMessageOffline(RemoteMessage message) async {
-    try {
-      final receivedMsg = _convertToChatMessage(message);
-      final chatroomId = receivedMsg.chatroomId;
+    final navigator = _navigatorKey.currentState;
+    if (navigator == null || !navigator.mounted) return;
 
-      // 채팅방id -> SharedPreferences에 저장
-      await ref.read(fcmTokenUtilProvider).storeFCMChatroomId(chatroomId);
-    } catch (e) {
-      debugPrint('❌ 푸시 클릭 처리 실패: $e');
+    final receivedMsg = _convertToChatMessage(message);
+    final chatroomId = receivedMsg.chatroomId;
+    if (chatroomId == 0) return;
+
+    final chatroom = await _getChatroom(chatroomId);
+    if (chatroom.isEmpty()) return;
+
+    final currentUser = _getCurrentUser();
+    if (currentUser == null ||
+        currentUser.userId == receivedMsg.senderId.toString()) {
+      return;
     }
+
+    navigateToChatroom(navigator, chatroomId, currentUser);
   }
 
   void _handleMessageOnline(RemoteMessage message) async {

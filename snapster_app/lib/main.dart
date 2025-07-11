@@ -87,7 +87,6 @@ class _SnapsterAppState extends ConsumerState<SnapsterApp> {
       // FCM 푸시 수신
       _fcmHandler = FCMNotificationHandler(ref);
       _fcmHandler.initFCMListeners();
-      _fcmHandler.checkAndNavigateToChatroom();
       // 딥링크
       _deepLinkHandler = DeepLinkHandler(ref);
       _deepLinkHandler.startListening();
