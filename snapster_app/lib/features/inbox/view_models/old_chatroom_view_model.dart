@@ -13,12 +13,10 @@ import 'package:snapster_app/features/inbox/models/chatroom_model.dart';
 import 'package:snapster_app/features/inbox/models/chatter_model.dart';
 import 'package:snapster_app/features/inbox/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/inbox/view_models/message_view_model.dart';
-import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/models/user_profile_model.dart';
 import 'package:snapster_app/features/user/repository/user_repository.dart';
 import 'package:snapster_app/utils/exception_handlers/error_snack_bar.dart';
-import 'package:snapster_app/utils/navigator_redirection.dart';
 
 class ChatroomViewModel extends AsyncNotifier<void> {
   late final ChatroomRepository _chatroomRepository;
@@ -235,17 +233,17 @@ class ChatroomViewModel extends AsyncNotifier<void> {
     required int recentlyReadAt,
   }) {
     context.pop();
-    goToRouteNamed(
-      context: context,
-      routeName: ChatDetailScreen.routeName,
-      params: {'chatroomId': chatroomId},
-      extra: ChatPartnerModel(
-        chatroomId: chatroomId,
-        chatPartner: invitee,
-        updatedAt: now,
-        showMsgFrom: recentlyReadAt,
-      ),
-    );
+    // goToRouteNamed(
+    //   context: context,
+    //   routeName: ChatDetailScreen.routeName,
+    //   params: {'chatroomId': chatroomId},
+    //   extra: ChatPartnerModel(
+    //     chatroomId: chatroomId,
+    //     chatPartner: invitee,
+    //     updatedAt: now,
+    //     showMsgFrom: recentlyReadAt,
+    //   ),
+    // );
   }
 
 // 로그인 유저 피로필 fetch

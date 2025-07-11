@@ -6,13 +6,17 @@ import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
+import 'package:snapster_app/constants/message_types.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/constants/system_message_types.dart';
-import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
-import 'package:snapster_app/features/inbox/models/chatroom_model.dart';
-import 'package:snapster_app/features/inbox/models/message_model.dart';
-import 'package:snapster_app/features/inbox/view_models/chatroom_view_model.dart';
-import 'package:snapster_app/features/inbox/view_models/message_view_model.dart';
+import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
+import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
+import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/message/view_models/chat_message_view_model.dart';
+import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
+import 'package:snapster_app/features/chat/participant/view_models/chatroom_participant_view_model.dart';
+import 'package:snapster_app/features/chat/stomp/view_models/stomp_view_model.dart';
+import 'package:snapster_app/features/inbox/view_models/old_chatroom_view_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:snapster_app/utils/system_message.dart';
@@ -20,17 +24,27 @@ import 'package:snapster_app/utils/tap_to_unfocus.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
-class ChatDetailScreen extends ConsumerStatefulWidget {
-  static const String routeName = 'chatDetail';
-  static const String routeURL = ':chatroomId';
+class ChatroomDetailParams {
+  final int chatroomId;
+  final AppUser currentUser;
+  final ChatroomModel? chatroom;
 
-  final String chatroomId;
-  final ChatPartnerModel chatroomBasicInfo;
+  const ChatroomDetailParams({
+    required this.chatroomId,
+    required this.currentUser,
+    this.chatroom,
+  });
+}
+
+class ChatDetailScreen extends ConsumerStatefulWidget {
+  static const String routeName = 'chat-detail';
+  static const String routeURL = 'chat-detail';
+
+  final ChatroomDetailParams chatroomDetails;
 
   const ChatDetailScreen({
     super.key,
-    required this.chatroomId,
-    required this.chatroomBasicInfo,
+    required this.chatroomDetails,
   });
 
   @override
@@ -39,30 +53,73 @@ class ChatDetailScreen extends ConsumerStatefulWidget {
 
 class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   final TextEditingController _textEditingController = TextEditingController();
-  late ChatPartnerModel _chatroomBasic;
-  late ChatroomModel? _chatroomInfo;
+
+  late final ChatroomModel _chatroom;
+  late final ChatroomParticipantModel _currentUser;
+  late final int _currentUserId;
+  late final List<ChatroomParticipantModel> _others;
+
+  late final int _chatroomId = widget.chatroomDetails.chatroomId;
+
+  List<ChatMessageModel> _messages = [];
+
+  bool _isInitializing = true;
   bool _isWriting = false;
   bool _isDropdownOpen = false;
-
-  @override
-  void initState() {
-    super.initState();
-    _chatroomBasic = widget.chatroomBasicInfo;
-    _getChatroomInfo(_chatroomBasic.chatPartner.uid);
-  }
-
-  Future<void> _getChatroomInfo(String partnerId) async {
-    _chatroomInfo =
-        await ref.read(chatroomProvider.notifier).fetchChatroomByPartnerId(
-              context,
-              partnerId,
-            );
-  }
 
   @override
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initialize();
+  }
+
+  Future<void> _initialize() async {
+    _chatroom = widget.chatroomDetails.chatroom ?? await _getChatroomDetail();
+    await _initializeAsync();
+
+    _isInitializing = false;
+
+    setState(() {});
+  }
+
+  Future<ChatroomModel> _getChatroomDetail() async {
+    return await ref
+        .read(httpChatroomProvider.notifier)
+        .getOneChatroom(context: context, chatroomId: _chatroomId);
+  }
+
+  Future<void> _initializeAsync() async {
+    var currUser = _chatroom.participants.firstWhere(
+      (p) => widget.chatroomDetails.currentUser.userId == p.user.userId,
+    );
+
+    if (!_chatroom.lastMessage.isEmpty() &&
+        _chatroom.lastMessage.id != currUser.lastReadMessageId) {
+      currUser = currUser.copyWith(
+        lastReadMessageId: _chatroom.lastMessage.id,
+      );
+
+      await updateLastReadMessage(currUser);
+    }
+
+    _currentUser = currUser;
+    _currentUserId = _currentUser.id.userId;
+    _others = _chatroom.participants
+        .where((p) => p.id.userId != _currentUserId)
+        .toList();
+  }
+
+  Future<void> updateLastReadMessage(
+      ChatroomParticipantModel currentUser) async {
+    await ref
+        .read(participantProvider(_chatroom.id).notifier)
+        .updateLastReadMessage(context, currentUser);
   }
 
   void _onTapScaffold() {
@@ -81,20 +138,36 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
   }
 
   Future<void> _onSendMessage() async {
-    final isPartnerParticipating = _chatroomBasic.chatPartner.isParticipating;
+    final hasOtherParticipants = _others.isNotEmpty;
 
     var reInvitationConfirm = true;
 
-    if (!isPartnerParticipating) {
-      // 상대 다시 초대 여부
-      reInvitationConfirm = await _getReInvitationConfirm();
+    // if (!hasOtherParticipants) {
+    // 상대 다시 초대 여부 => 메시지 보낼 때 말고, 대화 상대 추가하기 기능으로 재초대 가능
+    // reInvitationConfirm = await _getReInvitationConfirm();
+    // }
+
+    int? receiverId;
+    if (hasOtherParticipants && _others.length == 1) {
+      receiverId = _others.first.id.userId;
     }
 
     if (reInvitationConfirm && mounted) {
-      ref
-          .read(messageProvider(widget.chatroomId).notifier)
-          .sendMessage(context, _textEditingController.text)
-          .then((_) => _textEditingController.clear());
+      ref.read(stompProvider(_chatroom.id).notifier).sendMessageToRoom(
+            context: context,
+            sender: _currentUser,
+            receiverId: receiverId,
+            content: _textEditingController.text,
+            type: MessageType.typeText,
+          );
+
+      // 입력창 clear
+      _textEditingController.clear();
+
+      if (_chatroomId == 0) {
+        // 새 채팅방일 경우, 메시지 전송 후 채팅방 목록 새로고침
+        await ref.read(httpChatroomProvider.notifier).refresh();
+      }
 
       setState(() {
         _isWriting = false;
@@ -132,43 +205,6 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
             ));
   }
 
-  Future<bool> _getReInvitationConfirm() async {
-    if (_chatroomInfo == null) return false;
-
-    var chatroom = _chatroomInfo;
-    var partner = _chatroomBasic.chatPartner;
-    var now = DateTime.now().millisecondsSinceEpoch;
-
-    var isPartnerPersonA = _chatroomInfo!.chatroomId.startsWith(partner.uid);
-
-    var reInvited = false;
-
-    await _getAlert(
-      title: S.of(context).reInvitationConfirmMsg,
-      confirmActionCallback: () async {
-        await ref.read(chatroomProvider.notifier).reJoinChatroom(
-              context: context,
-              chatroom: ChatroomModel(
-                chatroomId: chatroom!.chatroomId,
-                personA: isPartnerPersonA ? partner : chatroom.personA,
-                personB: isPartnerPersonA ? chatroom.personB : partner,
-                updatedAt: now,
-              ),
-              isPersonARejoining: isPartnerPersonA,
-              now: now,
-            );
-
-        _setPartnerParticipationInfo(true);
-
-        _closeDialog();
-        reInvited = true;
-      },
-      destructiveActionCallback: _closeDialog,
-    );
-
-    return reInvited;
-  }
-
   void _onTapDots() {
     // setState(() {
     //   _isDropdownOpen = true;
@@ -181,72 +217,61 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
 
   void _onExitChatroom() {
     context.pop();
-    // TODO - 방 나가기 로직 (alert 포함)
-    // showCupertinoDialog(
-    //   context: context,
-    //   builder: (context) => CupertinoAlertDialog(
-    //     title: Text(S.of(context).exitChatroom),
-    //     // content: const Text('Please confirm'),
-    //     actions: [
-    //       CupertinoDialogAction(
-    //         onPressed: _closeExitDialog,
-    //         child: const Text("No"),
-    //       ),
-    //       CupertinoDialogAction(
-    //         onPressed: () {
-    //           ref
-    //               .read(chatroomProvider.notifier)
-    //               .exitChatroom(context, chatroom);
-    //           _closeExitDialog();
-    //         },
-    //         isDestructiveAction: true,
-    //         child: const Text("Yes"),
-    //       ),
-    //     ],
-    //   ),
-    // );
   }
 
-  void _setPartnerParticipationInfo(bool isParticipating) {
-    _chatroomBasic = _chatroomBasic.copyWith(
-      chatPartner: _chatroomBasic.chatPartner.copyWith(
-        isParticipating: isParticipating,
-      ),
-    );
-  }
-
-  List<MessageModel> _getAllowedMessages(List<MessageModel> messages) {
-    if (messages.isEmpty || _chatroomBasic.showMsgFrom == 0) return messages;
-
-    if (messages.first.userId == MessageViewModel.systemId) {
-      final text = messages.first.text;
-
-      if (isLeftTypeSystemMessage(text) &&
-          text
-              .split(systemMessageDivider)[0]
-              .startsWith(_chatroomBasic.chatPartner.username)) {
-        _setPartnerParticipationInfo(false);
-      }
+  List<ChatMessageModel> _getAllowedMessages(List<ChatMessageModel> messages) {
+    if (messages.isEmpty) {
+      return messages;
     }
 
-    List<MessageModel> allowedMessages = [];
+    DateTime? msgCreatedAt = messages.last.createdAt;
+    DateTime? userJoinedAt = _currentUser.joinedAt;
 
-    var idx = 0;
-
-    for (; idx < messages.length; idx++) {
-      var msg = messages[idx];
-      if (!(msg.createdAt > _chatroomBasic.showMsgFrom)) break;
-
-      allowedMessages.add(msg);
+    if (userJoinedAt == null || msgCreatedAt == null) {
+      debugPrint('##### userJoinedAt || msgCreatedAt 누락 오류 발생');
+      return [];
     }
 
-    return allowedMessages;
+    if (userJoinedAt.isBefore(msgCreatedAt)) {
+      return messages;
+    }
+
+    // 시스템 메시지 처리
+    if (messages.first.type == MessageType.typeSystem) {}
+
+    // if (messages.first.userId == MessageViewModel.systemId) {
+    //   final text = messages.first.text;
+    //
+    //   if (isLeftTypeSystemMessage(text) &&
+    //       text
+    //           .split(systemMessageDivider)[0]
+    //           .startsWith(_chatroomBasic.chatPartner.username)) {
+    //     _setPartnerParticipationInfo(false);
+    //   }
+    // }
+
+    // List<MessageModel> allowedMessages = [];
+    //
+    // var idx = 0;
+    //
+    // for (; idx < messages.length; idx++) {
+    //   var msg = messages[idx];
+    //   if (!(msg.createdAt > _chatroomBasic.showMsgFrom)) break;
+    //
+    //   allowedMessages.add(msg);
+    // }
+    //
+    // return allowedMessages;
+    return messages;
   }
 
-  void _updateMessageToDeleted(MessageModel message) {
-    var threeMinutes = 180000;
-    var now = DateTime.now().millisecondsSinceEpoch;
-    bool isDeletable = now - message.createdAt < threeMinutes;
+  void _updateMessageToDeleted(ChatMessageModel message) {
+    var threeMinutes = const Duration(minutes: 3);
+    var now = DateTime.now();
+    bool isDeletable = message.createdAt != null
+        ? now.difference(message.createdAt!).inMilliseconds <
+            threeMinutes.inMilliseconds
+        : false;
 
     // 보낸지 3분 이내에 삭제 가능
     if (!isDeletable) return;
@@ -254,10 +279,11 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
       title: S.of(context).deleteMessageConfirm,
       confirmActionCallback: () async {
         await ref
-            .read(messageProvider(widget.chatroomId).notifier)
+            .read(chatMessageProvider(_chatroom.id).notifier)
             .updateMessageToDeleted(
-              context,
-              message,
+              context: context,
+              currentUser: _currentUser,
+              message: message,
             );
         _closeDialog();
       },
@@ -265,13 +291,12 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
-  Widget _getMsgSentAt(int createdAt, bool isDark) {
-    var sentAt = DateTime.fromMillisecondsSinceEpoch(createdAt);
+  Widget _getMsgSentAt(DateTime sentAt, bool isDark) {
     return Text(
       DateFormat(
         S.of(context).hourMinuteAPM,
         'en_US',
-      ).format(sentAt),
+      ).format(sentAt.toLocal()),
       style: TextStyle(
         fontSize: Sizes.size12,
         color: isDark
@@ -374,15 +399,33 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
     );
   }
 
+  String _getParticipantNames() {
+    if (_others.length <= 3) {
+      return _others.map((o) => o.user.displayName).join(', ');
+    } else {
+      final displayed =
+          _others.take(3).map((o) => o.user.displayName).join(', ');
+      final remaining = _others.length - 3;
+      return '$displayed 외 $remaining명';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(context);
+    final systemColor = isDark
+        ? Colors.white.withAlpha((0.4 * 255).round())
+        : Colors.black.withAlpha((0.3 * 255).round());
     var commonBcgColor = isDark
         ? Theme.of(context).appBarTheme.backgroundColor
         : Colors.grey.shade50;
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
 
-    final isLoading = ref.watch(messageProvider(widget.chatroomId)).isLoading;
+    var isLoading = ref.watch(chatroomProvider).isLoading;
+
+    if (_isInitializing) {
+      return const Center(child: CupertinoActivityIndicator());
+    }
 
     return RegulatedMaxWidth(
       maxWidth: Breakpoints.sm,
@@ -401,16 +444,18 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     // 아래 Positioned 대신 사용 가능
                     // alignment: AlignmentDirectional.bottomEnd,
                     children: [
+                      // TODO - 여러명 참여방일 경우 상대방 출력 로직 필요
                       Padding(
                         padding: const EdgeInsets.all(Sizes.size4),
                         child: CircleAvatar(
                           radius: Sizes.size24,
-                          foregroundImage: getProfileImgByUserId(
-                            _chatroomBasic.chatPartner.uid,
+                          foregroundImage: getProfileImgByUserProfileImageUrl(
+                            _others.first.user.hasProfileImage,
+                            _others.first.user.profileImageUrl,
                             false,
                           ),
                           child: ClipOval(
-                            child: Text(_chatroomBasic.chatPartner.name),
+                            child: Text(_others.first.user.displayName),
                           ),
                         ),
                       ),
@@ -434,7 +479,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                     ],
                   ),
                   title: Text(
-                    _chatroomBasic.chatPartner.username,
+                    _getParticipantNames(),
                     style: const TextStyle(
                       fontWeight: FontWeight.w600,
                     ),
@@ -463,7 +508,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
               ),
               body: Stack(
                 children: [
-                  ref.watch(chatProvider(widget.chatroomId)).when(
+                  ref.watch(stompProvider(_chatroom.id)).when(
                         loading: () => const Center(
                           child: CircularProgressIndicator.adaptive(),
                         ),
@@ -471,7 +516,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                           child: Text(error.toString()),
                         ),
                         data: (messages) {
-                          messages = _getAllowedMessages(messages);
+                          _messages = _getAllowedMessages(messages);
                           return ListView.separated(
                             reverse: true,
                             padding: EdgeInsets.only(
@@ -481,28 +526,30 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                               left: Sizes.size20,
                               right: Sizes.size20,
                             ),
-                            itemCount: messages.length,
+                            itemCount: _messages.length,
                             separatorBuilder: (context, index) => Gaps.v10,
                             itemBuilder: (context, index) {
-                              final message = messages[index];
-                              final messageSender = ref
-                                  .read(messageProvider(widget.chatroomId)
+                              final message = _messages[index];
+                              final createdAt =
+                                  message.createdAt ?? DateTime.now();
+
+                              final senderType = ref
+                                  .read(chatMessageProvider(_chatroom.id)
                                       .notifier)
-                                  .getMessageSender(context, message.userId);
-                              final isMine =
-                                  messageSender == MessageSenderType.me;
-                              final isPartner =
-                                  messageSender == MessageSenderType.partner;
-                              final isSystem = !isMine && !isPartner;
-                              final systemColor = isDark
-                                  ? Colors.white.withAlpha((0.4 * 255).round())
-                                  : Colors.black.withAlpha((0.3 * 255).round());
+                                  .getSenderType(_currentUserId, message);
+
+                              final isMine = senderType == SenderType.senderMe;
+                              final isOther =
+                                  senderType == SenderType.senderOther;
+                              final isSystem =
+                                  senderType == SenderType.senderSystem;
+
                               return Row(
                                 crossAxisAlignment: CrossAxisAlignment.end,
                                 mainAxisSize: MainAxisSize.min,
                                 mainAxisAlignment: isMine
                                     ? MainAxisAlignment.end
-                                    : isPartner
+                                    : isOther
                                         ? MainAxisAlignment.start
                                         : MainAxisAlignment.center,
                                 children: [
@@ -511,10 +558,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
-                                        _getMsgSentAt(
-                                          message.createdAt,
-                                          isDark,
-                                        ),
+                                        _getMsgSentAt(createdAt, isDark),
                                         Gaps.h6,
                                       ],
                                     ),
@@ -528,7 +572,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       decoration: BoxDecoration(
                                         color: isMine
                                             ? const Color(0xFF609EC2)
-                                            : isPartner
+                                            : isOther
                                                 ? Theme.of(context).primaryColor
                                                 : systemColor,
                                         borderRadius: BorderRadius.only(
@@ -537,7 +581,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                           topRight: const Radius.circular(
                                               Sizes.size20),
                                           bottomLeft: Radius.circular(
-                                            isPartner
+                                            isOther
                                                 ? Sizes.size5
                                                 : Sizes.size20,
                                           ),
@@ -553,9 +597,9 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                         isSystem
                                             ? getLeftTypeSystemMessage(
                                                 context,
-                                                message.text,
+                                                message.content,
                                               )
-                                            : message.text,
+                                            : message.content,
                                         textAlign: isSystem
                                             ? TextAlign.center
                                             : TextAlign.left,
@@ -568,16 +612,13 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                                       ),
                                     ),
                                   ),
-                                  if (isPartner)
+                                  if (isOther)
                                     Row(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.end,
                                       children: [
                                         Gaps.h6,
-                                        _getMsgSentAt(
-                                          message.createdAt,
-                                          isDark,
-                                        ),
+                                        _getMsgSentAt(createdAt, isDark),
                                       ],
                                     ),
                                 ],

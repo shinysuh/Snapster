@@ -6,7 +6,7 @@ import 'package:snapster_app/features/authentication/renewal/providers/auth_stat
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
 import 'package:snapster_app/features/chat/notification/widgets/notification_popup.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
-import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
@@ -68,7 +68,7 @@ class StompNotificationHandler {
   ) {
     goToRouteNamed(
       context: _navigatorKey.currentState!.context,
-      routeName: TestChatDetailScreen.routeName,
+      routeName: ChatDetailScreen.routeName,
       queryParams: {
         'chatroomId': message.chatroomId.toString(),
       },
@@ -110,7 +110,7 @@ class StompNotificationHandler {
     final currentLocation = GoRouter.of(context).location;
 
     final targetRoute = Uri(
-      path: TestChatDetailScreen.routeURL,
+      path: ChatDetailScreen.routeURL,
       queryParameters: {
         'chatroomId': chatroomId.toString(),
       },

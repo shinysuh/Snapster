@@ -12,7 +12,7 @@ import 'package:snapster_app/features/chat/message/models/chat_message_model.dar
 import 'package:snapster_app/features/chat/notification/providers/fcm_token_providers.dart';
 import 'package:snapster_app/features/chat/notification/widgets/notification_popup.dart';
 import 'package:snapster_app/features/chat/stomp/view_models/stomp_view_model.dart';
-import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
@@ -125,7 +125,7 @@ class FCMNotificationHandler {
     if (!_checkCurrentLocation(navigator, chatroomId)) {
       goToRouteNamed(
         context: context,
-        routeName: TestChatDetailScreen.routeName,
+        routeName: ChatDetailScreen.routeName,
         queryParams: {
           'chatroomId': chatroomId.toString(),
         },
@@ -152,7 +152,7 @@ class FCMNotificationHandler {
     final currentLocation = GoRouter.of(navigator.context).location;
 
     final targetRoute = Uri(
-      path: TestChatDetailScreen.routeURL,
+      path: ChatDetailScreen.routeURL,
       queryParameters: {
         'chatroomId': chatroomId.toString(),
       },

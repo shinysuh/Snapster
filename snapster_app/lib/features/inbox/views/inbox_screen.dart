@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/chat/views/test_chats_screen.dart';
+import 'package:snapster_app/features/chat/views/chats_screen.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
 
@@ -12,7 +12,7 @@ class InboxScreen extends StatelessWidget {
   void _onTapDM(BuildContext context) {
     goToRouteNamed(
       context: context,
-      routeName: TestChatsScreen.routeName,
+      routeName: ChatsScreen.routeName,
       // routeName: ChatsScreen.routeName,
     );
   }

@@ -8,7 +8,7 @@ import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_reposi
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_id_model.dart';
 import 'package:snapster_app/features/chat/participant/models/chatroom_participant_model.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
-import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/utils/exception_handlers/base_exception_handler.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -113,7 +113,7 @@ class ChatroomViewModel extends AsyncNotifier<List<ChatroomModel>> {
     context.pop();
     goToRouteNamed(
       context: context,
-      routeName: TestChatDetailScreen.routeName,
+      routeName: ChatDetailScreen.routeName,
       queryParams: {
         'chatroomId': chatroom.id.toString(),
       },

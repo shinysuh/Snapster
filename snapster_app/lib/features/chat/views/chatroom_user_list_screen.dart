@@ -3,8 +3,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/inbox/view_models/chatroom_view_model.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
+import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
+import 'package:snapster_app/features/user/view_models/http_user_profile_view_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
@@ -13,14 +14,20 @@ class ChatroomUserListScreen extends ConsumerStatefulWidget {
   static const String routeURL = '/chatroom-user-list';
   static const String routeName = 'chatroom-user-list';
 
-  const ChatroomUserListScreen({super.key});
+  final AppUser currentUser;
+
+  const ChatroomUserListScreen({
+    super.key,
+    required this.currentUser,
+  });
 
   @override
-  ConsumerState<ChatroomUserListScreen> createState() => _UserListScreenState();
+  ConsumerState<ChatroomUserListScreen> createState() =>
+      _UserListScreenState();
 }
 
 class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
-  List<UserProfileModel> _users = [];
+  List<AppUser> _otherUsers = [];
 
   @override
   void initState() {
@@ -29,15 +36,19 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
   }
 
   Future<void> _getAllUsers() async {
-    _users = await ref.read(chatroomProvider.notifier).fetchAllOtherUsers();
+    _otherUsers = await ref
+        .read(httpUserProfileProvider.notifier)
+        .getAllOtherUsers(context);
+
     setState(() {});
   }
 
-  void _onClickUser(UserProfileModel chatPartner) {
-    // chatroom create
-    ref.read(chatroomProvider.notifier).createChatroom(
-          context,
-          chatPartner,
+  void _onClickUser(AppUser other) {
+    // 1:1 채팅방 입장
+    ref.read(httpChatroomProvider.notifier).enterOneOnOneChatroom(
+          context: context,
+          currentUser: widget.currentUser,
+          receiver: other,
         );
   }
 
@@ -57,18 +68,20 @@ class _UserListScreenState extends ConsumerState<ChatroomUserListScreen> {
           child: Column(
             children: [
               Gaps.v20,
-              for (var user in _users)
+              for (var other in _otherUsers)
                 ListTile(
-                  onTap: () => _onClickUser(user),
+                  onTap: () => _onClickUser(other),
                   leading: CircleAvatar(
                     radius: Sizes.size28,
-                    foregroundImage: user.hasProfileImage
-                        ? getProfileImgByUserId(user.uid, false)
-                        : null,
-                    child: ClipOval(child: Text(user.name)),
+                    foregroundImage: getProfileImgByUserProfileImageUrl(
+                      other.hasProfileImage,
+                      other.profileImageUrl,
+                      false,
+                    ),
+                    child: ClipOval(child: Text(other.displayName)),
                   ),
-                  title: Text(user.username),
-                  subtitle: Text(user.name),
+                  title: Text(other.displayName),
+                  subtitle: Text(other.username),
                 ),
             ],
           ),

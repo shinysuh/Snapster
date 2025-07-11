@@ -10,8 +10,8 @@ import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/chatroom/models/chatroom_model.dart';
 import 'package:snapster_app/features/chat/chatroom/view_models/chatroom_view_model.dart';
-import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
-import 'package:snapster_app/features/chat/views/test_chatroom_user_list_screen.dart';
+import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/chatroom_user_list_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/navigator_redirection.dart';
@@ -19,17 +19,17 @@ import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:snapster_app/utils/system_message.dart';
 import 'package:snapster_app/utils/widgets/regulated_max_width.dart';
 
-class TestChatsScreen extends ConsumerStatefulWidget {
-  static const String routeName = 'test-chats';
-  static const String routeURL = '/test-chats';
+class ChatsScreen extends ConsumerStatefulWidget {
+  static const String routeName = 'chats';
+  static const String routeURL = '/chats';
 
-  const TestChatsScreen({super.key});
+  const ChatsScreen({super.key});
 
   @override
-  ConsumerState<TestChatsScreen> createState() => _ChatsScreenState();
+  ConsumerState<ChatsScreen> createState() => _ChatsScreenState();
 }
 
-class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
+class _ChatsScreenState extends ConsumerState<ChatsScreen> {
   AppUser? _currentUser;
   List<ChatroomModel> _chatrooms = [];
 
@@ -45,7 +45,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              TestChatroomUserListScreen(currentUser: _currentUser!),
+              ChatroomUserListScreen(currentUser: _currentUser!),
           transitionDuration: Duration.zero,
           reverseTransitionDuration: Duration.zero,
         ));
@@ -95,7 +95,7 @@ class _ChatsScreenState extends ConsumerState<TestChatsScreen> {
     if (mounted) {
       goToRouteNamed(
         context: context,
-        routeName: TestChatDetailScreen.routeName,
+        routeName: ChatDetailScreen.routeName,
         queryParams: {
           'chatroomId': chatroomId.toString(),
         },
