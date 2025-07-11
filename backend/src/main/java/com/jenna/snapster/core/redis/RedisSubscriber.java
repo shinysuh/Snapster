@@ -16,7 +16,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Service
@@ -43,7 +42,6 @@ public class RedisSubscriber implements MessageListener {
             // 메시지 DB 저장 & chatroom 마지막 메시지 id 업데이트
             ChatMessage chatMessage = chatMessageService.saveChatMessageAndUpdateChatroom(messageDto);
 
-
             // WebSocket 구독자에게 메시지 전송
             String destination = "/topic/chatroom." + messageDto.getChatroomId();
             simpMessagingTemplate.convertAndSend(destination, messageDto);
@@ -59,25 +57,10 @@ public class RedisSubscriber implements MessageListener {
         // redis에서 채팅방 참여자 전체 정보 fetch
         List<Long> participants = this.getParticipants(message.getChatroomId());
 
-        // TODO - 테스트 후 제거
-//        this.testFcm(participants, message);
-
         // offline 참여자만 추출
         Set<Long> offlineParticipants = onlineUserRedisRepository.getAllOfflineParticipants(participants);
         // offline 참여자 FCM 푸시
         notificationService.sendPushToUsers(offlineParticipants, message);
-    }
-
-    private void testFcm(List<Long> participants, ChatMessageDto message) {
-        // TODO - 테스트 후 제거
-        try {
-            // 온라인 유저한테 fcm 보냄
-            TimeUnit.SECONDS.sleep(5);  // FCM 테스트용 sleep
-            Set<Long> offlineParticipants = onlineUserRedisRepository.getAllOnlineParticipants(participants);
-            notificationService.sendPushToUsers(offlineParticipants, message);
-        } catch (Exception e) {
-            throw new RuntimeException(String.format("\n\n-------------- FCM 테스트 오류 발생 --------------\n\n%s", e.getMessage()));
-        }
     }
 
     private List<Long> getParticipants(Long chatroomId) {

@@ -11,12 +11,15 @@ import com.jenna.snapster.domain.chat.message.repository.ChatMessageRepository;
 import com.jenna.snapster.domain.chat.message.service.ChatMessageService;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatMessageServiceImpl implements ChatMessageService {
@@ -53,13 +56,23 @@ public class ChatMessageServiceImpl implements ChatMessageService {
         return chatMessageRepository.findByChatroomIdOrderByCreatedAtDesc(chatroomId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
+    // Transactional 운영 DB 오류로 주석 처리
+//    @Transactional(rollbackFor = Exception.class, noRollbackFor = DataIntegrityViolationException.class)
     @Override
     public ChatMessage saveChatMessageAndUpdateChatroom(ChatMessageDto messageRequest) {
         ChatMessage message = new ChatMessage(messageRequest);
-        ChatMessage entity = chatMessageRepository.save(message);
-        chatroomService.updateChatroomLastMessageId(message);
-        return entity;
+        try {
+            // 실제 저장 시도 (유니크 위반 시 예외 발생)
+            ChatMessage saved = chatMessageRepository.save(message);
+            chatroomService.updateChatroomLastMessageId(saved);
+            return saved;
+        } catch (DataIntegrityViolationException dive) {
+            // 중복 삽입으로 INSERT가 실패했을 때
+            log.info("중복 메시지 감지, 저장 건너뜀: {}", messageRequest.getClientMessageId());
+
+            // 이미 저장된 메시지를 DB에서 조회해서 반환
+            return message;
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
