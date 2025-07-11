@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -21,10 +20,9 @@ class DiscoverScreen extends ConsumerStatefulWidget {
 
 class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   late final isDark = isDarkMode(context);
-  final List<String> imageUrls = [
-    'assets/images/1.jpeg',
-    'assets/images/18.jpeg',
-  ];
+  final ScrollController _scrollController = ScrollController();
+
+  int _page = 0;
 
   final tabs = [
     'Top',
@@ -42,6 +40,21 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   String _searchKeyword = '';
 
   @override
+  void initState() {
+    super.initState();
+    _scrollController.addListener(() {
+      if (_scrollController.position.pixels >=
+          _scrollController.position.maxScrollExtent - 300) {
+        final viewModel = ref.read(searchProvider.notifier);
+        if (!viewModel.isLoading && viewModel.hasMore) {
+          _page++;
+          _searchByKeywordPrefix(_searchKeyword, _page);
+        }
+      }
+    });
+  }
+
+  @override
   void dispose() {
     _textEditingController.dispose();
     super.dispose();
@@ -50,15 +63,16 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
   Future<void> _onChangeSearchKeyword(String searchKeyword) async {
     print('searchKeyword: $searchKeyword');
     setState(() {
+      _page = 0;
       _searchKeyword = searchKeyword;
     });
-    await _searchByKeywordPrefix(searchKeyword);
+    await _searchByKeywordPrefix(searchKeyword, 0);
   }
 
-  Future<void> _searchByKeywordPrefix(String searchKeyword) async {
+  Future<void> _searchByKeywordPrefix(String searchKeyword, int page) async {
     await ref
         .read(searchProvider.notifier)
-        .onSearchKeywordChange(searchKeyword);
+        .onSearchKeywordChange(searchKeyword, page);
   }
 
   void _onSubmitSearchKeyword(String searchKeyword) {
@@ -81,75 +95,6 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
-  Widget _getCustomizedSearchPanel(bool isDark) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: Sizes.size44,
-            child: TextField(
-              controller: _textEditingController,
-              maxLines: 1,
-              cursorColor: Theme.of(context).primaryColor,
-              textInputAction: TextInputAction.send,
-              onChanged: _onChangeSearchKeyword,
-              onSubmitted: _onSubmitSearchKeyword,
-              clipBehavior: Clip.hardEdge,
-              style: const TextStyle(
-                fontSize: Sizes.size18,
-              ),
-              decoration: InputDecoration(
-                hintText: 'Search',
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(Sizes.size8),
-                  borderSide: BorderSide.none,
-                ),
-                filled: true,
-                fillColor: isDark ? Colors.grey.shade700 : Colors.grey.shade200,
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: Sizes.size10,
-                ),
-                prefixIcon: Padding(
-                  padding: const EdgeInsets.only(
-                    top: kIsWeb ? Sizes.size8 : Sizes.size11,
-                    left: Sizes.size8,
-                  ),
-                  child: FaIcon(
-                    FontAwesomeIcons.magnifyingGlass,
-                    size: Sizes.size20,
-                    color: isDark ? Colors.grey.shade300 : Colors.black,
-                  ),
-                ),
-                suffixIcon: Padding(
-                  padding: const EdgeInsets.only(
-                    top: kIsWeb ? Sizes.size9 : Sizes.size11,
-                    left: kIsWeb ? Sizes.size10 : Sizes.size20,
-                  ),
-                  child: GestureDetector(
-                    onTap: _onClearSearchKeyword,
-                    child: FaIcon(
-                      FontAwesomeIcons.solidCircleXmark,
-                      size: Sizes.size20,
-                      color:
-                          isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ),
-        Gaps.h22,
-        const FaIcon(
-          FontAwesomeIcons.sliders,
-          size: Sizes.size28,
-        ),
-        Gaps.h8,
-      ],
-    );
-  }
-
   Widget _getSearchGridView({
     required int colCount,
     required List<VideoPostModel> searchResults,
@@ -158,6 +103,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     const aspectRation_2 = 9 / 13;
 
     return GridView.builder(
+      controller: _scrollController,
       // 드래그 시에 keyboard dismiss
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       itemCount: searchResults.length,
@@ -293,7 +239,7 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
               return TabBarView(
                 children: [
                   RefreshIndicator(
-                    onRefresh: () => _searchByKeywordPrefix(_searchKeyword),
+                    onRefresh: () => _searchByKeywordPrefix(_searchKeyword, 0),
                     child: ref.watch(searchProvider).when(
                         loading: () => const Center(
                               child: CircularProgressIndicator.adaptive(),

@@ -8,7 +8,9 @@ import co.elastic.clients.elasticsearch.core.SearchResponse;
 import co.elastic.clients.json.JsonData;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jenna.snapster.domain.file.video.dto.VideoPostDto;
+import com.jenna.snapster.domain.search.dto.SearchRequestDto;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -52,25 +54,67 @@ public class VideoSearchService {
     }
 
     public List<VideoPostDto> searchByKeywordPrefix(String keyword) throws IOException {
-        SearchRequest.Builder searchBuilder = new SearchRequest.Builder()
-            .index(videoIndex);
-
         int size = 30;
 
-        if (keyword == null || keyword.trim().isEmpty()) {
-            // 전체 문서 검색 + createdAt 내림차순 정렬
-            searchBuilder
-                .query(q -> q.matchAll(m -> m))
-                .size(size)
-                .sort(s -> s
-                    .field(f -> f
-                        .field("createdAt")
-                        .order(SortOrder.Desc)
-                    )
-                );
-        } else {
-            // 키워드 기반 검색: bool_prefix + n-gram
-            searchBuilder.query(q -> q
+        SearchRequest.Builder searchBuilder = StringUtils.isEmpty(keyword)
+            ? this.getAllMatchSearchBuilder(0, size)
+            : this.getKeywordPrefixBuilder(0, size, keyword);
+
+        SearchResponse<JsonData> response = esClient.search(
+            searchBuilder.build(),
+            JsonData.class
+        );
+
+        return response.hits().hits().stream()
+            .map(hit -> {
+                Object sourceObj = hit.source().to(Map.class);
+                return objectMapper.convertValue(sourceObj, VideoPostDto.class);
+            })
+            .toList();
+    }
+
+    public List<VideoPostDto> searchByKeywordPrefixWithPaging(SearchRequestDto searchRequest) throws IOException {
+        int size = 6;
+        int from = searchRequest.getPage() * size;
+        String keyword = searchRequest.getKeyword();
+
+        SearchRequest.Builder searchBuilder = StringUtils.isEmpty(keyword)
+            ? this.getAllMatchSearchBuilder(from, size)
+            : this.getKeywordPrefixBuilder(from, size, keyword);
+
+        SearchResponse<JsonData> response = esClient.search(
+            searchBuilder.build(),
+            JsonData.class
+        );
+
+        return response.hits().hits().stream()
+            .map(hit -> {
+                Object sourceObj = hit.source().to(Map.class);
+                return objectMapper.convertValue(sourceObj, VideoPostDto.class);
+            })
+            .toList();
+    }
+
+    private SearchRequest.Builder getAllMatchSearchBuilder(int from, int size) {
+        // 전체 문서 검색 + createdAt 내림차순 정렬
+        return new SearchRequest.Builder()
+            .index(videoIndex)
+            .query(q -> q.matchAll(m -> m))
+            .size(size)
+            .from(from)
+            .sort(s -> s
+                .field(f -> f
+                    .field("createdAt")
+                    .order(SortOrder.Desc)
+                )
+            );
+    }
+
+    private SearchRequest.Builder getKeywordPrefixBuilder(int from, int size, String keyword) {
+        // 키워드 기반 검색: bool_prefix + n-gram
+        return new SearchRequest.Builder()
+            .index(videoIndex)
+            .query(q -> q
                 .bool(b -> b
                     .should(s1 -> s1
                         .multiMatch(mm -> mm
@@ -84,19 +128,7 @@ public class VideoSearchService {
                     )
                     .minimumShouldMatch("1") // should 조건 중 최소 1개 만족
                 )
-            ).size(size);
-        }
-
-        SearchResponse<JsonData> response = esClient.search(
-            searchBuilder.build(),
-            JsonData.class
-        );
-
-        return response.hits().hits().stream()
-            .map(hit -> {
-                Object sourceObj = hit.source().to(Map.class);
-                return objectMapper.convertValue(sourceObj, VideoPostDto.class);
-            })
-            .toList();
+            ).from(from)
+            .size(size);
     }
 }

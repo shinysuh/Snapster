@@ -1,6 +1,7 @@
 import 'package:snapster_app/common/services/dio_service.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
+import 'package:snapster_app/features/discover/models/search_request_model.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
 import 'package:snapster_app/utils/api_safe_wrapper.dart';
 
@@ -24,6 +25,23 @@ class SearchService {
       response: response,
       fromJson: (e) => VideoPostModel.fromJson(json: e),
       errorPrefix: '[$keyword] 검색 결과 조회',
+    );
+  }
+
+  Future<List<VideoPostModel>> searchByKeywordPrefixWithPaging(
+    SearchRequestModel searchRequest,
+  ) async {
+    final token = await _tokenStorageService.readToken();
+
+    final response = await _dioService.post(
+        uri: _searchBaseUrl,
+        headers: ApiInfo.getBasicHeaderWithToken(token),
+        body: searchRequest);
+
+    return handleListResponse<VideoPostModel>(
+      response: response,
+      fromJson: (e) => VideoPostModel.fromJson(json: e),
+      errorPrefix: '[${searchRequest.keyword}] 검색 결과 조회',
     );
   }
 }
