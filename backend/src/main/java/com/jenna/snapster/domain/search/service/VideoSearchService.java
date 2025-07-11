@@ -55,10 +55,13 @@ public class VideoSearchService {
         SearchRequest.Builder searchBuilder = new SearchRequest.Builder()
             .index(videoIndex);
 
+        int size = 30;
+
         if (keyword == null || keyword.trim().isEmpty()) {
             // 전체 문서 검색 + createdAt 내림차순 정렬
             searchBuilder
                 .query(q -> q.matchAll(m -> m))
+                .size(size)
                 .sort(s -> s
                     .field(f -> f
                         .field("createdAt")
@@ -81,7 +84,7 @@ public class VideoSearchService {
                     )
                     .minimumShouldMatch("1") // should 조건 중 최소 1개 만족
                 )
-            );
+            ).size(size);
         }
 
         SearchResponse<JsonData> response = esClient.search(

@@ -11,13 +11,9 @@ import 'package:snapster_app/features/authentication/renewal/providers/http_auth
 import 'package:snapster_app/features/authentication/views/login/login_screen.dart';
 import 'package:snapster_app/features/authentication/views/signup/sign_up_screen.dart';
 import 'package:snapster_app/features/authentication/views/splash_screen.dart';
-import 'package:snapster_app/features/chat/views/test_chat_detail_screen.dart';
-import 'package:snapster_app/features/chat/views/test_chats_screen.dart';
-import 'package:snapster_app/features/inbox/models/chat_partner_model.dart';
+import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
+import 'package:snapster_app/features/chat/views/chats_screen.dart';
 import 'package:snapster_app/features/inbox/views/activity_screen.dart';
-import 'package:snapster_app/features/inbox/views/chat_detail_screen.dart';
-import 'package:snapster_app/features/inbox/views/chatroom_user_list_screen.dart';
-import 'package:snapster_app/features/inbox/views/chats_screen.dart';
 import 'package:snapster_app/features/onboarding/interests_screen.dart';
 import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/user/views/user_profile_form_screen.dart';
@@ -83,6 +79,25 @@ final routerProvider = Provider<GoRouter>((ref) {
         path: ActivityScreen.routeURL,
         builder: (context, state) => const ActivityScreen(),
       ),
+      // GoRoute(
+      //   name: ChatsScreen.routeName,
+      //   path: ChatsScreen.routeURL,
+      //   builder: (context, state) => const ChatsScreen(),
+      //   routes: [
+      //     GoRoute(
+      //       name: ChatDetailScreen.routeName,
+      //       path: ChatDetailScreen.routeURL,
+      //       builder: (context, state) {
+      //         final id = state.params['chatroomId'] ?? '';
+      //         final chatroom = state.extra;
+      //         return ChatDetailScreen(
+      //           chatroomId: id,
+      //           chatroomBasicInfo: chatroom as ChatPartnerModel,
+      //         );
+      //       },
+      //     ),
+      //   ],
+      // ),
       GoRoute(
         name: ChatsScreen.routeName,
         path: ChatsScreen.routeURL,
@@ -91,25 +106,6 @@ final routerProvider = Provider<GoRouter>((ref) {
           GoRoute(
             name: ChatDetailScreen.routeName,
             path: ChatDetailScreen.routeURL,
-            builder: (context, state) {
-              final id = state.params['chatroomId'] ?? '';
-              final chatroom = state.extra;
-              return ChatDetailScreen(
-                chatroomId: id,
-                chatroomBasicInfo: chatroom as ChatPartnerModel,
-              );
-            },
-          ),
-        ],
-      ),
-      GoRoute(
-        name: TestChatsScreen.routeName,
-        path: TestChatsScreen.routeURL,
-        builder: (context, state) => const TestChatsScreen(),
-        routes: [
-          GoRoute(
-            name: TestChatDetailScreen.routeName,
-            path: TestChatDetailScreen.routeURL,
             builder: (context, state) {
               final chatroomId = int.tryParse(
                 state.queryParams['chatroomId'] ?? '',
@@ -121,7 +117,7 @@ final routerProvider = Provider<GoRouter>((ref) {
                   body: Center(child: Text('잘못된 접근')),
                 );
               }
-              return TestChatDetailScreen(
+              return ChatDetailScreen(
                 chatroomDetails: chatDetails,
               );
             },
@@ -146,11 +142,11 @@ final routerProvider = Provider<GoRouter>((ref) {
           },
         ),
       ),
-      GoRoute(
-        name: ChatroomUserListScreen.routeName,
-        path: ChatroomUserListScreen.routeURL,
-        builder: (context, state) => const ChatroomUserListScreen(),
-      ),
+      // GoRoute(
+      //   name: ChatroomUserListScreen.routeName,
+      //   path: ChatroomUserListScreen.routeURL,
+      //   builder: (context, state) => const ChatroomUserListScreen(),
+      // ),
     ],
   );
 });

@@ -527,7 +527,7 @@ class _ChatDetailScreenState extends ConsumerState<ChatDetailScreen> {
                               right: Sizes.size20,
                             ),
                             itemCount: _messages.length,
-                            separatorBuilder: (context, index) => Gaps.v10,
+                            separatorBuilder: (context, index) => Gaps.v16,
                             itemBuilder: (context, index) {
                               final message = _messages[index];
                               final createdAt =
