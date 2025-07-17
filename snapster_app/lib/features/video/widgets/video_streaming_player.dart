@@ -15,13 +15,13 @@ import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
-class MediaKitStreamingPlayer extends ConsumerStatefulWidget {
+class VideoStreamingPlayer extends ConsumerStatefulWidget {
   final bool isEmpty;
   final int pageIndex;
   final VideoPostModel video;
   final VoidCallback onVideoFinished;
 
-  const MediaKitStreamingPlayer({
+  const VideoStreamingPlayer({
     super.key,
     required this.isEmpty,
     required this.pageIndex,
@@ -30,18 +30,14 @@ class MediaKitStreamingPlayer extends ConsumerStatefulWidget {
   });
 
   @override
-  ConsumerState<MediaKitStreamingPlayer> createState() =>
+  ConsumerState<VideoStreamingPlayer> createState() =>
       _MediaKitStreamingPlayerState();
 }
 
 class _MediaKitStreamingPlayerState
-    extends ConsumerState<MediaKitStreamingPlayer>
-    with SingleTickerProviderStateMixin {
+    extends ConsumerState<VideoStreamingPlayer> {
   late final Player _player;
   late final VideoController _controller;
-
-  late final AnimationController _animationController;
-  final _animationDuration = const Duration(milliseconds: 200);
 
   late final String _streamingUrl;
   bool _isInitialized = false;
@@ -53,7 +49,7 @@ class _MediaKitStreamingPlayerState
   int _commentCount = 0;
 
   late bool _isMuted = kIsWeb ? true : ref.watch(playbackConfigProvider).muted;
-  late bool _showPlayButton = ref.watch(playbackConfigProvider).autoplay;
+  late bool _autoPlay = ref.watch(playbackConfigProvider).autoplay;
 
   @override
   void initState() {
@@ -64,19 +60,10 @@ class _MediaKitStreamingPlayerState
     _controller = VideoController(_player);
 
     _initializePlayer();
-
-    _animationController = AnimationController(
-      vsync: this,
-      lowerBound: 1.0,
-      upperBound: 2.0,
-      value: 2.0,
-      duration: _animationDuration,
-    );
   }
 
   @override
   void dispose() {
-    _animationController.dispose();
     _player.dispose();
     super.dispose();
   }
@@ -84,23 +71,10 @@ class _MediaKitStreamingPlayerState
   Future<void> _initializePlayer() async {
     try {
       await _player.open(Media(_streamingUrl));
+      await _player.setPlaylistMode(PlaylistMode.loop);
       setState(() {
         _isInitialized = true;
       });
-
-      _player.stream.completed.listen((_) {
-        widget.onVideoFinished();
-      });
-
-
-      _player.stream.log.listen((event) {
-        debugPrint('[player.log] $event'); // 로그 출력
-      });
-
-      _player.stream.error.listen((error) {
-        debugPrint('[player.error] $error'); // 에러 발생시 출력
-      });
-
     } catch (e) {
       debugPrint('HLS open error: $e');
     }
@@ -121,14 +95,12 @@ class _MediaKitStreamingPlayerState
   }
 
   void _togglePause() {
-    if (!_showPlayButton) _showPlayButton = true;
+    if (!_autoPlay) _autoPlay = true;
 
     if (_player.state.playing) {
       _player.pause();
-      _animationController.reverse();
     } else {
       _player.play();
-      _animationController.forward();
     }
 
     setState(() {
@@ -175,32 +147,6 @@ class _MediaKitStreamingPlayerState
       Positioned.fill(
         child: GestureDetector(
           onTap: _togglePause,
-        ),
-      ),
-      Positioned.fill(
-        child: IgnorePointer(
-          child: Center(
-            child: AnimatedBuilder(
-              animation: _animationController,
-              builder: (context, child) {
-                return Transform.scale(
-                  scale: _animationController.value,
-                  child: child,
-                );
-              },
-              child: _showPlayButton
-                  ? AnimatedOpacity(
-                      duration: _animationDuration,
-                      opacity: _isPaused ? 1 : 0,
-                      child: const FaIcon(
-                        FontAwesomeIcons.play,
-                        color: Colors.white,
-                        size: Sizes.size72,
-                      ),
-                    )
-                  : null,
-            ),
-          ),
         ),
       ),
       Positioned(
@@ -292,6 +238,32 @@ class _MediaKitStreamingPlayerState
     );
   }
 
+  Widget _getProgressBar() {
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: StreamBuilder<Duration>(
+        stream: _player.stream.position,
+        builder: (context, snapshot) {
+          final position = snapshot.data ?? Duration.zero;
+          final duration = _player.state.duration;
+
+          final progress = (duration.inMilliseconds > 0)
+              ? position.inMilliseconds / duration.inMilliseconds
+              : 0.0;
+
+          return LinearProgressIndicator(
+            value: progress.clamp(0.0, 1.0),
+            backgroundColor: Colors.transparent,
+            color: Colors.redAccent,
+            minHeight: 3,
+          );
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return VisibilityDetector(
@@ -346,6 +318,9 @@ class _MediaKitStreamingPlayerState
                         ),
                       ),
           ),
+          // ✅ 영상 진행 바 추가
+          if (_isInitialized) _getProgressBar(),
+          // 영상 위 UI 요소들
           if (!widget.isEmpty) ..._getPageElements(), // 필요하다면 이 함수 추가
         ],
       ),
