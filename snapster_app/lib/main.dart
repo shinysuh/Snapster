@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:media_kit/media_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:snapster_app/common/handlers/app_lifecycle_handler.dart';
 import 'package:snapster_app/common/handlers/deep_link_handler.dart';
@@ -21,6 +22,7 @@ import 'package:snapster_app/generated/l10n.dart';
 void main() async {
   /* runApp() 호출 전에 binding 을 initialize 하기 위한 코드 */
   WidgetsFlutterBinding.ensureInitialized();
+  MediaKit.ensureInitialized();
 
   // 1) Firebase 초기화
   await Firebase.initializeApp(

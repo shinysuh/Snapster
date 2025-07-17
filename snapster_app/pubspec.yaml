@@ -39,10 +39,15 @@ dependencies:
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
   font_awesome_flutter: ^10.3.0
-  video_player: ^2.8.6
+  # video settings begin
   #  video_player: 2.4.10
-  chewie: ^1.7.0
+  #  chewie: ^1.7.0
+  video_player: ^2.8.6
   better_player: ^0.0.84
+  media_kit: ^1.1.7
+  media_kit_video: ^1.1.7
+  media_kit_libs_video: ^1.0.4 # 플랫폼별 바이너리 포함
+  # video settings end
   visibility_detector: ^0.4.0+2
   readmore: ^2.2.0
   google_fonts: ^4.0.1
@@ -63,12 +68,12 @@ dependencies:
   cloud_functions: ^4.7.5
   http: ^0.13.6
   flutter_secure_storage: ^9.2.4
-#  uni_links: ^0.5.1
+  #  uni_links: ^0.5.1
   app_links: ^6.4.0
   dio: ^5.1.0
   webview_flutter: ^4.0.7
   url_launcher: ^6.2.5
-#  go_router: ^13.2.3
+  #  go_router: ^13.2.3
   stomp_dart_client: ^0.4.4
   web_socket_channel: ^2.4.0
   uuid: ^4.0.0
