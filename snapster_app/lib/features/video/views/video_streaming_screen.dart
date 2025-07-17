@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/video/hls/widgets/hls_streaming_player.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/features/video/widgets/video_streaming_player.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 
 class VideoStreamingScreen extends ConsumerStatefulWidget {
@@ -28,24 +28,27 @@ class _VideoStreamingScreenState extends ConsumerState<VideoStreamingScreen> {
   void initState() {
     super.initState();
 
-    _orderedVideos = [
-      ...widget.videos.sublist(widget.initialIndex),
-      ...widget.videos.sublist(0, widget.initialIndex),
-    ];
+    // _orderedVideos = [
+    //   ...widget.videos.sublist(widget.initialIndex),
+    //   ...widget.videos.sublist(0, widget.initialIndex),
+    // ];
+    //
+    // _pageController = PageController(initialPage: 0);
 
-    _pageController = PageController(initialPage: 0);
+    _orderedVideos = widget.videos;
+    _pageController = PageController(initialPage: widget.initialIndex);
   }
 
   void _onVideoFinished() {
-    final nextPage = _pageController.page!.toInt() + 1;
-
-    if (nextPage >= _orderedVideos.length) {
-    } else {
-      _pageController.nextPage(
-        duration: const Duration(milliseconds: 200),
-        curve: Curves.linear,
-      );
-    }
+    // final nextPage = _pageController.page!.toInt() + 1;
+    //
+    // if (nextPage >= _orderedVideos.length) {
+    // } else {
+    //   _pageController.nextPage(
+    //     duration: const Duration(milliseconds: 200),
+    //     curve: Curves.linear,
+    //   );
+    // }
   }
 
   @override
@@ -72,18 +75,12 @@ class _VideoStreamingScreenState extends ConsumerState<VideoStreamingScreen> {
           itemCount: _orderedVideos.length,
           itemBuilder: (context, index) {
             final video = _orderedVideos[index];
-            return HlsStreamingPlayer(
+            return VideoStreamingPlayer(
               isEmpty: _orderedVideos.isEmpty,
               pageIndex: index,
               video: video,
               onVideoFinished: _onVideoFinished,
             );
-            // return VideoStreamingPlayer(
-            //   isEmpty: _orderedVideos.isEmpty,
-            //   pageIndex: index,
-            //   video: video,
-            //   onVideoFinished: _onVideoFinished,
-            // );
           },
         ),
       ),
