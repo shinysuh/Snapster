@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/message/models/invitation_model.dart';
 import 'package:snapster_app/features/chat/stomp/services/stomp_service.dart';
 
 class StompRepository {
@@ -9,6 +10,11 @@ class StompRepository {
 
   StompRepository(this._stompService);
 
+  // 초대 스트림
+  final _inviteController = StreamController<InvitationModel>.broadcast();
+  Stream<InvitationModel> get inviteStream => _inviteController.stream;
+
+  // 메시지 스트림
   final _messageController = StreamController<ChatMessageModel>.broadcast(
     onListen: () => debugPrint('messageStream: listener attached'),
     onCancel: () => debugPrint('messageStream: listener detached'),
@@ -17,7 +23,7 @@ class StompRepository {
   Stream<ChatMessageModel> get messageStream => _messageController.stream;
   bool _isDisposed = false;
 
-  void _streamMessage(Map<String, dynamic> data) {
+  void streamMessage(Map<String, dynamic> data) {
     try {
       final msg = ChatMessageModel.fromJson(data);
       _messageController.add(msg);
@@ -53,7 +59,7 @@ class StompRepository {
     subscribeToChatrooms(
       chatroomIds,
       (data) {
-        _streamMessage(data);
+        streamMessage(data);
         debugPrint('[$chatroomIds] 메시지 수신: $data');
       },
     );

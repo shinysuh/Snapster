@@ -25,9 +25,9 @@ public interface ChatroomParticipantService {
 
     List<Long> getAllChatroomsByUserId(Long userId);
 
-    ChatroomParticipantDto addParticipant(ChatroomParticipantId participant, Long requestUserId);
+    ChatroomParticipantDto inviteUserToChatroom(ChatroomParticipantId participant, Long requestUserId);
 
-    List<ChatroomParticipantDto> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId);
+    List<ChatroomParticipantDto> inviteMultipleUsersToChatroom(MultipleParticipantsRequestDto addRequestDto, Long requestUserId);
 
     void addInitialParticipants(ChatMessageDto messageRequest);
 

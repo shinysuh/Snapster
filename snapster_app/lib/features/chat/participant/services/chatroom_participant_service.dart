@@ -58,7 +58,7 @@ class ChatroomParticipantService {
     final token = await _tokenStorageService.readToken();
 
     final response = await _dioService.post(
-      uri: '$_baseUrl//add/${addRequest.chatroomId}',
+      uri: '$_baseUrl//multiple/${addRequest.chatroomId}',
       headers: ApiInfo.getBasicHeaderWithToken(token),
       body: addRequest,
     );

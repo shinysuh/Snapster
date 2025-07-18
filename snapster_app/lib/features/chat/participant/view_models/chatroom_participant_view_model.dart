@@ -43,7 +43,7 @@ class ChatroomParticipantViewModel
     );
   }
 
-  Future<void> addParticipant({
+  Future<void> inviteUserToChatroom({
     required BuildContext context,
     required AppUser target,
   }) async {
@@ -76,7 +76,7 @@ class ChatroomParticipantViewModel
     }
   }
 
-  Future<void> addParticipants({
+  Future<void> inviteMultipleUsersToChatroom({
     required BuildContext context,
     required List<int> userIds,
   }) async {

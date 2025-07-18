@@ -23,15 +23,15 @@ public class ChatParticipantController {
     }
 
     @PostMapping("/one")
-    public ResponseEntity<?> addParticipant(@CurrentUser CustomUserDetails currentUser,
+    public ResponseEntity<?> inviteUserToChatroom(@CurrentUser CustomUserDetails currentUser,
                                             @RequestBody ChatroomParticipantId id) {
-        return ResponseEntity.ok(participantService.addParticipant(id, currentUser.getUser().getId()));
+        return ResponseEntity.ok(participantService.inviteUserToChatroom(id, currentUser.getUser().getId()));
     }
 
-    @PostMapping("/add/{chatroomId}")
-    public ResponseEntity<?> addParticipants(@CurrentUser CustomUserDetails currentUser,
+    @PostMapping("/multiple/{chatroomId}")
+    public ResponseEntity<?> inviteMultipleUsersToChatroom(@CurrentUser CustomUserDetails currentUser,
                                              @RequestBody MultipleParticipantsRequestDto addRequestDto) {
-        return ResponseEntity.ok(participantService.addParticipants(addRequestDto, currentUser.getUser().getId()));
+        return ResponseEntity.ok(participantService.inviteMultipleUsersToChatroom(addRequestDto, currentUser.getUser().getId()));
     }
 
     @PutMapping("/read")

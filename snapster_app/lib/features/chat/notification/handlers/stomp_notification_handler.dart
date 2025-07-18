@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:snapster_app/common/navigation/navigation.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/message/models/invitation_model.dart';
 import 'package:snapster_app/features/chat/notification/widgets/notification_popup.dart';
 import 'package:snapster_app/features/chat/providers/chat_providers.dart';
 import 'package:snapster_app/features/chat/views/chat_detail_screen.dart';
@@ -44,6 +45,30 @@ class StompNotificationHandler {
         }
       },
     );
+
+    ref.listenManual<AsyncValue<InvitationModel>>(
+      stompInviteStreamProvider,
+      (prev, next) {
+        if (next.hasValue) {
+          final invite = next.value!;
+          _handleInvite(invite);
+        }
+      },
+    );
+  }
+
+  void _handleInvite(InvitationModel invite) {
+    if (invite.type == 'INVITE') {
+      final chatroomId = invite.chatroomId;
+      debugPrint('📥 초대 수신: $chatroomId');
+
+      final stompRepo = ref.read(stompRepositoryProvider);
+
+      // 새로 초대된 채팅방 구독 시작
+      stompRepo.subscribeToChatroom(chatroomId, stompRepo.streamMessage);
+
+      // ✅ 따로 state push 안 해도 됨! messageStream에서 자동 전달됨
+    }
   }
 
   void _handleIncomingMessage(ChatMessageModel? message) {

@@ -5,15 +5,18 @@ import com.jenna.snapster.core.exception.GlobalException;
 import com.jenna.snapster.domain.chat.message.dto.ChatMessageDto;
 import com.jenna.snapster.domain.chat.message.entity.ChatMessage;
 import com.jenna.snapster.domain.chat.participant.dto.ChatroomParticipantDto;
+import com.jenna.snapster.domain.chat.participant.dto.InvitationDto;
 import com.jenna.snapster.domain.chat.participant.dto.MultipleParticipantsRequestDto;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipant;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomParticipantId;
 import com.jenna.snapster.domain.chat.participant.entity.ChatroomReadStatus;
 import com.jenna.snapster.domain.chat.participant.redis.repository.ChatroomRedisRepository;
+import com.jenna.snapster.domain.chat.participant.redis.repository.OnlineUserRedisRepository;
 import com.jenna.snapster.domain.chat.participant.repository.ChatroomParticipantRepository;
 import com.jenna.snapster.domain.chat.participant.repository.ChatroomReadStatusRepository;
 import com.jenna.snapster.domain.chat.participant.service.ChatroomParticipantService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,7 +30,10 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     private final ChatroomParticipantRepository participantRepository;
     private final ChatroomReadStatusRepository readStatusRepository;
+
+    private final SimpMessagingTemplate simpMessagingTemplate;
     private final ChatroomRedisRepository chatroomRedisRepository;
+    private final OnlineUserRedisRepository onlineUserRedisRepository;
 
     @Override
     public boolean isParticipating(Long chatroomId, Long userId) {
@@ -71,7 +77,7 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public ChatroomParticipantDto addParticipant(ChatroomParticipantId participant, Long requestUserId) {
+    public ChatroomParticipantDto inviteUserToChatroom(ChatroomParticipantId participant, Long requestUserId) {
         Long chatroomId = participant.getChatroomId();
         // 초대 작업을 수행하는 사용자가 채팅방에 참여 중인지 확인
         this.validateRequestUser(chatroomId, requestUserId);
@@ -80,12 +86,15 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
         // redis
         chatroomRedisRepository.addParticipant(chatroomId, participant.getUserId());
 
+        // stomp 구독 알림
+        this.sendStompSubscriptionNoticeToOnlineUser(participant.getChatroomId(), participant.getUserId());
+
         return ChatroomParticipantDto.from(newParticipant);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public List<ChatroomParticipantDto> addParticipants(MultipleParticipantsRequestDto addRequestDto, Long requestUserId) {
+    public List<ChatroomParticipantDto> inviteMultipleUsersToChatroom(MultipleParticipantsRequestDto addRequestDto, Long requestUserId) {
         Long chatroomId = addRequestDto.getChatroomId();
         this.validateRequestUser(chatroomId, requestUserId);
         return this.addMultipleParticipants(chatroomId, addRequestDto.getUserIds());
@@ -156,9 +165,34 @@ public class ChatroomParticipantServiceImpl implements ChatroomParticipantServic
 
         // 2) Redis 참여자 목록 동기화
         chatroomRedisRepository.addParticipants(chatroomId, participantIds);
+        // 3) 초대 받은 참여자 중 온라인 참여자 stomp 구독 알림
+        this.sendStompSubscriptionNoticeToOnlineUser(chatroomId, participantIds);
+
         return participants.stream()
             .map(ChatroomParticipantDto::from)
             .toList();
+    }
+
+    private void sendStompSubscriptionNoticeToOnlineUser(Long chatroomId, List<Long> inviteeIds) {
+        for (Long invitee : inviteeIds) {
+            this.sendStompSubscriptionNoticeToOnlineUser(chatroomId, invitee);
+        }
+    }
+
+    private void sendStompSubscriptionNoticeToOnlineUser(Long chatroomId, Long invitedUserId) {
+        if (onlineUserRedisRepository.isOnline(invitedUserId)) {
+            InvitationDto payload = InvitationDto.builder()
+                .chatroomId(chatroomId)
+                .type("INVITE")
+                .build();
+
+            // /user/{username}/queue/invites
+            simpMessagingTemplate.convertAndSendToUser(
+                String.valueOf(invitedUserId),
+                "/queue/invites",
+                payload
+            );
+        }
     }
 
     private List<ChatroomParticipant> getUsersToParticipate(Long chatroomId, List<Long> userIds) {

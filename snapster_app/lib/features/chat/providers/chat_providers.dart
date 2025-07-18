@@ -4,6 +4,7 @@ import 'package:snapster_app/features/authentication/renewal/providers/token_sto
 import 'package:snapster_app/features/chat/chatroom/repositories/chatroom_repository.dart';
 import 'package:snapster_app/features/chat/chatroom/services/chatroom_service.dart';
 import 'package:snapster_app/features/chat/message/models/chat_message_model.dart';
+import 'package:snapster_app/features/chat/message/models/invitation_model.dart';
 import 'package:snapster_app/features/chat/message/repositories/chat_message_repository.dart';
 import 'package:snapster_app/features/chat/message/services/chat_message_service.dart';
 import 'package:snapster_app/features/chat/participant/repositories/chatroom_participant_repository.dart';
@@ -27,6 +28,11 @@ final stompRepositoryProvider = Provider<StompRepository>(
     return repository;
   },
 );
+
+// 새로 초대된 채팅방 감지 및 구독 처리
+final stompInviteStreamProvider = StreamProvider<InvitationModel>((ref) {
+  return ref.watch(stompRepositoryProvider).inviteStream;
+});
 
 // 모든 채팅방 브로드캐스트 감지용 provider
 final stompMessageStreamProvider = StreamProvider<ChatMessageModel>((ref) {
