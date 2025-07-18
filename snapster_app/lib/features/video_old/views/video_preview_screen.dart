@@ -44,7 +44,7 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   @override
   void initState() {
     super.initState();
-    _initVideo().then((value) => showDialogForm());
+    _initVideo();
   }
 
   @override
@@ -59,13 +59,13 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
 
     await _videoPlayerController.initialize();
     await _videoPlayerController.setLooping(true);
-
-    _videoPlayerController.setVolume(_isMuted ? 0 : 1);
-
+    await _videoPlayerController.setVolume(_isMuted ? 0 : 1);
     await _videoPlayerController.play();
 
     // initialization 을 build 메소드가 알도록 하는 역할
     setState(() {});
+
+    showDialogForm();
   }
 
   void showDialogForm() {

@@ -5,6 +5,8 @@ import 'package:snapster_app/features/authentication/renewal/constants/authoriza
 class ApiInfo {
   // static const baseUrl = 'https://d3uszapt2fdgux.cloudfront.net';      // 운영
   static const baseUrl = 'http://localhost:8080'; // 개발
+  // static const baseUrl = 'http://10.0.2.2:8080'; // 개발 - 안드로이드
+  // static const baseUrl = 'https://76c7c886d179.ngrok-free.app'; // ngrok 테스트 (fcm)
 
   static const oauthBaseUrl = '$baseUrl/oauth2/authorization';
   static const presignedBaseUrl = '$baseUrl/api/s3/presigned-url?fileName=';
@@ -24,6 +26,8 @@ class ApiInfo {
   static const stompBaseUrl = '/app/chat/send';
 
   static const notificationBaseUrl = '$baseUrl/api/notification';
+
+  static const searchBaseUrl = '$baseUrl/api/search';
 
   static Map<String, String> getBasicHeaderWithToken(String? token) {
     return {
