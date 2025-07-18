@@ -6,20 +6,21 @@ import 'package:snapster_app/utils/theme_mode.dart';
 
 class NotificationPopup extends ConsumerStatefulWidget {
   final ChatMessageModel message;
-  final VoidCallback? onTap;
   final OverlayEntry entry;
+  final VoidCallback? onTap;
 
   const NotificationPopup({
     super.key,
     required this.message,
-    this.onTap,
     required this.entry,
+    this.onTap,
   });
 
   static void show({
     required OverlayState overlay,
     required ChatMessageModel message,
     VoidCallback? onTap,
+    Color? popupColor,
   }) {
     late OverlayEntry entry;
 
@@ -85,7 +86,7 @@ class _NotificationPopupState extends ConsumerState<NotificationPopup>
     widget.entry.remove();
   }
 
-  Widget _getMessage() {
+  Widget _getMessage(Color textColor) {
     final message = widget.message;
     final sender = message.senderDisplayName.isNotEmpty
         ? message.senderDisplayName
@@ -96,14 +97,14 @@ class _NotificationPopupState extends ConsumerState<NotificationPopup>
         children: [
           TextSpan(
             text: '[ $sender ]  ',
-            style: const TextStyle(
+            style: TextStyle(
               fontWeight: FontWeight.bold,
-              color: Colors.black,
+              color: textColor,
             ),
           ),
           TextSpan(
             text: message.content,
-            style: const TextStyle(color: Colors.black),
+            style: TextStyle(color: textColor),
           ),
         ],
       ),
@@ -118,6 +119,9 @@ class _NotificationPopupState extends ConsumerState<NotificationPopup>
     final screenWidth = MediaQuery.of(context).size.width;
     final maxPopupWidth = screenWidth * 0.8; // 화면 너비의 80%
 
+    final popupColor = isDark ? Colors.grey.shade700 : Colors.white;
+    final textColor = isDark ? Colors.white : Colors.black;
+
     return SlideTransition(
       position: _offsetAnimation,
       child: GestureDetector(
@@ -125,13 +129,13 @@ class _NotificationPopupState extends ConsumerState<NotificationPopup>
         child: Material(
           elevation: Sizes.size6,
           borderRadius: BorderRadius.circular(Sizes.size20),
-          color: Colors.white,
+          color: popupColor,
           child: Container(
             constraints: BoxConstraints(
               maxWidth: maxPopupWidth,
             ),
             decoration: BoxDecoration(
-              color: isDark ? Colors.grey.shade500 : Colors.white,
+              color: popupColor,
             ),
             padding: const EdgeInsets.symmetric(
               horizontal: Sizes.size8,
@@ -139,7 +143,7 @@ class _NotificationPopupState extends ConsumerState<NotificationPopup>
             ),
             margin: const EdgeInsets.symmetric(
                 horizontal: Sizes.size20, vertical: Sizes.size10),
-            child: _getMessage(),
+            child: _getMessage(textColor),
           ),
         ),
       ),

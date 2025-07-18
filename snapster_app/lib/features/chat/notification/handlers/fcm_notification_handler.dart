@@ -115,7 +115,6 @@ class FCMNotificationHandler {
             senderDisplayName: 'FCM ][ ${receivedMsg.senderDisplayName}',
           ),
           onTap: () => navigateToChatroom(navigator, chatroomId, currentUser),
-          popupColor: const Color(0xFFFDBBA8),
         );
       }
     } catch (e) {
