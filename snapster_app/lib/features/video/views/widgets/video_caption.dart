@@ -36,7 +36,6 @@ class _VideoCaptionState extends State<VideoCaption> {
     // _caption += 'weailgrh v aei udhgvo eidsrf jvzcilsdzjc' * 13;
     _tags = widget.tags;
     _isWithEllipsis = _caption.length > _cutLength;
-    // _isWithEllipsis = _caption.length > _cutLength || _tags.isNotEmpty;
   }
 
   @override

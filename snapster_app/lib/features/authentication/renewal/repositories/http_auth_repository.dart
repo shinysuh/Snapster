@@ -111,9 +111,9 @@ class AuthRepository {
     debugPrint("url : $url");
 
     String fcmToken = provider == 'kakao'
-        ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiLshJzsi6DsmIEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTE5NjM5MzAsImV4cCI6MTc1MjU2ODczMH0.I5Y58E-owaaif-TeHAzJroHSWJoLvfNbQrjmJoeJHi7s170lXwm_rmq5HMJmoBTtBJF-39XbltUeODY9hQie3w"
+        ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiLshJzsi6DsmIEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTI3Mzc4NDgsImV4cCI6MTc1MzM0MjY0OH0.APmgV7l3UPl2zI6Qs370Etm9Xi8ymoWTkfOFmekWqg8yI1EANoHtsmFl6U2ViE92O6pwOA9vA_pdjPLyx0hYKw"
         : provider == 'google'
-            ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJTdW1tZXIxMjMiLCJlbWFpbCI6InNoaW55c3VoMTk5MkBnbWFpbC5jb20iLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTE5NjM5NDYsImV4cCI6MTc1MjU2ODc0Nn0.oVFrlqv_siaxzP-geCFgfDxhsPs7MgULbceecM6GjzLUFtVAS1vDjwuL7g7fiZKWnVqy9zGpzh-ugzSqhKqUdw"
+            ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJTdW1tZXIxMjMiLCJlbWFpbCI6InNoaW55c3VoMTk5MkBnbWFpbC5jb20iLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTI3Mzc4MTUsImV4cCI6MTc1MzM0MjYxNX0.1hhssi5FDZpj1xEAZv_pozCrQAjn8hYrdivfl040E7pOZNVQ4rhGDFz6Jvk0M1pAvFc2HIsusfksfEy-NGAQNA"
             : '';
 
     // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)

@@ -1,18 +1,14 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
-import 'package:snapster_app/features/video/views/widgets/video_caption.dart';
+import 'package:snapster_app/features/video/views/widgets/video_page_elements.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
-import 'package:snapster_app/features/video_old/views/widgets/video_button.dart';
-import 'package:snapster_app/features/video_old/views/widgets/video_comments.dart';
 import 'package:snapster_app/generated/l10n.dart';
-import 'package:snapster_app/utils/profile_network_img.dart';
 import 'package:visibility_detector/visibility_detector.dart';
 
 class VideoStreamingPlayer extends ConsumerStatefulWidget {
@@ -20,15 +16,11 @@ class VideoStreamingPlayer extends ConsumerStatefulWidget {
   final int pageIndex;
   final VideoPostModel video;
 
-  // final void Function(int move) onVideoScrolled;
-  // final VoidCallback onVideoFinished;
-
   const VideoStreamingPlayer({
     super.key,
     required this.isEmpty,
     required this.pageIndex,
     required this.video,
-    // required this.onVideoScrolled,
   });
 
   @override
@@ -43,15 +35,6 @@ class _MediaKitStreamingPlayerState
 
   late final String _streamingUrl;
   bool _isInitialized = false;
-
-  late final String _videoId;
-  bool _isPaused = false;
-  bool _isLiked = false;
-  int _likeCount = 0;
-  int _commentCount = 0;
-
-  late bool _isMuted = kIsWeb ? true : ref.watch(playbackConfigProvider).muted;
-  late bool _autoPlay = ref.watch(playbackConfigProvider).autoplay;
 
   @override
   void initState() {
@@ -82,161 +65,16 @@ class _MediaKitStreamingPlayerState
     }
   }
 
+  void _togglePlay(bool isPlaying) {
+    if (isPlaying) {
+      _player.play();
+    } else {
+      _player.pause();
+    }
+  }
+
   void _onVisibilityChanged(VisibilityInfo info) {
-    if (info.visibleFraction == 1) {
-      _player.play();
-    } else {
-      _player.pause();
-    }
-  }
-
-  void _toggleMuted() {
-    setState(() {
-      _isMuted = !_isMuted;
-    });
-  }
-
-  void _togglePause() {
-    if (!_autoPlay) _autoPlay = true;
-
-    if (_player.state.playing) {
-      _player.pause();
-    } else {
-      _player.play();
-    }
-
-    setState(() {
-      _isPaused = !_isPaused;
-    });
-  }
-
-  void _onTapLike() {
-    // ref
-    //     .read(videoPostProvider(_videoId).notifier)
-    //     .toggleLikeVideo(widget.videoData.thumbnailURL);
-
-    // setState(() {
-    //   !_isLiked ? _likeCount++ : _likeCount--; // db를 직접 찌르지 않음 -> 금전적 이유
-    //   _isLiked = !_isLiked;
-    // });
-  }
-
-  void _onChangeCommentCount(int commentCount) {
-    // setState(() {
-    //   _commentCount = commentCount;
-    // });
-  }
-
-  void _onTapComments(BuildContext context) async {
-    if (_player.state.playing) _togglePause();
-
-    await showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.transparent,
-      isScrollControlled: true,
-      builder: (context) => VideoComments(
-        videoId: _videoId,
-        commentCount: _commentCount,
-        onChangeCommentCount: _onChangeCommentCount,
-      ),
-    );
-
-    _togglePause();
-  }
-
-  void _onDoubleTap() {
-    // 하트 애니메이션 추가
-    _onTapLike();
-  }
-
-  List<Widget> _getPageElements() {
-    return [
-      Positioned.fill(
-        child: GestureDetector(
-          behavior: HitTestBehavior.translucent,
-          // 스와이프 이벤트는 통과시킴
-          onTap: _togglePause,
-          onDoubleTap: _onDoubleTap,
-        ),
-      ),
-      Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + Sizes.size32,
-        left: Sizes.size16,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '@${widget.video.userDisplayName}',
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: Sizes.size20,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            Gaps.v18,
-            if (widget.video.description.isNotEmpty)
-              VideoCaption(
-                description: widget.video.description,
-                tags: widget.video.tags,
-              ),
-          ],
-        ),
-      ),
-      Positioned(
-        bottom: MediaQuery.of(context).padding.bottom + Sizes.size26,
-        right: Sizes.size16,
-        child: Column(
-          children: [
-            GestureDetector(
-              onTap: _toggleMuted,
-              child: FaIcon(
-                _isMuted
-                    ? FontAwesomeIcons.volumeXmark
-                    : FontAwesomeIcons.volumeHigh,
-                color: Colors.white,
-                size: Sizes.size24,
-              ),
-            ),
-            Gaps.v24,
-            CircleAvatar(
-              radius: 25,
-              backgroundColor: Colors.black,
-              foregroundColor: Colors.white,
-              foregroundImage: getProfileImgByUserProfileImageUrl(
-                widget.video.userProfileImageUrl.isNotEmpty,
-                widget.video.userProfileImageUrl,
-                false,
-              ),
-            ),
-            Gaps.v12,
-            GestureDetector(
-              onTap: _onTapLike,
-              child: VideoButton(
-                icon: FontAwesomeIcons.solidHeart,
-                iconColor: _isLiked ? Colors.red : Colors.white,
-                text: S.of(context).likeCount(_likeCount),
-              ),
-            ),
-            Gaps.v24,
-            GestureDetector(
-              onTap: () => _onTapComments(context),
-              child: VideoButton(
-                icon: FontAwesomeIcons.solidCommentDots,
-                iconColor: Colors.white,
-                text: S.of(context).commentCount(_commentCount),
-              ),
-            ),
-            Gaps.v24,
-            VideoButton(
-              icon: FontAwesomeIcons.share,
-              iconColor: Colors.white,
-              text: S.of(context).share,
-            ),
-            Gaps.v20,
-          ],
-        ),
-      )
-    ];
+    _togglePlay(info.visibleFraction == 1);
   }
 
   TextStyle _getErrorContainerTextStyle() {
@@ -276,6 +114,12 @@ class _MediaKitStreamingPlayerState
 
   @override
   Widget build(BuildContext context) {
+    final isMuted = kIsWeb ? true : ref.watch(playbackConfigProvider).muted;
+    final autoPlay = ref.watch(playbackConfigProvider).autoplay;
+
+    _player.setVolume(isMuted ? 0 : 100);
+    _togglePlay(autoPlay);
+
     return VisibilityDetector(
       key: Key('${widget.pageIndex}'),
       onVisibilityChanged: _onVisibilityChanged,
@@ -335,7 +179,12 @@ class _MediaKitStreamingPlayerState
           // ✅ 영상 진행 바 추가
           if (_isInitialized) _getProgressBar(),
           // 영상 위 UI 요소들
-          if (!widget.isEmpty) ..._getPageElements(), // 필요하다면 이 함수 추가
+          if (!widget.isEmpty)
+            VideoPageElements(
+              video: widget.video,
+              player: _player,
+              isMuted: isMuted,
+            ),
         ],
       ),
     );

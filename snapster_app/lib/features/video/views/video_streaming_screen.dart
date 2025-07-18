@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
-import 'package:snapster_app/features/video/widgets/video_streaming_player.dart';
+import 'package:snapster_app/features/video/views/widgets/video_streaming_player.dart';
 
 class VideoStreamingScreen extends ConsumerStatefulWidget {
   final List<VideoPostModel> videos;
