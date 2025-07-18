@@ -1,0 +1,22 @@
+version: '3.8'  # Docker Compose 파일 버전 지정 (최신 기능 지원)
+
+services:
+  backend:  # 백엔드 서비스 정의
+    build:
+      context: ./backend  # backend 디렉토리에서 Dockerfile을 기준으로 이미지 빌드
+    container_name: snapster-backend  # 컨테이너 이름 명확하게 지정
+    ports:
+      - "80:80"  # 호스트의 80 포트를 컨테이너의 80 포트와 연결 (웹서버 기본 포트)
+    env_file:
+      - .env  # 환경변수 파일(.env) 로드 (비밀번호, 시크릿 키 등 관리용)
+    environment:
+      - SPRING_PROFILES_ACTIVE=prod  # Spring 프로파일을 prod로 지정 (별도 우선순위 있음)
+
+  frontend:  # 프론트엔드 서비스 정의
+    build:
+      context: ./snapster_app  # frontend 디렉토리에서 Dockerfile을 기준으로 이미지 빌드
+    container_name: snapster-frontend  # 컨테이너 이름 명확하게 지정
+    ports:
+      - "8080:80"  # 호스트 8080 포트를 컨테이너 80 포트와 연결 (nginx 기본 웹 포트)
+    depends_on:
+      - backend  # backend 컨테이너가 먼저 실행되어야 frontend가 실행됨 (의존성 설정)

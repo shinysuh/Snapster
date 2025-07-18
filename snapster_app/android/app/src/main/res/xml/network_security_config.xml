@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!-- 로컬 테스트용 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">10.0.2.2</domain>
+    </domain-config>
+
+    <!-- 운영용 ALB 도메인 허용 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">tiktokclone-albb884012769.ap-northeast-2.elb.amazonaws.com</domain>
+    </domain-config>
+
+    <!-- EC2 도메인 허용 -->
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com/</domain>
+    </domain-config>
+</network-security-config>

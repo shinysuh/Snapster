@@ -1,0 +1,43 @@
+spring:
+  web:
+    resources:
+      add-mappings: false
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.31.10.98:3306/snapster
+    username: snapster_app
+    password: qwer1234
+  pid:
+    file: /home/ec2-user/snapster/application.pid
+  data:
+    redis:
+      host: 172.31.10.98
+      port: 6379
+      password: qwer1234
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: https://d3uszapt2fdgux.cloudfront.net/login/oauth2/code/kakao
+          google:
+            redirect-uri: https://d3uszapt2fdgux.cloudfront.net/login/oauth2/code/google
+
+server:
+  port: 80
+  ssl:
+    enabled: false
+  forward-headers-strategy: native
+authorization:
+  jwt:
+    expiration: 1800000 # 1000 * 60 * 30    # 30분
+
+firebase:
+  config:
+    path: /app/firebase/snapster-firebase-service-account.json
+
+logging:
+  level:
+    org:
+      springframework:
+        web: info

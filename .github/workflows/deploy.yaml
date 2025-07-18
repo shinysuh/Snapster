@@ -1,0 +1,199 @@
+name: deploy
+
+on:
+  push:
+    branches:
+      - renewal
+#      - master   # 향후 master 변경 시 설정
+
+jobs:
+  build:
+    runs-on: ubuntu-latest      # Github Activations 실행할 환경
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2     # repository 체크아웃
+
+      - name: Enable debug logging    # 로그
+        run: echo "ACTIONS_STEP_DEBUG=true" >> $GITHUB_ENV
+
+      # 1) JDK 21 설치
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
+        with:
+          distribution: temurin
+          java-version: '21'
+
+      # 2) 백엔드 JAR 빌드
+      - name: Build backend JAR
+        run: |
+          cd backend
+          ./gradlew clean bootJar --no-daemon
+
+      # Install yq to parse YAML
+      - name: Install yq
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y jq
+          sudo wget https://github.com/mikefarah/yq/releases/download/v4.14.1/yq_linux_amd64 -O /usr/local/bin/yq
+          sudo chmod +x /usr/local/bin/yq
+
+      # Parse cache path from docker-settings.yaml
+      - name: Read cache path from docker-settings.yaml
+        id: cache-path
+        run: |
+          CACHE_PATH=$(yq eval '.cache.path' docker-settings.yaml)   # 파일 경로에 맞게 수정
+          echo "CACHE_PATH=$CACHE_PATH" >> $GITHUB_ENV
+
+      - name: Read docker container name from docker-settings.yaml
+        id: docker-container
+        run: |
+          DOCKER_CONTAINER=$(yq eval '.docker.container' docker-settings.yaml)   # 파일 경로에 맞게 수정
+          echo "DOCKER_CONTAINER=$DOCKER_CONTAINER" >> $GITHUB_ENV
+
+      - name: Read docker image name from docker-settings.yaml
+        id: docker-image
+        run: |
+          DOCKER_IMAGE=$(yq eval '.docker.image' docker-settings.yaml)   # 파일 경로에 맞게 수정
+          echo "DOCKER_IMAGE=$DOCKER_IMAGE" >> $GITHUB_ENV
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2   # Docker Buildx 설정
+
+      - name: Cache Docker layers (backend)
+        uses: actions/cache@v3
+        with:
+          path: ${{ env.CACHE_PATH }}/.buildx-cache-backend  # Docker 캐시 경로
+          key: ${{ runner.os }}-docker-backend-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}-${{ github.sha }}   # 캐시 키
+          restore-keys: |
+            key: ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}-${{ hashFiles('backend/**') }}
+            ${{ runner.os }}-docker-${{ hashFiles('backend/Dockerfile') }}
+            ${{ runner.os }}-docker-
+
+      #      - name: Cache Docker layers (frontend)
+      #        uses: actions/cache@v3
+      #        with:
+      #          path: ${{ env.CACHE_PATH }}/.buildx-cache-frontend
+      #          key: ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}-${{ github.sha }}
+      #          restore-keys: |
+      #            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}-${{ hashFiles('snapster_app/**') }}
+      #            ${{ runner.os }}-docker-frontend-${{ hashFiles('snapster_app/Dockerfile') }}
+      #            ${{ runner.os }}-docker-frontend-
+
+      # 백엔드 이미지 빌드 및 로드
+      - name: Build backend Docker image with caching
+        run: |
+          docker buildx build \
+          --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache \
+          --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache \
+          --tag ${{ env.DOCKER_IMAGE }}-backend:latest \
+          --file backend/Dockerfile \
+          backend/. \
+          --load \
+          --progress=plain
+
+      # 프론트 이미지 빌드 및 로드
+      #      - name: Build frontend Docker image with caching
+      #        run: |
+      #          docker buildx build \
+      #          --cache-from=type=local,src=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
+      #          --cache-to=type=local,dest=${{ env.CACHE_PATH }}/.buildx-cache-frontend \
+      #          --tag ${{ env.DOCKER_IMAGE }}-frontend:latest \
+      #          --file snapster_app/Dockerfile \
+      #          snapster_app/. \
+      #          --load \
+      #          --progress=plain
+
+      - name: Log into AWS (EC2)
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}  # GitHub Secrets에서 AWS 키를 설정해야 합니다.
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}  # GitHub Secrets에서 AWS 키를 설정해야 합니다.
+          aws-region: us-east-1  # EC2가 있는 AWS 리전
+
+      - name: Setup SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          printf '%s\n' "${{ secrets.AWS_SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com >> ~/.ssh/known_hosts
+
+      # 백엔드 도커 이미지 복사
+      - name: Copy backend Docker image to EC2
+        run: |
+          docker save ${{ env.DOCKER_IMAGE }}-backend:latest | gzip > ${{ env.DOCKER_IMAGE }}-backend.tar.gz
+          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-backend.tar.gz ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+
+      # 프론트 도커 이미지 복사
+      #      - name: Copy frontend Docker image to EC2
+      #        run: |
+      #          docker save ${{ env.DOCKER_IMAGE }}-frontend:latest | gzip > ${{ env.DOCKER_IMAGE }}-frontend.tar.gz
+      #          scp -i ~/.ssh/id_rsa ${{ env.DOCKER_IMAGE }}-frontend.tar.gz ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com:/home/ec2-user/snapster/docker
+
+      - name: SSH into EC2 and Deploy Docker container
+        run: |
+          REPOSITORY=/home/ec2-user/snapster/docker
+          BACKEND_CONTAINER=${{ env.DOCKER_CONTAINER }}-backend
+          FRONTEND_CONTAINER=${{ env.DOCKER_CONTAINER }}-frontend
+          BACKEND_IMAGE=${{ env.DOCKER_IMAGE }}-backend
+          FRONTEND_IMAGE=${{ env.DOCKER_IMAGE }}-frontend
+          
+          KAKAO_CLIENT_SECRET='${{ secrets.KAKAO_CLIENT_SECRET }}'
+          GOOGLE_CLIENT_SECRET='${{ secrets.GOOGLE_CLIENT_SECRET }}'
+          S3_ACCESS_KEY='${{ secrets.S3_ACCESS_KEY }}'
+          S3_SECRET_ACCESS_KEY='${{ secrets.S3_SECRET_ACCESS_KEY }}'
+          JWT_SECRET='${{ secrets.JWT_SECRET }}'
+          
+          ssh -i ~/.ssh/id_rsa ec2-user@ec2-43-202-142-170.ap-northeast-2.compute.amazonaws.com <<EOF
+            # 함수 정의: 컨테이너 실행
+            run_docker() {
+              local name=\$1
+              local image=\$2
+              local ports=\$3
+              local envs=\$4
+          
+              # 이미 실행 중인 컨테이너 종료
+              if docker ps -a | grep -q \$name; then
+                docker stop \$name
+                docker rm \$name
+              fi
+          
+              # 기존 이미지 삭제 (존재 시)
+              if docker images | grep -q \$image; then 
+                docker rmi \$image || true
+              fi
+          
+              # 도커 리소스 사용량 체크
+              docker system df
+          
+              # 중지된 컨테이너만 제거 (안전한 일상 배포용)
+              # docker container prune -f
+          
+              # 중지 컨테이너 정리 && 이미지는 남기되 기타 리소스만 정리
+              docker system prune -f
+          
+              # 이미지 로드
+              docker load < $REPOSITORY/\$image.tar.gz || exit 1
+          
+              # 컨테이너 실행
+              docker run -d --name \$name \$ports \$envs \$image:latest
+            }
+          
+            # 백엔드 실행
+            run_docker $BACKEND_CONTAINER $BACKEND_IMAGE "-p 80:80" "-e SPRING_PROFILES_ACTIVE=prod \
+              -v /home/ec2-user/snapster/firebase:/app/firebase \
+              -e KAKAO_CLIENT_SECRET=$KAKAO_CLIENT_SECRET \
+              -e GOOGLE_CLIENT_SECRET=$GOOGLE_CLIENT_SECRET \
+              -e S3_ACCESS_KEY=$S3_ACCESS_KEY \
+              -e S3_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY \
+              -e JWT_SECRET=$JWT_SECRET"
+          
+            # 프론트엔드 실행
+            # run_docker $FRONTEND_CONTAINER $FRONTEND_IMAGE "-p 8080:80" ""
+          
+            # 백업 파일 저장 (불필요)
+            # cp $REPOSITORY/$BACKEND_IMAGE.tar.gz $REPOSITORY/tar_backups/$BACKEND_IMAGE.tar.gz
+            # cp $REPOSITORY/$FRONTEND_IMAGE.tar.gz $REPOSITORY/tar_backups/$FRONTEND_IMAGE.tar.gz
+          
+            docker ps
+          EOF

@@ -160,10 +160,10 @@ Flutter & Firebase 를 사용한 TikTok 클론 프로젝트
 - **작업 내용:**
     - FirebaseStorage 에 사용자 id로 프로필 사진(avatar) 저장
         - 프로필 이미지 파일 업로드
-        - 사용자 정보 hasAvatar: true 로 업데이트
+        - 사용자 정보 hasProfileImage: true 로 업데이트
     - 프로필 사진 삭제
         - 프로필 이미지 파일 삭제
-        - 사용자 정보 hasAvatar: false 로 업데이트
+        - 사용자 정보 hasProfileImage: false 로 업데이트
 
 <img width="392" alt="image" src="https://github.com/user-attachments/assets/0b28eb24-5f84-4bd2-be42-b047dad04405">
 

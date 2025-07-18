@@ -1,0 +1,10 @@
+
+${AnsiColor.BLUE}________________________________________________________________
+${AnsiColor.MAGENTA} _______ __   _ _______  _____  _______ _______ _______  ______
+${AnsiColor.BRIGHT_MAGENTA} |______ | \  | |_____| |_____] |______    |    |______ |_____/
+${AnsiColor.RED} ______| |  \_| |     | |       ______|    |    |______ |    \_
+${AnsiColor.BRIGHT_RED}________________________________________________________________
+
+${AnsiColor.CYAN}Snapster version 1.0.0
+Powered by Spring Boot ${spring-boot.version}
+${AnsiColor.BRIGHT_WHITE}
