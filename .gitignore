@@ -50,3 +50,6 @@ app.*.map.json
 
 # Firebase Admin SDK key
 backend/src/main/resources/firebase/**/snapster-firebase-service-account.json
+
+# GoogleService-Info.plist
+snapster_app/ios/GoogleService-Info.plist
