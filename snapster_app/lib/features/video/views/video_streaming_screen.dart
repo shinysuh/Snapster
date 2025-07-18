@@ -3,7 +3,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
 import 'package:snapster_app/features/video/widgets/video_streaming_player.dart';
-import 'package:snapster_app/utils/theme_mode.dart';
 
 class VideoStreamingScreen extends ConsumerStatefulWidget {
   final List<VideoPostModel> videos;
@@ -40,6 +39,7 @@ class _VideoStreamingScreenState extends ConsumerState<VideoStreamingScreen> {
   }
 
   void _onVideoFinished() {
+    // 자동 영상 넘김 설정
     // final nextPage = _pageController.page!.toInt() + 1;
     //
     // if (nextPage >= _orderedVideos.length) {
@@ -51,38 +51,66 @@ class _VideoStreamingScreenState extends ConsumerState<VideoStreamingScreen> {
     // }
   }
 
+  void _onVideoScrolled(int move) {
+    final landingPage = _pageController.page!.toInt() + move;
+
+    if (move == 1) {
+      if (landingPage >= _orderedVideos.length) {
+      } else {
+        _pageController.nextPage(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.linear,
+        );
+      }
+    } else {
+      if (landingPage < 0) {
+      } else {
+        _pageController.previousPage(
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.linear,
+        );
+      }
+    }
+  }
+
+  Widget _getBackToFeedButton() {
+    return Positioned(
+      top: MediaQuery.of(context).padding.top + Sizes.size8,
+      left: 0,
+      child: IconButton(
+        icon: Icon(
+          Icons.chevron_left,
+          size: Sizes.size28,
+          color: Colors.grey.shade600,
+        ),
+        onPressed: () => Navigator.of(context).pop(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        resizeToAvoidBottomInset: false,
-        backgroundColor: isDarkMode(context) ? Colors.black : Colors.white,
-        appBar: AppBar(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: IconButton(
-            icon: Icon(
-              Icons.chevron_left,
-              size: Sizes.size20,
-              color: Colors.grey.shade600,
-            ),
-            onPressed: () => Navigator.of(context).pop(),
+    return Scaffold(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Colors.black,
+      body: Stack(
+        children: [
+          PageView.builder(
+            controller: _pageController,
+            scrollDirection: Axis.vertical,
+            itemCount: _orderedVideos.length,
+            itemBuilder: (context, index) {
+              final video = _orderedVideos[index];
+              return VideoStreamingPlayer(
+                isEmpty: _orderedVideos.isEmpty,
+                pageIndex: index,
+                video: video,
+                // onVideoScrolled: _onVideoScrolled,
+              );
+            },
           ),
-        ),
-        body: PageView.builder(
-          controller: _pageController,
-          scrollDirection: Axis.vertical,
-          itemCount: _orderedVideos.length,
-          itemBuilder: (context, index) {
-            final video = _orderedVideos[index];
-            return VideoStreamingPlayer(
-              isEmpty: _orderedVideos.isEmpty,
-              pageIndex: index,
-              video: video,
-              onVideoFinished: _onVideoFinished,
-            );
-          },
-        ),
+          _getBackToFeedButton(),
+        ],
       ),
     );
   }

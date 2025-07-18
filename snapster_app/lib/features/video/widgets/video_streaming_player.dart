@@ -7,9 +7,9 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/features/video/views/widgets/video_caption.dart';
 import 'package:snapster_app/features/video_old/view_models/playback_config_view_model.dart';
 import 'package:snapster_app/features/video_old/views/widgets/video_button.dart';
-import 'package:snapster_app/features/video_old/views/widgets/video_caption.dart';
 import 'package:snapster_app/features/video_old/views/widgets/video_comments.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
@@ -19,14 +19,16 @@ class VideoStreamingPlayer extends ConsumerStatefulWidget {
   final bool isEmpty;
   final int pageIndex;
   final VideoPostModel video;
-  final VoidCallback onVideoFinished;
+
+  // final void Function(int move) onVideoScrolled;
+  // final VoidCallback onVideoFinished;
 
   const VideoStreamingPlayer({
     super.key,
     required this.isEmpty,
     required this.pageIndex,
     required this.video,
-    required this.onVideoFinished,
+    // required this.onVideoScrolled,
   });
 
   @override
@@ -142,16 +144,24 @@ class _MediaKitStreamingPlayerState
     _togglePause();
   }
 
+  void _onDoubleTap() {
+    // 하트 애니메이션 추가
+    _onTapLike();
+  }
+
   List<Widget> _getPageElements() {
     return [
       Positioned.fill(
         child: GestureDetector(
+          behavior: HitTestBehavior.translucent,
+          // 스와이프 이벤트는 통과시킴
           onTap: _togglePause,
+          onDoubleTap: _onDoubleTap,
         ),
       ),
       Positioned(
-        bottom: 25,
-        left: 15,
+        bottom: MediaQuery.of(context).padding.bottom + Sizes.size32,
+        left: Sizes.size16,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -173,8 +183,8 @@ class _MediaKitStreamingPlayerState
         ),
       ),
       Positioned(
-        bottom: 25,
-        right: 15,
+        bottom: MediaQuery.of(context).padding.bottom + Sizes.size26,
+        right: Sizes.size16,
         child: Column(
           children: [
             GestureDetector(
@@ -240,7 +250,7 @@ class _MediaKitStreamingPlayerState
 
   Widget _getProgressBar() {
     return Positioned(
-      bottom: 0,
+      bottom: MediaQuery.of(context).padding.bottom,
       left: 0,
       right: 0,
       child: StreamBuilder<Duration>(
@@ -272,13 +282,14 @@ class _MediaKitStreamingPlayerState
       child: Stack(
         children: [
           Positioned.fill(
+            bottom: MediaQuery.of(context).padding.bottom,
             child: widget.isEmpty
                 ? Container(
                     color: Colors.black,
                     child: Center(
                       child: Text(
                         S.of(context).noVideosToShow,
-                        // "No more videos to display. \nYou've seen all of 'em.",
+                        // "No more videos to display. \nYou've seen all.",
                         style: const TextStyle(
                           fontSize: Sizes.size20,
                           color: Colors.white,
@@ -290,9 +301,12 @@ class _MediaKitStreamingPlayerState
                     ),
                   )
                 : _isInitialized
-                    ? AspectRatio(
-                        aspectRatio: 9 / 16,
-                        child: Video(controller: _controller),
+                    ? IgnorePointer(
+                        ignoring: true,
+                        child: AspectRatio(
+                          aspectRatio: 9 / 16,
+                          child: Video(controller: _controller),
+                        ),
                       )
                     : Image.network(
                         widget.video.thumbnailUrl,
