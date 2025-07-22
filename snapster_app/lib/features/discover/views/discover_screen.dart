@@ -8,6 +8,8 @@ import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/discover/view_models/search_view_model.dart';
 import 'package:snapster_app/features/video/models/video_post_model.dart';
+import 'package:snapster_app/features/video/views/video_streaming_screen.dart';
+import 'package:snapster_app/utils/navigator_redirection.dart';
 import 'package:snapster_app/utils/tap_to_unfocus.dart';
 import 'package:snapster_app/utils/theme_mode.dart';
 
@@ -95,6 +97,17 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
     );
   }
 
+  void _onTapThumbnail(List<VideoPostModel> searchResults, int index) {
+    redirectToScreen(
+      context: context,
+      // isFullScreen: true,
+      targetScreen: VideoStreamingScreen(
+        videos: searchResults,
+        initialIndex: index,
+      ),
+    );
+  }
+
   Widget _getSearchGridView({
     required int colCount,
     required List<VideoPostModel> searchResults,
@@ -120,16 +133,19 @@ class _DiscoverScreenState extends ConsumerState<DiscoverScreen> {
           final result = searchResults[index];
           return Column(
             children: [
-              Container(
-                clipBehavior: Clip.hardEdge,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(Sizes.size4),
-                ),
-                child: AspectRatio(
-                  aspectRatio: aspectRation_2,
-                  child: Image.network(
-                    result.thumbnailUrl,
-                    fit: BoxFit.cover,
+              GestureDetector(
+                onTap: () => _onTapThumbnail(searchResults, index),
+                child: Container(
+                  clipBehavior: Clip.hardEdge,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(Sizes.size4),
+                  ),
+                  child: AspectRatio(
+                    aspectRatio: aspectRation_2,
+                    child: Image.network(
+                      result.thumbnailUrl,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                 ),
               ),
