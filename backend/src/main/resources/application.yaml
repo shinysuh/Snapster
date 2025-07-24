@@ -65,7 +65,7 @@ authorization:
   jwt:
     secret: ${JWT_SECRET}
 #    expiration: 10800000   # 개발용 3시간
-    expiration: 604800000   # 개발용 7일 - 안드로이드
+    expiration: 2593000000   # 개발용 30일 - 안드로이드
     issuer: snapster-app
     refresh-expiration: 180000000
 aws:

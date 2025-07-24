@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:snapster_app/common/widgets/navigation/router.dart';
 import 'package:snapster_app/constants/api_info.dart';
 import 'package:snapster_app/features/authentication/renewal/constants/authorization.dart';
+import 'package:snapster_app/features/authentication/renewal/constants/temp_jwt_token.dart';
 import 'package:snapster_app/features/authentication/renewal/providers/auth_status_provider.dart';
 import 'package:snapster_app/features/authentication/renewal/services/i_auth_service.dart';
 import 'package:snapster_app/features/authentication/renewal/services/token_storage_service.dart';
@@ -110,15 +111,15 @@ class AuthRepository {
     debugPrint("Platform.isAndroid : ${Platform.isAndroid}");
     debugPrint("url : $url");
 
-    String fcmToken = provider == 'kakao'
-        ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwidXNlcm5hbWUiOiLshJzsi6DsmIEiLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTI3Mzc4NDgsImV4cCI6MTc1MzM0MjY0OH0.APmgV7l3UPl2zI6Qs370Etm9Xi8ymoWTkfOFmekWqg8yI1EANoHtsmFl6U2ViE92O6pwOA9vA_pdjPLyx0hYKw"
+    String jwtToken = provider == 'kakao'
+        ? TempJwtToken.kakaoToken
         : provider == 'google'
-            ? "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyIiwidXNlcm5hbWUiOiJTdW1tZXIxMjMiLCJlbWFpbCI6InNoaW55c3VoMTk5MkBnbWFpbC5jb20iLCJpc3MiOiJzbmFwc3Rlci1hcHAiLCJpYXQiOjE3NTI3Mzc4MTUsImV4cCI6MTc1MzM0MjYxNX0.1hhssi5FDZpj1xEAZv_pozCrQAjn8hYrdivfl040E7pOZNVQ4rhGDFz6Jvk0M1pAvFc2HIsusfksfEy-NGAQNA"
+            ? TempJwtToken.googleToken
             : '';
 
-    // TODO : 개발 완료 후 제거 (7일마다 갱신 필요)
+    // TODO : 개발 완료 후 제거
     if (Platform.isAndroid || provider == 'google') {
-      await _storeToken(fcmToken);
+      await _storeToken(jwtToken);
       return;
     }
 

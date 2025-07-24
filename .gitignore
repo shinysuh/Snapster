@@ -53,3 +53,6 @@ backend/src/main/resources/firebase/**/snapster-firebase-service-account.json
 
 # GoogleService-Info.plist
 snapster_app/ios/GoogleService-Info.plist
+
+# jwt 우회 토큰
+snapster_app/lib/features/authentication/renewal/constants/temp_jwt_token.dart
