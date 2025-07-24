@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
 import 'package:snapster_app/features/authentication/common/form_button.dart';
@@ -75,8 +74,7 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
   }
 
   void _onSubmit() {
-    if (_formKey.currentState != null &&
-        _formKey.currentState!.validate() /*invoke validator*/) {
+    if (_formKey.currentState != null && _formKey.currentState!.validate()) {
       _formKey.currentState!.save();
       _closeModal(true);
     }
@@ -85,81 +83,76 @@ class _VideoDetailFormState extends ConsumerState<VideoDetailForm> {
   @override
   Widget build(BuildContext context) {
     final isDark = isDarkMode(context);
-    var bgColor = isDark ? null : Colors.grey.shade50;
+    final bgColor = isDark ? Colors.grey.shade900 : Colors.grey.shade50;
 
-    return AlertDialog(
-      alignment: Alignment.center,
-      surfaceTintColor: bgColor,
-      backgroundColor: bgColor,
-      title: Text(
-        S.of(context).videoDetail,
-        textAlign: TextAlign.center,
-        style: const TextStyle(
-          fontSize: Sizes.size16,
-          fontWeight: FontWeight.w600,
+    return SafeArea(
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          vertical: Sizes.size24,
+          horizontal: Sizes.size20,
         ),
-      ),
-      content: ConstrainedBox(
-        constraints: const BoxConstraints(
-          maxWidth: Breakpoints.md,
-          minWidth: Breakpoints.sm,
-          maxHeight: 150,
+        decoration: BoxDecoration(
+          color: bgColor,
+          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
         ),
-        child: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: Sizes.size20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                TextFormField(
-                  initialValue: detail[title],
-                  autofocus: true,
-                  // textCapitalization: TextCapitalization.none,
-                  textInputAction: TextInputAction.next,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: S.of(context).title,
-                    hintStyle: TextStyle(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  autovalidateMode: widget.isAutoValidationTriggered
-                      ? AutovalidateMode.always
-                      : AutovalidateMode.disabled,
-                  validator: (value) => value == null || value.trim() == ''
-                      ? S.of(context).enterVideoTitle
-                      : null,
-                  onEditingComplete: _onTapNext,
-                  onSaved: (description) => _setVideoDetail(title, description),
-                ),
-                Gaps.v16,
-                TextFormField(
-                  initialValue: detail[description],
-                  focusNode: _secondFocus,
-                  textInputAction: TextInputAction.done,
-                  keyboardType: TextInputType.text,
-                  decoration: InputDecoration(
-                    hintText: S.of(context).description,
-                    hintStyle: TextStyle(
-                      color: Colors.grey.shade500,
-                    ),
-                  ),
-                  onFieldSubmitted: (_) => _onSubmit(),
-                  onSaved: (desc) => _setVideoDetail(description, desc),
-                ),
-              ],
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              S.of(context).videoDetail,
+              style: const TextStyle(
+                fontSize: Sizes.size16,
+                fontWeight: FontWeight.w600,
+              ),
             ),
-          ),
+            Gaps.v20,
+            Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  TextFormField(
+                    initialValue: detail[title],
+                    autofocus: true,
+                    textInputAction: TextInputAction.next,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: S.of(context).title,
+                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                    ),
+                    autovalidateMode: widget.isAutoValidationTriggered
+                        ? AutovalidateMode.always
+                        : AutovalidateMode.disabled,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? S.of(context).enterVideoTitle
+                        : null,
+                    onEditingComplete: _onTapNext,
+                    onSaved: (value) => _setVideoDetail(title, value),
+                  ),
+                  Gaps.v16,
+                  TextFormField(
+                    initialValue: detail[description],
+                    focusNode: _secondFocus,
+                    textInputAction: TextInputAction.done,
+                    keyboardType: TextInputType.text,
+                    decoration: InputDecoration(
+                      hintText: S.of(context).description,
+                      hintStyle: TextStyle(color: Colors.grey.shade500),
+                    ),
+                    onFieldSubmitted: (_) => _onSubmit(),
+                    onSaved: (value) => _setVideoDetail(description, value),
+                  ),
+                ],
+              ),
+            ),
+            Gaps.v20,
+            FormButton(
+              disabled: ref.watch(httpVideoUploadProvider).isLoading,
+              onTapButton: _onSubmit,
+              buttonText: S.of(context).save,
+            ),
+          ],
         ),
       ),
-      actions: [
-        FormButton(
-          disabled: ref.watch(httpVideoUploadProvider).isLoading,
-          onTapButton: _onSubmit,
-          buttonText: S.of(context).save,
-        ),
-      ],
     );
   }
 }
