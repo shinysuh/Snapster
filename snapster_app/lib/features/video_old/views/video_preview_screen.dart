@@ -38,6 +38,7 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
   };
   bool _isSaved = false;
   bool _isAutoValidationTriggered = false;
+  bool _isPlaying = true;
 
   late final bool _isMuted = ref.watch(playbackConfigProvider).muted;
 
@@ -123,6 +124,17 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
         );
   }
 
+  void _togglePlay() {
+    if (_isPlaying) {
+      _videoPlayerController.pause();
+      _isPlaying = false;
+    } else {
+      _videoPlayerController.play();
+      _isPlaying = true;
+    }
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     var isLoading = ref.watch(httpVideoUploadProvider).isLoading;
@@ -166,7 +178,10 @@ class VideoPreviewScreenState extends ConsumerState<VideoPreviewScreen> {
         ),
         body: !_videoPlayerController.value.isInitialized
             ? null
-            : VideoPlayer(_videoPlayerController),
+            : GestureDetector(
+                onTap: _togglePlay,
+                child: VideoPlayer(_videoPlayerController),
+              ),
       ),
     );
   }

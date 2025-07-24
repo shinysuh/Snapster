@@ -63,7 +63,7 @@ class HttpVideoUploadViewModel extends AsyncNotifier<void>
                 ));
 
             // user feed 갱신 => 백엔드에서 streaming file 저장 후 리프레시 되게 15초 딜레이
-            Future.delayed(const Duration(seconds: 15), () {
+            Future.delayed(const Duration(seconds: 5), () {
               ref.read(feedProvider(currentUser!.userId).notifier).refresh();
             });
 
