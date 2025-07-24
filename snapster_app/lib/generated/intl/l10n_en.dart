@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -11,14 +12,6 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String signUpTitle(String nameOfTheApp) {
     return 'Sign Up for $nameOfTheApp';
-  }
-
-  @override
-  String signUpTitleWithDateTime(String nameOfTheApp, DateTime when) {
-    final intl.DateFormat whenDateFormat = intl.DateFormat('y / QQQ / LLLL 😆', localeName);
-    final String whenString = whenDateFormat.format(when);
-
-    return 'Sign Up for $nameOfTheApp $whenString';
   }
 
   @override
@@ -52,7 +45,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logIn => 'Log in';
 
   @override
-  String loginToSnapster(Object nameOfTheApp) {
+  String loginToSnapster(String nameOfTheApp) {
     return 'Log in to $nameOfTheApp';
   }
 
@@ -91,7 +84,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get share => 'share';
 
   @override
-  String commentTitle(int value, num value2) {
+  String commentTitle(int value, int value2) {
     final intl.NumberFormat valueNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
       
@@ -167,7 +160,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get exitChatroom => 'Exit chatroom';
 
   @override
-  String userHasLeftChatroom(Object username) {
+  String userHasLeftChatroom(String username) {
     return '$username has left the chatroom.';
   }
 
@@ -184,7 +177,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get youCanOnlyDeleteTheMessagesYouSent => 'You can only delete the messages you sent.';
 
   @override
-  String get noVideosToShow => 'No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page.';
+  String get noVideosToShow => 'No videos to show. If you\'ve uploaded any, please refresh the page.';
 
   @override
   String get nowLoadingTheVideo => 'Now loading the video..';

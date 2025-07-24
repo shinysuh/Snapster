@@ -1,6 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+
 import 'intl/messages_all.dart';
 
 // **************************************************************************
@@ -57,20 +58,6 @@ class S {
       name: 'signUpTitle',
       desc: 'The title people see when they open the app for the first time.',
       args: [nameOfTheApp],
-    );
-  }
-
-  /// `Sign Up for {nameOfTheApp} {when}`
-  String signUpTitleWithDateTime(String nameOfTheApp, DateTime when) {
-    final DateFormat whenDateFormat =
-        DateFormat('y / QQQ / LLLL 😆', Intl.getCurrentLocale());
-    final String whenString = whenDateFormat.format(when);
-
-    return Intl.message(
-      'Sign Up for $nameOfTheApp $whenString',
-      name: 'signUpTitleWithDateTime',
-      desc: 'The title people see when they open the app for the first time.',
-      args: [nameOfTheApp, whenString],
     );
   }
 
@@ -145,7 +132,7 @@ class S {
   }
 
   /// `Log in to {nameOfTheApp}`
-  String loginToSnapster(Object nameOfTheApp) {
+  String loginToSnapster(String nameOfTheApp) {
     return Intl.message(
       'Log in to $nameOfTheApp',
       name: 'loginToSnapster',
@@ -225,7 +212,7 @@ class S {
   }
 
   /// `{value} {value2, plural, =1{comment} other{comments}}`
-  String commentTitle(int value, num value2) {
+  String commentTitle(int value, int value2) {
     final NumberFormat valueNumberFormat = NumberFormat.compact(
       locale: Intl.getCurrentLocale(),
     );
@@ -349,7 +336,7 @@ class S {
     return Intl.message(
       'MMM d yyyy',
       name: 'yearMonthDate',
-      desc: 'Format for year, month, and day.',
+      desc: '',
       args: [],
     );
   }
@@ -359,7 +346,7 @@ class S {
     return Intl.message(
       'MMM d',
       name: 'monthDate',
-      desc: 'Format for month and day.',
+      desc: '',
       args: [],
     );
   }
@@ -369,7 +356,7 @@ class S {
     return Intl.message(
       'h:mma',
       name: 'hourMinuteAPM',
-      desc: 'Format for hour and minute with AM/PM.',
+      desc: '',
       args: [],
     );
   }
@@ -415,7 +402,7 @@ class S {
   }
 
   /// `{username} has left the chatroom.`
-  String userHasLeftChatroom(Object username) {
+  String userHasLeftChatroom(String username) {
     return Intl.message(
       '$username has left the chatroom.',
       name: 'userHasLeftChatroom',
@@ -464,10 +451,10 @@ class S {
     );
   }
 
-  /// `No videos to show.\nIf you've uploaded any,\nplease refresh the page.`
+  /// `No videos to show. If you've uploaded any, please refresh the page.`
   String get noVideosToShow {
     return Intl.message(
-      'No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page.',
+      'No videos to show. If you\'ve uploaded any, please refresh the page.',
       name: 'noVideosToShow',
       desc: '',
       args: [],

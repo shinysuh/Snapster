@@ -9,21 +9,6 @@
       }
     }
   },
-  "signUpTitleWithDateTime": "Sign Up for {nameOfTheApp} {when}",
-  "@signUpTitleWithDateTime": {
-    "description": "The title people see when they open the app for the first time.",
-    "placeholders": {
-      "nameOfTheApp": {
-        "type": "String",
-        "example": "Snapster"
-      },
-      "when": {
-        "type": "DateTime",
-        "format": "y / QQQ / LLLL \uD83D\uDE06",
-        "isCustomDateFormat": "true"
-      }
-    }
-  },
   "signUpSubtitle": "Create a profile, follow other accounts, make your own {videoCount, plural, =0{no videos} =1{video} other{videos}}, and more.",
   "useEmailPassword": "Use email & password",
   "continueWithApple": "Continue with apple",
@@ -32,6 +17,14 @@
   "alreadyHaveAnAccount": "Already have an account?",
   "logIn": "Log in",
   "loginToSnapster": "Log in to {nameOfTheApp}",
+  "@loginToSnapster": {
+    "placeholders": {
+      "nameOfTheApp": {
+        "type": "String",
+        "example": "Snapster"
+      }
+    }
+  },
   "dontHaveAnAccount": "Don't have an account?",
   "signUp": "Sign up",
   "loginSubTitle": "Manage your account, check notifications, comment on videos, and more.",
@@ -63,6 +56,9 @@
       "value": {
         "type": "int",
         "format": "compact"
+      },
+      "value2": {
+        "type": "int"
       }
     }
   },
@@ -86,30 +82,25 @@
   "setTheVideoTitle": "Please set the video title before you upload it.",
   "enterVideoTitle": "Enter video title",
   "yearMonthDate": "MMM d yyyy",
-  "@yearMonthDate": {
-    "description": "Format for year, month, and day.",
-    "placeholders": {}
-  },
   "monthDate": "MMM d",
-  "@monthDate": {
-    "description": "Format for month and day.",
-    "placeholders": {}
-  },
   "hourMinuteAPM": "h:mma",
-  "@hourMinuteAPM": {
-    "description": "Format for hour and minute with AM/PM.",
-    "placeholders": {}
-  },
   "conversationNotStarted": "Conversation Not Started",
   "selectAProfileToStartAConversation": "Select a profile to start a conversation",
   "chooseAProfile": "Choose a profile",
   "exitChatroom": "Exit chatroom",
   "userHasLeftChatroom": "{username} has left the chatroom.",
+  "@userHasLeftChatroom": {
+    "placeholders": {
+      "username": {
+        "type": "String"
+      }
+    }
+  },
   "exit": "Exit",
   "reInvitationConfirmMsg": "Do you want to invite the person back?",
   "deleteMessageConfirm": "Do you want to delete the message?",
   "youCanOnlyDeleteTheMessagesYouSent": "You can only delete the messages you sent.",
-  "noVideosToShow": "No videos to show.\nIf you've uploaded any,\nplease refresh the page.",
+  "noVideosToShow": "No videos to show. If you've uploaded any, please refresh the page.",
   "nowLoadingTheVideo": "Now loading the video..",
   "deleteProfilePicture": "Delete profile picture"
 }

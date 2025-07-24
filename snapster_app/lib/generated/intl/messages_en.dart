@@ -36,9 +36,7 @@ class MessageLookup extends MessageLookupByLibrary {
 
   static String m6(nameOfTheApp) => "Sign Up for ${nameOfTheApp}";
 
-  static String m7(nameOfTheApp, when) => "Sign Up for ${nameOfTheApp} ${when}";
-
-  static String m8(username) => "${username} has left the chatroom.";
+  static String m7(username) => "${username} has left the chatroom.";
 
   final messages = _notInlinedMessages(_notInlinedMessages);
   static Map<String, Function> _notInlinedMessages(_) => <String, Function>{
@@ -57,6 +55,8 @@ class MessageLookup extends MessageLookupByLibrary {
             MessageLookupByLibrary.simpleMessage("Continue with Github"),
         "continueWithGoogle":
             MessageLookupByLibrary.simpleMessage("Continue with Google"),
+        "continueWithKakao":
+            MessageLookupByLibrary.simpleMessage("Continue With Kakao"),
         "conversationNotStarted":
             MessageLookupByLibrary.simpleMessage("Conversation Not Started"),
         "deleteMessageConfirm": MessageLookupByLibrary.simpleMessage(
@@ -79,7 +79,7 @@ class MessageLookup extends MessageLookupByLibrary {
         "loginToSnapster": m4,
         "monthDate": MessageLookupByLibrary.simpleMessage("MMM d"),
         "noVideosToShow": MessageLookupByLibrary.simpleMessage(
-            "No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page."),
+            "No videos to show. If you\'ve uploaded any, please refresh the page."),
         "nowLoadingTheVideo":
             MessageLookupByLibrary.simpleMessage("Now loading the video.."),
         "reInvitationConfirmMsg": MessageLookupByLibrary.simpleMessage(
@@ -94,11 +94,10 @@ class MessageLookup extends MessageLookupByLibrary {
         "signUp": MessageLookupByLibrary.simpleMessage("Sign up"),
         "signUpSubtitle": m5,
         "signUpTitle": m6,
-        "signUpTitleWithDateTime": m7,
         "title": MessageLookupByLibrary.simpleMessage("title"),
         "useEmailPassword":
             MessageLookupByLibrary.simpleMessage("Use email & password"),
-        "userHasLeftChatroom": m8,
+        "userHasLeftChatroom": m7,
         "videoDetail": MessageLookupByLibrary.simpleMessage("Video Detail"),
         "yearMonthDate": MessageLookupByLibrary.simpleMessage("MMM d yyyy"),
         "youCanOnlyDeleteTheMessagesYouSent":

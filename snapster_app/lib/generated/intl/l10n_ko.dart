@@ -1,5 +1,6 @@
 // ignore: unused_import
 import 'package:intl/intl.dart' as intl;
+
 import 'l10n.dart';
 
 // ignore_for_file: type=lint
@@ -11,14 +12,6 @@ class AppLocalizationsKo extends AppLocalizations {
   @override
   String signUpTitle(String nameOfTheApp) {
     return '$nameOfTheApp에 가입하세요';
-  }
-
-  @override
-  String signUpTitleWithDateTime(String nameOfTheApp, DateTime when) {
-    final intl.DateFormat whenDateFormat = intl.DateFormat('y / QQQ / LLLL 😆', localeName);
-    final String whenString = whenDateFormat.format(when);
-
-    return 'Sign Up for $nameOfTheApp $whenString';
   }
 
   @override
@@ -45,7 +38,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get logIn => '로그인';
 
   @override
-  String loginToSnapster(Object nameOfTheApp) {
+  String loginToSnapster(String nameOfTheApp) {
     return '$nameOfTheApp에 로그인하세요';
   }
 
@@ -84,14 +77,20 @@ class AppLocalizationsKo extends AppLocalizations {
   String get share => '공유';
 
   @override
-  String commentTitle(int value, num value2) {
+  String commentTitle(int value, int value2) {
     final intl.NumberFormat valueNumberFormat = intl.NumberFormat.compact(
       locale: localeName,
       
     );
     final String valueString = valueNumberFormat.format(value);
 
-    return '댓글 $valueString개';
+    String _temp0 = intl.Intl.pluralLogic(
+      value2,
+      locale: localeName,
+      other: '개',
+      one: '개',
+    );
+    return '댓글 $valueString$_temp0';
   }
 
   @override
@@ -154,7 +153,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get exitChatroom => '채팅방 나가기';
 
   @override
-  String userHasLeftChatroom(Object username) {
+  String userHasLeftChatroom(String username) {
     return '$username 님이 채팅방을 나갔습니다.';
   }
 
@@ -171,7 +170,7 @@ class AppLocalizationsKo extends AppLocalizations {
   String get youCanOnlyDeleteTheMessagesYouSent => '내가 보낸 메세지만 삭제 가능합니다.';
 
   @override
-  String get noVideosToShow => '표시할 동영상이 없습니다.\n동영상을 업로드 했을 경우\n페이지를 새로고침해 주세요.';
+  String get noVideosToShow => '표시할 동영상이 없습니다. 동영상을 업로드 했을 경우 페이지를 새로고침해 주세요.';
 
   @override
   String get nowLoadingTheVideo => '비디오 로딩 중..';

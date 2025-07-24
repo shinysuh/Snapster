@@ -101,12 +101,6 @@ abstract class AppLocalizations {
   /// **'Sign Up for {nameOfTheApp}'**
   String signUpTitle(String nameOfTheApp);
 
-  /// The title people see when they open the app for the first time.
-  ///
-  /// In en, this message translates to:
-  /// **'Sign Up for {nameOfTheApp} {when}'**
-  String signUpTitleWithDateTime(String nameOfTheApp, DateTime when);
-
   /// No description provided for @signUpSubtitle.
   ///
   /// In en, this message translates to:
@@ -153,7 +147,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'Log in to {nameOfTheApp}'**
-  String loginToSnapster(Object nameOfTheApp);
+  String loginToSnapster(String nameOfTheApp);
 
   /// No description provided for @dontHaveAnAccount.
   ///
@@ -195,7 +189,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{value} {value2, plural, =1{comment} other{comments}}'**
-  String commentTitle(int value, num value2);
+  String commentTitle(int value, int value2);
 
   /// comment like count
   ///
@@ -257,19 +251,19 @@ abstract class AppLocalizations {
   /// **'Enter video title'**
   String get enterVideoTitle;
 
-  /// Format for year, month, and day.
+  /// No description provided for @yearMonthDate.
   ///
   /// In en, this message translates to:
   /// **'MMM d yyyy'**
   String get yearMonthDate;
 
-  /// Format for month and day.
+  /// No description provided for @monthDate.
   ///
   /// In en, this message translates to:
   /// **'MMM d'**
   String get monthDate;
 
-  /// Format for hour and minute with AM/PM.
+  /// No description provided for @hourMinuteAPM.
   ///
   /// In en, this message translates to:
   /// **'h:mma'**
@@ -303,7 +297,7 @@ abstract class AppLocalizations {
   ///
   /// In en, this message translates to:
   /// **'{username} has left the chatroom.'**
-  String userHasLeftChatroom(Object username);
+  String userHasLeftChatroom(String username);
 
   /// No description provided for @exit.
   ///
@@ -332,7 +326,7 @@ abstract class AppLocalizations {
   /// No description provided for @noVideosToShow.
   ///
   /// In en, this message translates to:
-  /// **'No videos to show.\nIf you\'ve uploaded any,\nplease refresh the page.'**
+  /// **'No videos to show. If you\'ve uploaded any, please refresh the page.'**
   String get noVideosToShow;
 
   /// No description provided for @nowLoadingTheVideo.
