@@ -4,8 +4,8 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:snapster_app/constants/breakpoints.dart';
 import 'package:snapster_app/constants/gaps.dart';
 import 'package:snapster_app/constants/sizes.dart';
-import 'package:snapster_app/features/user/models/user_profile_model.dart';
-import 'package:snapster_app/features/user/view_models/user_view_model.dart';
+import 'package:snapster_app/features/authentication/renewal/view_models/auth_view_model.dart';
+import 'package:snapster_app/features/user/models/app_user_model.dart';
 import 'package:snapster_app/features/video_old/view_models/comment_view_model.dart';
 import 'package:snapster_app/generated/l10n.dart';
 import 'package:snapster_app/utils/profile_network_img.dart';
@@ -46,16 +46,18 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
     Navigator.of(context).pop();
   }
 
-  Future<void> _onTapSubmitComment(UserProfileModel user) async {
-    if (_textEditingController.text.trim().isEmpty) return;
+  Future<void> _onTapSubmitComment(AppUser? user) async {
+    if (_textEditingController.text.trim().isEmpty || user == null) return;
 
-    await ref.read(commentProvider(widget.videoId).notifier).saveComment(
-          context: context,
-          user: user,
-          comment: _textEditingController.text,
-        );
+    // 기존 firebase 로직
+    // await ref.read(commentProvider(widget.videoId).notifier).saveComment(
+    //       context: context,
+    //       user: user,
+    //       comment: _textEditingController.text,
+    //     );
 
     widget.onChangeCommentCount(widget.commentCount + 1);
+
     _textEditingController.clear();
     _dismissKeyboard();
   }
@@ -73,7 +75,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
     });
   }
 
-  Widget _getCommentField(UserProfileModel user, bool isDark) {
+  Widget _getCommentField(AppUser? user, bool isDark) {
     var iconColor = isDark ? Colors.grey.shade400 : Colors.grey.shade900;
     return TextField(
       controller: _textEditingController,
@@ -268,7 +270,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                         top: Sizes.size10,
                         bottom: Sizes.size32,
                       ),
-                      child: ref.watch(userProvider).when(
+                      child: ref.watch(authProvider).when(
                           loading: () => const Center(
                                 child: CircularProgressIndicator.adaptive(),
                               ),
@@ -277,6 +279,7 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                               ),
                           data: (user) => LayoutBuilder(
                                 builder: (context, constraints) {
+                                  final isUserNull = user == null;
                                   var isWiderThanSm = constraints.maxWidth >
                                       Breakpoints.sm - Sizes.size32;
                                   return Row(
@@ -286,11 +289,17 @@ class _VideoCommentsState extends ConsumerState<VideoComments> {
                                         radius: Sizes.size18,
                                         backgroundColor: Colors.grey.shade500,
                                         foregroundColor: Colors.white,
-                                        foregroundImage: getProfileImgByUserId(
-                                          user.uid,
-                                          false,
-                                        ),
-                                        child: ClipOval(child: Text(user.name)),
+                                        foregroundImage: isUserNull
+                                            ? null
+                                            : getProfileImgByUserProfileImageUrl(
+                                                user.hasProfileImage,
+                                                user.profileImageUrl,
+                                                false,
+                                              ),
+                                        child: ClipOval(
+                                            child: Text(isUserNull
+                                                ? ""
+                                                : user.displayName)),
                                       ),
                                       Gaps.h10,
                                       if (isWiderThanSm)
